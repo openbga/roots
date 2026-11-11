@@ -56,7 +56,7 @@
                srcset="assets/samples-1280.webp 1280w, assets/samples-2560.webp 2560w"
                sizes="(min-width: 1240px) 1160px, 92vw"
                width="1280" height="800" fetchpriority="high"
-               alt="The Samples page of the staff workspace: a searchable, filterable table of received samples with their laboratory ID, client, project, matrix, collection and receipt times and receipt disposition.">
+               alt="The Samples page of the staff workspace: a searchable, filterable table of received water, wastewater and soil samples from two clients, with their laboratory ID, project, matrix, collection and receipt times.">
           <figcaption>The sample list in the staff workspace. Every screen on this page shows synthetic demo data.</figcaption>
         </figure>
       </div>
@@ -96,7 +96,7 @@
       <div class="wrap">
         <div class="section-intro">
           <h2 id="closer-title">A closer look.</h2>
-          <p>Three moments from the demo laboratory that ships with the project: a review, a control chart and an issued report.</p>
+          <p>Three moments from the demo laboratory that ships with the project: a review, a control chart and an amended report.</p>
         </div>
 
         <div class="features">
@@ -104,12 +104,12 @@
           <div class="feature-text">
             <p class="eyebrow">Review</p>
             <h3>Review beside the evidence.</h3>
-            <p>A reviewer works through a batch with its QC evaluation, holding-time findings, reporting limits and qualifiers on the same page, then approves each result or returns it with a reason.</p>
+            <p>A reviewer works through a batch with its QC evaluation, holding-time findings, reporting limits and qualifiers on the same page, then approves each result or returns it with a reason. An open QC finding holds the results it affects.</p>
           </div>
           <figure class="shot">
             <img src="assets/review-1280.webp" width="1280" height="800" loading="lazy" decoding="async"
-                 alt="Technical review of an analytical batch: the batch's QC evidence, with a passing laboratory control sample and method blank, above the results awaiting review and the decision form.">
-            <figcaption>Technical review of a batch, with its QC evidence above the results awaiting a decision.</figcaption>
+                 alt="Technical review of an analytical batch: the batch's QC evidence, where the laboratory control sample for lead failed at 130 percent recovery and holds approval while copper, zinc and the method blanks pass, above the nine results awaiting review.">
+            <figcaption>Technical review of a batch. A failed control sample holds approval until a disposition is recorded.</figcaption>
           </figure>
         </div>
 
@@ -121,7 +121,7 @@
           </div>
           <figure class="shot">
             <img src="assets/chart-1280.webp" width="1280" height="800" loading="lazy" decoding="async"
-                 alt="A control chart of laboratory control sample recoveries for lead: 26 points around 100 percent, configured limits at 85 and 115 percent, and one point outside the upper limit marked in red.">
+                 alt="A control chart of laboratory control sample recoveries for lead: 21 points around 100 percent, configured limits at 85 and 115 percent, and one point outside the upper limit marked in red.">
             <figcaption>A control chart for a laboratory control sample, with one recovery outside the configured limits.</figcaption>
           </figure>
         </div>
@@ -130,12 +130,12 @@
           <div class="feature-text">
             <p class="eyebrow">Reporting</p>
             <h3>The report your client receives.</h3>
-            <p>Each release stores a PDF version with its content hash. Clients download it from their own portal, where they see only their own projects, samples and reports.</p>
+            <p>Each release stores a PDF version with its content hash. An amendment names the version it replaces, the reason and what changed, and the earlier version stays on record. Clients download both from their own portal, where they see only their own projects, samples and reports.</p>
           </div>
           <figure class="shot shot-paper">
             <img src="assets/report-920.webp" width="920" height="1191" loading="lazy" decoding="async"
-                 alt="First page of an issued analytical report: report and client details, case narrative, sample summary, a lead result with its unit, reporting limit, method, analyst, reviewer and holding time, and the batch quality control summary.">
-            <figcaption>The first page of an issued report, marked as synthetic demonstration data.</figcaption>
+                 alt="First page of an amended analytical report, version 2: report and client details, a highlighted note that it replaces version 1 with the reason and the corrected zinc result, the case narrative, a summary of three samples and the first sample's results.">
+            <figcaption>The first page of an amended report, marked as synthetic demonstration data.</figcaption>
           </figure>
         </div>
         </div>
@@ -166,7 +166,7 @@
       <div class="wrap start-inner">
         <div>
           <h2 id="start-title">Try it on<br>your machine.</h2>
-          <p>With Docker and Compose installed, these commands build the application, start it beside a local PostgreSQL database and load a synthetic demo laboratory. It is reachable only from your machine and is meant for evaluation, not for real laboratory data.</p>
+          <p>With Docker and Compose installed, these commands build the application, start it beside a local PostgreSQL database and load a synthetic laboratory in the middle of a working week. It is reachable only from your machine and is meant for evaluation, not for real laboratory data.</p>
           <ul class="next-steps">
             <li><a href="https://github.com/openbga/roots/blob/main/README.md#local-development">Develop locally without Docker</a></li>
             <li><a href="https://github.com/openbga/roots/blob/main/README.md#set-up-your-laboratory">Set up your laboratory</a></li>
@@ -181,7 +181,7 @@ docker compose --profile app up --build -d
 <span class="comment"># Choose a private password of at least 12 characters.</span>
 read -s DEMO_PASSWORD; export DEMO_PASSWORD
 docker compose --profile app exec -e DEMO_PASSWORD web \
-  python manage.py seed_demo</code></pre>
+  python manage.py seed_demo --full</code></pre>
           </div>
           <p>Then open <code>http://127.0.0.1:8000</code> and sign in as <code>demo_custodian</code>, <code>demo_analyst</code>, <code>demo_reviewer</code> or another demo role with that password.</p>
         </div>
