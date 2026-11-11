@@ -1,0 +1,112 @@
+{
+  "id": "receipt-sample-correct-identity",
+  "routes": [
+    "receipt:sample-correct"
+  ],
+  "title": "Correct sample details",
+  "purpose": "Correct receipt identity, sample type, sample source, collector, collection-place or remarks text while preserving the original recorded values.",
+  "sections": [
+    {
+      "title": "Correction sections",
+      "paragraphs": [
+        "Custodians, project managers and administrators use these sections. A tab marked locked still opens to explain the blocker. The header identifies current client sample ID and client/project."
+      ],
+      "items": [
+        {
+          "label": "Identity, type, location",
+          "description": "Correct client sample ID, sample type, sample source, collector, collection place and sample remarks."
+        },
+        {
+          "label": "Collection type and times",
+          "description": "Correct grab/composite and its collection timestamps."
+        },
+        {
+          "label": "Receipt observations",
+          "description": "Correct temperature, thermometer, coolant, custody seal, preservation observation or discrepancy."
+        },
+        {
+          "label": "Requested tests",
+          "description": "Add tests or withdraw those with no dependent work."
+        },
+        {
+          "label": "Matrix",
+          "description": "Correct a wrong matrix and replace its requested tests together. A recorded sample source that does not belong to the new matrix is cleared."
+        }
+      ]
+    },
+    {
+      "title": "Fields and rules",
+      "paragraphs": [
+        "Change at least one value. Text is trimmed. Any issued report snapshot containing the sample blocks this correction even if the sample is later removed from draft report scope. Controlled post-release metadata correction is not supported on this path. Reprint labels if the client sample ID changes. Accession, order and custody events cannot change here."
+      ],
+      "items": [
+        {
+          "label": "Client sample ID",
+          "description": "Required corrected client identifier, up to 120 characters; it does not change the laboratory accession."
+        },
+        {
+          "label": "Sample type",
+          "description": "Field sample, Field duplicate, Field blank, Trip blank or Equipment / rinsate blank, as written on the chain of custody."
+        },
+        {
+          "label": "Sample source",
+          "description": "Optional list grouped by matrix, with Not recorded to clear it. It must belong to this sample’s matrix, which the field’s hint names; otherwise the correction is refused. To correct the matrix itself use the Matrix tab."
+        },
+        {
+          "label": "Collector name",
+          "description": "Required corrected collector name, up to 160 characters."
+        },
+        {
+          "label": "Collection location",
+          "description": "Optional corrected place, up to 200 characters. This correction allows an unknown legacy location to remain blank, although new receipt requires a place."
+        },
+        {
+          "label": "Sample remarks",
+          "description": "Optional multi-line text; may be cleared. Appearance, odor, hazards or field readings noted on the chain of custody."
+        }
+      ]
+    },
+    {
+      "title": "Saving and history",
+      "paragraphs": [
+        "Physically disposed samples cannot be corrected. Saving rechecks the sample revision and eligibility. A stale form retains submitted input with an error; reload and review current receipt history before resubmitting."
+      ],
+      "items": [
+        {
+          "label": "Reason",
+          "description": "Required correction explanation, at most 4000 characters. It stays with actor, timestamp and old/new values."
+        },
+        {
+          "label": "Submit correction",
+          "description": "Uses the page’s specific correction title. A successful save returns to the sample record. Earlier custody and issued report versions are never rewritten."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the sample without saving."
+        },
+        {
+          "label": "History",
+          "description": "All receipt corrections for this sample, chronological, with reason and changed values. No corrections recorded is shown before the first correction."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/correction_views.py",
+    "receipt/correction_forms.py",
+    "receipt/corrections.py",
+    "receipt/models.py",
+    "templates/receipt/sample_correction.html",
+    "templates/receipt/correction_history.html",
+    "receipt/tests/test_corrections.py",
+    "receipt/tests/test_receipt_edits.py",
+    "receipt/tests/test_preparation_dependencies.py",
+    "accounts/roles.py",
+    "receipt/vocabulary.py",
+    "receipt/tests/test_master_data.py"
+  ],
+  "match": {
+    "section": "identity"
+  }
+}

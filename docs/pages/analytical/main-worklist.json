@@ -1,0 +1,170 @@
+{
+  "id": "analytical-main-worklist",
+  "routes": [
+    "analytical:batch-worklist"
+  ],
+  "title": "Worklist",
+  "purpose": "Prioritize requested tests and assign eligible work to an existing open analytical batch. Each row represents one sample’s requested test.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "These are staff pages. Active users with an application staff role can read them; client accounts cannot. Analysts perform result entry and batch work, reviewers decide results, and administrators maintain configuration. Administrators also have operational analyst and reviewer access, but independence rules still apply. Superuser status alone does not grant an application role."
+      ]
+    },
+    {
+      "title": "Filters",
+      "items": [
+        {
+          "label": "Search",
+          "description": "Find partial, case-insensitive matches in lab ID, client sample ID, client name, project name, chain-of-custody reference or analyte name."
+        },
+        {
+          "label": "Method",
+          "description": "Select an active exact method version; Any method leaves all versions in scope."
+        },
+        {
+          "label": "Status",
+          "description": "Defaults to Not yet approved, excluding approved results. Choices also include Not in a batch, Sent to an external laboratory, In batch, awaiting entry, Entered, Awaiting review, Returned, Approved and All statuses. Active external dispatch takes precedence over internal status."
+        },
+        {
+          "label": "Holding time",
+          "description": "Expired includes running collection clocks past their deadline. At risk or expired also includes clocks within their configured warning window. These filters only include not-batched, awaiting-entry or returned work with a collection-based deadline."
+        },
+        {
+          "label": "More filters",
+          "description": "Expand Matrix, Client, In batch, Received from and Received to."
+        },
+        {
+          "label": "Matrix",
+          "description": "Water, Wastewater or Soil for the requested test definition."
+        },
+        {
+          "label": "Client",
+          "description": "Restrict tests to one client across its projects."
+        },
+        {
+          "label": "In batch",
+          "description": "Current analytical batch assignment. Enter a positive batch number such as B-000123, B123 or 123; invalid text shows an error and no rows."
+        },
+        {
+          "label": "Received from",
+          "description": "Optional inclusive first receipt date in laboratory local time."
+        },
+        {
+          "label": "Received to",
+          "description": "Optional inclusive last receipt date in laboratory local time."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Sample",
+          "description": "Lab sample ID linking to receipt, custody and requested tests."
+        },
+        {
+          "label": "Analyte",
+          "description": "Requested analyte and configured test unit."
+        },
+        {
+          "label": "Status",
+          "description": "Derived work status. A receipt Hold or Reject is displayed instead and prevents selection."
+        },
+        {
+          "label": "Method",
+          "description": "Exact method version and requested matrix."
+        },
+        {
+          "label": "Hold deadline",
+          "description": "Earliest deadline from active collection-start rules for the requested method and matrix. Composite collection uses its recorded end. Running work shows time left/overdue and warning status. Preparation-based clocks are not represented by this queue deadline; result entry evaluates applicable clocks."
+        },
+        {
+          "label": "Batch",
+          "description": "Current assigned batch link, or a dash when unassigned."
+        },
+        {
+          "label": "Client / project",
+          "description": "Order’s client and project; hidden initially."
+        },
+        {
+          "label": "Received",
+          "description": "Receipt date and time; hidden initially."
+        },
+        {
+          "label": "Collected",
+          "description": "Collection event date and time, meaning composite end where applicable; hidden initially."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "New batch",
+          "description": "Analysts create a batch for one method version and matrix."
+        },
+        {
+          "label": "Add selected tests to batch",
+          "description": "Choose an open analytical batch identified by number, method and matrix. Its presence in the list does not mean it matches every checked test."
+        },
+        {
+          "label": "Add selected to batch",
+          "description": "Analysts assign checked tests. The header checkbox selects eligible rows on this page only. Entered, submitted, approved and external rows are disabled here, as are samples held or rejected at receipt. Use the destination batch’s Add tests page for approved reanalysis."
+        },
+        {
+          "label": "Selection checks",
+          "description": "The server rechecks method, active definition, both test and sample matrix, receipt disposition, disposal, external dispatch, open revisions and preparation chronology. Any failed selection blocks the assignment as a whole. Already-assigned tests are skipped. Entered or submitted work cannot move; returned work can."
+        }
+      ]
+    },
+    {
+      "title": "Filtering and table controls",
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Apply search and filters to the entire matching dataset and return to page 1. Invalid filters show errors and no rows; they never widen the query."
+        },
+        {
+          "label": "Clear all",
+          "description": "Remove search and filters and restore this page’s defaults. A filter chip removes only that filter."
+        },
+        {
+          "label": "Rows per page",
+          "description": "Choose 25 (default), 50 or 100. First, Previous, Next and Last page links retain filters. Counts describe all matching records."
+        },
+        {
+          "label": "Columns",
+          "description": "Show or hide optional columns and change their order using movement controls or header dragging. Changes apply immediately and are saved for this table in this browser. Locked columns stay available."
+        },
+        {
+          "label": "Reset columns",
+          "description": "Restore the original column visibility and order. Done or Close dismisses the Columns dialog."
+        }
+      ],
+      "paragraphs": [
+        "Initially sorted by earliest collection-based Hold deadline, missing deadlines last. Sample, Analyte, Hold deadline and Received headings sort the entire filtered worklist; click again to reverse."
+      ]
+    },
+    {
+      "title": "Empty and changed work",
+      "paragraphs": [
+        "No open work means no rows remain under the default not-yet-approved view. Received samples with requested tests populate this queue. Clear filters or use All statuses when appropriate. Assignment reports its added count and returns to the current worklist URL. Selection does not carry across pages."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/templates/analytical/worklist.html",
+    "analytical/holding.py",
+    "analytical/tests/test_lists.py",
+    "analytical/tests/test_subcontract_routing.py",
+    "analytical/tests/test_disposed_samples.py"
+  ]
+}

@@ -1,0 +1,31 @@
+{% load static documentation %}<!doctype html>
+{% comment %}Rendered without a request context: no user, URL reversal or database access.{% endcomment %}
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <script src="{% static 'js/theme-init.js' %}"></script>
+  <title>Server error · OpenBGA Roots</title>
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap-5.3.8/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <link rel="stylesheet" href="{% static 'css/documentation.css' %}">
+  <script src="{% static 'js/documentation.js' %}" defer></script>
+</head>
+<body class="vr-app vr-entrance-page">
+  <main class="vr-entrance" id="main">
+    <div class="vr-entrance-body">
+      <div class="vr-entrance-theme">{% include "documentation/button.html" %}</div>
+      {% include "includes/brand.html" with variant="entrance" %}
+      <div class="vr-entrance-panel">
+        <h1 class="vr-page-title mb-2">Something went wrong</h1>
+        <p>The server could not complete the request. If you were saving, check whether the change was recorded before trying again.</p>
+        <a class="btn btn-primary" href="/">Go to your home page</a>
+      </div>
+      {% include "includes/source_footer.html" with css="vr-app-foot-centered" %}
+    </div>
+  </main>
+  {% page_help "documentation:unavailable" as error_help %}
+  {% include "documentation/panel.html" with page_documentation=error_help %}
+</body>
+</html>

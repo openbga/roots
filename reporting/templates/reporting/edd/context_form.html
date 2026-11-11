@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load reporting %}
+{% comment %}
+Export-time context for one released version: per-sample depth and NYSDEC location code, and the
+NYSDEC test type of corrected results. Saved separately from the release snapshot (never changes it).
+Context: version, report, form (VersionContextForm), back.
+{% endcomment %}
+{% block breadcrumbs %}{% url 'reporting:report-list' as list_url %}{% url 'reporting:report-detail' report.pk as record_url %}{% with number=version.number|stringformat:"s" %}{% include "includes/breadcrumbs.html" with section="Reports" section_url=list_url record=report.number record_url=record_url child="NYSDEC EDD v"|add:number child_url=back current="Export context" %}{% endwith %}{% endblock %}
+{% block page_meta %}<ul class="vr-page-meta"><li>{% include "includes/status.html" with label="Exploratory export settings" tone="warning" %}</li><li>{{ report.project.client }} / {{ report.project.name }}</li></ul>{% endblock %}
+{% block page_intro %}<p class="vr-page-intro">Facts NYSDEC needs that the released report does not hold; they apply only to exports of version {{ version.number }}, are recorded with your name, and never change the released report.</p>{% endblock %}
+{% block content %}
+<form class="vr-form" method="post" novalidate>
+  {% csrf_token %}
+  {% include "includes/form_errors.html" with form=form %}
+  <p class="vr-form-note">Every field is optional. Leave blank what you do not know; the export check says what is required.</p>
+  <fieldset class="vr-form-section">
+    <legend>Sample depth and location</legend>
+    <p class="vr-form-note">NYSDEC requires start depth, end depth and unit for soil, sediment and groundwater normal samples (matrix SO, SS, SE, WG). Location codes must already exist in the site's NYSDEC Location data.</p>
+    <div class="vr-table-wrap">
+      <table class="table vr-table">
+        <thead><tr><th scope="col">Sample</th><th scope="col">Start depth</th><th scope="col">End depth</th><th scope="col">Unit</th><th scope="col">NYSDEC location code</th></tr></thead>
+        <tbody>
+          {% for s, f in form.sample_rows %}
+          <tr>
+            <th scope="row"><span class="vr-id">{{ s.lab_id }}</span><div class="vr-muted small fw-normal">{{ s.client_sample_id }} · {{ s.matrix }}</div></th>
+            <td><label class="visually-hidden" for="{{ f.start_depth.id_for_label }}">{{ f.start_depth.label }}</label>{{ f.start_depth }}{% if f.start_depth.errors %}<ul class="vr-field-errors" id="{{ f.start_depth.auto_id }}_error">{% for e in f.start_depth.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</td>
+            <td><label class="visually-hidden" for="{{ f.end_depth.id_for_label }}">{{ f.end_depth.label }}</label>{{ f.end_depth }}{% if f.end_depth.errors %}<ul class="vr-field-errors" id="{{ f.end_depth.auto_id }}_error">{% for e in f.end_depth.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</td>
+            <td><label class="visually-hidden" for="{{ f.depth_unit.id_for_label }}">{{ f.depth_unit.label }}</label>{{ f.depth_unit }}</td>
+            <td><label class="visually-hidden" for="{{ f.sys_loc_code.id_for_label }}">{{ f.sys_loc_code.label }}</label>{{ f.sys_loc_code }}{% if f.sys_loc_code.errors %}<ul class="vr-field-errors" id="{{ f.sys_loc_code.auto_id }}_error">{% for e in f.sys_loc_code.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </fieldset>
+  {% if form.qc_rows %}
+  <fieldset class="vr-form-section">
+    <legend>Laboratory QC samples (method blank, LCS)</legend>
+    <p class="vr-form-note">NYSDEC needs a sample date and a dilution factor for each laboratory QC sample. The LIMS does not record them for QC samples, so nothing is filled in for you. The batch preparation time recorded with the released results is shown as a reference only.</p>
+    <div class="vr-table-wrap">
+      <table class="table vr-table">
+        <thead><tr><th scope="col">QC sample</th><th scope="col">Analytes</th><th scope="col">Batch prepared (reference)</th><th scope="col">Sample date</th><th scope="col">Dilution factor</th></tr></thead>
+        <tbody>
+          {% for qc, date_field, df_field in form.qc_rows %}
+          <tr>
+            <th scope="row"><span class="vr-id">{{ qc.code }}</span><div class="vr-muted small fw-normal">{% if qc.qc_type == "lcs" %}Laboratory control sample (BS){% else %}Method blank (LB){% endif %}</div></th>
+            <td>{{ qc.analytes|join:", " }}</td>
+            <td class="vr-nowrap">{{ qc.prepared_at|iso_time }}</td>
+            <td><label class="visually-hidden" for="{{ date_field.id_for_label }}">{{ date_field.label }}</label>{{ date_field }}{% if date_field.errors %}<ul class="vr-field-errors" id="{{ date_field.auto_id }}_error">{% for e in date_field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</td>
+            <td><label class="visually-hidden" for="{{ df_field.id_for_label }}">{{ df_field.label }}</label>{{ df_field }}{% if df_field.errors %}<ul class="vr-field-errors" id="{{ df_field.auto_id }}_error">{% for e in df_field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </fieldset>
+  {% endif %}
+  {% if form.result_rows %}
+  <fieldset class="vr-form-section">
+    <legend>Test type of corrected results</legend>
+    <p class="vr-form-note">These results were corrected with a different analysis start than the first entry. Record whether that was a reanalysis, re-extraction or dilution run as the NYSDEC test type.</p>
+    {% for r, field in form.result_rows %}{% include "includes/field.html" with field=field %}{% endfor %}
+  </fieldset>
+  {% endif %}
+  <div class="vr-form-actions">
+    <a class="btn btn-link" href="{{ back }}">Cancel</a>
+    <button class="btn btn-primary" type="submit">Save changes</button>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,50 @@
+{
+  "id": "receipt-sample-disposal-hold",
+  "routes": [
+    "receipt:sample-disposal-hold"
+  ],
+  "title": "Change disposal hold",
+  "purpose": "Place or remove an explicit physical disposal hold without changing the sample’s receipt decision or custody location.",
+  "sections": [
+    {
+      "title": "Fields and actions",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Disposal hold",
+          "description": "Required Place hold or Remove hold. Starts with Place hold when no hold exists, and Remove hold when one exists. Choose a different state; unchanged submissions are refused. A hold can be placed before a retention date is set."
+        },
+        {
+          "label": "Reason",
+          "description": "Required explanation recorded with previous/new state and actor."
+        },
+        {
+          "label": "Change disposal hold",
+          "description": "Saves and returns to storage. Removing this hold does not clear receipt disposition Hold and never triggers disposal."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the storage record without saving."
+        }
+      ]
+    },
+    {
+      "title": "Access and safeguards",
+      "paragraphs": [
+        "Custodians, project managers and administrators can save. The header names the client and current location. A concurrent custody, retention or sample change is refused; submitted input remains on the error page. Reload and review current custody/retention before resubmitting. A disposed sample shows a retained-history notice instead of an editable form and rejects further changes."
+      ],
+      "items": []
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/storage_views.py",
+    "receipt/storage_forms.py",
+    "receipt/storage_models.py",
+    "receipt/storage.py",
+    "receipt/models.py",
+    "accounts/roles.py",
+    "receipt/tests/test_storage.py",
+    "receipt/templates/receipt/storage/form.html"
+  ]
+}

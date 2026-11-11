@@ -1,0 +1,92 @@
+{
+  "id": "reporting-nysdec-test",
+  "routes": [
+    "reporting:nysdec-test"
+  ],
+  "title": "NYSDEC test mapping",
+  "purpose": "Map one catalog method version, analyte and matrix test definition to recipient codes without changing the analytical result.",
+  "sections": [
+    {
+      "title": "Access and scope",
+      "paragraphs": [
+        "Project managers, approvers, users with explicit release authority and operational admins can configure and generate EDDs. Other internal roles can read EDD checks but cannot save settings or generate files. Client accounts cannot open these staff pages.",
+        "Exploratory NYSDEC chemistry EDD v5 input, format 5.0.0.079 with reference values 20260429. The application checks only its known required fields, lengths, numeric/date formats, enumerations and keys. It does not contain recipient reference tables or validate those codes. Load generated files into EQuIS EDP, resolve its errors, and use EDP’s signing/submission process. No recipient acceptance or compliance is claimed.",
+        "The subject names analyte/CAS, method and laboratory unit. This mapping belongs to that test definition and is reused across projects/released versions. The form does not convert measured values or replace frozen result basis. All fields can be saved blank; export checks identify missing requirements.",
+        "EDD preview blocks text values beginning with =, +, -, @, a tab or a carriage return because a spreadsheet may interpret them as formulas. Saving settings does not bypass that check. The export never rewrites values; use accurate source values and recipient codes. Negative numbers in numeric columns remain allowed."
+      ]
+    },
+    {
+      "title": "NYSDEC codes",
+      "items": [
+        {
+          "label": "NYSDEC analytical method",
+          "description": "Exact rt_analytic_method code, maximum 20 characters."
+        },
+        {
+          "label": "Lab preparation method code",
+          "description": "Exact laboratory code from the frozen preparation evidence, maximum 60 characters; not a recipient code. Must match the actual independent preparation being exported."
+        },
+        {
+          "label": "Lab preparation method version",
+          "description": "Exact frozen laboratory preparation method version, maximum 40 characters."
+        },
+        {
+          "label": "NYSDEC preparation method",
+          "description": "Explicit rt_prep_method code, maximum 20 characters, for the above exact laboratory code/version. No method is inferred; a single mapping cannot represent multiple different preparation identities at once."
+        },
+        {
+          "label": "Fraction",
+          "description": "Exact rt_fraction code, maximum 10 characters."
+        },
+        {
+          "label": "Preservative",
+          "description": "Exact rt_preservative code, maximum 20 characters."
+        },
+        {
+          "label": "Basis",
+          "description": "Blank, Wet weight (WET), Dry weight (DRY), or Not applicable (NA). Normal results use their own recorded basis. Mapping basis supports lab QC and legacy aqueous NA only; it cannot label an unknown soil result as wet/dry."
+        },
+        {
+          "label": "NYSDEC chemical name",
+          "description": "Exact recipient chemical name, maximum 75 characters; CAS still comes from the frozen report."
+        },
+        {
+          "label": "NYSDEC unit",
+          "description": "Exact rt_unit code, maximum 15 characters. Ensure it represents the frozen quantity: mapping does not convert values."
+        }
+      ]
+    },
+    {
+      "title": "Saving and navigation",
+      "paragraphs": [
+        "Validation errors retain entered fields. Settings are shared configuration, not a per-export override. There is no stale-edit warning for these forms: coordinate concurrent edits and reload before replacing another person’s changes. Recipient codes are stripped of surrounding whitespace but are not looked up or inferred."
+      ],
+      "items": [
+        {
+          "label": "Save changes",
+          "description": "Validate and audit the entered codes, then return to the originating same-host check/preview when supplied, otherwise Reports. Existing exports and issued reports are unchanged; regenerate an export to use new settings."
+        },
+        {
+          "label": "Cancel",
+          "description": "Return without saving."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "reporting/edd/views.py",
+    "reporting/edd/forms.py",
+    "reporting/edd/services.py",
+    "reporting/edd/nysdec.py",
+    "reporting/edd/nysdec_format.py",
+    "reporting/edd/fixes.py",
+    "reporting/edd/sources.py",
+    "reporting/models.py",
+    "reporting/services.py",
+    "accounts/roles.py",
+    "reporting/templates/reporting/edd/mapping_form.html",
+    "reporting/tests/test_edd_views.py",
+    "reporting/tests/test_soil_basis.py",
+    "reporting/tests/test_preparation_release.py"
+  ]
+}

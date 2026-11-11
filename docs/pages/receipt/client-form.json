@@ -1,0 +1,163 @@
+{
+  "id": "receipt-client-form",
+  "routes": [
+    "receipt:client-create",
+    "receipt:client-edit"
+  ],
+  "title": "Client",
+  "purpose": "Create a client organization or update its account details, contact, mailing address, invoicing details, report instructions and notes. Editing also controls whether the client can receive new intake.",
+  "sections": [
+    {
+      "title": "Layout and access",
+      "paragraphs": [
+        "Project managers and administrators can save. The form is grouped into sections: Account, Primary contact, Mailing address, Invoicing, Reports and notes, and, on edit only, Status and Change record. Only Name is required when creating a client; every other field is optional unless noted.",
+        "These details are records for the laboratory's use. Nothing here sends reports or invoices, creates a portal login or changes who can see the client's projects."
+      ],
+      "items": []
+    },
+    {
+      "title": "Account and primary contact",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Name",
+          "description": "Required organization name, up to 160 characters, as it should appear on reports."
+        },
+        {
+          "label": "Account code",
+          "description": "Optional short code the laboratory uses for this client, up to 40 characters. When given it must be unique: saving a code another client already uses is refused with a message on the form. Several clients may leave it blank."
+        },
+        {
+          "label": "Contact name",
+          "description": "Optional primary contact, up to 160 characters; the person reports are addressed to. Use additional contact records for other people."
+        },
+        {
+          "label": "Email",
+          "description": "Optional primary email; must be a valid email address if supplied."
+        },
+        {
+          "label": "Phone",
+          "description": "Optional primary phone, up to 40 characters. Free text; no format is enforced."
+        }
+      ]
+    },
+    {
+      "title": "Mailing address",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Street address",
+          "description": "Optional, up to 160 characters."
+        },
+        {
+          "label": "Suite, building or PO box",
+          "description": "Optional second address line, up to 160 characters."
+        },
+        {
+          "label": "City",
+          "description": "Optional, up to 80 characters."
+        },
+        {
+          "label": "State",
+          "description": "Optional list: Select… (blank), then a list of the 50 states, the District of Columbia and the territories (American Samoa, Guam, Northern Mariana Islands, Puerto Rico, U.S. Virgin Islands), shown by name."
+        },
+        {
+          "label": "ZIP code",
+          "description": "Optional, up to 12 characters. Free text; the format is not checked."
+        }
+      ]
+    },
+    {
+      "title": "Invoicing",
+      "paragraphs": [
+        "Leave the invoicing fields blank when the primary contact also receives invoices. The client record then shows Primary contact and Same as mailing address."
+      ],
+      "items": [
+        {
+          "label": "Invoice-to contact",
+          "description": "Optional name, up to 160 characters, of who receives invoices."
+        },
+        {
+          "label": "Invoice email",
+          "description": "Optional valid email address for invoices."
+        },
+        {
+          "label": "Billing address",
+          "description": "Optional multi-line address. Blank means invoices go to the mailing address."
+        },
+        {
+          "label": "Payment terms",
+          "description": "Optional list: Not set, Due on receipt, Net 15 days, Net 30 days, Net 45 days, Net 60 days or Prepaid. Recorded for reference; it does not create invoices or due dates."
+        },
+        {
+          "label": "Purchase order required",
+          "description": "Checkbox, initially unchecked. Information for intake: when checked, a chain of custody for this client that has no purchase order shows a Purchase order missing warning. It does not block receipt."
+        }
+      ]
+    },
+    {
+      "title": "Reports and notes",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Report instructions",
+          "description": "Optional multi-line text on how this client wants reports: recipients, format, electronic deliverable. Information only; nothing is sent automatically."
+        },
+        {
+          "label": "Internal notes",
+          "description": "Optional multi-line notes for laboratory staff. Not shown to the client."
+        }
+      ]
+    },
+    {
+      "title": "Status and change record",
+      "paragraphs": [
+        "These sections appear on edit only."
+      ],
+      "items": [
+        {
+          "label": "Active (accepts new intake)",
+          "description": "Creation starts the client active. Clear it to block new projects and new intake for this client while retaining existing work and history."
+        },
+        {
+          "label": "Reason for change",
+          "description": "Required on edit. Explains the change and is retained with the actor and the old and new values."
+        }
+      ]
+    },
+    {
+      "title": "Actions and safeguards",
+      "paragraphs": [
+        "A concurrent edit is refused. Review the error, reload the current record and compare before resubmitting; validation errors are shown with the submitted form. Client editing does not change its project ownership or create a portal login."
+      ],
+      "items": [
+        {
+          "label": "Create client",
+          "description": "Project managers and administrators create the client and open its record."
+        },
+        {
+          "label": "Save changes",
+          "description": "Edit action records the attributed change and returns to the client record."
+        },
+        {
+          "label": "Cancel",
+          "description": "Creation returns to Clients; editing returns to this client’s record without saving."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/views.py",
+    "receipt/models.py",
+    "receipt/forms.py",
+    "receipt/services.py",
+    "accounts/roles.py",
+    "templates/receipt/form.html",
+    "tests/test_receipt_workflow.py",
+    "receipt/vocabulary.py",
+    "core/widgets.py",
+    "templates/receipt/_grouped_fields.html",
+    "receipt/tests/test_master_data.py"
+  ]
+}

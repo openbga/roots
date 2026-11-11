@@ -1,0 +1,32 @@
+{
+  "id": "accounts-logout",
+  "routes": [
+    "account_logout"
+  ],
+  "title": "Sign out",
+  "purpose": "Confirm that you want to end the current session.",
+  "sections": [
+    {
+      "title": "Action",
+      "items": [
+        {
+          "label": "Sign Out",
+          "description": "POSTs the confirmation and ends this browser session, including any pending authentication stage, then returns to sign-in. Viewing this page with GET does not sign out. The account menu’s Sign out submits the same action directly without opening confirmation."
+        }
+      ]
+    },
+    {
+      "title": "Navigation and persistence",
+      "paragraphs": [
+        "There is no Back or Cancel button in the confirmation form. Leave using normal page/navigation links if you want to stay signed in. Existing browser theme, column and documentation preferences are not removed by signing out. This is the account confirmation page; the administration Log out control is a separate immediate POST action."
+      ]
+    }
+  ],
+  "sources": [
+    "config/settings.py",
+    "templates/allauth/layouts/base.html",
+    "templates/allauth/layouts/manage.html",
+    "uv.lock",
+    "templates/includes/user_menu.html"
+  ]
+}

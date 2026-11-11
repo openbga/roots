@@ -1,0 +1,111 @@
+{
+  "id": "laboratory-material-form",
+  "routes": [
+    "laboratory:material-create",
+    "laboratory:material-edit"
+  ],
+  "title": "New or edit material",
+  "purpose": "Create a stock definition or revise its details.",
+  "sections": [
+    {
+      "title": "Access and variants",
+      "paragraphs": [
+        "Admin and reviewer roles only. Create material starts Active checked. Edit preloads values, uses Save changes and requires a reason; an inactive material can be reactivated."
+      ]
+    },
+    {
+      "title": "Identity",
+      "items": [
+        {
+          "label": "Name",
+          "description": "Required, maximum 160 characters, unique ignoring case."
+        },
+        {
+          "label": "Kind",
+          "description": "Required: Standard, Reagent or Other material. New forms initially show Standard."
+        },
+        {
+          "label": "CAS number",
+          "description": "Optional, maximum 30 characters; no external lookup or chemical validation."
+        },
+        {
+          "label": "Specification",
+          "description": "Optional purchase grade, purity or certified concentration text."
+        }
+      ]
+    },
+    {
+      "title": "Handling and change",
+      "items": [
+        {
+          "label": "Unit",
+          "description": "Required, maximum 40 characters, for example mL, g or each. Fixed and disabled after any lot exists; define a new material for another unit."
+        },
+        {
+          "label": "Storage requirements",
+          "description": "Optional, maximum 200 characters."
+        },
+        {
+          "label": "Active (new lots allowed)",
+          "description": "Controls selection for new lots; clearing retains existing lots and history."
+        },
+        {
+          "label": "Reason",
+          "description": "Edit only; required explanation kept in history. Absent during creation."
+        }
+      ]
+    },
+    {
+      "title": "Saving and errors",
+      "paragraphs": [
+        "An asterisk marks required fields. Cancel returns to the parent record or list without saving. Success opens the saved record with a confirmation. Validation errors appear above the form and beside affected fields; correct them and submit again. Text input remains after validation errors; select an evidence file again if necessary. Dates use year-month-day; date and time fields use the deployment time zone."
+      ]
+    },
+    {
+      "title": "Concurrent changes and history",
+      "paragraphs": [
+        "Saving locks and rechecks the revision you opened. If another user changed the record, reload it, review the latest values and enter your change again. Failed validation writes no partial change. Successful changes and attributed audit events commit together."
+      ]
+    },
+    {
+      "title": "Form dialog controls",
+      "paragraphs": [
+        "With enhancement enabled, the form opens in a dialog, including when its URL is opened directly. Without enhancement it remains a normal page. While loading or saving, controls are disabled to avoid duplicate submissions; focus moves to the first invalid field or first editable field when ready. Saving successfully navigates to the resulting record."
+      ],
+      "items": [
+        {
+          "label": "Maximize / Restore size",
+          "description": "Expand the dialog to full screen or restore its normal size. Small screens use a full-screen layout."
+        },
+        {
+          "label": "Cancel / Close form / Escape",
+          "description": "Close an unchanged form. When opened over another page, return focus to its opening control; when opened directly, return to the Cancel destination. Clicking outside the dialog does not close it."
+        },
+        {
+          "label": "Keep editing / Discard changes",
+          "description": "After an input change, attempting to leave asks Discard your unsaved changes? Keep editing retains the form; Discard changes closes or follows the requested destination without saving. Escape during that prompt keeps editing."
+        },
+        {
+          "label": "Try again",
+          "description": "Shown after a failed initial load. Retry loading the form. Save/connection errors keep the current input and show an error so you can retry the submission. Validation errors replace the form with its submitted values and field messages; files may need selecting again."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "laboratory/urls.py",
+    "laboratory/forms.py",
+    "laboratory/models.py",
+    "laboratory/permissions.py",
+    "laboratory/inventory_views.py",
+    "laboratory/inventory.py",
+    "laboratory/templates/laboratory/form.html",
+    "laboratory/tests/test_inventory.py",
+    "laboratory/tests/test_views.py",
+    "core/form_surfaces.py",
+    "core/form_dialog.py",
+    "templates/includes/form_dialog.html",
+    "static/js/form-dialog.js",
+    "tests/test_form_dialog.py"
+  ]
+}

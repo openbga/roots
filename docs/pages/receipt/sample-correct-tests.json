@@ -1,0 +1,107 @@
+{
+  "id": "receipt-sample-correct-tests",
+  "routes": [
+    "receipt:sample-correct"
+  ],
+  "title": "Add or withdraw tests",
+  "purpose": "Record newly requested analyses or withdraw tests that have not started. Added work keeps its collection-based holding clock and does not rewrite issued reports.",
+  "sections": [
+    {
+      "title": "Correction sections",
+      "paragraphs": [
+        "Custodians, project managers and administrators use these sections. A tab marked locked still opens to explain the blocker. The header identifies current client sample ID and client/project."
+      ],
+      "items": [
+        {
+          "label": "Identity, type, location",
+          "description": "Correct client sample ID, sample type, sample source, collector, collection place and sample remarks."
+        },
+        {
+          "label": "Collection type and times",
+          "description": "Correct grab/composite and its collection timestamps."
+        },
+        {
+          "label": "Receipt observations",
+          "description": "Correct temperature, thermometer, coolant, custody seal, preservation observation or discrepancy."
+        },
+        {
+          "label": "Requested tests",
+          "description": "Add tests or withdraw those with no dependent work."
+        },
+        {
+          "label": "Matrix",
+          "description": "Correct a wrong matrix and replace its requested tests together. A recorded sample source that does not belong to the new matrix is cleared."
+        }
+      ]
+    },
+    {
+      "title": "Requested tests and choices",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Requested now",
+          "description": "Lists current analyte, method/version and unit. Tests with dependent work show a cannot be withdrawn explanation."
+        },
+        {
+          "label": "Add tests",
+          "description": "Optional multiple selection of active definitions with active methods for this sample matrix, excluding definitions already requested. Search by analyte, method code/version or unit. Labels retain exact version/unit; a native multiple select is the fallback."
+        },
+        {
+          "label": "Withdraw tests",
+          "description": "Optional checked selections limited to this sample’s tests that have no analytical result record, external dispatch history, preparation membership or parent-QC dependency for their method. Even a cancelled external dispatch still preserves its test."
+        },
+        {
+          "label": "Reason",
+          "description": "Required explanation of the client request/withdrawal, at most 4000 characters."
+        }
+      ]
+    },
+    {
+      "title": "Rules",
+      "paragraphs": [
+        "Choose at least one addition or withdrawal and leave at least one requested test. Each definition can occur once. The service checks the complete remaining set is active and matrix-compatible, not just the additions. Rejected samples cannot take additions; change disposition first. Disposal blocks all changes. An issued report does not block additions: the new work needs its own review/report, and old issued versions remain untouched. Late additions can already be at risk or expired because clocks run from collection. If an option gained work concurrently, removal is refused."
+      ],
+      "items": []
+    },
+    {
+      "title": "Actions and history",
+      "paragraphs": [
+        "Stale sample changes are refused with entered selections retained on the error page; reload and review current requests and history."
+      ],
+      "items": [
+        {
+          "label": "Add or withdraw tests",
+          "description": "Saves requested-test changes with before/after labels and returns to the sample."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns without changing requests."
+        },
+        {
+          "label": "History",
+          "description": "Chronological corrections, including tests changed from not requested or to withdrawn. Prior custody and issued records remain."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/correction_views.py",
+    "receipt/correction_forms.py",
+    "receipt/corrections.py",
+    "receipt/models.py",
+    "templates/receipt/sample_correction.html",
+    "templates/receipt/correction_history.html",
+    "receipt/tests/test_corrections.py",
+    "receipt/tests/test_receipt_edits.py",
+    "receipt/tests/test_preparation_dependencies.py",
+    "accounts/roles.py",
+    "receipt/widgets.py",
+    "static/js/test-picker.js",
+    "receipt/vocabulary.py",
+    "receipt/tests/test_master_data.py"
+  ],
+  "match": {
+    "section": "tests"
+  }
+}

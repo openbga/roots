@@ -1,0 +1,3298 @@
+/*
+ * OpenBGA Roots application theme for Bootstrap 5.3: the "field notebook".
+ *
+ * Bootstrap supplies every control, dialog, dropdown, table and form widget; DataTables supplies
+ * grid behaviour. This file sets the design tokens for the light and dark colour modes
+ * (Bootstrap `data-bs-theme`, chosen in the theme menu, applied before paint by
+ * static/js/theme-init.js), maps them onto Bootstrap's variables, and styles the few pieces
+ * Bootstrap has no equivalent for. docs/ui-standards.md ("Visual language") states the rules;
+ * this file is the implementation.
+ *
+ * The signed-in workspace is one sheet of quad-ruled paper under a sage top bar. The staff
+ * navigation is the notebook's margin; a red margin rule divides it from the content. Dense
+ * content (tables, forms, facts) sits on opaque panels laid on the sheet, so data never sits on
+ * the grid. Small rounded controls and panels, quiet horizontal rules and soft elevation make
+ * the paper workspace comfortable to use.
+ *
+ * Two voices: the system sans for reading and field/table labels; a system monospace for
+ * identifiers, dates, counts and notebook navigation labels.
+ *
+ * Each colour is a writing tool with one job:
+ *   ink          deep pine green: text and primary buttons (pale ink in dark mode)
+ *   pen          the river hue, deepened: links and focus
+ *   highlighter  sunrise yellow (amber at night): where you are and what is selected
+ *   red pencil   the margin rule, the required mark, struck-through prior values
+ * Status is a stamp: rectangular, bordered, mono capitals, tone + glyph + text (never colour
+ * alone). Contrast (WCAG 2.2 AA) is checked for both modes with the relative-luminance formula;
+ * recheck when changing tokens.
+ */
+
+/* ================================================================ Tokens */
+
+:root,
+[data-bs-theme="light"] {
+  color-scheme: light;
+
+  /* Paper: the sheet, its quad ruling (1.1:1, so text over it loses nothing), the margin rule
+     (decorative) and the red pencil as text (required mark, struck prior values) */
+  --vr-paper: #ffffff;
+  --vr-paper-rule: #eef3f0;
+  --vr-margin: #e07a74;
+  --vr-pencil: #b0322a;
+
+  /* Panels laid on the sheet */
+  --vr-surface: #ffffff;
+  --vr-surface-2: #f2f6f4; /* tinted fields, disabled inputs, input-group addons */
+  --vr-surface-hover: #f1f6f3;
+  --vr-raised: #ffffff; /* menus, dialogs */
+  --vr-band: #e5efe9; /* panel heading band */
+  --vr-border: #c8d4cd; /* hairlines */
+  --vr-border-strong: #7c8b81; /* control boundaries: 3.28:1 on the tinted field */
+  --vr-text: #15271d;
+  --vr-text-muted: #4f5f55;
+
+  /* Ink: primary actions */
+  --vr-ink: #1b3a27;
+  --vr-ink-rgb: 27, 58, 39;
+  --vr-ink-hover: #102619;
+  --vr-on-ink: #ffffff;
+
+  /* Top bar: ink in light mode, pale mint in dark mode */
+  --vr-topbar-bg: #e5efe9; /* sage, the panel heading band (bgasoft.com hero) */
+  --vr-topbar-edge: #c8d4cd;
+  --vr-topbar-text: #15271d;
+  --vr-topbar-text-rgb: 21, 39, 29;
+  --vr-topbar-text-muted: #4f5f55;
+  --vr-topbar-field: #ffffff; /* sample lookup */
+  --vr-topbar-field-border: #7c8b81;
+  --vr-topbar-field-text: #15271d;
+  --vr-topbar-field-muted: #4f5f55;
+  --vr-topbar-accent: #0a6474; /* focus and the current portal item on the bar */
+
+  /* Pen: links and focus */
+  --vr-pen: #0a6474;
+  --vr-pen-rgb: 10, 100, 116;
+  --vr-pen-hover: #06434e;
+  --vr-pen-hover-rgb: 6, 67, 78;
+
+  /* Highlighter: current location and selection. The marker's heavier lower edge is the state
+     indicator (>=3:1 on the paper); the fill behind it carries dark text. */
+  --vr-highlight: #ffe08a;
+  --vr-highlight-wash: #fff4c7; /* selected rows, chosen items */
+  --vr-highlight-edge: #a87400;
+  --vr-on-highlight: #15271d;
+
+  /* Status stamps: text (stamp ink), fill (faint pad), border (stamp edge) */
+  --vr-neutral-text: #46524b;
+  --vr-neutral-bg: #f2f4f3;
+  --vr-neutral-border: #7d8a83;
+  --vr-info-text: #1d4b8a;
+  --vr-info-bg: #eef3fb;
+  --vr-info-border: #5c7fb3;
+  --vr-progress-text: #4a3f87;
+  --vr-progress-bg: #f3f1f9;
+  --vr-progress-border: #8178b5;
+  --vr-success-text: #1e6a2b;
+  --vr-success-bg: #edf6eb;
+  --vr-success-border: #58935d;
+  --vr-warning-text: #7a4e00;
+  --vr-warning-bg: #fcf3dc;
+  --vr-warning-border: #a97b22;
+  --vr-danger-text: #a3241b;
+  --vr-danger-bg: #fcedeb;
+  --vr-danger-border: #d06a60;
+  --vr-danger-solid: #b3261e;
+  --vr-on-danger: #ffffff;
+  --vr-hold-text: #7a2c5d;
+  --vr-hold-bg: #f9eef4;
+  --vr-hold-border: #b46d98;
+
+  /* Soft elevation for panels, menus and dialogs */
+  --vr-shadow-color: #d3ded8;
+  --vr-scrollbar: #b6c4bc;
+}
+
+/* Night shift: deep pine paper, a faint grid, the margin still red, pale ink, amber highlighter,
+   and a pale mint top bar so the sheet still reads as a sheet. */
+[data-bs-theme="dark"] {
+  color-scheme: dark;
+
+  --vr-paper: #0f201a;
+  --vr-paper-rule: #172a23;
+  --vr-margin: #d9645c;
+  --vr-pencil: #f2948a;
+
+  --vr-surface: #132820;
+  --vr-surface-2: #183126;
+  --vr-surface-hover: #1a3329;
+  --vr-raised: #17302a;
+  --vr-band: #1b382d;
+  --vr-border: #2d4b3e;
+  --vr-border-strong: #7c9b8b;
+  --vr-text: #e3ede7;
+  --vr-text-muted: #a6bbaf;
+
+  --vr-ink: #cfe5d6;
+  --vr-ink-rgb: 207, 229, 214;
+  --vr-ink-hover: #e4f2e8;
+  --vr-on-ink: #0f201a;
+
+  --vr-topbar-bg: #1b382d; /* the heading band at night */
+  --vr-topbar-edge: #2d4b3e;
+  --vr-topbar-text: #e3ede7;
+  --vr-topbar-text-rgb: 227, 237, 231;
+  --vr-topbar-text-muted: #a6bbaf;
+  --vr-topbar-field: #132820;
+  --vr-topbar-field-border: #7c9b8b;
+  --vr-topbar-field-text: #e3ede7;
+  --vr-topbar-field-muted: #a6bbaf;
+  --vr-topbar-accent: #7cc9d4;
+
+  --vr-pen: #7cc9d4;
+  --vr-pen-rgb: 124, 201, 212;
+  --vr-pen-hover: #a9e0e7;
+  --vr-pen-hover-rgb: 169, 224, 231;
+
+  --vr-highlight: #e3aa45;
+  --vr-highlight-wash: #3a3218;
+  --vr-highlight-edge: #f5cd7c;
+  --vr-on-highlight: #10201a;
+
+  --vr-neutral-text: #c4cfc9;
+  --vr-neutral-bg: #1a2c25;
+  --vr-neutral-border: #74867c;
+  --vr-info-text: #a3c4f2;
+  --vr-info-bg: #15253b;
+  --vr-info-border: #5577a8;
+  --vr-progress-text: #c4baf2;
+  --vr-progress-bg: #221f3a;
+  --vr-progress-border: #776ca8;
+  --vr-success-text: #98d6a0;
+  --vr-success-bg: #14301e;
+  --vr-success-border: #4f8a58;
+  --vr-warning-text: #ecc36e;
+  --vr-warning-bg: #2f2510;
+  --vr-warning-border: #9a7631;
+  --vr-danger-text: #f5a49a;
+  --vr-danger-bg: #3a1915;
+  --vr-danger-border: #b0574d;
+  --vr-danger-solid: #ec7465;
+  --vr-on-danger: #0f201a;
+  --vr-hold-text: #eeb0d6;
+  --vr-hold-bg: #36182c;
+  --vr-hold-border: #a3618b;
+
+  --vr-shadow-color: #07120e;
+  --vr-scrollbar: #36564a;
+}
+
+:root {
+  /* Paper geometry. --vr-paper-grid: none switches the ruling off, --vr-margin-width: 0 the
+     margin rule (print does both). */
+  --vr-paper-cell: 24px;
+  --vr-paper-grid:
+    linear-gradient(to right, transparent calc(var(--vr-paper-cell) - 1px), var(--vr-paper-rule) 0),
+    linear-gradient(to bottom, transparent calc(var(--vr-paper-cell) - 1px), var(--vr-paper-rule) 0);
+  --vr-margin-width: 1px;
+  --vr-paper-haze: 1.4px; /* blur on the ruling */
+  --vr-paper-haze-opacity: 0.65;
+  --vr-margin-x: 12px; /* margin rule position where there is no rail (phones, tablets) */
+  --vr-marker-tip: 0.3em; /* chisel tip: the slant at each end of a marker stroke */
+
+  /* Shape: small corners on controls, a little more room for panels. */
+  --vr-radius: 8px;
+  --vr-radius-lg: 10px;
+  --vr-radius-xl: 10px;
+
+  /* Type */
+  --vr-font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --vr-label-size: 0.7857rem; /* 11px on desktop */
+  --vr-label-tracking: 0.08em;
+
+  /* Layout */
+  --vr-topbar-height: 3.25rem;
+  --vr-sidenav-width: calc(var(--vr-paper-cell) * 9); /* the margin rule lands on a grid line */
+  --vr-content-pad-x: 1rem;
+  --vr-content-pad-y: 1rem;
+  --vr-form-width: 48rem;
+  --vr-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Derived tokens and the Bootstrap mapping, re-evaluated per mode because the tokens change
+   underneath. */
+:root,
+[data-bs-theme="light"],
+[data-bs-theme="dark"] {
+  --vr-focus: var(--vr-pen);
+  --vr-heading: color-mix(in srgb, var(--vr-band) 58%, var(--vr-surface));
+  --vr-shadow-panel: 0 3px 12px color-mix(in srgb, var(--vr-shadow-color) 35%, transparent);
+  --vr-shadow-raised: 0 8px 28px color-mix(in srgb, var(--vr-shadow-color) 65%, transparent);
+  --vr-marker:
+    linear-gradient(var(--vr-highlight-edge), var(--vr-highlight-edge)) 0 100% / 100% 2px no-repeat,
+    linear-gradient(var(--vr-highlight), var(--vr-highlight)) 0 0 / 100% 100% no-repeat;
+
+  --bs-font-monospace: var(--vr-font-mono);
+  --bs-primary: var(--vr-ink);
+  --bs-primary-rgb: var(--vr-ink-rgb);
+  --bs-primary-text-emphasis: var(--vr-text);
+  --bs-primary-bg-subtle: var(--vr-highlight-wash);
+  --bs-primary-border-subtle: var(--vr-highlight-edge);
+  --bs-body-color: var(--vr-text);
+  --bs-body-bg: var(--vr-surface);
+  --bs-emphasis-color: var(--vr-text);
+  --bs-secondary-color: var(--vr-text-muted);
+  --bs-secondary-bg: var(--vr-surface-2);
+  --bs-tertiary-bg: var(--vr-surface-2);
+  --bs-tertiary-color: var(--vr-text-muted);
+  --bs-border-color: var(--vr-border);
+  --bs-border-color-translucent: var(--vr-border);
+  --bs-border-radius: var(--vr-radius);
+  --bs-border-radius-sm: var(--vr-radius);
+  --bs-border-radius-lg: var(--vr-radius-lg);
+  --bs-border-radius-xl: var(--vr-radius-xl);
+  --bs-border-radius-pill: var(--vr-radius);
+  /* Bootstrap 5.3 hovers links through the -rgb variable: both are set, or links hover blue. */
+  --bs-link-color: var(--vr-pen);
+  --bs-link-color-rgb: var(--vr-pen-rgb);
+  --bs-link-hover-color: var(--vr-pen-hover);
+  --bs-link-hover-color-rgb: var(--vr-pen-hover-rgb);
+  --bs-focus-ring-color: rgba(var(--vr-pen-rgb), 0.35);
+  --bs-form-invalid-color: var(--vr-danger-text);
+  --bs-form-invalid-border-color: var(--vr-danger-solid);
+  --bs-form-valid-color: var(--vr-success-text);
+  --bs-form-valid-border-color: var(--vr-success-border);
+  --bs-highlight-bg: var(--vr-highlight);
+  --bs-highlight-color: var(--vr-on-highlight);
+}
+
+/* ================================================================ Base */
+
+/* Desktop density; phones keep 16px so form inputs do not trigger zoom on focus. */
+@media (min-width: 992px) {
+  html {
+    font-size: 87.5%;
+  }
+
+  :root {
+    --vr-content-pad-x: var(--vr-paper-cell);
+    --vr-content-pad-y: var(--vr-paper-cell);
+  }
+}
+
+html {
+  scroll-padding-top: calc(var(--vr-topbar-height) + 0.75rem);
+  scrollbar-color: var(--vr-scrollbar) transparent;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--vr-paper);
+  color: var(--vr-text);
+  font-variant-numeric: tabular-nums;
+  caret-color: var(--vr-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--vr-highlight);
+  color: var(--vr-on-highlight);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 650;
+  letter-spacing: -0.012em;
+  color: var(--vr-text);
+}
+
+a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: rgba(var(--bs-link-color-rgb), 0.45);
+}
+
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+:focus-visible {
+  outline: 2px solid var(--vr-focus);
+  outline-offset: 2px;
+}
+
+.vr-icon {
+  width: 1em;
+  height: 1em;
+  flex: none;
+  fill: currentColor;
+  vertical-align: -0.125em;
+}
+
+.vr-muted,
+.text-body-secondary {
+  color: var(--vr-text-muted) !important;
+}
+
+.vr-nowrap {
+  white-space: nowrap;
+}
+
+/* Notebook labels retain the small-cap mono voice. */
+.vr-facts dt,
+.vr-nav-heading,
+.breadcrumb,
+.dropdown-header,
+.vr-page-toc-title,
+.vr-lab-name,
+.vr-entrance-or,
+.vr-dateline {
+  font-family: var(--vr-font-mono);
+  font-size: var(--vr-label-size);
+  font-weight: 600;
+  letter-spacing: var(--vr-label-tracking);
+  text-transform: uppercase;
+}
+
+/* Working labels use the reading voice; case comes from the actual label. */
+.form-label,
+.form-check-label,
+.vr-table > thead > tr > th {
+  font-family: var(--bs-body-font-family);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* The datum voice: identifiers, dates, counts and right-aligned figures in mono, so 0/O and 1/l
+   stay distinct and digits line up. */
+time,
+.vr-id,
+.vr-count,
+.vr-timeline-meta,
+.vr-navlink-count,
+.vr-table > tbody > tr > .text-end {
+  font-family: var(--vr-font-mono);
+  font-size: 0.92em;
+  letter-spacing: 0;
+}
+
+.vr-id {
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+mark,
+.mark {
+  padding: 0 0.15em;
+  background: var(--vr-marker);
+  color: var(--vr-on-highlight);
+}
+
+/* Red pencil: prior values struck through in corrections and amendments. */
+del,
+s,
+.vr-prior {
+  color: var(--vr-text-muted);
+  text-decoration-line: line-through;
+  text-decoration-color: var(--vr-pencil);
+  text-decoration-thickness: 2px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn,
+  .form-control,
+  .form-select,
+  .vr-navlink {
+    transition: background-color 150ms var(--vr-ease), border-color 150ms var(--vr-ease),
+      color 150ms var(--vr-ease);
+  }
+}
+
+/* ================================================================ Bootstrap components */
+
+.btn {
+  --bs-btn-font-family: var(--bs-body-font-family); /* not the datum voice of a figures cell */
+  --bs-btn-border-radius: var(--vr-radius);
+  --bs-btn-font-weight: 600;
+  --bs-btn-disabled-opacity: 1;
+  --bs-btn-padding-y: 0.5rem;
+  --bs-btn-padding-x: 0.85rem;
+  --bs-btn-line-height: 1.35;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--vr-focus);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.btn-primary {
+  --bs-btn-color: var(--vr-on-ink);
+  --bs-btn-bg: var(--vr-ink);
+  --bs-btn-border-color: var(--vr-ink);
+  --bs-btn-hover-color: var(--vr-on-ink);
+  --bs-btn-hover-bg: var(--vr-ink-hover);
+  --bs-btn-hover-border-color: var(--vr-ink-hover);
+  --bs-btn-active-color: var(--vr-on-ink);
+  --bs-btn-active-bg: var(--vr-ink-hover);
+  --bs-btn-active-border-color: var(--vr-ink-hover);
+}
+
+/* Supporting actions share the softly filled field surface. */
+.btn-outline-primary,
+.btn-outline-secondary {
+  --bs-btn-color: var(--vr-text);
+  --bs-btn-bg: var(--vr-surface-2);
+  --bs-btn-border-color: var(--vr-border-strong);
+  --bs-btn-hover-color: var(--vr-text);
+  --bs-btn-hover-bg: var(--vr-band);
+  --bs-btn-hover-border-color: var(--vr-border-strong);
+  --bs-btn-active-color: var(--vr-text);
+  --bs-btn-active-bg: var(--vr-band);
+  --bs-btn-active-border-color: var(--vr-text-muted);
+}
+
+.btn-outline-danger {
+  --bs-btn-color: var(--vr-danger-text);
+  --bs-btn-bg: var(--vr-surface);
+  --bs-btn-border-color: var(--vr-danger-solid);
+  --bs-btn-hover-color: var(--vr-on-danger);
+  --bs-btn-hover-bg: var(--vr-danger-solid);
+  --bs-btn-hover-border-color: var(--vr-danger-solid);
+  --bs-btn-active-color: var(--vr-on-danger);
+  --bs-btn-active-bg: var(--vr-danger-solid);
+  --bs-btn-active-border-color: var(--vr-danger-solid);
+}
+
+.btn-link {
+  --bs-btn-color: var(--vr-pen);
+  --bs-btn-hover-color: var(--vr-pen-hover);
+  --bs-btn-active-color: var(--vr-pen-hover);
+  --bs-btn-font-weight: 500;
+}
+
+/* Disabled buttons: muted text on the second layer, at full opacity so the label stays legible
+   (the reason sits in text beside the control, docs/ui-standards.md section 10). */
+.btn-primary,
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-danger {
+  --bs-btn-disabled-color: var(--vr-text-muted);
+  --bs-btn-disabled-bg: var(--vr-surface-2);
+  --bs-btn-disabled-border-color: var(--vr-border-strong);
+}
+
+.btn-link {
+  --bs-btn-disabled-color: var(--vr-text-muted);
+}
+
+.form-control,
+.form-select {
+  min-height: 38px;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  background-color: var(--vr-surface-2);
+  border-color: var(--vr-border-strong);
+  border-radius: var(--vr-radius);
+  color: var(--vr-text);
+}
+
+.form-control:hover:not(:disabled, [readonly], .is-invalid, [aria-invalid="true"]),
+.form-select:hover:not(:disabled, .is-invalid, [aria-invalid="true"]) {
+  border-color: var(--vr-text-muted);
+}
+
+.form-control::placeholder {
+  color: var(--vr-text-muted);
+  opacity: 1;
+}
+
+/* Focus: a pen outline outside the control, never a translucent glow (it must show on the grid). */
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+  border-color: var(--vr-border-strong);
+  box-shadow: none;
+  outline: 2px solid var(--vr-focus);
+  outline-offset: 2px;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--vr-surface);
+}
+
+.form-control:disabled,
+.form-select:disabled,
+.form-control[readonly] {
+  background-color: var(--vr-surface-2);
+  color: var(--vr-text-muted);
+}
+
+.form-check-input {
+  background-color: var(--vr-surface);
+  border-color: var(--vr-border-strong);
+  border-radius: 4px;
+}
+
+.form-check-input[type="radio"] {
+  border-radius: 50%;
+}
+
+/* Checked and mixed ("select all" on a partly selected page). Bootstrap hard-codes its blue for
+   [type=checkbox]:indeterminate, so the selector matches its specificity. */
+.form-check-input:checked,
+.form-check-input[type="checkbox"]:indeterminate {
+  background-color: var(--vr-ink);
+  border-color: var(--vr-ink);
+}
+
+[data-bs-theme="dark"] .form-check-input:checked[type="checkbox"] {
+  --bs-form-check-bg-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%230f201a' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+}
+
+[data-bs-theme="dark"] .form-check-input[type="checkbox"]:indeterminate {
+  --bs-form-check-bg-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%230f201a' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10h8'/%3e%3c/svg%3e");
+}
+
+.form-check-input:disabled {
+  background-color: var(--vr-surface-2);
+}
+
+/* Django 5.2 marks fields with errors aria-invalid="true"; style them like Bootstrap's .is-invalid. */
+.form-control.is-invalid,
+.form-select.is-invalid,
+.form-control[aria-invalid="true"],
+.form-select[aria-invalid="true"],
+.form-check-input[aria-invalid="true"] {
+  border-color: var(--vr-danger-solid);
+  border-width: 2px;
+}
+
+.form-control.is-invalid:focus,
+.form-select.is-invalid:focus,
+.form-control[aria-invalid="true"]:focus,
+.form-select[aria-invalid="true"]:focus {
+  outline-color: var(--vr-danger-solid);
+}
+
+.form-label {
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: var(--vr-text);
+}
+
+.form-text {
+  color: var(--vr-text-muted);
+}
+
+.input-group-text {
+  background-color: var(--vr-surface-2);
+  border-color: var(--vr-border-strong);
+  border-radius: var(--vr-radius);
+  color: var(--vr-text-muted);
+}
+
+.pagination {
+  --bs-pagination-color: var(--vr-pen);
+  --bs-pagination-bg: var(--vr-surface);
+  --bs-pagination-border-color: var(--vr-border);
+  --bs-pagination-border-radius: var(--vr-radius);
+  --bs-pagination-hover-color: var(--vr-pen-hover);
+  --bs-pagination-hover-bg: var(--vr-surface-hover);
+  --bs-pagination-hover-border-color: var(--vr-border);
+  --bs-pagination-focus-color: var(--vr-pen-hover);
+  --bs-pagination-focus-bg: var(--vr-surface-hover);
+  --bs-pagination-focus-box-shadow: none;
+  --bs-pagination-active-color: var(--vr-on-highlight);
+  --bs-pagination-active-bg: var(--vr-highlight);
+  --bs-pagination-active-border-color: var(--vr-highlight-edge);
+  --bs-pagination-disabled-color: var(--vr-text-muted);
+  --bs-pagination-disabled-bg: var(--vr-surface);
+  --bs-pagination-disabled-border-color: var(--vr-border);
+  font-family: var(--vr-font-mono);
+  font-size: 0.875rem;
+}
+
+.page-link {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Bootstrap components that hard-code its default blue rather than --bs-primary. */
+.nav {
+  --bs-nav-link-color: var(--vr-pen);
+  --bs-nav-link-hover-color: var(--vr-pen-hover);
+}
+
+.nav-link:focus-visible {
+  box-shadow: none; /* the global :focus-visible outline marks focus */
+}
+
+.list-group {
+  --bs-list-group-active-color: var(--vr-on-highlight);
+  --bs-list-group-active-bg: var(--vr-highlight);
+  --bs-list-group-active-border-color: var(--vr-highlight-edge);
+}
+
+.progress,
+.progress-stacked {
+  --bs-progress-bg: var(--vr-surface-2);
+  --bs-progress-border-radius: 0;
+  --bs-progress-bar-bg: var(--vr-ink);
+  --bs-progress-bar-color: var(--vr-on-ink);
+}
+
+.form-range {
+  accent-color: var(--vr-ink);
+}
+
+.dropdown-menu {
+  --bs-dropdown-bg: var(--vr-raised);
+  --bs-dropdown-color: var(--vr-text);
+  --bs-dropdown-border-color: var(--vr-border-strong);
+  --bs-dropdown-border-radius: var(--vr-radius-lg);
+  --bs-dropdown-inner-border-radius: var(--vr-radius);
+  --bs-dropdown-link-color: var(--vr-text);
+  --bs-dropdown-link-hover-color: var(--vr-text);
+  --bs-dropdown-link-hover-bg: var(--vr-surface-hover);
+  --bs-dropdown-link-active-color: var(--vr-on-highlight);
+  --bs-dropdown-link-active-bg: var(--vr-highlight);
+  --bs-dropdown-header-color: var(--vr-text-muted);
+  --bs-dropdown-divider-bg: var(--vr-border);
+  --bs-dropdown-font-size: 0.9375rem;
+  --bs-dropdown-box-shadow: var(--vr-shadow-raised);
+  box-shadow: var(--vr-shadow-raised);
+  padding: 0.375rem;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: var(--vr-radius);
+}
+
+.modal {
+  --bs-modal-bg: var(--vr-raised);
+  --bs-modal-color: var(--vr-text);
+  --bs-modal-border-color: var(--vr-border-strong);
+  --bs-modal-border-radius: var(--vr-radius-lg);
+  --bs-modal-inner-border-radius: calc(var(--vr-radius-lg) - 1px);
+  --bs-modal-header-border-color: var(--vr-border);
+  --bs-modal-footer-border-color: var(--vr-border);
+  --bs-modal-box-shadow: var(--vr-shadow-raised);
+}
+
+.modal-header {
+  background: var(--vr-heading);
+}
+
+.modal-title {
+  font-size: 1.125rem;
+}
+
+.offcanvas {
+  --bs-offcanvas-bg: var(--vr-paper);
+  --bs-offcanvas-color: var(--vr-text);
+}
+
+/* Panels sit just above the sheet, with a quiet tinted heading. */
+.card {
+  --bs-card-bg: var(--vr-surface);
+  --bs-card-border-color: var(--vr-border);
+  --bs-card-border-radius: var(--vr-radius-lg);
+  --bs-card-inner-border-radius: calc(var(--vr-radius-lg) - 1px);
+  --bs-card-cap-bg: var(--vr-heading);
+  --bs-card-cap-padding-y: 0.75rem;
+  --bs-card-cap-padding-x: 1rem;
+  --bs-card-spacer-y: 1rem;
+  box-shadow: var(--vr-shadow-panel);
+}
+
+.card-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  min-height: 44px;
+  border-bottom-color: var(--vr-border);
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: -0.005em;
+}
+
+.card-header .vr-count {
+  color: var(--vr-text-muted);
+}
+
+.card-footer {
+  background: var(--vr-surface);
+  border-top-color: var(--vr-border);
+}
+
+.alert {
+  --bs-alert-padding-y: 0.75rem;
+  --bs-alert-border-radius: var(--vr-radius);
+}
+
+/* Glyph label + body (includes/messages.html, form_errors.html, status alerts) sit side by side.
+   Plain-text alerts stay in normal flow so inline text, links and emphasis wrap as one paragraph. */
+.alert:has(> .vr-status) {
+  display: flex;
+  gap: 0.625rem;
+  align-items: flex-start;
+}
+
+.alert > :last-child {
+  margin-bottom: 0;
+}
+
+.alert-info {
+  --bs-alert-color: var(--vr-info-text);
+  --bs-alert-bg: var(--vr-info-bg);
+  --bs-alert-border-color: var(--vr-info-border);
+  --bs-alert-link-color: var(--vr-info-text);
+}
+
+.alert-warning {
+  --bs-alert-color: var(--vr-warning-text);
+  --bs-alert-bg: var(--vr-warning-bg);
+  --bs-alert-border-color: var(--vr-warning-border);
+  --bs-alert-link-color: var(--vr-warning-text);
+}
+
+.alert-success {
+  --bs-alert-color: var(--vr-success-text);
+  --bs-alert-bg: var(--vr-success-bg);
+  --bs-alert-border-color: var(--vr-success-border);
+  --bs-alert-link-color: var(--vr-success-text);
+}
+
+.alert-danger {
+  --bs-alert-color: var(--vr-danger-text);
+  --bs-alert-bg: var(--vr-danger-bg);
+  --bs-alert-border-color: var(--vr-danger-border);
+  --bs-alert-link-color: var(--vr-danger-text);
+}
+
+.alert-secondary {
+  --bs-alert-color: var(--vr-neutral-text);
+  --bs-alert-bg: var(--vr-neutral-bg);
+  --bs-alert-border-color: var(--vr-neutral-border);
+}
+
+/* The alert's leading status label is stamped onto the note. */
+.alert > .vr-status.vr-status-plain {
+  flex: none;
+  padding: 0 0.3125rem;
+  border: 1.5px solid var(--vr-tone-border);
+  background: var(--vr-surface);
+}
+
+.breadcrumb {
+  --bs-breadcrumb-margin-bottom: 0.375rem;
+  --bs-breadcrumb-font-size: var(--vr-label-size);
+  --bs-breadcrumb-divider-color: var(--vr-text-muted);
+  --bs-breadcrumb-item-active-color: var(--vr-text-muted);
+  --bs-breadcrumb-item-padding-x: 0.5rem;
+}
+
+.table {
+  --bs-table-color: var(--vr-text);
+  --bs-table-bg: var(--vr-surface);
+  --bs-table-border-color: var(--vr-border);
+  --bs-table-hover-color: var(--vr-text);
+  --bs-table-hover-bg: var(--vr-surface-hover);
+  --bs-table-striped-bg: var(--vr-surface-2);
+}
+
+/* Rows with an error (invalid result/QC entry, import row). Bootstrap's table-danger is a fixed
+   pale pink with black text in both themes, which leaves muted help text and the error list
+   unreadable in dark. Use the theme's danger tone so text keeps the contrast of its theme. */
+.table-danger {
+  --bs-table-color: var(--vr-text);
+  --bs-table-bg: var(--vr-danger-bg);
+  --bs-table-border-color: var(--vr-danger-border);
+  --bs-table-striped-color: var(--vr-text);
+  --bs-table-striped-bg: var(--vr-danger-bg);
+  --bs-table-active-color: var(--vr-text);
+  --bs-table-active-bg: var(--vr-danger-bg);
+  --bs-table-hover-color: var(--vr-text);
+  --bs-table-hover-bg: var(--vr-danger-bg);
+}
+
+.vr-table > tbody > tr.table-danger > th[scope="row"]:first-child,
+.vr-table.table-hover > tbody > tr.table-danger:hover > th[scope="row"]:first-child {
+  background-color: var(--vr-danger-bg);
+}
+
+/* ================================================================ Application shell */
+
+/* The sheet: the quad ruling is fixed to the viewport under the top bar, so the margin rule and
+   the sticky rail stay registered on it while the content scrolls. Panels are opaque and cover
+   it. The ruling is a hazed layer (blurred and faded) so text written straight on the sheet, such
+   as the rail and page headings, reads on a calm ground. Sign-in pages have their own sheet
+   (Entrance pages, below). */
+.vr-app:not(.vr-entrance-page)::before {
+  content: "";
+  position: fixed;
+  inset: var(--vr-topbar-height) -8px -8px; /* overscan so the blur has no soft edge */
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--vr-paper-grid);
+  background-size: var(--vr-paper-cell) var(--vr-paper-cell);
+  background-position: 8px 0;
+  filter: blur(var(--vr-paper-haze));
+  opacity: var(--vr-paper-haze-opacity);
+}
+
+.vr-skip:focus {
+  position: fixed !important;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 1100;
+  padding: 0.5rem 0.75rem;
+  background: var(--vr-raised);
+  border: 2px solid var(--vr-focus);
+  border-radius: var(--vr-radius);
+}
+
+.vr-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  min-height: var(--vr-topbar-height);
+  padding: 0 var(--vr-content-pad-x);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--vr-topbar-bg);
+  border-bottom: 1px solid var(--vr-topbar-edge);
+  color: var(--vr-topbar-text);
+}
+
+.vr-topbar :focus-visible {
+  outline-color: var(--vr-topbar-accent);
+}
+
+/* Menus open from the bar onto the page: they take the page's focus colour back. */
+.vr-topbar .dropdown-menu :focus-visible {
+  outline-color: var(--vr-focus);
+}
+
+.vr-brand,
+.vr-brand:hover {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--vr-topbar-text);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.vr-brand img {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.vr-lab-name {
+  color: var(--vr-topbar-text-muted);
+  font-weight: 500;
+  padding-left: 0.75rem;
+  border-left: 1px solid rgba(var(--vr-topbar-text-rgb), 0.25);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vr-topbar-end {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+/* Quiet icon/text buttons: in the top bar, and the theme menu on entrance pages. */
+.vr-topbar-btn {
+  --bs-btn-color: var(--vr-text);
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: transparent;
+  --bs-btn-hover-color: var(--vr-text);
+  --bs-btn-hover-bg: var(--vr-surface-hover);
+  --bs-btn-hover-border-color: var(--vr-border-strong);
+  --bs-btn-active-color: var(--vr-text);
+  --bs-btn-active-bg: var(--vr-surface-2);
+  --bs-btn-active-border-color: var(--vr-border-strong);
+  --bs-btn-padding-x: 0.5rem;
+}
+
+.vr-topbar .vr-topbar-btn {
+  --bs-btn-color: var(--vr-topbar-text);
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: transparent;
+  --bs-btn-hover-color: var(--vr-topbar-text);
+  --bs-btn-hover-bg: rgba(var(--vr-topbar-text-rgb), 0.1);
+  --bs-btn-hover-border-color: rgba(var(--vr-topbar-text-rgb), 0.3);
+  --bs-btn-active-color: var(--vr-topbar-text);
+  --bs-btn-active-bg: rgba(var(--vr-topbar-text-rgb), 0.16);
+  --bs-btn-active-border-color: rgba(var(--vr-topbar-text-rgb), 0.3);
+}
+
+.vr-lookup {
+  position: relative;
+  width: min(18rem, 34vw);
+}
+
+.vr-lookup .vr-icon {
+  position: absolute;
+  left: 0.625rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--vr-topbar-field-muted);
+  pointer-events: none;
+}
+
+.vr-lookup .form-control {
+  padding-left: 2rem;
+  background-color: var(--vr-topbar-field);
+  border-color: var(--vr-topbar-field-border);
+  color: var(--vr-topbar-field-text);
+  font-family: var(--vr-font-mono);
+}
+
+.vr-lookup .form-control::placeholder {
+  color: var(--vr-topbar-field-muted);
+}
+
+.vr-lookup .form-control:focus {
+  background-color: var(--vr-surface);
+  border-color: var(--vr-surface);
+  color: var(--vr-text);
+  outline-color: var(--vr-topbar-accent);
+}
+
+.vr-lookup:focus-within .vr-icon {
+  color: var(--vr-text-muted);
+}
+
+.vr-user-roles {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--vr-text-muted);
+}
+
+/* Theme menu: the pressed option carries a check; text names the mode. */
+.vr-theme-option .vr-theme-check {
+  margin-left: auto;
+  visibility: hidden;
+}
+
+.vr-theme-option[aria-pressed="true"] .vr-theme-check {
+  visibility: visible;
+}
+
+.vr-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Offcanvas below lg, static rail from lg up (Bootstrap .offcanvas-lg). */
+.vr-sidenav {
+  --bs-offcanvas-width: 17rem;
+}
+
+@media (min-width: 992px) {
+  .vr-shell {
+    grid-template-columns: var(--vr-sidenav-width) minmax(0, 1fr);
+  }
+
+  .vr-portal .vr-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The rail is the notebook's margin: the paper shows through it. The red rule is drawn by the
+     shell, not the rail, so it runs the full height of the sheet however long the page is. */
+  .vr-app:not(.vr-portal) .vr-shell {
+    min-height: calc(100vh - var(--vr-topbar-height));
+    background-image: linear-gradient(var(--vr-margin), var(--vr-margin));
+    background-size: var(--vr-margin-width) 100%;
+    background-position: calc(var(--vr-sidenav-width) - var(--vr-margin-width)) 0;
+    background-repeat: no-repeat;
+  }
+
+  .vr-sidenav {
+    position: sticky;
+    top: var(--vr-topbar-height);
+    height: calc(100vh - var(--vr-topbar-height));
+    overflow-y: auto;
+  }
+}
+
+/* Phones and tablets: the rail is an offcanvas sheet; the margin rule stays on the page. */
+@media (max-width: 991.98px) {
+  .vr-app:not(.vr-entrance-page) .vr-main {
+    padding-left: calc(var(--vr-margin-x) + var(--vr-content-pad-x));
+    background-image: linear-gradient(var(--vr-margin), var(--vr-margin));
+    background-size: var(--vr-margin-width) 100%;
+    background-position: var(--vr-margin-x) 0;
+    background-repeat: no-repeat;
+  }
+
+  .vr-sidenav.offcanvas-lg {
+    background-image: var(--vr-paper-grid);
+    background-size: var(--vr-paper-cell) var(--vr-paper-cell);
+    border-right: var(--vr-margin-width) solid var(--vr-margin);
+  }
+}
+
+.vr-sidenav .offcanvas-body {
+  display: block;
+  padding: var(--vr-paper-cell) 0.75rem 1.5rem;
+}
+
+.vr-nav-list + .vr-nav-section,
+.vr-nav-section + .vr-nav-section {
+  margin-top: var(--vr-paper-cell);
+}
+
+.vr-nav-heading {
+  margin: 0 0 0.25rem;
+  padding: 0 0.5rem;
+  color: var(--vr-text-muted);
+}
+
+.vr-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.vr-navlink {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 2rem;
+  padding: 0.25rem 0.5rem;
+  color: var(--vr-text);
+  text-decoration: none;
+}
+
+.vr-navlink > .vr-icon {
+  color: var(--vr-text-muted);
+}
+
+a.vr-navlink:hover {
+  background: var(--vr-surface-hover);
+  color: var(--vr-text);
+}
+
+/* Where you are: a highlighter stroke behind the label, chisel-cut at both ends. */
+.vr-navlink[aria-current="page"] {
+  color: var(--vr-text);
+  font-weight: 650;
+}
+
+.vr-navlink[aria-current="page"] > span:first-of-type {
+  margin: 0 -0.35em;
+  padding: 0.05em 0.45em;
+  background: var(--vr-marker);
+  color: var(--vr-on-highlight);
+  clip-path: polygon(var(--vr-marker-tip) 0, 100% 0, calc(100% - var(--vr-marker-tip)) 100%, 0 100%);
+}
+
+.vr-navlink[aria-current="page"] > .vr-icon {
+  color: var(--vr-text);
+}
+
+.vr-navlink.is-unavailable {
+  color: var(--vr-text-muted);
+}
+
+.vr-navlink-note {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--vr-text-muted);
+  font-weight: 400;
+}
+
+.vr-navlink-count {
+  margin-left: auto;
+  min-width: 1.75rem;
+  padding: 0 0.375rem;
+  color: var(--vr-text-muted);
+  text-align: center;
+}
+
+/* Client portal: top navigation instead of the staff rail. */
+.vr-topbar-portal {
+  flex-wrap: wrap;
+}
+
+.vr-topbar-portal .vr-brand {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.vr-topbar-portal .vr-brand span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vr-topbar-portal .vr-topbar-end {
+  flex: none;
+}
+
+@media (min-width: 768px) {
+  .vr-topbar-portal .vr-brand {
+    flex: 0 1 auto;
+  }
+}
+
+.vr-portal-nav {
+  order: 3;
+  flex-basis: 100%;
+}
+
+/* Phones: one scrollable row of tabs rather than wrapping into two. */
+@media (max-width: 767.98px) {
+  .vr-portal-nav {
+    min-width: 0; /* let the flex item shrink so its tab row scrolls instead of being clipped */
+  }
+
+  .vr-portal-nav .nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .vr-portal-nav .nav-link {
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: 768px) {
+  .vr-portal-nav {
+    order: 0;
+    flex-basis: auto;
+    margin-left: 0.5rem;
+  }
+}
+
+.vr-portal-nav .nav-link {
+  padding: 0.875rem 0.75rem calc(0.875rem - 3px);
+  color: var(--vr-topbar-text-muted);
+  border-bottom: 3px solid transparent;
+}
+
+.vr-portal-nav .nav-link:hover {
+  color: var(--vr-topbar-text);
+}
+
+.vr-portal-nav .nav-link[aria-current="page"] {
+  color: var(--vr-topbar-text);
+  border-bottom-color: var(--vr-topbar-accent);
+  font-weight: 650;
+}
+
+.vr-main {
+  min-width: 0;
+  padding: var(--vr-content-pad-y) var(--vr-content-pad-x) 3rem;
+}
+
+/* Containers that receive focus from script (skip target, dialogs, phone menu) need no ring: the
+   focus ring belongs to the controls inside them. */
+.vr-main:focus,
+.modal:focus,
+.offcanvas:focus,
+.offcanvas-lg:focus {
+  outline: none;
+}
+
+/* ================================================================ Page header */
+
+.vr-page-header {
+  margin-bottom: var(--vr-paper-cell);
+}
+
+.vr-page-header-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+}
+
+/* The title block takes the free space and wraps its own key facts, so the actions stay right of
+   the title from 992px, wrapping inside their own column when many (standard 4). */
+.vr-page-header-row > :first-child {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
+.vr-page-title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 680;
+  letter-spacing: -0.022em;
+  line-height: 1.15;
+}
+
+.vr-page-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 1.25rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--vr-text-muted);
+}
+
+.vr-page-intro {
+  max-width: 72ch;
+  margin: 0.375rem 0 0;
+  color: var(--vr-text-muted);
+}
+
+.vr-page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+@media (min-width: 992px) {
+  .vr-page-actions {
+    max-width: 66%;
+    justify-content: flex-end;
+  }
+}
+
+/* Dateline: today's date in the laboratory's time zone above an overview heading, like the top
+   line of a notebook page (includes/dateline.html). */
+.vr-dateline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin: 0 0 0.375rem;
+  color: var(--vr-text-muted);
+}
+
+.vr-dateline time {
+  font-size: inherit;
+}
+
+/* Small option forms inside a page-action dropdown (e.g. label download). */
+.vr-labels-menu {
+  width: min(18rem, calc(100vw - 2rem));
+  padding: 0.875rem;
+}
+
+.vr-labels-menu fieldset,
+.vr-labels-menu .vr-field {
+  margin-bottom: 0.75rem;
+}
+
+.vr-labels-menu legend {
+  font-size: inherit;
+  font-weight: 600;
+}
+
+.vr-section-title {
+  font-size: 1.0625rem;
+  margin: 0 0 0.75rem;
+}
+
+/* Section tabs (includes/section_tabs.html): no tab boxes; the current tab gets the highlighter
+   stroke, like the current sidebar item. */
+.vr-section-tabs {
+  margin-bottom: 1rem;
+}
+
+.nav-tabs {
+  --bs-nav-tabs-border-width: 0;
+  --bs-nav-tabs-border-radius: 0;
+  gap: 0.25rem 1.25rem;
+  border-bottom: 1px solid var(--vr-border);
+}
+
+.nav-tabs .nav-item {
+  position: relative;
+  z-index: 0;
+}
+
+.nav-tabs .nav-link {
+  padding: 0.5rem 0.125rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--vr-text-muted);
+  font-weight: 550;
+}
+
+.nav-tabs .nav-link:hover {
+  color: var(--vr-text);
+}
+
+.nav-tabs .nav-link.active {
+  position: relative;
+  background: transparent;
+  color: var(--vr-on-highlight);
+  font-weight: 650;
+}
+
+.nav-tabs .nav-link.active::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0.4rem -0.375rem;
+  background: var(--vr-marker);
+  clip-path: polygon(var(--vr-marker-tip) 0, 100% 0, calc(100% - var(--vr-marker-tip)) 100%, 0 100%);
+}
+
+/* "On this page" anchors (includes/page_toc.html). */
+.vr-page-toc {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.vr-page-toc-title {
+  margin: 0;
+  color: var(--vr-text-muted);
+}
+
+.vr-page-toc ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ================================================================ Status stamps */
+
+/* Every status carries a text label and a tone-specific glyph shape; colour is never the only cue.
+   It reads as a rubber stamp: rectangular, bordered, mono capitals. */
+.vr-status {
+  --vr-tone-text: var(--vr-neutral-text);
+  --vr-tone-bg: var(--vr-neutral-bg);
+  --vr-tone-border: var(--vr-neutral-border);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.0625rem 0.375rem;
+  border: 1.5px solid var(--vr-tone-border);
+  border-radius: 1px;
+  background: var(--vr-tone-bg);
+  color: var(--vr-tone-text);
+  font-family: var(--vr-font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.45;
+  white-space: nowrap;
+}
+
+.vr-status::before {
+  content: "";
+  flex: none;
+  width: 0.5625rem;
+  height: 0.5625rem;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+}
+
+/* The record's own status, first in the page header's key facts (standard 4), is a full-size
+   stamp pressed slightly askew, whichever variant the page passes. */
+.vr-page-meta > li:first-child > .vr-status {
+  padding: 0.125rem 0.5rem;
+  border: 2px solid var(--vr-tone-border);
+  background: var(--vr-tone-bg);
+  font-size: 0.8125rem;
+  transform: rotate(-2deg);
+}
+
+/* Helper notes under a cell value (e.g. the preparation identity under a test name) wrap, so a
+   narrow card does not push the last columns out of view. */
+.vr-table td .vr-form-note {
+  white-space: normal;
+}
+
+/* A table cell may carry a long status sentence (a blocker reason): wrap it instead of widening
+   the table past its card. Short labels never reach the limit and look as before. */
+.vr-table td .vr-status-plain {
+  max-width: 24rem;
+  align-items: flex-start;
+  white-space: normal;
+}
+
+.vr-table td .vr-status-plain::before {
+  margin-top: 0.25rem;
+}
+
+.vr-status[data-tone="info"] {
+  --vr-tone-text: var(--vr-info-text);
+  --vr-tone-bg: var(--vr-info-bg);
+  --vr-tone-border: var(--vr-info-border);
+}
+
+.vr-status[data-tone="info"]::before {
+  background: currentColor;
+}
+
+.vr-status[data-tone="progress"] {
+  --vr-tone-text: var(--vr-progress-text);
+  --vr-tone-bg: var(--vr-progress-bg);
+  --vr-tone-border: var(--vr-progress-border);
+}
+
+.vr-status[data-tone="progress"]::before {
+  background: linear-gradient(90deg, currentColor 50%, transparent 50%);
+}
+
+.vr-status[data-tone="success"] {
+  --vr-tone-text: var(--vr-success-text);
+  --vr-tone-bg: var(--vr-success-bg);
+  --vr-tone-border: var(--vr-success-border);
+}
+
+.vr-status[data-tone="success"]::before {
+  border: 0;
+  border-radius: 0;
+  background: currentColor;
+  clip-path: polygon(14% 44%, 0 60%, 38% 96%, 100% 22%, 86% 8%, 38% 66%);
+}
+
+.vr-status[data-tone="warning"] {
+  --vr-tone-text: var(--vr-warning-text);
+  --vr-tone-bg: var(--vr-warning-bg);
+  --vr-tone-border: var(--vr-warning-border);
+}
+
+.vr-status[data-tone="warning"]::before {
+  width: 0.6875rem;
+  border: 0;
+  border-radius: 0;
+  background: currentColor;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.vr-status[data-tone="danger"] {
+  --vr-tone-text: var(--vr-danger-text);
+  --vr-tone-bg: var(--vr-danger-bg);
+  --vr-tone-border: var(--vr-danger-border);
+}
+
+.vr-status[data-tone="danger"]::before {
+  border: 0;
+  border-radius: 0;
+  background: currentColor;
+  clip-path: polygon(20% 0, 50% 30%, 80% 0, 100% 20%, 70% 50%, 100% 80%, 80% 100%, 50% 70%, 20% 100%, 0 80%, 30% 50%, 0 20%);
+}
+
+.vr-status[data-tone="hold"] {
+  --vr-tone-text: var(--vr-hold-text);
+  --vr-tone-bg: var(--vr-hold-bg);
+  --vr-tone-border: var(--vr-hold-border);
+}
+
+.vr-status[data-tone="hold"]::before {
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(90deg, currentColor 35%, transparent 35%, transparent 65%, currentColor 65%);
+}
+
+/* Plain variant for dense table cells: the stamp's voice and glyph without the frame. */
+.vr-status.vr-status-plain {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+/* ================================================================ Data tables */
+
+.vr-table-card {
+  overflow: hidden;
+}
+
+.vr-table-card > .card-body {
+  padding: 0;
+}
+
+.vr-table-wrap {
+  overflow-x: auto;
+}
+
+.vr-table {
+  margin: 0;
+  font-size: 0.9375rem;
+}
+
+/* Horizontal separators keep the ledger readable without boxing every cell. */
+.vr-table > thead > tr > th {
+  height: 40px;
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+  background: var(--vr-heading);
+  border-bottom: 1px solid var(--vr-border);
+  color: var(--vr-text-muted);
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+.vr-table > :not(caption) > * > * {
+  padding: 0.5rem 0.75rem;
+  border-left: 0;
+  border-right: 0;
+  border-bottom-color: var(--vr-border);
+}
+
+.vr-table > tbody > tr > * {
+  height: 40px;
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* Long free text (notes, descriptions) may wrap; everything else stays on one scannable line. */
+.vr-table > tbody > tr > .vr-wrap {
+  white-space: normal;
+  min-width: 14rem;
+}
+
+/* Evidence and note rows that span the table (preservation, preparation, revision notes) are
+   sentences, not columns: they wrap instead of forcing a horizontal scroll. */
+.vr-table > tbody > tr > td[colspan].small {
+  white-space: normal;
+}
+
+/* Dashboard work queues: the label wraps so the count and age stay on screen on a phone. */
+.vr-table.vr-queue-table > tbody > tr > .vr-wrap {
+  min-width: 9rem;
+}
+
+.vr-table > tbody > tr:last-child > * {
+  border-bottom: 0;
+}
+
+.vr-table .vr-row-link {
+  font-weight: 600;
+  text-decoration-color: rgba(var(--bs-link-color-rgb), 0.3);
+}
+
+.vr-table caption {
+  caption-side: top;
+  padding: 0.625rem 0.75rem;
+  color: var(--vr-text-muted);
+}
+
+/* Selected rows: a pale highlighter wash across the row, edged in the marker's ink, also while
+   hovered and in DataTables-enhanced lists. */
+.vr-table > tbody > tr:has(> * > input[type="checkbox"]:checked) > *,
+.vr-table > tbody > tr:has(> * > .form-check > input[type="checkbox"]:checked) > *,
+.vr-table-card table.table.dataTable.vr-table > tbody > tr:has(> * > input[type="checkbox"]:checked) > * {
+  --bs-table-bg: var(--vr-highlight-wash);
+  background-color: var(--vr-highlight-wash);
+  box-shadow: inset 0 -1px 0 var(--vr-highlight-edge), inset 0 0 0 9999px var(--vr-highlight-wash);
+}
+
+/* Keep the row identifier visible while a wide table scrolls sideways. */
+.vr-table > thead > tr > th:first-child,
+.vr-table > tbody > tr > th[scope="row"]:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  box-shadow: inset -1px 0 0 var(--vr-border);
+}
+
+.vr-table > tbody > tr > th[scope="row"]:first-child {
+  background-color: var(--vr-surface);
+}
+
+.vr-table.table-hover > tbody > tr:hover > th[scope="row"]:first-child {
+  background-color: var(--vr-surface-hover);
+}
+
+/* Inputs inside table cells: wide enough to read back typed values and dates. */
+.vr-table .form-control,
+.vr-table .form-select {
+  min-width: 6.5rem;
+}
+
+.vr-table input[type="datetime-local"].form-control,
+.vr-table input[type="date"].form-control {
+  min-width: 12.5rem;
+}
+
+.vr-table input[type="number"].form-control {
+  min-width: 5rem;
+}
+
+/* A select in a table cell (entry grids) takes the width of its longest option instead of
+   shrinking with the column, so the chosen value stays readable. */
+.vr-table .form-select {
+  width: auto;
+  max-width: 22rem;
+}
+
+.vr-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.vr-sort:hover {
+  color: var(--vr-text);
+  text-decoration: underline;
+}
+
+[aria-sort] > .vr-sort {
+  color: var(--vr-text);
+}
+
+.vr-sort .vr-icon {
+  width: 0.8125rem;
+  height: 0.8125rem;
+  opacity: 0.45;
+}
+
+[aria-sort] > .vr-sort .vr-icon,
+.vr-sort:hover .vr-icon,
+.vr-sort:focus-visible .vr-icon {
+  opacity: 1;
+}
+
+.vr-table-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding: 0.85rem 1rem;
+  border-top: 1px solid var(--vr-border);
+  background: var(--vr-surface);
+}
+
+.vr-count {
+  margin: 0;
+  color: var(--vr-text-muted);
+}
+
+.vr-count strong {
+  color: var(--vr-text);
+}
+
+/* Table cards zero the body padding for edge-to-edge tables; headings, notes and toolbars placed
+   in the same body keep the table's horizontal inset. */
+.vr-table-card > .card-body > :not(.vr-table-wrap, .vr-table-footer, .vr-grid-toolbar, .vr-bulkbar, .vr-chips, .vr-empty, table, ul, ol, .dt-container) {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.vr-table-card > .card-body > :is(h3, h4, .d-flex):first-child {
+  padding-top: 0.75rem;
+}
+
+.vr-table-card > .card-body > :is(h3, h4, .d-flex) {
+  padding-bottom: 0.25rem;
+}
+
+.vr-table-card > .card-body > p:last-child {
+  padding-top: 0.5rem;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0;
+}
+
+.vr-table-card > .card-body > :is(ul, ol) {
+  padding-left: 2rem;
+  padding-right: 0.75rem;
+}
+
+/* ================================================================ Grid toolbar, filters, columns */
+
+/* One compact row above the table: search, everyday filters, more filters, then Columns. */
+.vr-grid-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.85rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--vr-border);
+  background: var(--vr-surface);
+}
+
+.vr-grid-toolbar .vr-field {
+  margin: 0;
+  min-width: 9rem;
+  flex: 0 1 12rem;
+}
+
+.vr-grid-toolbar .vr-grid-search {
+  flex: 1 1 16rem;
+}
+
+.vr-grid-search {
+  position: relative;
+}
+
+.vr-grid-search .vr-icon {
+  position: absolute;
+  left: 0.625rem;
+  bottom: 11px;
+  color: var(--vr-text-muted);
+  pointer-events: none;
+}
+
+.vr-grid-search .form-control {
+  padding-left: 2rem;
+}
+
+.vr-filter-actions,
+.vr-grid-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.vr-grid-tools {
+  margin-left: auto;
+}
+
+/* "More filters": a disclosure row under the toolbar. */
+.vr-grid-more {
+  flex-basis: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: 0.625rem 0.75rem;
+  padding-top: 0.25rem;
+}
+
+.vr-grid-more[hidden] {
+  display: none;
+}
+
+.vr-grid-more .vr-field {
+  margin: 0;
+}
+
+/* Phones: one filter per row, tools beside the actions instead of on their own line. */
+@media (max-width: 575.98px) {
+  .vr-grid-toolbar .vr-field {
+    flex: 1 1 100%;
+  }
+
+  .vr-grid-tools {
+    margin-left: 0;
+  }
+}
+
+/* Active filter chips: highlighted on the page, each removable; text states field and value. */
+.vr-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  margin: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--vr-border);
+  background: var(--vr-surface);
+  font-size: 0.8125rem;
+}
+
+.vr-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.25rem 0.125rem 0.5rem;
+  background: var(--vr-marker);
+  color: var(--vr-on-highlight);
+  font-family: var(--vr-font-mono);
+  font-size: 0.75rem;
+  clip-path: polygon(0.2em 0, 100% 0, calc(100% - 0.2em) 100%, 0 100%);
+}
+
+.vr-chip .vr-muted {
+  color: inherit !important; /* the label sits on the highlighter, not on the page */
+}
+
+.vr-chip a {
+  display: inline-flex;
+  padding: 0.125rem;
+  color: var(--vr-on-highlight);
+}
+
+.vr-chip a:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: var(--vr-on-highlight);
+}
+
+.vr-chip a:focus-visible {
+  outline-color: var(--vr-on-highlight);
+  outline-offset: -2px;
+}
+
+/* Bulk action bar above a selectable table (standard 5.5): target, action, selection count. */
+.vr-bulkbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem 1rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--vr-border);
+  background: var(--vr-surface);
+}
+
+.vr-bulkbar .vr-field {
+  margin: 0;
+}
+
+/* Columns dialog: visibility checkbox, label and move controls per column. */
+.vr-columns-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--vr-border);
+}
+
+.vr-columns-list > li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.5rem 0.375rem 0.75rem;
+  border-top: 1px solid var(--vr-border);
+}
+
+.vr-columns-list > li:first-child {
+  border-top: 0;
+}
+
+.vr-columns-list .form-check {
+  flex: 1 1 auto;
+  margin: 0;
+}
+
+.vr-columns-list .vr-col-locked {
+  font-family: var(--vr-font-mono);
+  font-size: var(--vr-label-size);
+  letter-spacing: var(--vr-label-tracking);
+  text-transform: uppercase;
+  color: var(--vr-text-muted);
+}
+
+.vr-columns-list .btn {
+  --bs-btn-padding-y: 0.125rem;
+  --bs-btn-padding-x: 0.375rem;
+}
+
+/* DataTables chrome inside our table card (Bootstrap 5 integration). */
+.vr-table-card .dt-container {
+  padding: 0;
+}
+
+/* The adapter wraps the table in a Bootstrap row/col (gutters, .mt-2); an enhanced list must sit
+   exactly where the plain server-rendered table does. */
+.vr-table-card .dt-container > .row {
+  --bs-gutter-x: 0;
+  --bs-gutter-y: 0;
+  margin: 0 !important;
+}
+
+.vr-table-card .dt-container > .row > * {
+  padding: 0;
+  margin-top: 0;
+}
+
+/* DataTables repaints every cell with --bs-table-bg and hovers with a black overlay; restore the
+   .vr-table header fill, sticky identifier column and token hover. */
+.vr-table-card table.table.dataTable.vr-table > thead > tr > th {
+  background-color: var(--vr-heading);
+}
+
+.vr-table-card table.table.dataTable.vr-table.table-hover > tbody > tr:hover > * {
+  box-shadow: inset 0 0 0 9999px var(--bs-table-hover-bg);
+}
+
+.vr-table-card table.table.dataTable.vr-table.table-hover > tbody > tr:hover > th[scope="row"]:first-child {
+  background-color: var(--vr-surface-hover);
+  box-shadow: inset -1px 0 0 var(--vr-border);
+}
+
+.vr-table-card .dt-container .dt-paging,
+.vr-table-card .dt-container .dt-info,
+.vr-table-card .dt-container .dt-length {
+  font-size: 0.875rem;
+  color: var(--vr-text-muted);
+}
+
+.vr-table-card .dt-container .dt-layout-row:last-child {
+  padding: 0.85rem 1rem;
+  border-top: 1px solid var(--vr-border);
+}
+
+.vr-table-card table.dataTable {
+  margin: 0 !important;
+}
+
+.vr-table-card .dt-processing {
+  background: var(--vr-raised);
+  color: var(--vr-text);
+  border: 1px solid var(--vr-border-strong);
+  border-radius: var(--vr-radius-lg);
+  box-shadow: var(--vr-shadow-raised);
+}
+
+/* Column drag (ColReorder): its insertion marks and the dragged copy use the theme, not its blue
+   and fixed white. */
+table.dataTable tbody tr td.dtcr-moving-first {
+  border-left-color: var(--vr-pen);
+}
+
+table.dataTable tbody tr td.dtcr-moving-last {
+  border-right-color: var(--vr-pen);
+}
+
+table.dtcr-cloned.dataTable {
+  background-color: var(--vr-raised);
+  border: 1px solid var(--vr-border-strong);
+  border-radius: var(--vr-radius-lg);
+  opacity: 0.92;
+}
+
+/* ================================================================ Empty, loading, error */
+
+.vr-empty {
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  background: var(--vr-surface);
+}
+
+.vr-empty-title {
+  margin: 0 0 0.25rem;
+  font-size: 1.0625rem;
+  font-weight: 650;
+}
+
+.vr-empty-body {
+  max-width: 36rem;
+  margin: 0 auto 1rem;
+  color: var(--vr-text-muted);
+}
+
+.vr-empty[data-kind="error"] .vr-empty-title {
+  color: var(--vr-danger-text);
+}
+
+.vr-empty-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Loading rows: same height as data rows so nothing jumps when they arrive. */
+.vr-skeleton {
+  display: block;
+  height: 0.875rem;
+  background: linear-gradient(90deg, var(--vr-surface-2) 0%, var(--vr-surface-hover) 50%, var(--vr-surface-2) 100%);
+  background-size: 200% 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .vr-skeleton {
+    animation: vr-skeleton 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes vr-skeleton {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -100% 0;
+  }
+}
+
+/* HTMX request indicators (htmx's own inline indicator styles are disabled in base.html). */
+.htmx-indicator {
+  visibility: hidden;
+}
+
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator {
+  visibility: visible;
+}
+
+[aria-busy="true"] {
+  cursor: progress;
+}
+
+.vr-live:empty {
+  display: none;
+}
+
+.vr-live {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 1090;
+  max-width: min(28rem, calc(100vw - 2rem));
+}
+
+/* ================================================================ Forms */
+
+.vr-form {
+  max-width: var(--vr-form-width);
+}
+
+/* Grid-style forms (a table of inputs, e.g. result entry) use the full content width. */
+.vr-form:has(.vr-table-card),
+.vr-form.vr-form-wide {
+  max-width: none;
+}
+
+/* A form with a table of inputs (quote lines, price list, report sample picker) uses the full
+   content width for that table; its other sections keep the reading width. */
+.vr-form-wide > .vr-form-section:not(:has(table)) {
+  max-width: var(--vr-form-width);
+}
+
+/* Reading width for panels that sit with a form (history under an edit form) but are not one. */
+.vr-narrow {
+  max-width: var(--vr-form-width);
+}
+
+.vr-field {
+  margin-bottom: 1rem;
+}
+
+.row > [class*="col"] > .vr-field {
+  margin-bottom: 0;
+}
+
+.vr-field > fieldset > legend,
+fieldset.vr-field > legend {
+  font-size: 1rem;
+}
+
+.vr-req {
+  color: var(--vr-pencil);
+  margin-left: 0.125rem;
+}
+
+.vr-field-errors {
+  display: block;
+  margin: 0.3rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--bs-form-invalid-color);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.vr-field-errors li::before {
+  content: "Error: ";
+}
+
+.vr-choices .form-check {
+  margin-bottom: 0.25rem;
+}
+
+.vr-multi {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.vr-multi > * {
+  flex: 1 1 10rem;
+}
+
+/* Form groups use space and a quiet heading rule instead of framed bands. */
+.vr-form-section {
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  background: var(--vr-surface);
+  border: 0;
+  border-radius: var(--vr-radius-lg);
+}
+
+.vr-form-section > legend,
+.vr-form-section > h2 {
+  float: left; /* keeps a fieldset legend inside the panel instead of on its border */
+  width: 100%;
+  margin: 0 0 1.25rem;
+  padding: 0 0 0.75rem;
+  background: transparent;
+  border-bottom: 1px solid var(--vr-border);
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+/* Bootstrap floats <legend> and clears only "legend + *"; hidden inputs after a legend would
+   leave following blocks (e.g. nested fieldsets) beside the float. */
+.vr-form-section > legend ~ *,
+.vr-form-section > h2 ~ *,
+.vr-container > legend ~ * {
+  clear: left;
+}
+
+.vr-form .vr-field {
+  margin-bottom: 1.25rem;
+}
+
+.vr-form .row > [class*="col"] > .vr-field,
+.vr-form-section > .vr-field:last-child {
+  margin-bottom: 0;
+}
+
+.vr-form textarea.form-control {
+  height: 5.5rem;
+  resize: vertical;
+}
+
+/* Action row (standard 7.5): Cancel, then the primary action at the end of the row; a destructive
+   action, when present, starts the row (.vr-form-actions-start). Sticky at the bottom of the
+   viewport on every page-level form and entry grid, so Save stays in reach: a strip of paper
+   under an ink rule. A form inside a card on a record page, the entrance panel, dialogs and
+   dropdown menus keep a plain row: there it would float over the page it sits in. */
+.vr-form-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin: 0 -0.25rem;
+  padding: 1rem 0.25rem;
+  background: var(--vr-paper);
+  border-top: 1px solid var(--vr-border);
+}
+
+.card-body .vr-form-actions,
+.vr-entrance-panel .vr-form-actions,
+.dropdown-menu .vr-form-actions,
+.modal .vr-form-actions {
+  position: static;
+  margin: 0;
+  padding: 0.5rem 0 0;
+  background: none;
+  border: 0;
+}
+
+.vr-form-actions-start {
+  margin-right: auto;
+}
+
+/* Form dialogs reuse the page's form and validation, with one frame and one scroll surface.
+   Bootstrap owns focus trapping, backdrop, scrolling and responsive fullscreen behaviour. */
+.vr-form-dialog {
+  --vr-dialog-pad: 24px;
+  --bs-modal-margin: 24px;
+}
+
+.vr-form-dialog .modal-content {
+  overflow: hidden;
+}
+
+.vr-form-dialog-header {
+  flex-wrap: nowrap;
+  gap: 1rem;
+  padding: 1rem var(--vr-dialog-pad);
+}
+
+.vr-form-dialog-header .modal-title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.vr-form-dialog-header .btn {
+  flex: none;
+}
+
+.vr-form-dialog #vr-form-content {
+  padding: var(--vr-dialog-pad);
+  background: var(--vr-surface);
+  scroll-padding-block: 1rem 5rem;
+}
+
+.vr-form-dialog .vr-main {
+  padding: 0;
+  background: none;
+}
+
+.vr-form-dialog :is(.vr-page-header, nav[aria-label="Breadcrumb"]) {
+  display: none;
+}
+
+.vr-form-dialog .vr-form,
+.vr-form-dialog .vr-form-wide > .vr-form-section {
+  max-width: none;
+}
+
+.vr-form-dialog .vr-form-section {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.vr-form-dialog .vr-form-section + .vr-form-section {
+  padding-top: 0.5rem;
+}
+
+.vr-form-dialog .vr-form .card {
+  border: 0;
+  box-shadow: none;
+}
+
+.vr-form-dialog .vr-form .card-header {
+  padding-inline: 0;
+  background: transparent;
+}
+
+.vr-form-dialog .vr-form .card:not(.vr-table-card) > .card-body {
+  padding-inline: 0;
+}
+
+.vr-form-dialog .vr-form-actions {
+  position: sticky;
+  bottom: 0;
+  margin: 1.5rem calc(-1 * var(--vr-dialog-pad)) calc(-1 * var(--vr-dialog-pad));
+  padding: 1rem var(--vr-dialog-pad);
+  border-top: 1px solid var(--vr-border);
+  background: var(--vr-surface);
+}
+
+@media (min-width: 576px) {
+  .vr-form-dialog .modal-dialog:not(.modal-fullscreen) {
+    width: calc(100% - 48px);
+  }
+}
+
+@media (max-width: 575.98px) {
+  .vr-form-dialog {
+    --vr-dialog-pad: 8px;
+  }
+
+  .vr-form-dialog-header {
+    gap: 0.5rem;
+    padding-block: 0.75rem;
+  }
+}
+
+.vr-form-note {
+  color: var(--vr-text-muted);
+  font-size: 0.875rem;
+}
+
+/* One container row of a receipt formset. */
+.vr-container {
+  padding: 0.75rem 0 0.25rem;
+  border-top: 1px solid var(--vr-border);
+}
+
+.vr-container:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.vr-container > legend {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* Filter box above long checkbox lists (added by app.js). */
+.vr-choice-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem 0.75rem;
+  margin-bottom: 0.625rem;
+}
+
+.vr-choice-filter .form-control {
+  max-width: 20rem;
+}
+
+/* ================================================================ Record detail */
+
+.vr-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 1rem 1.5rem;
+  margin: 0;
+}
+
+.vr-facts dt {
+  color: var(--vr-text-muted);
+}
+
+.vr-facts dd {
+  margin: 0.1875rem 0 0;
+  overflow-wrap: anywhere;
+}
+
+/* Numbered sections: on a record page (marked by its foot line, includes/record_foot.html) each
+   panel heading carries 1.0, 2.0 ... in pen, in document order. */
+.vr-main:has(> .vr-record-foot) {
+  counter-reset: vr-section;
+}
+
+.vr-main:has(> .vr-record-foot) .card > .card-header > .card-title::before {
+  counter-increment: vr-section;
+  content: counter(vr-section) ".0";
+  display: inline-block;
+  min-width: 2.25rem;
+  margin-right: 0.5rem;
+  color: var(--vr-pen);
+  font-family: var(--vr-font-mono);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+/* Record foot line: the identifier, when this view was produced and by whom (printed with the
+   page). */
+.vr-record-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1.5rem;
+  margin-top: var(--vr-paper-cell);
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--vr-text);
+  color: var(--vr-text-muted);
+  font-family: var(--vr-font-mono);
+  font-size: var(--vr-label-size);
+  letter-spacing: 0.04em;
+}
+
+.vr-record-foot :is(time, .vr-id) {
+  font-size: inherit;
+}
+
+/* Application footer: product name, the AGPL-3.0 section 13 source link and the licence. */
+.vr-app-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin-top: 2rem;
+  color: var(--vr-text-muted);
+  font-size: var(--vr-label-size);
+}
+
+.vr-app-foot-centered {
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.vr-form-dialog .vr-app-foot {
+  display: none;
+}
+
+@media print {
+  .vr-app-foot {
+    display: none;
+  }
+}
+
+/* Custody timeline and history: square ticks on a hairline, like entries in a log. */
+.vr-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.vr-timeline > li {
+  position: relative;
+  padding: 0 0 1rem 1.5rem;
+  border-left: 1px solid var(--vr-border);
+  margin-left: 0.4375rem;
+}
+
+.vr-timeline > li:last-child {
+  border-left-color: transparent;
+  padding-bottom: 0;
+}
+
+.vr-timeline > li::before {
+  content: "";
+  position: absolute;
+  left: -0.3125rem;
+  top: 0.3125rem;
+  width: 0.5625rem;
+  height: 0.5625rem;
+  border: 2px solid var(--vr-text);
+  background: var(--vr-surface);
+}
+
+.vr-timeline > li:first-child::before {
+  background: var(--vr-text);
+}
+
+.vr-timeline-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  align-items: baseline;
+}
+
+.vr-timeline-title {
+  font-weight: 600;
+}
+
+.vr-timeline-meta {
+  color: var(--vr-text-muted);
+}
+
+.vr-timeline-body {
+  margin: 0.25rem 0 0;
+}
+
+.vr-history-item > p {
+  margin-bottom: 0;
+}
+
+.vr-history-changes {
+  margin-bottom: 0;
+  padding-left: 1.25rem;
+}
+
+/* Lab record-retention statement (core/record_retention.html): free text kept as entered. */
+.vr-retention-statement > :last-child {
+  margin-bottom: 0;
+}
+
+/* ================================================================ Entrance pages */
+
+/* Sign-in: a punched notebook sheet laid on a mint desk, beside the illustration. */
+.vr-entrance {
+  position: relative;
+  display: grid;
+  min-height: 100vh;
+  background: var(--vr-band);
+}
+
+.vr-entrance-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.vr-entrance-theme {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+}
+
+.vr-entrance-brand,
+.vr-entrance-brand:hover {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  color: var(--vr-text);
+  font-size: 1.25rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.vr-entrance-brand img {
+  width: 2rem;
+  height: 2rem;
+}
+
+.vr-entrance-panel {
+  --vr-sheet-margin: 3.25rem;
+  position: relative;
+  width: 100%;
+  max-width: 28rem;
+  padding: 2rem 2rem 2rem calc(var(--vr-sheet-margin) + 1.5rem);
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid var(--vr-border);
+  background-color: var(--vr-paper);
+  border-radius: var(--vr-radius-lg);
+  box-shadow: var(--vr-shadow-raised);
+}
+
+/* The sheet's hazed ruling, under the margin rule, the holes and the form. */
+.vr-entrance-panel::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--vr-paper-grid);
+  background-size: var(--vr-paper-cell) var(--vr-paper-cell);
+  background-position: 4px 4px;
+  filter: blur(var(--vr-paper-haze));
+  opacity: var(--vr-paper-haze-opacity);
+}
+
+/* The margin rule and the punched holes in the sheet's margin (decorative), over the ruling. */
+.vr-entrance-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: calc(var(--vr-sheet-margin) + var(--vr-margin-width));
+  background-image:
+    linear-gradient(var(--vr-margin), var(--vr-margin)),
+    radial-gradient(circle at 50% 50%, var(--vr-band) 0 6px, var(--vr-border) 6.5px 7.5px, transparent 8px);
+  background-size: var(--vr-margin-width) 100%, var(--vr-sheet-margin) 4.5rem;
+  background-position: 100% 0, -0.25rem 1.25rem;
+  background-repeat: no-repeat, repeat-y;
+  pointer-events: none;
+}
+
+@media (max-width: 575.98px) {
+  .vr-entrance-panel {
+    --vr-sheet-margin: 2.25rem;
+    padding: 1.5rem 1.25rem 1.5rem calc(var(--vr-sheet-margin) + 1rem);
+  }
+}
+
+.vr-entrance-panel h1 {
+  font-size: 1.625rem;
+  font-weight: 680;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.375rem !important;
+}
+
+.vr-entrance-lead {
+  margin-bottom: 1.25rem;
+  color: var(--vr-text-muted);
+}
+
+.vr-entrance-panel .vr-form-actions {
+  justify-content: stretch;
+}
+
+/* "or" divider between password sign-in and the alternative methods */
+.vr-entrance-or {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+  color: var(--vr-text-muted);
+}
+
+.vr-entrance-or::before,
+.vr-entrance-or::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid var(--vr-border);
+}
+
+.vr-entrance-panel .btn .vr-icon {
+  margin-right: 0.25rem;
+  vertical-align: -0.125em;
+}
+
+.vr-entrance-alt {
+  margin: 1rem 0 0;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.vr-entrance-alt .vr-icon {
+  margin-right: 0.25rem;
+  vertical-align: -0.125em;
+}
+
+.vr-entrance-foot {
+  margin-top: 1rem;
+  color: var(--vr-text-muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+/* Illustrated entrance (sign-in pages): scene beside the panel on wide screens; on narrow
+   screens only the sheet on its desk remains. */
+
+.vr-scene {
+  /* Sunny morning */
+  --vr-scene-sky-top: #e1e6e2;
+  --vr-scene-sky-mid: #f1e4c9;
+  --vr-scene-sky-low: #f6d4a2;
+  --vr-scene-horizon: #f9e2bb;
+  --vr-scene-glow: #ffcf86;
+  --vr-scene-glow-strength: 0.7;
+  --vr-scene-sun-core: #fffaeb;
+  --vr-scene-sun-edge: #fcdb9c;
+  --vr-scene-cloud: #fffaf0;
+  --vr-scene-cloud-lit: #f7c588;
+  --vr-scene-ridge-1: #e3d2b0;
+  --vr-scene-ridge-2: #ccc6a0;
+  --vr-scene-treeline: #b4b48d;
+  --vr-scene-haze: #f6dfb6;
+  --vr-scene-field-1: #b7bb87;
+  --vr-scene-field-2: #a3ae73;
+  --vr-scene-field-3: #dcc58b;
+  --vr-scene-field-4: #c8b48a;
+  --vr-scene-field-lit: #d9d394;
+  --vr-scene-furrow: #5f6a3a;
+  --vr-scene-hedge: #6c7a45;
+  --vr-scene-copse: #5d6c3c;
+  --vr-scene-water-far: #fdeccd;
+  --vr-scene-water-mid: #c6d6cc;
+  --vr-scene-water-near: #7aa29f;
+  --vr-scene-bank: #4f5f32;
+  --vr-scene-bank-lit: #f5e6bd;
+  --vr-scene-glint: #fffdf4;
+  --vr-scene-meadow: #687d41;
+  --vr-scene-meadow-lit: #9aa862;
+  --vr-scene-crest: #f3e3a8;
+  --vr-scene-wash-strength: 0.32;
+  --vr-scene-grass: #4f6531;
+  --vr-scene-grass-lit: #b1b66a;
+  --vr-scene-hz-o: #33241a;
+  --vr-scene-hz-a: #563b27;
+  --vr-scene-hz-b: #8a6039;
+  --vr-scene-hz-c: #b59c76;
+  --vr-scene-hz-line: #2a1b10;
+  --vr-scene-mottle: #b0703a;
+  --vr-scene-grain: #1f140b;
+  --vr-scene-grain-strength: 0.28;
+  --vr-scene-grit: #f3e6cc;
+  --vr-scene-stone: #cdbd9e;
+  --vr-scene-stone-lit: #efe4cc;
+  --vr-scene-stone-shade: #8f7a5c;
+  --vr-scene-root: #c9a77a;
+  --vr-scene-shade: rgba(32, 20, 10, 0.3);
+  --vr-scene-lip: #c8ae78;
+  --vr-scene-trunk: #43352a;
+  --vr-scene-trunk-lit: #9c8662;
+  --vr-scene-crown: #435a31;
+  --vr-scene-crown-rim: #f1e2a6;
+  --vr-scene-leaf-0: #3d5130;
+  --vr-scene-leaf-1: #607a3c;
+  --vr-scene-leaf-2: #8f9c4f;
+  --vr-scene-meadow-deep: #4e6232;
+  --vr-scene-hz-b-top: #7a5232;
+  --vr-scene-hz-c-top: #a48a64;
+  --vr-scene-noise-strength: 0.5;
+  --vr-scene-text: #2a2418;
+  --vr-scene-text-muted: #594830;
+  position: relative;
+  display: none;
+  overflow: hidden;
+  background: var(--vr-scene-sky-top);
+}
+
+[data-bs-theme="dark"] .vr-scene {
+  /* Dusk */
+  --vr-scene-sky-top: #0f171d;
+  --vr-scene-sky-mid: #1e2932;
+  --vr-scene-sky-low: #4a3a3a;
+  --vr-scene-horizon: #8d583a;
+  --vr-scene-glow: #ec8a46;
+  --vr-scene-glow-strength: 0.45;
+  --vr-scene-sun-core: #ffe6bd;
+  --vr-scene-sun-edge: #ec9550;
+  --vr-scene-cloud: #3a3641;
+  --vr-scene-cloud-lit: #b0603c;
+  --vr-scene-ridge-1: #5e4644;
+  --vr-scene-ridge-2: #463b3c;
+  --vr-scene-treeline: #2f2a2c;
+  --vr-scene-haze: #7c4f3d;
+  --vr-scene-field-1: #2a332b;
+  --vr-scene-field-2: #253027;
+  --vr-scene-field-3: #3d3929;
+  --vr-scene-field-4: #352d27;
+  --vr-scene-field-lit: #4a3f2b;
+  --vr-scene-furrow: #0b100a;
+  --vr-scene-hedge: #141a14;
+  --vr-scene-copse: #121812;
+  --vr-scene-water-far: #d08451;
+  --vr-scene-water-mid: #554f4d;
+  --vr-scene-water-near: #1c3438;
+  --vr-scene-bank: #0b100c;
+  --vr-scene-bank-lit: #9a6440;
+  --vr-scene-glint: #ffdcaa;
+  --vr-scene-meadow: #161f17;
+  --vr-scene-meadow-lit: #2e3624;
+  --vr-scene-crest: #7a5d38;
+  --vr-scene-wash-strength: 0.22;
+  --vr-scene-grass: #1a2519;
+  --vr-scene-grass-lit: #4a3d26;
+  --vr-scene-hz-o: #0f0b08;
+  --vr-scene-hz-a: #1d1510;
+  --vr-scene-hz-b: #33251a;
+  --vr-scene-hz-c: #463a2e;
+  --vr-scene-hz-line: #000;
+  --vr-scene-mottle: #5a3a20;
+  --vr-scene-grain: #000;
+  --vr-scene-grain-strength: 0.35;
+  --vr-scene-grit: #8a7860;
+  --vr-scene-stone: #5a4c3d;
+  --vr-scene-stone-lit: #7f6d57;
+  --vr-scene-stone-shade: #2c241c;
+  --vr-scene-root: #8f7559;
+  --vr-scene-shade: rgba(0, 0, 0, 0.38);
+  --vr-scene-lip: #5e4a32;
+  --vr-scene-trunk: #120d0a;
+  --vr-scene-trunk-lit: #6a4a2e;
+  --vr-scene-crown: #111811;
+  --vr-scene-crown-rim: #c27240;
+  --vr-scene-leaf-0: #0e140e;
+  --vr-scene-leaf-1: #1c2418;
+  --vr-scene-leaf-2: #4d4527;
+  --vr-scene-meadow-deep: #0f160f;
+  --vr-scene-hz-b-top: #2b1f16;
+  --vr-scene-hz-c-top: #3d3227;
+  --vr-scene-noise-strength: 0.35;
+  --vr-scene-text: #ece4d6;
+  --vr-scene-text-muted: #bfb29c;
+}
+
+.vr-scene-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Fine paper grain over the whole illustration: a static image layer, so the SVG's slow motion
+   never re-renders the noise. */
+.vr-scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .42 0 0 0 0 .32 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+  opacity: var(--vr-scene-noise-strength);
+}
+
+/* Gradient stops (colour classes) */
+.vr-scene-c-sky-top { stop-color: var(--vr-scene-sky-top); }
+.vr-scene-c-sky-mid { stop-color: var(--vr-scene-sky-mid); }
+.vr-scene-c-sky-low { stop-color: var(--vr-scene-sky-low); }
+.vr-scene-c-horizon { stop-color: var(--vr-scene-horizon); }
+.vr-scene-c-glow { stop-color: var(--vr-scene-glow); stop-opacity: var(--vr-scene-glow-strength); }
+.vr-scene-c-sun-core { stop-color: var(--vr-scene-sun-core); }
+.vr-scene-c-sun-edge { stop-color: var(--vr-scene-sun-edge); }
+.vr-scene-c-cloud { stop-color: var(--vr-scene-cloud); }
+.vr-scene-c-cloud-lit { stop-color: var(--vr-scene-cloud-lit); }
+.vr-scene-c-haze { stop-color: var(--vr-scene-haze); }
+.vr-scene-c-water-far { stop-color: var(--vr-scene-water-far); }
+.vr-scene-c-water-mid { stop-color: var(--vr-scene-water-mid); }
+.vr-scene-c-water-near { stop-color: var(--vr-scene-water-near); }
+.vr-scene-c-field-lit { stop-color: var(--vr-scene-field-lit); }
+.vr-scene-c-field-2 { stop-color: var(--vr-scene-field-2); }
+.vr-scene-c-meadow { stop-color: var(--vr-scene-meadow); }
+.vr-scene-c-meadow-lit { stop-color: var(--vr-scene-meadow-lit); }
+.vr-scene-c-stone { stop-color: var(--vr-scene-stone); }
+.vr-scene-c-stone-lit { stop-color: var(--vr-scene-stone-lit); }
+.vr-scene-c-stone-shade { stop-color: var(--vr-scene-stone-shade); }
+.vr-scene-c-shade { stop-color: var(--vr-scene-shade); }
+.vr-scene-c-crest { stop-color: var(--vr-scene-crest); }
+.vr-scene-c-meadow-deep { stop-color: var(--vr-scene-meadow-deep); }
+.vr-scene-c-hz-b { stop-color: var(--vr-scene-hz-b); }
+.vr-scene-c-hz-b-top { stop-color: var(--vr-scene-hz-b-top); }
+.vr-scene-c-hz-c { stop-color: var(--vr-scene-hz-c); }
+.vr-scene-c-hz-c-top { stop-color: var(--vr-scene-hz-c-top); }
+.vr-scene-c-root { stop-color: var(--vr-scene-root); }
+.vr-scene-c-glow.vr-scene-o-40 { stop-opacity: calc(var(--vr-scene-glow-strength) * 0.4); }
+.vr-scene .vr-scene-o-0 { stop-opacity: 0; }
+.vr-scene .vr-scene-o-70 { stop-opacity: 0.7; }
+
+/* Shapes */
+.vr-scene-bloom { opacity: 0.7; }
+.vr-scene-cloud { opacity: 0.9; }
+.vr-scene-cloud-lit { opacity: 0.55; }
+.vr-scene-cirrus { opacity: 0.6; }
+.vr-scene-ridge-1 { fill: var(--vr-scene-ridge-1); }
+.vr-scene-ridge-2 { fill: var(--vr-scene-ridge-2); }
+.vr-scene-field-1 { fill: var(--vr-scene-field-1); }
+.vr-scene-field-2 { fill: var(--vr-scene-field-2); }
+.vr-scene-field-3 { fill: var(--vr-scene-field-3); }
+.vr-scene-field-4 { fill: var(--vr-scene-field-4); }
+.vr-scene-copse { fill: var(--vr-scene-copse); }
+.vr-scene-copse-shadow { fill: var(--vr-scene-copse); opacity: 0.3; }
+.vr-scene-wash { opacity: var(--vr-scene-wash-strength); }
+.vr-scene-hz-o { fill: var(--vr-scene-hz-o); }
+.vr-scene-hz-a { fill: var(--vr-scene-hz-a); }
+.vr-scene-hz-b { fill: var(--vr-scene-hz-b); }
+.vr-scene-hz-c { fill: var(--vr-scene-hz-c); }
+.vr-scene-mottle { fill: var(--vr-scene-mottle); opacity: 0.45; }
+.vr-scene-stone { stroke: var(--vr-scene-stone-shade); stroke-width: 0.6; stroke-opacity: 0.5; }
+.vr-scene-root { opacity: 0.8; }
+.vr-scene-stone-hi { fill: var(--vr-scene-stone-lit); opacity: 0.5; }
+.vr-scene-crown path { stroke-linecap: round; }
+.vr-scene-leaf-0 { fill: var(--vr-scene-leaf-0); stroke: var(--vr-scene-leaf-0); }
+.vr-scene-leaf-1 { fill: var(--vr-scene-leaf-1); stroke: var(--vr-scene-leaf-1); }
+.vr-scene-leaf-2 { stroke: var(--vr-scene-leaf-2); }
+.vr-scene-leaf-rim { stroke: var(--vr-scene-crown-rim); opacity: 0.6; }
+.vr-scene-trunk { fill: var(--vr-scene-trunk); }
+.vr-scene-tree-shadow { fill: var(--vr-scene-crown); opacity: 0.4; }
+
+.vr-scene-treeline,
+.vr-scene-furrow,
+.vr-scene-hedge,
+.vr-scene-bank,
+.vr-scene-bank-lit,
+.vr-scene-glint,
+.vr-scene-crest,
+.vr-scene-grain,
+.vr-scene-grit,
+.vr-scene-root-fine,
+.vr-scene-trunk-lit,
+.vr-scene-lip,
+.vr-scene-grass,
+.vr-scene-grass-lit,
+.vr-scene-rootmat,
+.vr-scene-twig {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Tree rows and hedges are dotted round-capped strokes: each dot reads as a crown. */
+.vr-scene-treeline { stroke: var(--vr-scene-treeline); stroke-width: 3.2; stroke-dasharray: 0 2.6; }
+.vr-scene-hedge { stroke: var(--vr-scene-hedge); }
+.vr-scene-hedge-0 { stroke-width: 1.4; stroke-dasharray: 0 1.1; opacity: 0.35; }
+.vr-scene-hedge-1 { stroke-width: 2.2; stroke-dasharray: 0 1.3 0 1.7; opacity: 0.45; }
+.vr-scene-hedge-2 { stroke-width: 3.2; stroke-dasharray: 0 1.8 0 2.5 0 2.1; opacity: 0.55; }
+.vr-scene-hedge-3 { stroke-width: 4.4; stroke-dasharray: 0 2.6 0 3.3 0 2.9; opacity: 0.6; }
+.vr-scene-furrow { stroke: var(--vr-scene-furrow); }
+.vr-scene-furrow-1 { stroke-width: 0.6; opacity: 0.2; }
+.vr-scene-furrow-2 { stroke-width: 0.9; opacity: 0.22; }
+.vr-scene-furrow-3 { stroke-width: 1.2; opacity: 0.22; }
+.vr-scene-bank { stroke: var(--vr-scene-bank); stroke-width: 1.6; opacity: 0.4; }
+.vr-scene-bank-lit { stroke: var(--vr-scene-bank-lit); stroke-width: 1; opacity: 0.6; }
+.vr-scene-glint { stroke: var(--vr-scene-glint); stroke-width: 1.2; opacity: 0.75; }
+.vr-scene-crest { stroke: var(--vr-scene-crest); stroke-width: 1.4; opacity: 0.5; }
+.vr-scene-rim { fill: none; stroke-width: 1.6; stroke-linecap: round; opacity: 0.8; }
+.vr-scene-sward { fill: none; stroke: var(--vr-scene-meadow-deep); stroke-width: 0.9; stroke-linecap: round; opacity: 0.35; }
+.vr-scene-grain { stroke: var(--vr-scene-grain); stroke-width: 1.6; opacity: var(--vr-scene-grain-strength); }
+.vr-scene-grit { stroke: var(--vr-scene-grit); stroke-width: 1.8; opacity: 0.3; }
+.vr-scene-root-fine { stroke-width: 0.7; opacity: 0.7; }
+.vr-scene-rootmat { stroke: var(--vr-scene-root); stroke-width: 0.6; opacity: 0.22; }
+.vr-scene-grass { stroke: var(--vr-scene-grass); stroke-width: 1.3; }
+.vr-scene-grass-lit { stroke: var(--vr-scene-grass-lit); stroke-width: 1.2; }
+.vr-scene-twig { stroke: var(--vr-scene-trunk); stroke-width: 1.6; }
+.vr-scene-trunk-lit { stroke: var(--vr-scene-trunk-lit); stroke-width: 1.4; opacity: 0.7; }
+.vr-scene-lip { stroke: var(--vr-scene-lip); stroke-width: 1.4; opacity: 0.65; }
+
+.vr-scene-caption {
+  position: absolute;
+  z-index: 1;
+  top: 2.5rem;
+  left: 2.5rem;
+  right: 2.5rem;
+}
+
+.vr-scene-title {
+  margin: 0;
+  color: var(--vr-scene-text);
+  font-size: 1.5rem;
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.vr-scene-sub {
+  margin: 0.375rem 0 0;
+  color: var(--vr-scene-text-muted);
+  font-size: 0.9375rem;
+  letter-spacing: 0.02em;
+}
+
+/* Motion: the sun rises once, then the glow, clouds and water move almost imperceptibly. */
+.vr-scene-sun {
+  animation: vr-scene-rise 2.4s var(--vr-ease) both;
+}
+
+.vr-scene-halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: vr-scene-breathe 8s ease-in-out 2.4s infinite alternate;
+}
+
+.vr-scene-clouds {
+  animation: vr-scene-drift 70s ease-in-out infinite alternate;
+}
+
+.vr-scene-glint {
+  animation: vr-scene-shimmer 5s ease-in-out infinite alternate;
+}
+
+@keyframes vr-scene-rise {
+  from { transform: translateY(40px); opacity: 0.5; }
+  to { transform: none; opacity: 1; }
+}
+
+@keyframes vr-scene-breathe {
+  to { transform: scale(1.06); }
+}
+
+@keyframes vr-scene-drift {
+  from { transform: translateX(-16px); }
+  to { transform: translateX(16px); }
+}
+
+@keyframes vr-scene-shimmer {
+  from { opacity: 0.35; }
+  to { opacity: 0.85; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vr-scene-sun,
+  .vr-scene-halo,
+  .vr-scene-clouds,
+  .vr-scene-glint {
+    animation: none;
+  }
+}
+
+@media (min-width: 992px) {
+  .vr-entrance:has(.vr-scene) {
+    grid-template-columns: minmax(0, 1.15fr) minmax(30rem, 1fr);
+  }
+
+  .vr-entrance:has(.vr-scene) .vr-scene {
+    display: block;
+  }
+}
+
+/* ================================================================ Searchable multi-select (Tom Select)
+
+   static/js/test-picker.js. Tokens instead of its fixed greys and blue; focus is the same pen
+   outline as every other control. The .form-select wrapper carries the border (app .form-select
+   rules); the inner control has none. */
+
+.ts-wrapper.form-select .ts-control,
+.ts-wrapper .ts-control {
+  background-color: var(--vr-surface-2);
+  color: var(--vr-text);
+  min-height: 38px;
+  gap: 0.25rem;
+}
+
+.ts-wrapper .ts-control > input {
+  color: var(--vr-text);
+}
+
+.ts-wrapper .ts-control > input::placeholder {
+  color: var(--vr-text-muted);
+  opacity: 1;
+}
+
+.ts-wrapper.form-select.focus {
+  border-color: var(--vr-border-strong);
+  box-shadow: none;
+  outline: 2px solid var(--vr-focus);
+  outline-offset: 2px;
+}
+
+.ts-wrapper.form-select.is-invalid.focus {
+  border-color: var(--vr-danger-solid);
+  outline-color: var(--vr-danger-solid);
+}
+
+.ts-wrapper.focus .ts-control,
+.ts-wrapper.is-invalid.focus .ts-control {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+/* Match other invalid fields: 2px danger border, keep the select chevron (no Bootstrap "!" icon). */
+.ts-wrapper.form-select.is-invalid {
+  border-color: var(--vr-danger-solid);
+  border-width: 2px;
+  background-image: var(--bs-form-select-bg-img);
+  background-position: right 0.75rem center;
+  background-size: 16px 12px;
+}
+
+/* Chosen tests: highlighted entries, like selected rows. */
+.ts-wrapper.multi .ts-control > div.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0.0625rem 0 0.0625rem 0.5rem;
+  background: var(--vr-highlight-wash);
+  color: var(--vr-text);
+  border: 1px solid var(--vr-highlight-edge);
+  border-radius: 4px;
+}
+
+.ts-wrapper.multi .ts-control > div.item.active {
+  background: var(--vr-highlight);
+  color: var(--vr-on-highlight);
+  border-color: var(--vr-highlight-edge);
+}
+
+/* Selected test for another matrix: text + icon + tone, never colour alone. */
+.ts-wrapper.multi .ts-control > div.item.vr-ts-mismatch {
+  background: var(--vr-warning-bg);
+  color: var(--vr-warning-text);
+  border-color: var(--vr-warning-border);
+}
+
+.ts-wrapper.plugin-remove_button .item .remove {
+  display: inline-flex;
+  align-items: center;
+  align-self: stretch;
+  padding: 0 0.375rem;
+  border-left: 1px solid currentColor;
+  border-radius: 0;
+  opacity: 0.7;
+}
+
+.ts-wrapper.plugin-remove_button .item .remove:hover {
+  background: transparent;
+  opacity: 1;
+}
+
+.ts-dropdown,
+.ts-dropdown.form-select {
+  background: var(--vr-raised);
+  color: var(--vr-text);
+  border: 1px solid var(--vr-border-strong);
+  border-radius: var(--vr-radius-lg);
+  box-shadow: var(--vr-shadow-raised);
+}
+
+.ts-dropdown .option,
+.ts-dropdown .no-results {
+  padding: 0.375rem 0.75rem;
+}
+
+.ts-dropdown .no-results,
+.ts-dropdown .optgroup-header {
+  color: var(--vr-text-muted);
+}
+
+.ts-dropdown .optgroup-header {
+  background: var(--vr-raised);
+  font-family: var(--vr-font-mono);
+  font-size: var(--vr-label-size);
+  letter-spacing: var(--vr-label-tracking);
+  text-transform: uppercase;
+}
+
+.ts-dropdown .active {
+  background-color: var(--vr-highlight-wash);
+  color: var(--vr-text);
+  box-shadow: inset 3px 0 0 var(--vr-highlight-edge);
+}
+
+.ts-dropdown [data-selectable] .highlight {
+  background: transparent;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.ts-dropdown .vr-ts-analyte {
+  font-weight: 600;
+}
+
+.ts-dropdown .vr-ts-meta {
+  color: var(--vr-text-muted);
+}
+
+.ts-dropdown .active .vr-ts-meta {
+  color: inherit;
+}
+
+.vr-test-summary {
+  margin-top: 0.375rem;
+}
+
+.vr-test-mismatch {
+  margin-top: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  background: var(--vr-warning-bg);
+  color: var(--vr-warning-text);
+  border: 1px solid var(--vr-warning-border);
+}
+
+.vr-test-mismatch p {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+}
+
+.vr-test-mismatch ul {
+  margin: 0 0 0.5rem 1.5rem;
+  padding: 0;
+}
+
+.vr-test-mismatch .btn {
+  --bs-btn-color: var(--vr-warning-text);
+  --bs-btn-border-color: var(--vr-warning-text);
+  --bs-btn-hover-bg: var(--vr-surface);
+  --bs-btn-hover-color: var(--vr-warning-text);
+  --bs-btn-hover-border-color: var(--vr-warning-text);
+}
+
+/* ================================================================ Print
+
+   Always the light paper palette, whatever the screen mode: no ruling, no margin rule, no chrome,
+   strong text and stamp edges for a monochrome printer. */
+
+@media print {
+  :root,
+  [data-bs-theme],
+  [data-bs-theme="dark"] {
+    color-scheme: light;
+    --vr-paper: #ffffff;
+    --vr-paper-rule: #ffffff;
+    --vr-paper-grid: none;
+    --vr-margin: #ffffff;
+    --vr-margin-width: 0;
+    --vr-pencil: #8f1f18;
+    --vr-surface: #ffffff;
+    --vr-surface-2: #f2f4f3;
+    --vr-surface-hover: #ffffff;
+    --vr-raised: #ffffff;
+    --vr-band: #eef2ef;
+    --vr-border: #b9c4be;
+    --vr-border-strong: #555f59;
+    --vr-text: #000000;
+    --vr-text-muted: #3d4741;
+    --vr-ink: #1b3a27;
+    --vr-ink-rgb: 27, 58, 39;
+    --vr-ink-hover: #102619;
+    --vr-on-ink: #ffffff;
+    --vr-pen: #06434e;
+    --vr-pen-rgb: 6, 67, 78;
+    --vr-pen-hover: #06434e;
+    --vr-pen-hover-rgb: 6, 67, 78;
+    --vr-highlight: #fff0b8;
+    --vr-highlight-wash: #fff8dc;
+    --vr-highlight-edge: #8a6000;
+    --vr-on-highlight: #000000;
+    --vr-neutral-text: #333b37;
+    --vr-neutral-bg: #ffffff;
+    --vr-neutral-border: #555f59;
+    --vr-info-text: #163c70;
+    --vr-info-bg: #ffffff;
+    --vr-info-border: #163c70;
+    --vr-progress-text: #3b3270;
+    --vr-progress-bg: #ffffff;
+    --vr-progress-border: #3b3270;
+    --vr-success-text: #17521f;
+    --vr-success-bg: #ffffff;
+    --vr-success-border: #17521f;
+    --vr-warning-text: #5e3c00;
+    --vr-warning-bg: #ffffff;
+    --vr-warning-border: #5e3c00;
+    --vr-danger-text: #861c15;
+    --vr-danger-bg: #ffffff;
+    --vr-danger-border: #861c15;
+    --vr-danger-solid: #861c15;
+    --vr-on-danger: #ffffff;
+    --vr-hold-text: #62224a;
+    --vr-hold-bg: #ffffff;
+    --vr-hold-border: #62224a;
+    --vr-shadow-panel: none;
+    --vr-shadow-raised: none;
+  }
+
+  body,
+  .vr-app:not(.vr-entrance-page) {
+    background: #ffffff;
+  }
+
+  .vr-main,
+  .vr-shell {
+    background: none !important; /* print only: no margin rule on paper */
+  }
+
+  .vr-topbar,
+  .vr-sidenav,
+  .vr-page-actions,
+  .vr-grid-toolbar,
+  .vr-chips,
+  .vr-bulkbar,
+  .vr-pagination,
+  .vr-section-tabs,
+  .vr-page-toc,
+  .vr-skip,
+  .vr-main .btn,
+  .dt-layout-row:last-child {
+    display: none !important; /* print only: beats Bootstrap's display utilities */
+  }
+
+  .vr-shell {
+    display: block;
+  }
+
+  .vr-main {
+    padding: 0;
+  }
+
+  .card {
+    break-inside: avoid-page;
+  }
+
+  .vr-form-actions {
+    position: static;
+  }
+
+  /* A quote prints as the document alone: no versions, decision forms or history. */
+  .vr-main:has(> .vr-quote-document) > :not(.vr-quote-document) {
+    display: none !important;
+  }
+
+  .vr-quote-document {
+    border: 0;
+  }
+
+  .vr-quote-document > .card-header,
+  .vr-quote-document > .card-body {
+    padding-left: 0;
+    padding-right: 0;
+    background: transparent;
+  }
+}
+
+/* core.widgets.ListOrOtherWidget: the text input appears only while "Other" is selected. */
+.vr-other-input {
+  display: none;
+  margin-top: 0.375rem;
+}
+
+.vr-other:has(option[value="__other__"]:checked) .vr-other-input {
+  display: block;
+}

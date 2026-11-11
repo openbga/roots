@@ -1,0 +1,79 @@
+{
+  "id": "receipt-contact-form",
+  "routes": [
+    "receipt:contact-create",
+    "receipt:contact-edit"
+  ],
+  "title": "Additional client contact",
+  "purpose": "Add or update a person at this client besides its primary contact. This record does not create a portal account.",
+  "sections": [
+    {
+      "title": "Fields",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Name",
+          "description": "Required contact name, up to 160 characters."
+        },
+        {
+          "label": "Role",
+          "description": "Optional list: Not recorded, Report recipient, Billing / accounts payable, Sampler, Project lead, Regulatory contact or Other…. Other… reveals a text box (Describe); the text you type, up to 80 characters, is stored. A role recorded before the list existed shows as Other with its text. The role is a label; it grants no access."
+        },
+        {
+          "label": "Email",
+          "description": "Optional valid email; at least one of Email and Phone is required."
+        },
+        {
+          "label": "Phone",
+          "description": "Optional contact number, up to 40 characters; required when no email is supplied."
+        },
+        {
+          "label": "Receives reports",
+          "description": "Initially unchecked. Records who the client wants reports sent to; information only, nothing is emailed."
+        },
+        {
+          "label": "Is active",
+          "description": "Edit only; new contacts start active. Deactivate someone who has left instead of deleting their record."
+        },
+        {
+          "label": "Reason",
+          "description": "Edit only and required for changes. The explanation and prior values are retained in history."
+        }
+      ]
+    },
+    {
+      "title": "Actions and history",
+      "paragraphs": [
+        "Name, role, email and phone are trimmed. An unchanged edit is refused. Concurrent edits are refused with Contact changed; reload and review current details before resubmitting. Field and form errors leave submitted text on the form."
+      ],
+      "items": [
+        {
+          "label": "Add contact / Save changes",
+          "description": "Project managers and administrators save under the client shown in the breadcrumb and return to that client. A contact cannot be edited through a different client’s URL."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the client without saving."
+        },
+        {
+          "label": "History",
+          "description": "Existing contact events appear in chronological order with action, actor, timestamp and reason."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/views.py",
+    "receipt/models.py",
+    "receipt/forms.py",
+    "receipt/services.py",
+    "accounts/roles.py",
+    "receipt/client_views.py",
+    "receipt/contacts.py",
+    "templates/receipt/contact_form.html",
+    "receipt/tests/test_clients.py",
+    "core/widgets.py",
+    "receipt/vocabulary.py"
+  ]
+}

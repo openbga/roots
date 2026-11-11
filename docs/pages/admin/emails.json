@@ -1,0 +1,67 @@
+{
+  "id": "admin-emails",
+  "routes": [
+    "admin:account_emailaddress_changelist"
+  ],
+  "title": "Authentication email addresses",
+  "purpose": "Look up the email addresses accounts use for sign-in codes and password reset, and whether each is verified.",
+  "sections": [
+    {
+      "title": "Access and columns",
+      "paragraphs": [
+        "Requires an active account with both Staff and Superuser status. A laboratory admin role, Staff status alone or individual authenticator or email-address model permissions granted to a user or group do not open this page.",
+        "These are Django administration tables, not operational grids. The server uses 100 records per page, with numbered page links and a total count. Show all appears when the filtered result count is at most 200 and exceeds one page. There is no Rows per page selector, Columns dialog, row checkbox or bulk action. Linked sortable headings change order; repeated heading clicks change direction or remove that ordering. The sidebar navigation filter only filters module links, not table records."
+      ],
+      "items": [
+        {
+          "label": "Email",
+          "description": "Address, opening its read-only record. Sortable."
+        },
+        {
+          "label": "User",
+          "description": "Account the address belongs to. Sortable."
+        },
+        {
+          "label": "Primary",
+          "description": "The account’s preferred address. Sortable."
+        },
+        {
+          "label": "Verified",
+          "description": "Whether the account holder confirmed they receive mail at this address. Sortable."
+        }
+      ]
+    },
+    {
+      "title": "Search and filters",
+      "paragraphs": [
+        "Search matches case-insensitive substrings. Space-separated terms must each match at least one field; quote a phrase to match it as one term. Clearing the search restores the full list while keeping filters.",
+        "Sidebar filters use links, with All restoring that filter. Show counts or Hide counts toggles per-option counts, and Clear all filters clears active sidebar restrictions. Filtering applies to all records and resets paging.",
+        "Initial order is newest record identity first."
+      ],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Email, plus the account’s username, first name, last name and account email."
+        },
+        {
+          "label": "primary / verified",
+          "description": "All, Yes or No for each flag."
+        }
+      ]
+    },
+    {
+      "title": "Read only",
+      "paragraphs": [
+        "Addresses cannot be added, edited, verified or deleted here. Account holders manage and verify their own addresses from their own Email addresses page; an account’s own email field is edited on its user record."
+      ]
+    }
+  ],
+  "sources": [
+    "accounts/admin.py",
+    "accounts/models.py",
+    "accounts/roles.py",
+    "core/admin.py",
+    "config/settings.py",
+    "uv.lock"
+  ]
+}

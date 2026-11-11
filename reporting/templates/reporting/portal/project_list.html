@@ -1,0 +1,45 @@
+{% extends "layouts/portal.html" %}
+{% comment %}
+Client project grid. Context: page_obj, filter_form, q, sort, per_page,
+active_filters, filtered.
+{% endcomment %}
+{% block content %}
+{% include "reporting/portal/notice.html" %}
+<section class="card vr-table-card" aria-labelledby="projects-heading">
+  <h2 class="visually-hidden" id="projects-heading">Projects</h2>
+  {% include "includes/grid_toolbar.html" with label="Filter projects" placeholder="Project or program / permit" search_id="filter-q" grid="portal.projects" active=filtered %}
+  {% if page_obj.paginator.count %}
+  <div class="vr-table-wrap">
+    <table class="table table-hover vr-table" data-vr-grid="portal.projects" data-vr-grid-version="1" aria-labelledby="projects-heading">
+      <thead>
+        <tr>
+          {% include "includes/sort_header.html" with label="Project" asc="name" desc="-name" col="project" locked=True %}
+          {% include "includes/sort_header.html" with label="Program / permit" asc="program" desc="-program" col="program" %}
+          {% include "includes/sort_header.html" with label="Turnaround (days)" asc="turnaround_days" desc="-turnaround_days" class="text-end" col="turnaround_days" hidden=True %}
+          {% include "includes/sort_header.html" with label="Samples" asc="samples" desc="-samples" class="text-end" col="samples" %}
+          {% include "includes/sort_header.html" with label="Last received" asc="last_received" desc="-last_received" first="desc" col="last_received" %}
+          {% include "includes/sort_header.html" with label="Reports" asc="reports" desc="-reports" class="text-end" col="reports" %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for project in page_obj %}
+        <tr>
+          <th scope="row">{{ project.name }}</th>
+          <td>{{ project.program|default:"—" }}</td>
+          <td class="text-end">{{ project.turnaround_days }}</td>
+          <td class="text-end">{% if project.sample_count %}<a href="{% url 'portal:sample-list' %}?project={{ project.pk }}">{{ project.sample_count }}<span class="visually-hidden"> samples in {{ project.name }}</span></a>{% else %}0{% endif %}</td>
+          <td class="vr-nowrap">{% if project.last_received %}<time datetime="{{ project.last_received|date:'c' }}">{{ project.last_received|date:"Y-m-d H:i" }}</time>{% else %}<span class="vr-muted">—</span>{% endif %}</td>
+          <td class="text-end">{{ project.report_count }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "includes/pagination.html" with noun="projects" filtered=filtered %}
+  {% elif filtered %}
+  {% include "includes/empty_state.html" with kind="no-results" title="No projects match" body="Clear the search to see all of your projects." clear_url=request.path %}
+  {% else %}
+  {% include "includes/empty_state.html" with title="No projects yet" body="Your laboratory contact sets up projects. Sample status and issued reports will appear here." %}
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,56 @@
+{
+  "id": "accounts-login",
+  "routes": [
+    "account_login"
+  ],
+  "title": "Sign in",
+  "purpose": "Start a session using the account issued by your laboratory.",
+  "sections": [
+    {
+      "title": "Fields and actions",
+      "items": [
+        {
+          "label": "Login",
+          "description": "Required username or email address, as the placeholder Username or email explains. Staff and client accounts use this same page; their account assignment controls the destination and records they can access."
+        },
+        {
+          "label": "Password",
+          "description": "Required account password. Use Forgot your password? beneath this field for the email-based recovery form."
+        },
+        {
+          "label": "Remember Me",
+          "description": "Optional, initially unchecked. Checked requests the normal persistent session lifetime; unchecked expires the session cookie when the browser session ends. The committed session lifetime is Django’s default two weeks."
+        },
+        {
+          "label": "Sign in",
+          "description": "Checks credentials and active account status, then asks for an enrolled second factor when applicable. A valid next destination takes precedence; otherwise sign-in goes to the dashboard, which routes client users to their portal."
+        },
+        {
+          "label": "Email me a sign-in code",
+          "description": "Opens the email-code request page as an alternative to entering your password. Enter the email on your laboratory account there, then type the emailed code in the requesting browser within five minutes. This action appears when the deployment uses an email backend other than the disabled dummy backend. Its availability does not confirm successful email delivery. An enrolled second factor is still required when applicable."
+        }
+      ]
+    },
+    {
+      "title": "Enabled behavior",
+      "paragraphs": [
+        "Public sign-up is closed; the laboratory issues accounts through administration. Username/email password login is enabled and does not require an email code. Passkey login is not offered. Password sign-in permits unverified email, but that does not establish email ownership or satisfy MFA enrollment prerequisites. A successful email-code sign-in verifies the account email. Failed attempts are rate limited. A successful login never adds laboratory roles or access to another client’s records. No invitations are sent by this screen.",
+        "The administration site has no separate sign-in. Opening it while signed out leads here, so the same failed-attempt limit and enrolled second factor apply, and afterwards returns to the administration page that was requested. An account without Staff status that is already signed in is refused there."
+      ]
+    }
+  ],
+  "sources": [
+    "templates/account/login.html",
+    "accounts/adapter.py",
+    "accounts/roles.py",
+    "core/views.py",
+    "config/settings.py",
+    "templates/allauth/layouts/base.html",
+    "templates/allauth/layouts/manage.html",
+    "uv.lock",
+    "accounts/tests/test_login.py",
+    "templates/account/request_login_code.html",
+    "config/urls.py",
+    "tests/test_admin_login.py"
+  ]
+}

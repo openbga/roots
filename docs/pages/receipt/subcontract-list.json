@@ -1,0 +1,114 @@
+{
+  "id": "receipt-subcontract-list",
+  "routes": [
+    "receipt:subcontract-list"
+  ],
+  "title": "Subcontracted tests",
+  "purpose": "Follow external handoffs and source acceptance for individual requested tests. Start a handoff from the received sample’s requested-test row.",
+  "sections": [
+    {
+      "title": "Search and filters",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Case-insensitive contains over external laboratory, external reference, dispatch sample ID, laboratory sample ID and client name. It does not search the later source-only sample ID, analyte or entered result."
+        },
+        {
+          "label": "State",
+          "description": "All subcontracts includes cancelled records. Awaiting source result means active with no source versions; Awaiting source review means latest active source lacks a decision. Accepted source and Rejected source use only the latest source decision. Cancelled dispatch shows cancelled records."
+        }
+      ]
+    },
+    {
+      "title": "Columns and navigation",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Subcontract",
+          "description": "Generated EXT number links to handoff/source history. No New button is provided; send work out from its sample."
+        },
+        {
+          "label": "Source status",
+          "description": "Cancelled dispatch, Awaiting source result, Awaiting source review, Accepted source or Rejected source; not sortable."
+        },
+        {
+          "label": "Lab ID",
+          "description": "Links to sample receipt; client appears below."
+        },
+        {
+          "label": "Analyte",
+          "description": "Requested analyte; the dispatch belongs to one requested test, not the whole sample."
+        },
+        {
+          "label": "External laboratory / External reference",
+          "description": "Recorded actual arrangement and order/dispatch reference."
+        },
+        {
+          "label": "Handed over",
+          "description": "Completed handoff timestamp. Default sort is newest handoff first."
+        },
+        {
+          "label": "Find a sample",
+          "description": "Empty-list action opens Samples so an eligible requested test can be selected."
+        }
+      ]
+    },
+    {
+      "title": "Table controls",
+      "paragraphs": [
+        "All laboratory staff can read; portal accounts cannot. Invalid filters show errors/no rows and invalid page size is refused. No-match offers clearing/widening filters; no handoffs offers Find a sample."
+      ],
+      "items": [
+        {
+          "label": "Apply / Clear all / filter chips",
+          "description": "Apply searches/filters all handoffs and starts at page 1. Clear all restores defaults; remove a chip to clear only that criterion."
+        },
+        {
+          "label": "Headings / Columns",
+          "description": "Linked headings sort the whole matching set, with record ID breaking ties. Columns changes browser-local visibility/order with reset; subcontract ID stays visible."
+        },
+        {
+          "label": "Rows per page / Show / Pagination",
+          "description": "25 default, with 25/50/100 choices. Show submits if automatic size submission is unavailable. Size changes start at page 1. First/Previous/Next/Last retain criteria; counts reflect all matches."
+        }
+      ]
+    },
+    {
+      "title": "Column layout dialog",
+      "items": [
+        {
+          "label": "Column checkboxes",
+          "description": "Changes apply immediately. Check to show an optional column or uncheck to hide it. Always shown columns are fixed."
+        },
+        {
+          "label": "Move column up / down",
+          "description": "Moves an optional column within the displayed order; the first/last position disables the unavailable move. You can also drag movable table headers."
+        },
+        {
+          "label": "Reset columns",
+          "description": "Restores this table’s default order and visibility in this browser."
+        },
+        {
+          "label": "Done / Close",
+          "description": "Closes the dialog; layout changes have already been applied and saved locally. No laboratory record is changed."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/subcontract_views.py",
+    "receipt/subcontract_forms.py",
+    "receipt/subcontract_models.py",
+    "receipt/subcontracts.py",
+    "receipt/models.py",
+    "accounts/roles.py",
+    "receipt/tests/test_subcontracts.py",
+    "receipt/templates/receipt/subcontract/list.html",
+    "receipt/templates/receipt/subcontract/status.html",
+    "core/grids.py",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js"
+  ]
+}

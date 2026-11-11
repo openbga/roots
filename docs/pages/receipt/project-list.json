@@ -1,0 +1,158 @@
+{
+  "id": "receipt-project-list",
+  "routes": [
+    "receipt:project-list"
+  ],
+  "title": "Projects",
+  "purpose": "Find client projects with their number, program, site, manager and standard turnaround. Each chain of custody belongs to one project and inherits its client relationship.",
+  "sections": [
+    {
+      "title": "Search and actions",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Matches project name, project number, owning client name, permit or program ID and site or facility."
+        },
+        {
+          "label": "Client",
+          "description": "Exact client selection, including inactive clients for historical work."
+        },
+        {
+          "label": "Status",
+          "description": "Filters the project’s active flag; blank/All includes both. Client inactivity is a separate restriction."
+        },
+        {
+          "label": "Program",
+          "description": "More filters: Any program or one regulatory program (NPDES / Clean Water Act, Industrial pretreatment, Stormwater permit, Drinking water (SDWA), RCRA / waste characterization, Site investigation / remediation, State program, Not regulatory, Other)."
+        },
+        {
+          "label": "Project manager",
+          "description": "More filters: Any project manager or one active laboratory staff account. A deactivated manager is not offered."
+        },
+        {
+          "label": "New project",
+          "description": "Project managers and administrators create a project under an active client."
+        },
+        {
+          "label": "Project row link",
+          "description": "Project managers and administrators open the edit form. Other staff see the name as text; there is no separate project detail page."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Project",
+          "description": "Project name; default sort is name ascending."
+        },
+        {
+          "label": "Number",
+          "description": "Project number, or a dash. Sortable."
+        },
+        {
+          "label": "Client",
+          "description": "Owning client organization."
+        },
+        {
+          "label": "Program",
+          "description": "Regulatory program category, or a dash. A grouping label, not a compliance or accreditation determination."
+        },
+        {
+          "label": "Permit or program ID",
+          "description": "Optional permit number or program label describing this project."
+        },
+        {
+          "label": "Site",
+          "description": "Initially hidden. Site or facility, followed by the state of sample origin in parentheses when recorded. Not sortable."
+        },
+        {
+          "label": "Project manager",
+          "description": "Assigned laboratory project manager, or a dash. Sorting orders by the manager’s first name."
+        },
+        {
+          "label": "Turnaround (days)",
+          "description": "Configured standard project turnaround in days, default 10. It does not automatically assign an order delivery target or analytical holding limit."
+        },
+        {
+          "label": "Status",
+          "description": "Project availability for new intake; inactive records and their history remain readable."
+        }
+      ]
+    },
+    {
+      "title": "Table controls",
+      "paragraphs": [
+        "Active laboratory staff can read this list; client portal accounts cannot. Invalid filters show errors and no rows until corrected or cleared. Invalid page sizes are refused. No-match and no-record empty states provide different next steps. Inactive records remain part of historical searches."
+      ],
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Combines a case-insensitive contains search and selected filters across the complete record set; returns to page 1."
+        },
+        {
+          "label": "More filters",
+          "description": "Opens Program and Project manager and remains open when either is active or invalid."
+        },
+        {
+          "label": "Clear all / filter chips",
+          "description": "Clear all restores the unfiltered URL and default sort. Remove one chip to clear that criterion, preserving the others and returning to page 1."
+        },
+        {
+          "label": "Column headings",
+          "description": "Linked headings sort all matching records, not just this page. Record ID breaks ties. Unsupported sort values use the default."
+        },
+        {
+          "label": "Columns",
+          "description": "Show, hide or reorder optional columns. The identifying column remains visible. Browser-local preferences do not change data, search or sort; reset restores default columns."
+        },
+        {
+          "label": "Rows per page",
+          "description": "25 by default; choose 25, 50 or 100. Changing size returns to page 1. Use Show when automatic submission is unavailable."
+        },
+        {
+          "label": "Pagination",
+          "description": "First, Previous, Next and Last retain filters and sort. The footer gives the visible range and total matching count."
+        }
+      ]
+    },
+    {
+      "title": "Column layout dialog",
+      "items": [
+        {
+          "label": "Column checkboxes",
+          "description": "Changes apply immediately. Check to show an optional column or uncheck to hide it. Always shown columns are fixed."
+        },
+        {
+          "label": "Move column up / down",
+          "description": "Moves an optional column within the displayed order; the first/last position disables the unavailable move. You can also drag movable table headers."
+        },
+        {
+          "label": "Reset columns",
+          "description": "Restores this table’s default order and visibility in this browser."
+        },
+        {
+          "label": "Done / Close",
+          "description": "Closes the dialog; layout changes have already been applied and saved locally. No laboratory record is changed."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/views.py",
+    "receipt/models.py",
+    "receipt/forms.py",
+    "receipt/services.py",
+    "accounts/roles.py",
+    "receipt/filters.py",
+    "receipt/lists.py",
+    "templates/receipt/project_list.html",
+    "tests/test_receipt_grids.py",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js",
+    "receipt/tests/test_master_data.py"
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "id": "analytical-main-qc-measure",
+  "routes": [
+    "analytical:qc-measure"
+  ],
+  "title": "Record measurements",
+  "purpose": "Record or correct per-analyte observations for one QC sample, preserving each earlier measurement and evaluating against the laboratory’s current configured limits.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "These are staff pages. Active users with an application staff role can read them; client accounts cannot. Analysts perform result entry and batch work, reviewers decide results, and administrators maintain configuration. Administrators also have operational analyst and reviewer access, but independence rules still apply. Superuser status alone does not grant an application role."
+      ]
+    },
+    {
+      "title": "Sample and row scope",
+      "paragraphs": [
+        "The page identifies the QC sample label/type and parent sample if present. Rows are ordered by analyte and represent definitions currently associated with the batch’s work. If no definitions are found, active definitions for the batch method/matrix are displayed as a fallback; saving still requires the definition to be part of the batch. Breadcrumbs and Cancel follow the owning analytical or preparation batch. Other staff see a disabled form."
+      ]
+    },
+    {
+      "title": "Common fields",
+      "items": [
+        {
+          "label": "Analysis start",
+          "description": "Required laboratory-local time for every measurement entered in this save. Cannot be more than two minutes ahead. Preparation QC analysis cannot precede recorded completion, or start when completion is absent. Parent preparation cannot precede collection."
+        },
+        {
+          "label": "Reason for correction",
+          "description": "Required when any entered row replaces an existing current measurement. Applied to the corrected measurements; earlier values remain linked in history."
+        },
+        {
+          "label": "QC analytical run",
+          "description": "Shown for preparation QC. Optional explicit actual analytical batch for export linkage; never inferred. A chosen run must have this test’s analytical method/version and matching matrix. A single selection must be valid for all rows being saved. Analytical QC belongs to its own analytical batch."
+        }
+      ]
+    },
+    {
+      "title": "Columns and row inputs",
+      "items": [
+        {
+          "label": "Analyte",
+          "description": "Read-only analyte to measure."
+        },
+        {
+          "label": "Unit",
+          "description": "Read-only test unit, used for observed, spike/native/reference values. No unit conversion."
+        },
+        {
+          "label": "Current",
+          "description": "Current original observed text, or a dash before first measurement. New input does not overwrite this record."
+        },
+        {
+          "label": "Observed",
+          "description": "Number or ND. Leave this blank to skip the analyte even if its initial reporting limit is present."
+        },
+        {
+          "label": "Reporting limit",
+          "description": "Positive applied limit, initially the definition’s reporting limit when configured. Needed for every entered observation, including ND."
+        },
+        {
+          "label": "Spike / true value",
+          "description": "Required for Laboratory control sample, Calibration verification, Matrix spike and Matrix spike duplicate. Positive added amount or true value in the result unit."
+        },
+        {
+          "label": "Unspiked result",
+          "description": "Required for Matrix spike and Matrix spike duplicate. Enter the numeric native result; explicitly use 0 when that is the supplied non-detect interpretation. A blank does not mean zero."
+        },
+        {
+          "label": "Reference result",
+          "description": "Required for Laboratory duplicate and Matrix spike duplicate. Numeric comparison result in the same unit."
+        }
+      ]
+    },
+    {
+      "title": "Evaluation",
+      "items": [
+        {
+          "label": "Method blank",
+          "description": "Checks observed numeric value against configured inclusive bounds. An ND blank passes only when an upper limit exists and its applied reporting limit is no greater than that upper limit."
+        },
+        {
+          "label": "Percent recovery",
+          "description": "Calculated as observed divided by spike times 100 for LCS/calibration verification, or (observed minus unspiked) divided by spike times 100 for matrix spikes. ND cannot yield recovery."
+        },
+        {
+          "label": "Relative percent difference",
+          "description": "For duplicate types, absolute observed-reference difference divided by the absolute pair mean times 100. Equal numeric values yield zero RPD; unequal values with zero mean are not evaluable. ND/no reference cannot yield RPD."
+        },
+        {
+          "label": "Pass / Fail / Not evaluated",
+          "description": "Every applicable measure needs an active configured limit for this exact test, QC type and phase. Bounds are inclusive. Any failed measure makes the observation Fail; otherwise an unevaluated measure makes it Not evaluated. Missing limits are never an assumed pass. Failed or unevaluated observations hold approval."
+        }
+      ]
+    },
+    {
+      "title": "Actions and history",
+      "paragraphs": [
+        "Exact result parsing accepts plain decimals/scientific notation or ND, with 14 integer digits and 10 decimal places. Comparison text, units, separators or values needing rounding are errors. QC limits and frequencies come from configured lab policy."
+      ],
+      "items": [
+        {
+          "label": "Record measurements",
+          "description": "Analysts save nonblank Observed rows as one transaction. At least one observed value is needed. Any invalid row rolls back the whole save and preserves typed values with linked row errors. Saving remains available after batch membership closes."
+        },
+        {
+          "label": "Cancel",
+          "description": "Return to the batch without saving."
+        },
+        {
+          "label": "Corrections",
+          "description": "A replacement marks the prior measurement no longer current, links the new observation to it, records actor/time/reason and audits the change. Current QC is reevaluated from current limits; a prior disposition may no longer match after measurement or limits change."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/templates/analytical/qc_measure.html",
+    "analytical/qc.py",
+    "analytical/parsing.py",
+    "analytical/preparation.py",
+    "analytical/tests/test_views.py",
+    "analytical/tests/test_workflow.py",
+    "analytical/tests/test_preparation.py",
+    "analytical/tests/test_qc_parent_chronology.py"
+  ]
+}

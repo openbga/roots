@@ -1,0 +1,158 @@
+{
+  "id": "commercial-quote-detail",
+  "routes": [
+    "commercial:quote-detail"
+  ],
+  "title": "Quote",
+  "purpose": "Review documents and version history, then edit, issue, revise or withdraw when eligible.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "Project managers and admins can use price lists and quotes. Other staff roles do not grant this access. Admin includes the project manager role. A superuser flag alone supplies no application role."
+      ]
+    },
+    {
+      "title": "State and selection",
+      "paragraphs": [
+        "Header state, title and client/project are current live values. The document shows the selected version. Latest is selected initially; Versions links open older versions. An unknown version request falls back to latest. Older versions show Superseded and Show the current version. Version tables are not paginated.",
+        "Accepted/Declined banners show decision version, actor and time. Acceptance includes any client reference; decline includes its reason. Expired means the valid-until date passed. A decision banner describes the current quote decision even while an older document is selected."
+      ]
+    },
+    {
+      "title": "Quote document",
+      "items": [
+        {
+          "label": "Quote number · version",
+          "description": "Identifies the quote and selected version. Its title describes the work. Drafts use current names; issued versions retain the title, client and project names recorded at issue."
+        },
+        {
+          "label": "Prepared for",
+          "description": "Client and optional project covered by this version. An absent optional project is not filled from a later draft."
+        },
+        {
+          "label": "Issued",
+          "description": "Issue date for this version, or Not issued for a staff draft."
+        },
+        {
+          "label": "Valid until",
+          "description": "Last calendar date an issued version is open for a client decision, using the laboratory date. Expired appears after that date while the quote is Issued."
+        },
+        {
+          "label": "Standard turnaround",
+          "description": "Stated business days from receipt, or Not stated. This does not itself set an order delivery target or an analytical holding time."
+        },
+        {
+          "label": "Description",
+          "description": "Stored text for the test, fee or discount. A test’s default identifies analyte, method/version, matrix and analytical unit."
+        },
+        {
+          "label": "Type",
+          "description": "Test, Fee or Discount / adjustment describes the charge."
+        },
+        {
+          "label": "Qty",
+          "description": "Positive whole-number multiplier, such as the number of samples quoted."
+        },
+        {
+          "label": "Unit price",
+          "description": "Exact USD amount per line unit. Discounts/adjustments are zero or negative; test and fee prices are non-negative."
+        },
+        {
+          "label": "Amount",
+          "description": "Computed quantity multiplied by stored unit price, in USD."
+        },
+        {
+          "label": "Total (USD)",
+          "description": "Exact sum of amounts including discounts; cannot be negative."
+        },
+        {
+          "label": "Scope and assumptions / Terms",
+          "description": "Client-visible text for this version. Shown only when supplied and frozen when issued."
+        }
+      ]
+    },
+    {
+      "title": "Versions",
+      "items": [
+        {
+          "label": "Version",
+          "description": "Open that version; authorized staff can see unissued drafts and issued versions."
+        },
+        {
+          "label": "Issued",
+          "description": "Issue date/time, or Draft."
+        },
+        {
+          "label": "Total (USD)",
+          "description": "Stored total for this version."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Print",
+          "description": "Open browser printing. Does not issue a quote or create a stored report."
+        },
+        {
+          "label": "Edit",
+          "description": "Shown to project managers/admins on the latest unissued Draft or Being revised version; opens the draft editor."
+        },
+        {
+          "label": "Issue version",
+          "description": "Publish the latest draft to the client and freeze presentation, lines, prices, total, scope and terms. Requires a stored line, valid-until date today or later, and a current version/revision. Sets Issued and clears previous decision fields. A repeated completed issue does not issue twice."
+        },
+        {
+          "label": "Revise",
+          "description": "Shown to project managers/admins on the latest Issued or Declined version, including expired quotes. Copies lines, prices, list, turnaround, scope and terms into the next draft; leaves validity unset and opens editing. Client can still inspect the last issued version but cannot decide while Being revised. Accepted or Withdrawn quotes cannot be revised."
+        },
+        {
+          "label": "Withdraw quote",
+          "description": "Shown to project managers/admins for the latest version unless Accepted or already Withdrawn. Required Reason explains the withdrawal. Submitting records withdrawal and reason without deleting versions; the quote disappears from client quote pages. Stale changes are refused. Accepted quotes cannot be withdrawn."
+        },
+        {
+          "label": "Quotes",
+          "description": "Return to the staff list."
+        }
+      ]
+    },
+    {
+      "title": "Action form controls",
+      "items": [
+        {
+          "label": "Reason",
+          "description": "Required reason for withdrawing this quote; recorded in history."
+        },
+        {
+          "label": "Maximize / Restore size / Close form / Cancel",
+          "description": "With enhanced controls, reason actions open in a dialog. Change its size without saving, or close/cancel without submitting. If prompted, Keep editing resumes and Discard changes leaves without saving. Wait for an in-progress action to complete."
+        }
+      ]
+    },
+    {
+      "title": "History",
+      "paragraphs": [
+        "Shows recorded events in oldest-first order. Each event identifies action, time, actor and any reason. Changes and their audit event save together. The timeline does not display every stored before-and-after value."
+      ]
+    }
+  ],
+  "sources": [
+    "commercial/urls.py",
+    "commercial/views.py",
+    "commercial/models.py",
+    "commercial/forms.py",
+    "commercial/permissions.py",
+    "accounts/roles.py",
+    "commercial/quotes.py",
+    "commercial/selectors.py",
+    "commercial/templates/commercial/quote_detail.html",
+    "commercial/templates/commercial/_quote_document.html",
+    "commercial/templates/commercial/_history.html",
+    "commercial/tests/test_quotes.py",
+    "commercial/tests/test_concurrency.py",
+    "templates/includes/form_dialog.html",
+    "static/js/form-dialog.js"
+  ]
+}

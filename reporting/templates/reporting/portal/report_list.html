@@ -1,0 +1,47 @@
+{% extends "layouts/portal.html" %}
+{% comment %}
+Client report grid. Context: page_obj, filter_form (client-scoped
+PortalFilterForm), q, sort, per_page, active_filters, filtered. Only issued reports are listed.
+{% endcomment %}
+{% block content %}
+{% include "reporting/portal/notice.html" %}
+<section class="card vr-table-card" aria-labelledby="reports-heading">
+  <h2 class="visually-hidden" id="reports-heading">Reports</h2>
+  {% include "includes/grid_toolbar.html" with label="Filter reports" placeholder="Report ID, title or project" search_id="filter-q" grid="portal.reports" active=filtered %}
+  {% if page_obj.paginator.count %}
+  <div class="vr-table-wrap">
+    <table class="table table-hover vr-table" data-vr-grid="portal.reports" data-vr-grid-version="1" aria-labelledby="reports-heading">
+      <thead>
+        <tr>
+          {% include "includes/sort_header.html" with label="Report" asc="number" desc="-number" col="report" locked=True %}
+          {% include "includes/sort_header.html" with label="Title" asc="title" desc="-title" col="title" %}
+          {% include "includes/sort_header.html" with label="Project" asc="project" desc="-project" col="project" %}
+          {% include "includes/sort_header.html" with label="Current version" asc="status" desc="-status" col="version" %}
+          {% include "includes/sort_header.html" with label="First issued" asc="first_released" desc="-first_released" first="desc" col="first_released" hidden=True %}
+          {% include "includes/sort_header.html" with label="Last released" asc="released" desc="-released" first="desc" col="released" %}
+          <th scope="col" class="text-end" data-vr-col="actions" data-vr-col-label="Actions" data-vr-col-locked><span class="visually-hidden">Actions</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for report in page_obj %}
+        <tr>
+          <th scope="row"><a class="vr-row-link vr-id" href="{% url 'portal:report-detail' report.pk %}">{{ report.number }}</a></th>
+          <td>{{ report.title }}</td>
+          <td>{{ report.project.name }}</td>
+          <td>{% include "reporting/version_status.html" with plain=True %}</td>
+          <td class="vr-nowrap"><time datetime="{{ report.first_released_at|date:'c' }}">{{ report.first_released_at|date:"Y-m-d H:i" }}</time></td>
+          <td class="vr-nowrap"><time datetime="{{ report.released_at|date:'c' }}" title="{{ report.released_at|date:'Y-m-d H:i T' }}">{{ report.released_at|date:"Y-m-d H:i" }}</time></td>
+          <td class="text-end vr-nowrap"><a class="btn btn-sm btn-outline-secondary" href="{% url 'portal:report-pdf' report.pk report.latest_version %}">Download PDF<span class="visually-hidden"> of {{ report.number }} version {{ report.latest_version }}</span></a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "includes/pagination.html" with noun="reports" filtered=filtered %}
+  {% elif filtered %}
+  {% include "includes/empty_state.html" with kind="no-results" title="No reports match" body="Check the report ID, or clear the filters." clear_url=request.path %}
+  {% else %}
+  {% include "includes/empty_state.html" with title="No reports issued yet" body="Reports appear here as soon as the laboratory releases them." %}
+  {% endif %}
+</section>
+{% endblock %}

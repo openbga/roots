@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load catalog_extras %}
+{% block breadcrumbs %}{% url 'receipt:sample-list' as list_url %}{% url 'receipt:sample-detail' test.sample.pk as sample_url %}{% include "includes/breadcrumbs.html" with section="Samples" section_url=list_url record=test.sample.lab_id record_url=sample_url %}{% endblock %}
+{% block page_meta %}<ul class="vr-page-meta"><li>Sample <a class="vr-id" href="{% url 'receipt:sample-detail' test.sample.pk %}">{{ test.sample.lab_id }}</a></li><li>{{ test.definition }}</li></ul>{% endblock %}
+{% block page_intro %}<p class="vr-page-intro">Compares the recorded cooler receipt temperature with the laboratory's configured rule for this test.</p>{% endblock %}
+{% block content %}
+<section class="card mb-3" aria-labelledby="findings-heading"><div class="card-header"><h2 class="card-title" id="findings-heading">Current findings</h2></div><div class="card-body">
+{% include "includes/status.html" with label=summary.label tone=summary.tone %}
+<p class="mt-2">{{ evidence.temperature.label }}. {{ evidence.temperature.detail }}</p>
+<dl class="vr-facts">
+<div><dt>Recorded cooler temperature</dt><dd>{{ evidence.observations.cooler_temperature_original|default:evidence.observations.cooler_temperature }} {{ evidence.observations.unit }}{% if evidence.observations.instrument %} · {{ evidence.observations.instrument }}{% endif %}</dd></div>
+{% if evidence.observations.coolant %}<div><dt>Coolant on arrival</dt><dd>{{ evidence.observations.coolant }}</dd></div>{% endif %}
+<div><dt>Seal observation</dt><dd>{{ evidence.observations.seal_condition }}</dd></div>
+<div><dt>Preservation observation</dt><dd>{{ evidence.observations.preservation_check }}</dd></div>
+<div><dt>Receipt discrepancy</dt><dd>{{ evidence.observations.discrepancy|default:"None recorded" }}</dd></div>
+</dl>
+{% if evidence.rule %}
+<dl class="vr-facts mt-3">
+<div><dt>Rule availability</dt><dd>{{ evidence.rule.is_active|yesno:"Active,Inactive — not evaluated" }}</dd></div>
+<div><dt>Temperature bounds</dt><dd>Minimum: {{ evidence.rule.lower|default_if_none:"No lower bound"|plain_decimal }} / Maximum: {{ evidence.rule.upper|default_if_none:"No upper bound"|plain_decimal }} {{ evidence.rule.unit }}</dd></div>
+<div><dt>Container requirements (manual)</dt><dd>{{ evidence.rule.container_requirements|default:"None configured"|linebreaksbr }}</dd></div>
+<div><dt>Chemical preservation requirements (manual)</dt><dd>{{ evidence.rule.chemical_requirements|default:"None configured"|linebreaksbr }}</dd></div>
+<div><dt>Other checks (manual)</dt><dd>{{ evidence.rule.other_requirements|default:"None configured"|linebreaksbr }}</dd></div>
+<div><dt>Method/SOP and applicability</dt><dd>{{ evidence.rule.basis|linebreaksbr }}</dd></div>
+</dl>
+{% else %}<p class="mt-3 mb-0">No applicable rule is configured. Absence of a rule is not acceptance.</p>{% endif %}
+{% if evidence.observations.containers %}<h3 class="vr-section-title mt-3">Recorded containers</h3><ul>{% for c in evidence.observations.containers %}<li>{{ c.label }}: {{ c.description }}; condition {{ c.condition }}; preservation {{ c.preservation|default:"not recorded" }}</li>{% endfor %}</ul>{% endif %}
+{% if displayed_decision %}<div class="mt-3"><p><strong>Lab disposition:</strong> {% include "includes/status.html" with label=displayed_decision.get_decision_display tone=decision_tone %}</p><p>{{ displayed_decision.reason }}</p>{% if not summary.latest_decision %}<p class="vr-form-note">Recorded on earlier evidence. This disposition still blocks approval and release until a new attributed assessment lifts it.</p>{% endif %}</div>{% else %}<p class="mt-3 mb-0">No assessment matches this test's current rule and receipt evidence.</p>{% endif %}
+<p class="vr-form-note mt-3 mb-0">This screen compares the <strong>recorded cooler receipt temperature</strong> with the lab's configured rule. It does not establish container temperature, continuous cooling, freezing, chemical preservation or container suitability. Narrative observations are never parsed into a pass. Changes to receipt evidence, test identity, requirements or source/SOP text require a fresh assessment where a disposition is needed. Earlier assessments remain in history; issued reports keep their original evidence.</p>
+</div></section>
+{% if can_assess %}<form method="post" class="vr-form" novalidate>{% csrf_token %}
+<p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+<fieldset class="vr-form-section"><legend>Record lab disposition</legend>
+<p>The lab disposition is separate from the temperature finding. Hold or Reject blocks new approval and release until a newer assessment lifts it. A new assessment preserves all earlier assessments.</p>
+<p>Proceed/Qualify evidence, reasons and the rule basis appear on issued PDFs and client copies.</p>
+{{ form }}
+</fieldset>
+<div class="vr-form-actions"><a class="btn btn-link" href="{% url 'receipt:sample-detail' test.sample.pk %}">Cancel</a><button type="submit" class="btn btn-primary">Record assessment</button></div></form>
+{% else %}<p class="vr-form-note">Read only: recording an assessment needs the custodian, project manager or reviewer role.</p>{% endif %}
+<section class="card mt-3" aria-labelledby="history-heading"><div class="card-header"><h2 class="card-title" id="history-heading">History</h2></div><div class="card-body">
+{% if history %}<ol class="vr-timeline">{% for d in history %}{% include "includes/history_item.html" with title=d.test_label|add:" · "|add:d.get_decision_display at=d.recorded_at actor=d.actor reason=d.reason detail=d.is_current|yesno:"Matches current evidence,Earlier evidence or withdrawn test" %}{% endfor %}</ol>
+{% else %}{% include "includes/empty_state.html" with title="No assessments recorded" %}{% endif %}
+</div></section>
+{% endblock %}

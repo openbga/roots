@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load laboratory_extras %}
+{% block breadcrumbs %}{% url 'laboratory:training-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Training" section_url=list_url current=record.title %}{% endblock %}
+{% block page_meta %}<ul class="vr-page-meta"><li>{% include "includes/status.html" with label=state_label tone=state_tone %}{% if record.is_renewed %} <span class="vr-muted">renewed</span>{% endif %}</li><li>{{ record.staff.get_full_name|default:record.staff.get_username }}</li><li>{{ record.get_record_type_display }}</li></ul>{% endblock %}
+{% block page_intro %}<p class="vr-page-intro">This record documents training only; it does not grant an application role or the report-release permission.</p>{% endblock %}
+{% block page_actions %}{% if can_record_training and not corrected_by %}<a class="btn btn-outline-secondary" href="{% url 'laboratory:training-correct' record.pk %}">Correct record</a><a class="btn btn-primary" href="{% url 'laboratory:training-renew' record.pk %}">Renew record</a>{% endif %}{% endblock %}
+{% block content %}
+{% if corrected_by %}<div class="alert alert-secondary" role="status">{% include "includes/status.html" with label="Corrected" tone="neutral" plain=True %}<div>This record was replaced by <a href="{% url 'laboratory:training-detail' corrected_by.pk %}">a correction</a>. It stays here as history.</div></div>{% endif %}
+<section class="card mb-3" aria-labelledby="tr-detail"><div class="card-header"><h2 class="card-title" id="tr-detail">Record</h2></div>
+  <div class="card-body"><dl class="vr-facts">
+    <div><dt>Subject</dt><dd>{{ record.title }}</dd></div>
+    <div><dt>Method and version</dt><dd>{% if record.method %}{{ record.method }} <span class="vr-muted small">{{ record.method.title }}</span>{% else %}—{% endif %}</dd></div>
+    <div><dt>Matrix</dt><dd>{{ record.get_matrix_display|default:"Not specific" }}</dd></div>
+    <div><dt>Scope</dt><dd>{{ record.scope|default:"—"|linebreaksbr }}</dd></div>
+    <div><dt>Outcome</dt><dd>{{ record.get_outcome_display }}</dd></div>
+    <div><dt>Completed</dt><dd>{{ record.completed_on|date:"Y-m-d" }}</dd></div>
+    <div><dt>Effective</dt><dd>{{ record.effective_on|date:"Y-m-d" }}</dd></div>
+    <div><dt>Expires</dt><dd>{{ record.expires_on|date:"Y-m-d"|default:"No expiry set" }}</dd></div>
+    <div><dt>Reviewed by</dt><dd>{{ record.reviewed_by.get_full_name|default:record.reviewed_by.get_username }} on {{ record.reviewed_on|date:"Y-m-d" }}</dd></div>
+    <div><dt>Reference</dt><dd class="vr-id">{{ record.reference|default:"—" }}</dd></div>
+    <div><dt>Evidence</dt><dd>{% include "laboratory/_evidence.html" with item=record kind="training" %}</dd></div>
+    <div><dt>Notes</dt><dd>{{ record.notes|default:"—"|linebreaksbr }}</dd></div>
+    {% if record.correction_reason %}<div><dt>Correction reason</dt><dd>{{ record.correction_reason }}</dd></div>{% endif %}
+    <div><dt>Recorded by</dt><dd>{{ record.recorded_by.get_full_name|default:record.recorded_by.get_username }} on {{ record.recorded_at|date:"Y-m-d H:i T" }}</dd></div>
+  </dl></div></section>
+<section class="card vr-table-card" aria-labelledby="tr-related"><div class="card-header"><h2 class="card-title" id="tr-related">Records for this person and method</h2><span class="vr-count">{{ related|length }}{% if related|length >= 30 %}, newest 30 shown{% endif %}</span></div>
+  <div class="vr-table-wrap"><table class="table vr-table"><thead><tr><th scope="col">Subject</th><th scope="col">Effective</th><th scope="col">Expires</th><th scope="col">State</th></tr></thead>
+  <tbody>{% for r in related %}<tr{% if r.pk == record.pk %} aria-current="true"{% endif %}><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:training-detail' r.pk %}">{{ r.title }}</a></th><td class="vr-nowrap">{{ r.effective_on|date:"Y-m-d" }}</td><td class="vr-nowrap">{{ r.expires_on|date:"Y-m-d"|default:"—" }}</td><td>{% include "laboratory/_status.html" with kind="training" value=r.state label=r.state|training_label plain=True %}{% if r.renews_id %} <span class="vr-muted small">renewal</span>{% endif %}</td></tr>{% endfor %}</tbody></table></div></section>
+{% include "laboratory/_history.html" %}
+{% endblock %}
+{% block record_foot %}{% include "includes/record_foot.html" with identifier=record.title %}{% endblock %}

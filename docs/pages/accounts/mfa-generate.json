@@ -1,0 +1,35 @@
+{
+  "id": "accounts-mfa-generate",
+  "routes": [
+    "mfa_generate_recovery_codes"
+  ],
+  "title": "Generate recovery codes",
+  "purpose": "Replace the backup codes for your two-factor authentication.",
+  "sections": [
+    {
+      "title": "Confirmation",
+      "items": [
+        {
+          "label": "Existing-code warning",
+          "description": "When unused codes exist, explains that this generation invalidates them. There are no editable fields."
+        },
+        {
+          "label": "Generate",
+          "description": "Requires sign-in, recent reauthentication and an existing non-recovery authenticator. Replaces the recovery-code record under a user lock with ten new eight-digit single-use codes, invalidating the previous set, then opens Recovery Codes."
+        }
+      ]
+    },
+    {
+      "title": "Navigation and limits",
+      "paragraphs": [
+        "No Back or Cancel button appears on this confirmation. Leave via normal account navigation without submitting to retain the set. Generation does not disable the app. Repeated successful generation replaces the set again; keep the latest set. Codes are not laboratory observations or report content."
+      ]
+    }
+  ],
+  "sources": [
+    "config/settings.py",
+    "templates/allauth/layouts/base.html",
+    "templates/allauth/layouts/manage.html",
+    "uv.lock"
+  ]
+}

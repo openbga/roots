@@ -1,0 +1,98 @@
+{
+  "id": "receipt-order-create",
+  "routes": [
+    "receipt:order-create"
+  ],
+  "title": "New chain of custody",
+  "purpose": "Create the laboratory order for one chain-of-custody form once, with its turnaround, purchase order, shipment details and instructions, then receive each physical sample without retyping them.",
+  "sections": [
+    {
+      "title": "Chain of custody",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Project",
+          "description": "Required active project under an active client. The order’s client is derived from this project."
+        },
+        {
+          "label": "Chain of custody reference",
+          "description": "Required paperwork/reference text, up to 120 characters."
+        }
+      ]
+    },
+    {
+      "title": "Turnaround and billing",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Turnaround",
+          "description": "Standard (initially) or Rush. Rush marks the order and its samples in lists and on their records; it does not change the delivery target, which stays a separate date."
+        },
+        {
+          "label": "Delivery target",
+          "description": "Optional agreed delivery target in the configured laboratory time zone. Blank means unscheduled. It does not set or change analytical holding times and is not derived automatically from project turnaround."
+        },
+        {
+          "label": "Purchase order",
+          "description": "Optional, up to 60 characters. When left blank, the order takes the project’s standing purchase order if the project has one; otherwise it stays blank. A typed value is kept as entered. A client that requires a purchase order shows a warning on the order until one is recorded."
+        }
+      ]
+    },
+    {
+      "title": "Shipment",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Delivery method",
+          "description": "Optional list: Not recorded, Client drop-off, Laboratory courier / pickup, Commercial carrier, Mail or Other. How the samples reached, or will reach, the laboratory."
+        },
+        {
+          "label": "Carrier / tracking number",
+          "description": "Optional, up to 160 characters."
+        },
+        {
+          "label": "Coolers / packages",
+          "description": "Optional whole number of coolers or packages in the shipment. It must be between 1 and 200."
+        }
+      ]
+    },
+    {
+      "title": "Instructions",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Special instructions",
+          "description": "Optional multi-line text such as rush approval, hazards, report or invoicing instructions for this shipment. It is shown above the receipt form for each sample on this order and on the order record."
+        }
+      ]
+    },
+    {
+      "title": "Actions and rules",
+      "paragraphs": [
+        "The active client/project eligibility is checked again during submission. Errors remain on the form for correction. Receive first sample on the new order records actual receipt. Change the purchase order, turnaround, shipment details or instructions later with Edit details on the order; the reference and delivery target change through their own reasoned corrections."
+      ],
+      "items": [
+        {
+          "label": "Create chain of custody",
+          "description": "Custodians, project managers and administrators create an attributed order and open its detail page. No sample, container, custody event or analysis is fabricated by creating the order."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to Chains of custody without saving."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/views.py",
+    "receipt/forms.py",
+    "receipt/models.py",
+    "receipt/services.py",
+    "accounts/roles.py",
+    "templates/receipt/order_form.html",
+    "receipt/tests/test_scheduling.py",
+    "templates/receipt/_grouped_fields.html",
+    "receipt/tests/test_master_data.py"
+  ]
+}

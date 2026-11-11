@@ -1,0 +1,331 @@
+{
+  "id": "analytical-main-batch-detail",
+  "routes": [
+    "analytical:batch-detail"
+  ],
+  "title": "Analytical batch",
+  "purpose": "Manage one analytical batch’s membership, current results, QC and supporting equipment and preparation information.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "These are staff pages. Active users with an application staff role can read them; client accounts cannot. Analysts perform result entry and batch work, reviewers decide results, and administrators maintain configuration. Administrators also have operational analyst and reviewer access, but independence rules still apply. Superuser status alone does not grant an application role."
+      ]
+    },
+    {
+      "title": "Batch details",
+      "items": [
+        {
+          "label": "Batch",
+          "description": "The number, Open/Closed state, exact method/version, matrix and approved/current-test count identify the batch. Approved count requires the latest approved revision to belong to this batch."
+        },
+        {
+          "label": "Equipment",
+          "description": "Linked primary asset or Not recorded. Set or Change opens the Equipment form below."
+        },
+        {
+          "label": "Preparation start",
+          "description": "Recorded combined-batch start or Not recorded. Set or Change opens Preparation time."
+        },
+        {
+          "label": "Created",
+          "description": "Creator and creation time."
+        },
+        {
+          "label": "Closed",
+          "description": "Closing actor and time appear after closure."
+        },
+        {
+          "label": "Notes",
+          "description": "Optional notes saved when the batch was created."
+        }
+      ]
+    },
+    {
+      "title": "Page actions",
+      "items": [
+        {
+          "label": "Close batch",
+          "description": "Analysts can close a nonempty open batch. The confirmation dialog explains that closure cannot be undone: sample and QC membership can no longer be added or removed. Entry, QC measurement and review continue. Closing does not approve results."
+        },
+        {
+          "label": "Import results",
+          "description": "Open the standard CSV validation and preview flow."
+        },
+        {
+          "label": "Import with a mapping",
+          "description": "Open profile-mapped CSV/TSV import."
+        },
+        {
+          "label": "Enter results",
+          "description": "Open entry for awaiting, entered or returned results; the number counts all currently enterable tests, regardless of current filters."
+        },
+        {
+          "label": "Add tests",
+          "description": "Analysts can add eligible requested tests while membership is open."
+        }
+      ]
+    },
+    {
+      "title": "Preparation time and equipment forms",
+      "items": [
+        {
+          "label": "Preparation start",
+          "description": "Required when saving Preparation time; laboratory local time. Cannot be more than two minutes ahead, precede collection (composite end), or violate recorded preparation/QC chronology."
+        },
+        {
+          "label": "Save preparation time",
+          "description": "Analysts save the start with an audit event. Submitted or approved dependent revisions freeze the time. Return submitted results first; approved corrections require a new batch with the correct time. Existing entered revisions are preserved but must be entered again to use the new time before submission."
+        },
+        {
+          "label": "Instrument or equipment",
+          "description": "Choose a nonretired asset, keep the existing linked asset even if now retired, or choose Not recorded to clear it."
+        },
+        {
+          "label": "Save equipment",
+          "description": "Analysts update the informational primary asset and audit the change. Equipment does not control approval or release."
+        }
+      ]
+    },
+    {
+      "title": "Samples and results filters",
+      "items": [
+        {
+          "label": "Search",
+          "description": "Partial, case-insensitive lab sample ID, client sample ID or analyte across the whole batch."
+        },
+        {
+          "label": "Status",
+          "description": "Any status, Needs entry (awaiting, entered, returned), Awaiting entry, Entered, Awaiting review, Returned or Approved."
+        },
+        {
+          "label": "More filters",
+          "description": "Expand Holding time and QC."
+        },
+        {
+          "label": "Holding time",
+          "description": "Filter latest revision evaluation: Met, Exceeded, Not evaluable, No holding rule or Nothing entered."
+        },
+        {
+          "label": "QC",
+          "description": "Held by QC or No QC hold uses current analytical batch findings affecting the test definition. Clear does not assert preservation or other approval requirements are satisfied."
+        }
+      ]
+    },
+    {
+      "title": "Samples and results columns",
+      "items": [
+        {
+          "label": "Sample",
+          "description": "Lab ID linking to result revisions and corrections."
+        },
+        {
+          "label": "Status",
+          "description": "Current result state. An approved revision from another batch is identified as reanalysis and linked to its approval batch."
+        },
+        {
+          "label": "Analyte",
+          "description": "Requested analyte."
+        },
+        {
+          "label": "Prepared aliquot",
+          "description": "Linked independent preparation batch and aliquot label, or Not linked. A timestamp alone does not establish an aliquot identity."
+        },
+        {
+          "label": "Result",
+          "description": "Latest numeric observation as supplied, or ND with the applied reporting-limit threshold; soil weight basis is also shown. A non-detect is not represented as zero."
+        },
+        {
+          "label": "Unit",
+          "description": "Frozen revision unit, or current test unit before entry. No conversion occurs."
+        },
+        {
+          "label": "Reporting limit",
+          "description": "Limit applied to this specific revision, not just the current method default."
+        },
+        {
+          "label": "Qualifiers",
+          "description": "Frozen qualifier codes; hover text explains their recorded meaning."
+        },
+        {
+          "label": "Holding",
+          "description": "Holding evaluation frozen at entry: met, exceeded, not evaluable or no rule."
+        },
+        {
+          "label": "QC",
+          "description": "Held for unresolved current batch QC findings affecting the test; Clear means no such analytical QC hold."
+        },
+        {
+          "label": "Dilution",
+          "description": "Revision dilution factor; hidden initially."
+        },
+        {
+          "label": "Analysis start",
+          "description": "Revision’s start date/time; hidden initially."
+        },
+        {
+          "label": "Entered by",
+          "description": "Person who entered the latest revision; hidden initially."
+        },
+        {
+          "label": "Remove",
+          "description": "Analysts can remove a test only from an open batch before any revision has ever been entered. It becomes unassigned; its requested test is retained."
+        }
+      ]
+    },
+    {
+      "title": "Submitting results",
+      "items": [
+        {
+          "label": "Select all entered results on this page",
+          "description": "Check current latest entered revisions on this page only. Batch totals may include entered results on other pages."
+        },
+        {
+          "label": "Submit selected for review",
+          "description": "Analysts submit each selected current draft revision separately. You become its submitter and cannot review it, even if another analyst entered it. Stale or foreign selections are skipped with a warning; other eligible selections can succeed."
+        },
+        {
+          "label": "Submission holds",
+          "description": "An exceeded holding time needs a recorded holding-time qualifier. Not-evaluable chronology or missing preparation blocks submission. A preparation timestamp changed after entry requires a new entry. QC and preservation findings are independently checked at approval; submission itself does not resolve them."
+        }
+      ]
+    },
+    {
+      "title": "Quality control",
+      "paragraphs": [
+        "No QC requirements configured means no frequency requirements are enforced for this method. Any QC sample present still needs measurements for applicable definitions. Missing or unevaluated QC and failing QC hold approval until resolved or independently accepted for the current finding. No QC measurements or no samples is an explicit empty state."
+      ],
+      "items": [
+        {
+          "label": "QC holds approval",
+          "description": "Current blocking findings are listed once, with latest disposition or an independence conflict where applicable. Record disposition opens the decision for that specific finding."
+        },
+        {
+          "label": "Preparation time needed",
+          "description": "Names active holding rules requiring preparation when none is recorded. Entering now cannot yield a submittable evaluation; set preparation and re-enter."
+        },
+        {
+          "label": "Required for this method",
+          "description": "QC type, Required, In batch and Status compare configured frequencies with current QC sample counts. Required is the larger of minimum per batch and the rounded-up sample-count frequency. Counts retain historical membership after reanalysis moves samples."
+        },
+        {
+          "label": "Add QC sample",
+          "description": "Analysts can add a labeled QC sample while the batch is open."
+        },
+        {
+          "label": "QC sample heading",
+          "description": "Shows its label, type and a linked parent field sample for matrix spikes and duplicates."
+        },
+        {
+          "label": "Record measurements",
+          "description": "Analysts enter or correct measurements, including after membership closure."
+        },
+        {
+          "label": "Analyte",
+          "description": "Analyte represented by the current QC observation."
+        },
+        {
+          "label": "Observed",
+          "description": "Unchanged observed text such as ND or a decimal."
+        },
+        {
+          "label": "Unit",
+          "description": "Stored measurement unit."
+        },
+        {
+          "label": "Spike",
+          "description": "Spike amount or true value when relevant."
+        },
+        {
+          "label": "Evaluation",
+          "description": "Pass, Fail or Not evaluated against currently active limits for the phase and test."
+        },
+        {
+          "label": "Detail",
+          "description": "Calculated recovery/RPD or value finding and its limit explanation."
+        },
+        {
+          "label": "Entered by",
+          "description": "Actor who recorded the current QC measurement."
+        }
+      ]
+    },
+    {
+      "title": "Filtering and table controls",
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Apply search and filters to the entire matching dataset and return to page 1. Invalid filters show errors and no rows; they never widen the query."
+        },
+        {
+          "label": "Clear all",
+          "description": "Remove search and filters and restore this page’s defaults. A filter chip removes only that filter."
+        },
+        {
+          "label": "Rows per page",
+          "description": "Choose 25 (default), 50 or 100. First, Previous, Next and Last page links retain filters. Counts describe all matching records."
+        },
+        {
+          "label": "Columns",
+          "description": "Show or hide optional columns and change their order using movement controls or header dragging. Changes apply immediately and are saved for this table in this browser. Locked columns stay available."
+        },
+        {
+          "label": "Reset columns",
+          "description": "Restore the original column visibility and order. Done or Close dismisses the Columns dialog."
+        }
+      ],
+      "paragraphs": [
+        "Samples/results use fixed lab ID, analyte and record order. Filters and pagination affect that table only; QC, warnings and counts describe the whole batch."
+      ]
+    },
+    {
+      "title": "Laboratory records",
+      "paragraphs": [
+        "This section shows today’s records for information. It does not establish conditions when work occurred or grant/block entry, approval or release. Empty stock-use, nonconformance or capability lists say no matching record is shown, not that a staff member is unqualified."
+      ],
+      "items": [
+        {
+          "label": "Standards and reagents used",
+          "description": "Material name, linked Lot, signed quantity Used with unit, When, By and Notes show stock-use movements recorded against this batch. Use later reversed and Used after expiry flags preserve context."
+        },
+        {
+          "label": "Open nonconformances",
+          "description": "Linked open records show number, title, status, severity and owner. Open a number for details. A count notes any closed linked records."
+        },
+        {
+          "label": "Equipment",
+          "description": "Asset links show current Status, Calibration due and Maintenance due. Due state is based on today; a date before today is overdue, a date within 30 days is due soon. Last not acceptable flags the latest calibration outcome."
+        },
+        {
+          "label": "Current demonstrations of capability",
+          "description": "Staff, linked Record, Effective and Expires show current matching method and matrix records. Admin, reviewer, approver and project-manager roles see all staff; other staff see their own records only. No expiry set means the record has no expiry date."
+        }
+      ]
+    },
+    {
+      "title": "History and changed work",
+      "paragraphs": [
+        "All membership, preparation, equipment, entry, submission and QC changes are attributed in audit history. A result page preserves every revision. A bulk submit may partly succeed, but grid entry and file import use all-or-nothing validation. Reload when the server says membership or dependencies changed, and check current state before retrying. If this URL identifies a preparation batch, it redirects to that batch’s preparation page."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/templates/analytical/batch_detail.html",
+    "analytical/qc.py",
+    "analytical/holding.py",
+    "analytical/preparation.py",
+    "analytical/tests/test_views.py",
+    "analytical/tests/test_lists.py",
+    "analytical/tests/test_integrity.py",
+    "analytical/tests/test_batch_equipment.py",
+    "laboratory/templates/laboratory/batch_context.html",
+    "laboratory/selectors.py",
+    "laboratory/permissions.py"
+  ]
+}

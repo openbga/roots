@@ -1,0 +1,158 @@
+{
+  "id": "laboratory-lot-list",
+  "routes": [
+    "laboratory:lot-list"
+  ],
+  "title": "Inventory: lots",
+  "purpose": "Find purchased and prepared lots, exact balances, storage and expiry.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Available to active signed-in lab staff with an admin, custodian, analyst, reviewer, approver or project manager role. Client accounts and accounts without a lab role cannot open laboratory pages. Sidebar links open Lab overview, Inventory, Equipment, Training and Nonconformances. Breadcrumbs return to the list or parent record."
+      ]
+    },
+    {
+      "title": "Tabs and actions",
+      "items": [
+        {
+          "label": "Lots",
+          "description": "Current inventory tab; each lot is one receipt or preparation of a material."
+        },
+        {
+          "label": "Materials",
+          "description": "Open shared stock definitions, units and specifications."
+        },
+        {
+          "label": "New lot",
+          "description": "Admin, analyst and reviewer roles can add a lot. Open a Lot number to inspect its ledger."
+        }
+      ]
+    },
+    {
+      "title": "Search and filters",
+      "items": [
+        {
+          "label": "Search",
+          "description": "Search lot number, material name, vendor, catalog / certificate reference, location and material CAS number."
+        },
+        {
+          "label": "Stock",
+          "description": "All lots is the default, including retired and depleted lots. In stock, not expired requires active, expiry today or later and positive stock. Expiring soon also requires expiry through the horizon. Expired, still on hand requires active, past expiry and positive stock. Depleted selects active zero-balance lots. Retired selects retired lots."
+        },
+        {
+          "label": "Material",
+          "description": "Any material by default; choices include inactive materials."
+        },
+        {
+          "label": "Expiring within",
+          "description": "Choose 7, 14, 30, 60 or 90 days; blank and explicit 30 mean 30 days. This display window does not define expiry dates or lab policy. Only narrows rows with Expiring soon selected."
+        },
+        {
+          "label": "Kind",
+          "description": "Under More filters: All kinds, Standard, Reagent or Other material."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Lot",
+          "description": "Number and detail link; always visible."
+        },
+        {
+          "label": "Material",
+          "description": "Material name."
+        },
+        {
+          "label": "Kind",
+          "description": "Material category; initially hidden, not sortable."
+        },
+        {
+          "label": "Vendor",
+          "description": "Supplier; initially hidden."
+        },
+        {
+          "label": "Received / prepared",
+          "description": "Received date, falling back to prepared date; lab-prepared lots are marked prepared. Initially hidden. Sort uses received date, including when a prepared fallback is displayed."
+        },
+        {
+          "label": "Expires",
+          "description": "Entered expiry date; default order is earliest expiry first."
+        },
+        {
+          "label": "On hand",
+          "description": "Current exact quantity from the movement ledger. Its first sort click uses highest quantity first."
+        },
+        {
+          "label": "Unit",
+          "description": "Counting unit copied at lot creation; not sortable."
+        },
+        {
+          "label": "Location",
+          "description": "Current lot storage location."
+        },
+        {
+          "label": "Status",
+          "description": "Display state takes precedence in this order: Retired; Expired after the expiry date; Depleted at zero balance; Expiring through 30 days from today; otherwise In stock. The expiry date itself is still unexpired. The status highlight always uses 30 days even when a filter uses another window. Sort uses stored active/retired status, not the computed label."
+        }
+      ]
+    },
+    {
+      "title": "Table controls",
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Apply search and filters to all records, keeping sort and page size and returning to page 1. Search is case-insensitive and limited to 200 characters."
+        },
+        {
+          "label": "More filters",
+          "description": "Open additional filters where available. Opens automatically for active additional filters or filter errors."
+        },
+        {
+          "label": "Active filters",
+          "description": "Remove a chip to clear that filter and return to page 1. Clear all restores the unfiltered list, default sort and 25 rows per page. The default 30-day window is not an active filter."
+        },
+        {
+          "label": "Column headings",
+          "description": "Sortable headings order the full matching list and toggle direction. Ties use record ID ascending. Plain headings cannot sort. Invalid sort parameters use the default. Changing sort returns to page 1. Most headings start ascending; date/high-quantity exceptions are described under Columns. Text and stored-choice sorting is alphabetical, not an assessment of urgency or laboratory priority."
+        },
+        {
+          "label": "Rows per page",
+          "description": "Choose 25, 50 or 100, default 25. Show applies when automatic submission is unavailable. First, Previous, Next and Last keep filters and sort. The footer shows range and total. Invalid page text opens page 1; an out-of-range number opens the last page. Unsupported page sizes are rejected."
+        },
+        {
+          "label": "Columns",
+          "description": "When table enhancement is available, check columns to show them or uncheck to hide them. Changes apply immediately and remain in this browser. Use Move … up or Move … down controls, or drag headings. The identity column is Always shown and cannot move or hide. Reset columns restores the initial layout. Close or Done closes the dialog. These preferences do not change records, filters, sorting or paging. If browser storage is blocked, the layout applies only to this page."
+        }
+      ]
+    },
+    {
+      "title": "Empty and invalid states",
+      "paragraphs": [
+        "Invalid filters show These filters cannot be applied and no rows; correct the highlighted filter or clear it. No matches shows a filtered empty state. An empty unfiltered list explains what to create; create actions follow your role. There are no row selections or bulk actions."
+      ]
+    }
+  ],
+  "sources": [
+    "laboratory/urls.py",
+    "laboratory/forms.py",
+    "laboratory/models.py",
+    "laboratory/permissions.py",
+    "laboratory/inventory_views.py",
+    "laboratory/inventory.py",
+    "laboratory/lists.py",
+    "laboratory/selectors.py",
+    "core/grids.py",
+    "laboratory/templates/laboratory/lot_list.html",
+    "laboratory/templates/laboratory/form.html",
+    "laboratory/tests/test_inventory.py",
+    "laboratory/tests/test_views.py",
+    "templates/includes/grid_toolbar.html",
+    "templates/includes/pagination.html",
+    "templates/includes/sort_header.html",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js"
+  ]
+}

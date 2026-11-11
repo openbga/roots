@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block breadcrumbs %}{% url 'commercial:quote-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Quotes" section_url=list_url %}{% endblock %}
+{% block page_intro %}<p class="vr-page-intro">You add prices and terms on the next page.</p>{% endblock %}
+{% block content %}
+<form class="vr-form" method="post" novalidate>
+  {% csrf_token %}
+  {% include "includes/form_errors.html" with form=form %}
+  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+  <fieldset class="vr-form-section">
+    <legend>Quote</legend>
+    <div class="row g-3">
+      <div class="col-md-6">{{ form.client.as_field_group }}</div>
+      <div class="col-md-6">{{ form.project.as_field_group }}</div>
+      <div class="col-12">{{ form.title.as_field_group }}</div>
+    </div>
+  </fieldset>
+  {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+  <div class="vr-form-actions">
+    <a class="btn btn-link" href="{% url 'commercial:quote-list' %}">Cancel</a>
+    <button class="btn btn-primary" type="submit">Create quote</button>
+  </div>
+</form>
+{% endblock %}

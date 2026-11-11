@@ -1,0 +1,52 @@
+{% load commercial_extras %}
+{% comment %}
+The quote as the client sees it: lines, total, validity, scope and terms. Shared by staff and client
+pages and printable. Parameters: quote, version, lines. Amounts are exact USD from stored values.
+{% endcomment %}
+<section class="card vr-quote-document" aria-labelledby="quote-doc-heading">
+  <div class="card-header">
+    <h2 class="card-title" id="quote-doc-heading">{{ quote.number }} · version {{ version.number }}</h2>
+    <span class="vr-count">{{ version.presented_title }}</span>
+  </div>
+  <div class="card-body">
+    <dl class="vr-facts">
+      <div><dt>Prepared for</dt><dd>{{ version.presented_client }}{% if version.presented_project %} / {{ version.presented_project }}{% endif %}</dd></div>
+      <div><dt>Issued</dt><dd>{% if version.issued_at %}<time datetime="{{ version.issued_at|date:'c' }}">{{ version.issued_at|date:"Y-m-d" }}</time>{% else %}Not issued{% endif %}</dd></div>
+      <div><dt>Valid until</dt><dd>{% if version.valid_until %}{{ version.valid_until|date:"Y-m-d" }}{% else %}Not set{% endif %}</dd></div>
+      <div><dt>Standard turnaround</dt><dd>{% if version.turnaround_days %}{{ version.turnaround_days }} business days from receipt{% else %}Not stated{% endif %}</dd></div>
+    </dl>
+    {% if lines %}
+    <div class="vr-table-wrap">
+      <table class="table vr-table">
+        <caption class="visually-hidden">Quote lines in US dollars</caption>
+        <thead><tr>
+          <th scope="col">Description</th>
+          <th scope="col">Type</th>
+          <th scope="col" class="text-end">Qty</th>
+          <th scope="col" class="text-end">Unit price</th>
+          <th scope="col" class="text-end">Amount</th>
+        </tr></thead>
+        <tbody>
+          {% for line in lines %}
+          <tr>
+            <th scope="row">{{ line.description }}</th>
+            <td>{{ line.get_kind_display }}</td>
+            <td class="text-end">{{ line.quantity }}</td>
+            <td class="text-end vr-nowrap">{{ line.unit_price|usd }}</td>
+            <td class="text-end vr-nowrap">{{ line.amount|usd }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot><tr>
+          <th scope="row" colspan="4" class="text-end">Total (USD)</th>
+          <td class="text-end vr-nowrap"><strong>{{ version.total|usd }}</strong></td>
+        </tr></tfoot>
+      </table>
+    </div>
+    {% else %}
+    {% include "includes/empty_state.html" with title="No lines yet" body="Add test, fee or discount lines to this draft." %}
+    {% endif %}
+    {% if version.scope_notes %}<h3 class="h6 mt-3">Scope and assumptions</h3><p class="mb-2">{{ version.scope_notes|linebreaksbr }}</p>{% endif %}
+    {% if version.terms %}<h3 class="h6 mt-3">Terms</h3><p class="mb-0">{{ version.terms|linebreaksbr }}</p>{% endif %}
+  </div>
+</section>

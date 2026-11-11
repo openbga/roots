@@ -1,0 +1,33 @@
+{% comment %}
+One entry of a record's history (docs/ui-standards.md section 6, rule 4): what happened, when, who,
+and the reason where one was required. Items sit in <ol class="vr-timeline">, newest last, in the
+record page's final panel (a card with an h2 "History").
+Parameters:
+  title     what happened (e.g. event.action, "Disposition: hold → proceed")
+  at        datetime of the event; shown as YYYY-MM-DD HH:MM and the time zone, in a <time>
+  actor     the user who did it (full name, else username); omit for system events
+  by        optional words before the actor, e.g. "Recorded by", "Released by"
+  reason    the reason or note entered with the change (line breaks kept)
+  changes   optional iterable of (label, before, after) for field changes; blank values read "blank";
+            the prior value is struck through in red pencil (<del>)
+  detail    optional extra line of plain text under the actor (e.g. "superseded: the rule changed")
+  extra     optional template name included at the end of the item, with the same context, for
+            links such as evidence or downloads
+Usage:
+  <ol class="vr-timeline">
+    {% for event in history %}{% include "includes/history_item.html" with title=event.action at=event.occurred_at actor=event.actor reason=event.reason %}{% endfor %}
+  </ol>
+{% endcomment %}
+<li class="vr-history-item">
+  <div class="vr-timeline-head"><span class="vr-timeline-title">{{ title }}</span>{% if at %}
+    <time class="vr-timeline-meta" datetime="{{ at|date:'c' }}">{{ at|date:"Y-m-d H:i T" }}</time>{% endif %}</div>
+  {% if changes %}
+  <ul class="vr-timeline-body vr-history-changes">
+    {% for label, before, after in changes %}<li><strong>{{ label }}:</strong> <del class="vr-prior">{{ before|default:"blank" }}</del> <span aria-hidden="true">→</span><span class="visually-hidden">changed to</span> {{ after|default:"blank" }}</li>{% endfor %}
+  </ul>
+  {% endif %}
+  {% if reason %}<p class="vr-timeline-body">{{ reason|linebreaksbr }}</p>{% endif %}
+  {% if actor %}<p class="vr-timeline-meta">{% if by %}{{ by }} {% endif %}{{ actor.get_full_name|default:actor.get_username }}</p>{% endif %}
+  {% if detail %}<p class="vr-timeline-meta">{{ detail }}</p>{% endif %}
+  {% if extra %}{% include extra %}{% endif %}
+</li>

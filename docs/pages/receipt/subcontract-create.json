@@ -1,0 +1,88 @@
+{
+  "id": "receipt-subcontract-create",
+  "routes": [
+    "receipt:subcontract-create"
+  ],
+  "title": "Record external handoff",
+  "purpose": "Record a completed transfer of selected containers for one requested test to an actual external laboratory, preserving the internal sample’s separate location and custody.",
+  "sections": [
+    {
+      "title": "Record context",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Sample / Analyte / Client",
+          "description": "Identifies the received sample and requested test. Container choices belong only to this sample; sending one test does not send every test or container."
+        }
+      ]
+    },
+    {
+      "title": "External laboratory reference",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "External laboratory",
+          "description": "Required actual laboratory name, up to 160 characters; no external-laboratory registry is inferred."
+        },
+        {
+          "label": "External order / dispatch reference",
+          "description": "Required actual arrangement/reference, up to 160 characters."
+        },
+        {
+          "label": "External sample ID",
+          "description": "Optional ID if already assigned, up to 160 characters. If unknown, supply the actual ID with the source result."
+        }
+      ]
+    },
+    {
+      "title": "Completed handoff",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Completed handoff at",
+          "description": "Required actual timestamp, initially now, in laboratory local time. Must be at or after latest custody and not in the future; planned shipment is insufficient."
+        },
+        {
+          "label": "Receiving custodian / courier",
+          "description": "Required recipient, up to 160 characters."
+        },
+        {
+          "label": "Containers handed over",
+          "description": "Required one or more checkboxes, each labeled with container label, description and receipt condition. Select only physical containers included; foreign sample containers are refused."
+        },
+        {
+          "label": "Reason",
+          "description": "Required dispatch explanation, at most 4000 characters."
+        }
+      ]
+    },
+    {
+      "title": "Eligibility and actions",
+      "paragraphs": [
+        "Held, rejected or physically disposed samples cannot dispatch. Only one active subcontract is allowed per requested test. Internal batch assignment, any result history, or recorded preparation for this test blocks external routing, even if prepared work later closes/cancels. An empty awaiting result with no batch/history does not itself block dispatch. Eligibility and sample revision are rechecked atomically; a concurrent change requires reloading custody first. The whole sample’s current location and custody events are not changed by this selected-container handoff."
+      ],
+      "items": [
+        {
+          "label": "Record external handoff",
+          "description": "Custodians, project managers and administrators save generated EXT routing, selected-container snapshots, origin location, actor/time and audit, then open the subcontract."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the sample without recording a handoff."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/subcontract_views.py",
+    "receipt/subcontract_forms.py",
+    "receipt/subcontract_models.py",
+    "receipt/subcontracts.py",
+    "receipt/models.py",
+    "accounts/roles.py",
+    "receipt/tests/test_subcontracts.py",
+    "receipt/templates/receipt/subcontract/form.html",
+    "receipt/tests/test_preparation_dependencies.py"
+  ]
+}

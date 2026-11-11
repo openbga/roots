@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "website/about/index.html"
+        ],
+        "createdAt": "2026-11-11T15:56:18.727Z",
+        "reason": "Agent verified in Chromium: the hover button uses white text on #102619 (15.99:1), not inherited #15271d. Every displayed text palette pair exceeds 4.5:1."
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "website/about/index.html"
+        ],
+        "createdAt": "2026-11-11T15:56:18.763Z",
+        "reason": "Agent verified in Chromium: section padding is 72px desktop and 48px mobile; the detector overlooks padding-block. Only the hosting path has changed."
+      }
+    ]
+  }
+}

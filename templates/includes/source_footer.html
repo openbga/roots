@@ -1,0 +1,9 @@
+{% load source_code %}{% comment %}
+Application footer on every staff, client-portal, entrance and error page: the link to this
+deployment's corresponding source that AGPL-3.0 section 13 requires (settings.SOURCE_CODE_URL).
+Parameters: css  extra classes (the entrance and error panels centre it)
+{% endcomment %}{% source_code_url as source_url %}<footer class="vr-app-foot{% if css %} {{ css }}{% endif %}">
+  <span>OpenBGA Roots</span>
+  <a href="{{ source_url }}" rel="noopener">Source code</a>
+  <span>AGPL-3.0-only</span>
+</footer>

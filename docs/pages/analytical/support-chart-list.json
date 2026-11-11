@@ -1,0 +1,96 @@
+{
+  "id": "analytical-support-chart-list",
+  "routes": [
+    "analytical:chart-list"
+  ],
+  "title": "QC control charts",
+  "purpose": "Find read-only historical QC series by exact test and QC type, keeping analytical and preparation QC separate.",
+  "sections": [
+    {
+      "title": "Access and interpretation",
+      "paragraphs": [
+        "Active internal staff with a laboratory role can read this workspace; clients cannot. Analysts manage mappings and import results. Admin includes analyst operational access; superuser status alone does not grant a laboratory role.",
+        "Each row represents one exact test definition and QC type with at least one current measurement in the chosen phase. Superseded measurement revisions are excluded. Series are not limited to open batches, passing QC or released work. Configured laboratory limits decide QC status; chart statistical bands describe trends only."
+      ]
+    },
+    {
+      "title": "Search and filters",
+      "paragraphs": [
+        "Apply searches and filters the complete server query and returns to page 1. Active chips remove individual filters, and Clear all resets the query. Invalid filters show errors and no rows. Rows per page is 25, 50 or 100, initially 25; other sizes are refused. First, Previous, Next and Last preserve the query. Sortable headings reverse direction. Columns changes local visibility/order with reset and keyboard controls, without changing which records qualify.",
+        "The initial order is analyte. Sortable columns are Analyte, Method, Measurements and Latest. The same grouped test/type cannot be split into multiple rows by sorting."
+      ],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Case-insensitive analyte name or method code. It does not search sample labels or batch numbers."
+        },
+        {
+          "label": "QC phase",
+          "description": "Analytical QC by default, or Preparation QC. Only measurements whose owning QC batch has the selected kind are used; actual analytical-run links do not mix phases. An unknown phase URL is refused."
+        },
+        {
+          "label": "Method",
+          "description": "Optional exact active method/version ordered by code/version. Leaving blank does not restrict measurements to active methods."
+        },
+        {
+          "label": "Matrix",
+          "description": "Any matrix, Water, Wastewater or Soil."
+        },
+        {
+          "label": "QC type",
+          "description": "Any QC type, Method blank, Laboratory control sample, Matrix spike, Matrix spike duplicate, Laboratory duplicate or Calibration verification."
+        }
+      ]
+    },
+    {
+      "title": "Columns and links",
+      "items": [
+        {
+          "label": "Analyte",
+          "description": "Catalog analyte; opens the first applicable measure chart for this series while retaining phase."
+        },
+        {
+          "label": "Method",
+          "description": "Method code with exact version."
+        },
+        {
+          "label": "Matrix",
+          "description": "Test definition matrix."
+        },
+        {
+          "label": "QC type",
+          "description": "Category of the owning QC sample."
+        },
+        {
+          "label": "Measurements",
+          "description": "Current measurement count, including observations that will not yield a plotted numeric value."
+        },
+        {
+          "label": "Latest",
+          "description": "Latest current measurement analysis-start time in laboratory local time."
+        },
+        {
+          "label": "Charts",
+          "description": "Measured value for Method blank; Percent recovery for Laboratory control sample, Matrix spike and Calibration verification; Percent recovery and Relative percent difference for Matrix spike duplicate; Relative percent difference for Laboratory duplicate. Each link retains phase."
+        }
+      ]
+    },
+    {
+      "title": "Empty states",
+      "paragraphs": [
+        "No QC measurements yet means no current measurement series in the selected phase. No QC series match these filters offers clearing filters within the phase. The toolbar’s Clear all resets to the unfiltered default analytical phase. Series appear when QC measurements are recorded; charts do not create measurements or accept data."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/mdl_views.py",
+    "analytical/charts.py",
+    "analytical/forms.py",
+    "analytical/selectors.py",
+    "analytical/qc.py",
+    "analytical/models.py",
+    "analytical/tests/test_charts.py",
+    "core/grids.py",
+    "analytical/templates/analytical/chart_list.html"
+  ]
+}

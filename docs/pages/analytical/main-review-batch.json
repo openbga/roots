@@ -1,0 +1,248 @@
+{
+  "id": "analytical-main-review-batch",
+  "routes": [
+    "analytical:review-batch"
+  ],
+  "title": "Review analytical batch",
+  "purpose": "Approve or return current submitted revisions in one batch that you neither entered nor submitted, using holding, preservation, preparation and QC evidence.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "These are staff pages. Active users with an application staff role can read them; client accounts cannot. Analysts perform result entry and batch work, reviewers decide results, and administrators maintain configuration. Administrators also have operational analyst and reviewer access, but independence rules still apply. Superuser status alone does not grant an application role."
+      ]
+    },
+    {
+      "title": "Navigation and scope",
+      "items": [
+        {
+          "label": "Batch",
+          "description": "Number links to current membership, entry and QC. Method, matrix and optional primary equipment identify the run. Equipment is informational."
+        },
+        {
+          "label": "Results awaiting review",
+          "description": "Only latest submitted revisions entered in this batch are candidates. Rows are fixed by lab ID then analyte. Counts show filtered matches versus all current pending revisions."
+        },
+        {
+          "label": "Search",
+          "description": "Partial case-insensitive match in lab ID or frozen analyte name. Unlike batch detail, client sample ID is not searched here."
+        },
+        {
+          "label": "Show",
+          "description": "All awaiting review, Ready to approve, Held (QC or holding time), or My own work. Held also includes applicable preservation/preparation blockers. My own work means you entered or submitted the revision. Invalid filters show errors and no rows."
+        }
+      ]
+    },
+    {
+      "title": "QC evidence for this batch",
+      "items": [
+        {
+          "label": "Open QC findings",
+          "description": "Each current unresolved analytical QC issue is listed once with its disposition/conflict state. It holds the affected definitions; Record disposition opens its separate assessment."
+        },
+        {
+          "label": "QC sample",
+          "description": "QC label linked conceptually to its owning batch; Type identifies blank, LCS, spike/duplicate or calibration QC."
+        },
+        {
+          "label": "Analyte",
+          "description": "Analyte represented by the current measurement."
+        },
+        {
+          "label": "Observed",
+          "description": "Original text and unit."
+        },
+        {
+          "label": "Evaluation",
+          "description": "Current Pass, Fail or Not evaluated under active limits."
+        },
+        {
+          "label": "Detail",
+          "description": "Value/recovery/RPD calculation and limits explanation."
+        },
+        {
+          "label": "Frequency not met",
+          "description": "QC type and configured required count versus QC samples present."
+        },
+        {
+          "label": "Recorded dispositions",
+          "description": "Latest disposition per finding, actor and note. A disposition resolves only its matching current context."
+        }
+      ]
+    },
+    {
+      "title": "Result columns",
+      "items": [
+        {
+          "label": "Sample",
+          "description": "Lab ID opens the result page with all revisions and provenance."
+        },
+        {
+          "label": "Can approve?",
+          "description": "Your work: another person must decide. Held: row-specific blockers and/or count of analytical/preparation QC findings. Ready: independent and no current blockers were found. Held rows can still be returned."
+        },
+        {
+          "label": "Analyte",
+          "description": "Frozen analyte name; later revisions show their revision number."
+        },
+        {
+          "label": "Prepared aliquot",
+          "description": "Linked preparation batch/aliquot label or Not linked."
+        },
+        {
+          "label": "Result",
+          "description": "Original supplied number or ND with its applied reporting-limit threshold. Non-detects are not shown as zero."
+        },
+        {
+          "label": "Unit",
+          "description": "Frozen unit and soil basis/solids information where applicable."
+        },
+        {
+          "label": "Reporting limit",
+          "description": "Exact limit applied to this revision."
+        },
+        {
+          "label": "Qualifiers",
+          "description": "Recorded code snapshots with description tooltip."
+        },
+        {
+          "label": "Holding",
+          "description": "Entry-time holding status."
+        },
+        {
+          "label": "Analyst",
+          "description": "Person who entered the revision; a different submitter is also identified when applicable."
+        },
+        {
+          "label": "Dilution",
+          "description": "Applied factor; hidden initially."
+        },
+        {
+          "label": "Analysis start",
+          "description": "Recorded start; hidden initially."
+        },
+        {
+          "label": "Preservation assessment",
+          "description": "On held rows, open this test’s current preservation evidence/disposition."
+        },
+        {
+          "label": "Batch QC",
+          "description": "Jump to the shared QC evidence section for the finding count affecting this row."
+        }
+      ]
+    },
+    {
+      "title": "Selection and decision fields",
+      "items": [
+        {
+          "label": "Select all results you may review on this page",
+          "description": "Select independent rows on this page, including held ones. Your own work has no checkbox. Selections do not carry between pages."
+        },
+        {
+          "label": "Select only ready to approve",
+          "description": "Select independent visible rows without currently detected blockers."
+        },
+        {
+          "label": "Action",
+          "description": "Required Approve or Return, applied to selected current candidates."
+        },
+        {
+          "label": "Note or reason",
+          "description": "Required nonblank reason for Return, optional note for Approve. Recorded with the decision."
+        },
+        {
+          "label": "Apply decision to selected",
+          "description": "Only reviewers can decide. Each selected result is processed independently; successful rows can commit while blocked/stale rows are reported. Wrong-batch, no-longer-current and no-longer-submitted selections are skipped, as is your own work."
+        }
+      ]
+    },
+    {
+      "title": "Approval and independence rules",
+      "paragraphs": [
+        "You cannot approve or return a revision you entered or submitted, even with administrator or combined analyst/reviewer roles. That is the independence this page enforces for results: recording the batch’s QC samples or measurements does not by itself stop you from approving its results, and whether it should is the laboratory’s own policy. Only accepting a QC finding is refused to whoever measured that QC (see below). An independent reviewer may return held work with a reason; return preserves the observation and asks the analyst for a new revision.",
+        "Approve rechecks current state under transaction locks. Holding exceedance needs a frozen qualifier marked for holding time. Missing required clock events, backwards preparation chronology, preparation timestamp divergence, invalid/missing required aliquots, current preservation blockers, unresolved analytical QC and linked preparation QC all block approval. An entry with no configured holding rule is shown as not evaluated rather than assigned a fabricated limit.",
+        "QC failures, unevaluated/missing measurements and frequency shortfalls must be corrected or independently accepted for their current context. A reviewer who measured the QC or entered/submitted affected results cannot accept the finding. A prior disposition can stop matching when measurements, limits or membership counts change.",
+        "Approve records reviewer/time/note, marks the latest revision and result approved, and freezes the QC evidence relied on. It does not issue a report. Report release is a separate explicitly authorized action with its own current-state recheck."
+      ]
+    },
+    {
+      "title": "Filtering and table controls",
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Apply search and filters to the entire matching dataset and return to page 1. Invalid filters show errors and no rows; they never widen the query."
+        },
+        {
+          "label": "Clear all",
+          "description": "Remove search and filters and restore this page’s defaults. A filter chip removes only that filter."
+        },
+        {
+          "label": "Rows per page",
+          "description": "Choose 25 (default), 50 or 100. First, Previous, Next and Last page links retain filters. Counts describe all matching records."
+        },
+        {
+          "label": "Columns",
+          "description": "Show or hide optional columns and change their order using movement controls or header dragging. Changes apply immediately and are saved for this table in this browser. Locked columns stay available."
+        },
+        {
+          "label": "Reset columns",
+          "description": "Restore the original column visibility and order. Done or Close dismisses the Columns dialog."
+        }
+      ],
+      "paragraphs": [
+        "Filtering and pagination affect pending result rows, not the batch-wide QC section. There are no sortable headings for result rows."
+      ]
+    },
+    {
+      "title": "Laboratory records",
+      "paragraphs": [
+        "This section shows today’s records for information. It does not establish conditions when work occurred or grant/block entry, approval or release. Empty stock-use, nonconformance or capability lists say no matching record is shown, not that a staff member is unqualified."
+      ],
+      "items": [
+        {
+          "label": "Standards and reagents used",
+          "description": "Material name, linked Lot, signed quantity Used with unit, When, By and Notes show stock-use movements recorded against this batch. Use later reversed and Used after expiry flags preserve context."
+        },
+        {
+          "label": "Open nonconformances",
+          "description": "Linked open records show number, title, status, severity and owner. Open a number for details. A count notes any closed linked records."
+        },
+        {
+          "label": "Equipment",
+          "description": "Asset links show current Status, Calibration due and Maintenance due. Due state is based on today; a date before today is overdue, a date within 30 days is due soon. Last not acceptable flags the latest calibration outcome."
+        },
+        {
+          "label": "Current demonstrations of capability",
+          "description": "Staff, linked Record, Effective and Expires show current matching method and matrix records. Admin, reviewer, approver and project-manager roles see all staff; other staff see their own records only. No expiry set means the record has no expiry date."
+        }
+      ]
+    },
+    {
+      "title": "Empty and changed work",
+      "paragraphs": [
+        "Nothing awaiting review means no latest submitted revisions remain in this batch. Clear filters if only the filtered view is empty. Staff without reviewer access see a read-only notice. No selection or a missing return reason stays on the page with errors. Refusals show grouped reasons and affected results; inspect current state before retrying."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/templates/analytical/review_batch.html",
+    "analytical/qc.py",
+    "analytical/holding.py",
+    "analytical/preparation.py",
+    "analytical/preservation_services.py",
+    "analytical/tests/test_views.py",
+    "analytical/tests/test_lists.py",
+    "analytical/tests/test_workflow.py",
+    "analytical/tests/test_integrity.py",
+    "analytical/tests/test_preservation_workflow.py",
+    "laboratory/templates/laboratory/batch_context.html",
+    "laboratory/selectors.py",
+    "laboratory/permissions.py"
+  ]
+}

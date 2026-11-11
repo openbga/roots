@@ -1,0 +1,27 @@
+{% comment %}
+Replaces a table or panel body when there is nothing to show. Parameters:
+  kind          empty (nothing exists yet) | no-results (filters exclude everything) | error
+  title, body   one short heading, one or two sentences of guidance
+  action_url, action_label   next step (e.g. create the first record)
+  clear_url     for no-results: URL without filters; renders "Clear filters"
+A no-results state whose page has an invalid filter_form is shown as the error state: the lists
+force an empty result for an invalid filter, so "nothing matches" would be misleading.
+{% endcomment %}
+{% if kind == "no-results" and filter_form.errors %}
+<div class="vr-empty" data-kind="error" role="alert">
+  <p class="vr-empty-title">These filters cannot be applied</p>
+  <p class="vr-empty-body">Correct the highlighted filter above. No results are shown until every filter is valid.</p>
+  {% if clear_url %}<div class="vr-empty-actions"><a class="btn btn-outline-secondary btn-sm" href="{{ clear_url }}">Clear filters</a></div>{% endif %}
+</div>
+{% else %}
+<div class="vr-empty" data-kind="{{ kind|default:'empty' }}"{% if kind == 'error' %} role="alert"{% endif %}>
+  <p class="vr-empty-title">{{ title }}</p>
+  {% if body %}<p class="vr-empty-body">{{ body }}</p>{% endif %}
+  {% if action_url or clear_url %}
+  <div class="vr-empty-actions">
+    {% if clear_url %}<a class="btn btn-outline-secondary btn-sm" href="{{ clear_url }}">Clear filters</a>{% endif %}
+    {% if action_url %}<a class="btn btn-outline-secondary btn-sm" href="{{ action_url }}">{{ action_label }}</a>{% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endif %}

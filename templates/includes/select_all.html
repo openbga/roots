@@ -1,0 +1,9 @@
+{% comment %}
+Page-bounded select-all for row checkboxes named {{ name }} in the same table. Checks only enabled
+boxes on this page; shows the mixed state. Parameters: name, label (accessible name).
+Pair with <span data-vr-select-count="{{ name }}"></span> to show "3 of 18 selected".
+Optional shortcut: include it a second time with ready_label (e.g. "Select only ready to approve")
+to render a button that selects exactly the enabled boxes marked data-ready on this page and clears
+the others. It is disabled when no row on the page is marked. The server re-checks every id.
+{% endcomment %}
+{% if ready_label %}<button type="button" class="btn btn-outline-secondary btn-sm" data-vr-select-ready="{{ name }}">{{ ready_label }}</button>{% else %}<input class="form-check-input" type="checkbox" data-vr-select-all="{{ name }}" aria-label="{{ label|default:'Select all on this page' }}">{% endif %}

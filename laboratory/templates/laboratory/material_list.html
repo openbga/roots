@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% comment %}Materials. Context: page_obj, filter_form, q, sort, per_page, active_filters, filtered, can_manage_stock.{% endcomment %}
+{% block page_heading %}Inventory{% endblock %}
+{% block page_actions %}{% if can_manage_stock %}<a class="btn btn-primary" href="{% url 'laboratory:material-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New material</a>{% endif %}{% endblock %}
+{% block content %}
+{% include "laboratory/_tabs.html" %}
+<section class="card vr-table-card" aria-labelledby="materials-heading">
+  <h2 class="visually-hidden" id="materials-heading">Materials</h2>
+  {% include "includes/grid_toolbar.html" with label="Filter materials" q=q placeholder="Name, CAS number or specification" inline=inline grid="laboratory.materials" %}
+  {% if page_obj.paginator.count %}
+  <div class="vr-table-wrap">
+    <table class="table table-hover vr-table" data-vr-grid="laboratory.materials" data-vr-grid-version="1" aria-labelledby="materials-heading">
+      <thead><tr>
+        {% include "includes/sort_header.html" with label="Material" asc="name" desc="-name" col="name" locked=True %}
+        {% include "includes/sort_header.html" with label="Kind" asc="kind" desc="-kind" col="kind" %}
+        <th scope="col" data-vr-col="cas" data-vr-col-label="CAS number">CAS number</th>
+        {% include "includes/sort_header.html" with label="Unit" asc="unit" desc="-unit" col="unit" %}
+        <th scope="col" data-vr-col="storage" data-vr-col-label="Storage">Storage</th>
+        {% include "includes/sort_header.html" with label="Status" asc="status" desc="-status" col="status" %}
+      </tr></thead>
+      <tbody>
+        {% for material in page_obj %}
+        <tr>
+          <th scope="row"><a class="vr-row-link" href="{% url 'laboratory:material-detail' material.pk %}">{{ material.name }}</a></th>
+          <td>{{ material.get_kind_display }}</td>
+          <td class="vr-id">{{ material.cas_number|default:"—" }}</td>
+          <td>{{ material.unit }}</td>
+          <td>{{ material.storage_requirements|default:"—" }}</td>
+          <td>{% if material.is_active %}{% include "laboratory/_status.html" with kind="material" value="active" label="Active" plain=True %}{% else %}{% include "laboratory/_status.html" with kind="material" value="inactive" label="Inactive" plain=True %}{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "includes/pagination.html" with noun="materials" filtered=filtered %}
+  {% elif filter_form.errors %}
+  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above." clear_url=request.path %}
+  {% elif filtered %}
+  {% include "includes/empty_state.html" with kind="no-results" title="No materials match these filters" body="Check the name or clear the filters." clear_url=request.path %}
+  {% else %}
+  {% if can_manage_stock %}{% url 'laboratory:material-create' as create_url %}{% endif %}
+  {% include "includes/empty_state.html" with title="No materials yet" body="A material describes a standard, reagent or consumable. Lots of it are then received against it." action_url=create_url action_label="New material" %}
+  {% endif %}
+</section>
+{% endblock %}

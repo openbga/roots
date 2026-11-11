@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load catalog_extras laboratory_extras %}
+{% comment %}Review of one batch. The results table sits in the list card with its toolbar; the decision form is
+a separate POST form (#review-form) that the row checkboxes join through their form attribute, because the
+toolbar is a GET form and forms cannot nest. Release gates and the own-work rule are enforced by the view and
+services; this page only presents them.{% endcomment %}
+{% block breadcrumbs %}{% url 'analytical:review-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Technical review" section_url=list_url current=batch.number %}{% endblock %}
+{% block page_meta %}<ul class="vr-page-meta"><li>Batch <a class="vr-id" href="{% url 'analytical:batch-detail' batch.pk %}">{{ batch.number }}</a></li><li>{{ batch.method }}</li><li>{{ batch.get_matrix_display }}</li>
+  <li>Equipment: {% if batch.equipment %}{{ batch.equipment.asset_id }} {{ batch.equipment.name }}{% else %}not recorded{% endif %}</li></ul>{% endblock %}
+{% block content %}
+<section class="card vr-table-card mb-3" id="qc-evidence" aria-labelledby="qc-evidence-heading">
+  <div class="card-header"><h2 class="card-title" id="qc-evidence-heading">QC evidence for this batch</h2></div>
+  {% if open_issues %}
+  <div class="card-body">
+    <h3 class="vr-section-title">Open QC findings</h3>
+    <p class="vr-form-note">These hold approval of the results they affect. Each is listed once here, not on every result row.</p>
+    <ul class="mb-0">
+      {% for entry in open_issues %}
+      <li>{{ entry.text }}{% if can_enter or can_review %} <a href="{% url 'analytical:qc-action' batch.pk %}?target={{ entry.issue.key|urlencode }}">Record disposition<span class="visually-hidden"> for {{ entry.issue.link_label }}</span></a>{% endif %}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+  {% if qc_rows %}
+  <div class="vr-table-wrap">
+    <table class="table vr-table">
+      <thead><tr><th scope="col">QC sample</th><th scope="col">Type</th><th scope="col">Analyte</th><th scope="col" class="text-end">Observed</th><th scope="col">Evaluation</th><th scope="col">Detail</th></tr></thead>
+      <tbody>
+        {% for sample, m in qc_rows %}
+        <tr><th scope="row" class="vr-id">{{ sample.label }}</th><td>{{ sample.get_qc_type_display }}</td><td>{{ m.analyte_name }}</td>
+          <td class="text-end vr-id">{{ m.observed_text }} {{ m.unit }}</td>
+          <td>{% include "analytical/_qc_status.html" with status=m.evaluation.status %}</td><td class="small">{{ m.evaluation.summary }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  {% include "includes/empty_state.html" with title="No QC measurements recorded" %}
+  {% endif %}
+  {% if shortfalls %}
+  <div class="card-body border-top">
+    <h3 class="vr-section-title">Frequency not met</h3>
+    <ul class="mb-0">{% for row in shortfalls %}<li><strong>{{ row.requirement.get_qc_type_display }}</strong>: {{ row.need }} required, {{ row.have }} in batch.</li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+  {% if actions %}
+  <div class="card-body border-top">
+    <h3 class="vr-section-title">Recorded dispositions</h3>
+    <ul class="small mb-0">{% for a in actions %}<li><strong>{{ a.get_disposition_display }}</strong> ({{ a.target_key }}) by {{ a.recorded_by.get_username }}: {{ a.note }}</li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+</section>
+
+{% if total_awaiting %}
+{% include "includes/form_errors.html" with form=form %}
+<section class="card vr-table-card mb-3" aria-labelledby="review-heading">
+  <div class="card-header"><h2 class="card-title" id="review-heading">Results awaiting review</h2><span class="vr-count">{{ page_obj.paginator.count }}{% if filtered %} matching{% endif %} of {{ total_awaiting }}</span></div>
+  {% include "includes/grid_toolbar.html" with label="Filter results to review" grid=grid_key %}
+  {% if items %}
+  {% if can_review %}<p class="vr-form-note px-3 pt-2 mb-0"><span data-vr-select-count="revisions" aria-live="polite">0 selected</span>. The header checkbox selects every result you may review on this page, held ones included. {% include "includes/select_all.html" with name="revisions" ready_label="Select only ready to approve" %}</p>{% endif %}
+  <div class="vr-table-wrap">
+    <table class="table vr-table" data-vr-grid="analytical.review_results" data-vr-grid-version="1" aria-labelledby="review-heading">
+      <thead><tr>
+        <th scope="col" data-vr-col="select" data-vr-col-locked data-vr-col-label="Select">{% if can_review %}{% include "includes/select_all.html" with name="revisions" label="Select all results you may review on this page" %}{% else %}<span class="visually-hidden">Select</span>{% endif %}</th>
+        <th scope="col" data-vr-col="sample" data-vr-col-locked>Sample</th>
+        <th scope="col" data-vr-col="can_approve">Can approve?</th>
+        <th scope="col" data-vr-col="analyte">Analyte</th>
+        <th scope="col" data-vr-col="prepared_aliquot">Prepared aliquot</th>
+        <th scope="col" class="text-end" data-vr-col="result">Result</th>
+        <th scope="col" data-vr-col="unit">Unit</th>
+        <th scope="col" class="text-end" data-vr-col="reporting_limit">Reporting limit</th>
+        <th scope="col" data-vr-col="qualifiers">Qualifiers</th>
+        <th scope="col" data-vr-col="holding">Holding</th>
+        <th scope="col" data-vr-col="analyst">Analyst</th>
+        <th scope="col" class="text-end" data-vr-col="dilution" data-vr-col-hidden>Dilution</th>
+        <th scope="col" data-vr-col="analysis_start" data-vr-col-hidden>Analysis start</th>
+      </tr></thead>
+      <tbody>
+        {% for item in items %}{% with rev=item.revision %}
+        <tr>
+          <td>{% if can_review and not item.own %}<input class="form-check-input" type="checkbox" form="review-form" name="revisions" value="{{ rev.pk }}"{% if item.ready %} data-ready{% endif %} aria-label="Select {{ rev.result.requested_test.sample.lab_id }} {{ rev.analyte_name }}">{% endif %}</td>
+          <th scope="row"><a class="vr-row-link vr-id" href="{% url 'analytical:result-detail' rev.result_id %}">{{ rev.result.requested_test.sample.lab_id }}</a></th>
+          <td>
+            {% if item.own %}{% include "includes/status.html" with label="Your work" tone="neutral" plain=True %}
+            <div class="small">You analysed this. Another qualified reviewer must review it.</div>
+            {% elif item.row_reasons or item.qc_count %}{% include "includes/status.html" with label="Held" tone="warning" plain=True %}
+            {% if item.qc_count %}<div class="small"><a href="#qc-evidence">Batch QC: {{ item.qc_count }} finding{{ item.qc_count|pluralize }}</a></div>{% endif %}
+            <div class="small"><a href="{% url 'analytical:preservation-assess' item.revision.result.requested_test_id %}">Preservation assessment</a></div>
+            {% if item.row_reasons %}<ul class="small mb-0 ps-3">{% for b in item.row_reasons %}<li>{{ b }}</li>{% endfor %}</ul>{% endif %}
+            {% else %}{% include "includes/status.html" with label="Ready" tone="success" plain=True %}{% endif %}
+          </td>
+          <td>{{ rev.analyte_name }}{% if rev.number > 1 %} <span class="vr-muted small">revision {{ rev.number }}</span>{% endif %}</td>
+          <td>{% if rev.prepared_aliquot_id %}<a class="vr-id" href="{% url 'analytical:prep-detail' rev.prepared_aliquot.batch_id %}">{{ rev.prepared_aliquot.batch.number }}</a><div class="small">Aliquot <span class="vr-id">{{ rev.prepared_aliquot.label }}</span></div>{% else %}<span class="vr-muted">Not linked</span>{% endif %}</td>
+          <td class="text-end">{% include "analytical/_revision_value.html" %}</td>
+          <td>{{ rev.unit }}{% if rev.matrix == "soil" %}<div>{% include "analytical/_basis.html" %}</div>{% endif %}</td>
+          <td class="text-end">{{ rev.reporting_limit_applied|plain_decimal }}</td>
+          <td>{% for q in rev.qualifiers %}<span class="vr-id" title="{{ q.description }}">{{ q.code }}</span>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+          <td>{% include "analytical/_holding.html" with status=rev.holding_status %}</td>
+          <td>{{ rev.entered_by.get_full_name|default:rev.entered_by.get_username }}{% if rev.submitted_by_id != rev.entered_by_id %}<div class="vr-muted small">submitted by {{ rev.submitted_by.get_full_name|default:rev.submitted_by.get_username }}</div>{% endif %}</td>
+          <td class="text-end">{{ rev.dilution_factor|plain_decimal }}</td>
+          <td class="vr-nowrap"><time datetime="{{ rev.analysis_started_at|date:'c' }}" title="{{ rev.analysis_started_at|date:'Y-m-d H:i T' }}">{{ rev.analysis_started_at|date:"Y-m-d H:i" }}</time></td>
+        </tr>
+        {% endwith %}{% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "includes/pagination.html" with noun="results awaiting review" filtered=filtered %}
+  {% elif filtered %}
+  {% include "includes/empty_state.html" with kind="no-results" title="No results match these filters" body="Clear the filters to see every result awaiting review in this batch." clear_url=request.path %}
+  {% endif %}
+</section>
+{% if items %}
+{% if can_review %}
+<form id="review-form" class="vr-form" method="post" action="{{ request.get_full_path }}" novalidate>
+  {% csrf_token %}
+  <fieldset class="vr-form-section">
+    <legend>Decision on selected results</legend>
+    <div class="row g-3">
+      <div class="col-md-4">{{ form.action.as_field_group }}</div>
+      <div class="col-md-8">{{ form.note.as_field_group }}</div>
+    </div>
+    <p class="vr-form-note mb-0">Each result is decided on its own. Results with QC or holding-time findings are refused with the reason shown. Returning keeps the earlier entry and asks the analyst to re-enter with a reason.</p>
+  </fieldset>
+  <div class="vr-form-actions"><button class="btn btn-primary" type="submit">Apply decision to selected</button></div>
+</form>
+{% else %}
+<div class="alert alert-info" role="status">{% include "includes/status.html" with label="Read only" tone="neutral" plain=True %}<div>Only reviewers can approve or return results.</div></div>
+{% endif %}
+{% endif %}
+{% else %}
+{% include "includes/empty_state.html" with title="Nothing awaiting review in this batch" body="Submitted results appear here for a reviewer other than the analyst." %}
+{% endif %}
+{% laboratory_context request.user batch equipment=batch_equipment %}
+{% endblock %}

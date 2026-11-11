@@ -1,0 +1,106 @@
+{
+  "id": "laboratory-overview",
+  "routes": [
+    "laboratory:overview"
+  ],
+  "title": "Lab overview",
+  "purpose": "See laboratory attention counts and open operational lists.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Available to active signed-in lab staff with an admin, custodian, analyst, reviewer, approver or project manager role. Client accounts and accounts without a lab role cannot open laboratory pages. Sidebar links open Lab overview, Inventory, Equipment, Training and Nonconformances. Breadcrumbs return to the list or parent record."
+      ]
+    },
+    {
+      "title": "Look-ahead window",
+      "items": [
+        {
+          "label": "Look ahead",
+          "description": "Choose 7, 14, 30, 60 or 90 days; blank and explicit 30 mean 30 days. This display window does not define expiry dates or lab policy. Default and invalid values use 30 days. Selection applies automatically when supported; Apply submits otherwise."
+        }
+      ]
+    },
+    {
+      "title": "Standards and reagents",
+      "items": [
+        {
+          "label": "Expired, still on hand",
+          "description": "Active lots with expiry before today and positive stock. Opens the expired-stock list."
+        },
+        {
+          "label": "Expiring within … days",
+          "description": "Active lots with positive stock and expiry from today through the horizon inclusive. Opens that filtered list."
+        }
+      ]
+    },
+    {
+      "title": "Equipment",
+      "items": [
+        {
+          "label": "Calibration or maintenance overdue",
+          "description": "Non-retired assets with either latest uncorrected due date before today."
+        },
+        {
+          "label": "Due within … days",
+          "description": "Non-retired assets with either due date from today through the horizon inclusive. An asset can count here and as overdue if its other event kind is overdue."
+        },
+        {
+          "label": "In service with no due date recorded",
+          "description": "In-service assets with neither calibration nor maintenance due dates; one missing date alone does not qualify."
+        }
+      ]
+    },
+    {
+      "title": "Nonconformances",
+      "items": [
+        {
+          "label": "Not closed",
+          "description": "All records other than Closed."
+        },
+        {
+          "label": "Past due",
+          "description": "Nonclosed records with due date before today; today is not past due."
+        },
+        {
+          "label": "Assigned to me",
+          "description": "Nonclosed records whose owner is you. Each row opens its matching filtered list."
+        }
+      ]
+    },
+    {
+      "title": "Training records",
+      "items": [
+        {
+          "label": "My records expiring within … days",
+          "description": "Your Current records expiring by the horizon, excluding qualifying renewed records."
+        },
+        {
+          "label": "My expired records not yet renewed",
+          "description": "Your Expired records without an acceptable, effective, uncorrected renewal."
+        },
+        {
+          "label": "All staff: expiring or expired, not renewed",
+          "description": "Admin, reviewer, approver and project manager roles see this total for all staff. Includes Current records expiring by the horizon and Expired records without qualifying renewals."
+        }
+      ]
+    },
+    {
+      "title": "Destination limits",
+      "paragraphs": [
+        "Counts use the deployment local date and current records, not historical qualification or compliance checks. Zero means none. Training links open the combined Expiring or expired filter with no staff filter: lead roles land on all staff even for My cards. The expired-record link uses the list default 30-day horizon and therefore also includes soon-expiring records."
+      ]
+    }
+  ],
+  "sources": [
+    "laboratory/urls.py",
+    "laboratory/forms.py",
+    "laboratory/models.py",
+    "laboratory/permissions.py",
+    "laboratory/views.py",
+    "laboratory/selectors.py",
+    "laboratory/training.py",
+    "laboratory/templates/laboratory/overview.html",
+    "laboratory/tests/test_views.py"
+  ]
+}

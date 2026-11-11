@@ -1,0 +1,97 @@
+{
+  "id": "analytical-main-config-preparation-requirement",
+  "routes": [
+    "analytical:config-new",
+    "analytical:config-edit"
+  ],
+  "match": {
+    "kind": "preparation-requirement"
+  },
+  "title": "Preparation requirement",
+  "purpose": "Require an explicit independent preparation aliquot for new observations of one exact analytical test.",
+  "sections": [
+    {
+      "title": "Create, edit and access",
+      "paragraphs": [
+        "Staff can read this form, but only administrators may save it. Add creates a new configuration record; Edit prepopulates the existing record and requires a Reason for change. Unknown configuration kinds are unavailable. These are lab policy values, and synthetic seed data is not a validated set."
+      ]
+    },
+    {
+      "title": "Fields",
+      "items": [
+        {
+          "label": "Definition",
+          "description": "Required analytical test (method/version, analyte and matrix). Catalog definitions are available, including inactive definitions; the relationship is per exact test."
+        },
+        {
+          "label": "Required preparation method",
+          "description": "Required active method/version used for the independent preparation batch. Only active catalog methods are available as choices."
+        },
+        {
+          "label": "Basis",
+          "description": "Required laboratory method/SOP source and applicability. Explain why this exact preparation method applies."
+        },
+        {
+          "label": "Is active",
+          "description": "Initially checked. When active, new entries and relevant review checks require an explicit prepared aliquot matching this preparation method. Unchecking preserves history and stops enforcing this requirement for new work."
+        }
+      ]
+    },
+    {
+      "title": "Relationships and effects",
+      "paragraphs": [
+        "Only one preparation requirement can exist for each definition, including inactive rows. Edit the existing record to change the required preparation version.",
+        "An analytical result still belongs to its analytical batch; the selected prepared aliquot separately identifies the physical preparation batch/member and its requested-test membership. A timestamp on an analytical batch does not satisfy an independent preparation identity.",
+        "The aliquot must be available and noncancelled, belong to the same physical sample/matrix and requested test, use the required method/version, and have actual preparation start recorded. Analysis must occur at or after completion when recorded, otherwise start. Linked preparation QC also participates in approval.",
+        "Changing current preparation policy does not manufacture historical links. New revisions use current requirements. Existing explicit links remain validated; issued reports preserve their frozen lineage. Absence of an active requirement does not establish that physical preparation is unnecessary."
+      ]
+    },
+    {
+      "title": "Creation action",
+      "items": [
+        {
+          "label": "Add preparation requirement",
+          "description": "Create the exact test-to-preparation relationship and audit event, then return to QC configuration."
+        }
+      ]
+    },
+    {
+      "title": "Save, cancel and history",
+      "paragraphs": [
+        "Validation errors preserve entered form values. A stale record is refused rather than overwriting another person’s edit; input stays visible, but reload and compare current values before saving again. A reload is a new form, so retain any needed unsaved notes before leaving."
+      ],
+      "items": [
+        {
+          "label": "Reason for change",
+          "description": "Optional on creation; required nonblank for every existing-row save. Recorded with actor, time and before/after values."
+        },
+        {
+          "label": "Save changes",
+          "description": "For an edit, validate fields and uniqueness, recheck that the record still matches the version opened, and save with its audit event. The Add form’s named submit button creates instead. Success returns to QC configuration."
+        },
+        {
+          "label": "Cancel",
+          "description": "Return to QC configuration without saving typed changes."
+        },
+        {
+          "label": "History",
+          "description": "Existing records show their latest 20 audit events, displayed oldest to newest, with action, actor, time and reason. No history section appears before any events exist."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/templates/analytical/form.html",
+    "core/concurrency.py",
+    "analytical/tests/test_config_concurrency.py",
+    "analytical/preparation.py",
+    "analytical/tests/test_preparation.py",
+    "analytical/tests/test_preparation_views.py"
+  ]
+}

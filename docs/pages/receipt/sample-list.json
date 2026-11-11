@@ -1,0 +1,189 @@
+{
+  "id": "receipt-sample-list",
+  "routes": [
+    "receipt:sample-list"
+  ],
+  "title": "Samples",
+  "purpose": "Find received samples across clients and projects, then open their receipt observations, requested tests and custody history.",
+  "sections": [
+    {
+      "title": "Search, filters and actions",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Matches laboratory ID, client sample ID, client, project, chain-of-custody reference, collection location or current location. Collector is displayed but is not searched."
+        },
+        {
+          "label": "Matrix",
+          "description": "Water, Wastewater or Soil; blank includes all."
+        },
+        {
+          "label": "Disposition",
+          "description": "Proceed, Qualify, Hold or Reject; blank includes all."
+        },
+        {
+          "label": "Client / Project",
+          "description": "More filters: exact records, including inactive records. A selected project must belong to the selected client."
+        },
+        {
+          "label": "Sample type",
+          "description": "More filters: All sample types, Field sample, Field duplicate, Field blank, Trip blank or Equipment / rinsate blank."
+        },
+        {
+          "label": "Sample source",
+          "description": "More filters: All sources or one source (Drinking water, Groundwater, Surface water, Stormwater, Wastewater influent, Wastewater effluent, Industrial wastewater, Soil, Sediment, Sludge / biosolids, Solid waste). The filter does not require a matching matrix, so a source and matrix that do not fit together simply match nothing."
+        },
+        {
+          "label": "Received from / Received to",
+          "description": "More filters: inclusive receipt dates in the configured laboratory time zone."
+        },
+        {
+          "label": "Collected from / Collected to",
+          "description": "More filters: inclusive collection/composite-end dates in the laboratory time zone. End dates cannot precede start dates."
+        },
+        {
+          "label": "Receive samples",
+          "description": "Custodians, project managers and administrators open New chain of custody, then receive its samples."
+        },
+        {
+          "label": "Lab ID row link",
+          "description": "Opens the received sample’s record."
+        },
+        {
+          "label": "Chain of custody link",
+          "description": "Optional column link opens its order."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Lab ID",
+          "description": "System-assigned accession identifying this physical sample; it stays visible."
+        },
+        {
+          "label": "Client sample ID",
+          "description": "Identifier supplied by the client."
+        },
+        {
+          "label": "Client / Project",
+          "description": "Ownership derived from the sample’s chain of custody and project."
+        },
+        {
+          "label": "Matrix",
+          "description": "Recorded sample matrix, with the sample source beneath it when recorded."
+        },
+        {
+          "label": "Type",
+          "description": "Initially hidden. Sample type (Field sample, Field duplicate, Field blank, Trip blank or Equipment / rinsate blank). Sortable."
+        },
+        {
+          "label": "Collected",
+          "description": "Grab collection time or composite end."
+        },
+        {
+          "label": "Received",
+          "description": "Receipt time; default sort is newest receipt first."
+        },
+        {
+          "label": "Disposition",
+          "description": "Current receipt decision, separate from analytical work status."
+        },
+        {
+          "label": "Location",
+          "description": "Current location from receipt/custody."
+        },
+        {
+          "label": "Collection location",
+          "description": "Initially hidden collection place, or a dash when absent."
+        },
+        {
+          "label": "Chain of custody",
+          "description": "Initially hidden reference linking to the order."
+        },
+        {
+          "label": "Collector",
+          "description": "Initially hidden person who collected the sample; this column has no sort link."
+        }
+      ]
+    },
+    {
+      "title": "Table controls",
+      "paragraphs": [
+        "Staff with a laboratory role can read the list; client portal users cannot. Invalid criteria show errors and no rows, rather than silently widening the search. Invalid page sizes are refused. Clear filters or correct errors to continue."
+      ],
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Search is case-insensitive contained text; Apply combines search and filters over the full dataset and returns to page 1."
+        },
+        {
+          "label": "More filters",
+          "description": "Opens advanced criteria and remains open when they are active or invalid."
+        },
+        {
+          "label": "Clear all / filter chips",
+          "description": "Clear all restores the unfiltered URL and default sort. Removing a chip clears just that criterion and starts at page 1."
+        },
+        {
+          "label": "Column headings and Columns",
+          "description": "Linked headings sort the complete matching set, with record ID breaking ties. Columns controls optional visibility and order, saved locally in this browser; reset restores default presentation. Identifying columns stay visible."
+        },
+        {
+          "label": "Rows per page / Show",
+          "description": "Choose 25, 50 or 100 rows, default 25. Size changes return to page 1. Show is the fallback when automatic submission is unavailable."
+        },
+        {
+          "label": "Pagination",
+          "description": "First, Previous, Next and Last retain search, filters and sort; counts describe matching records."
+        }
+      ]
+    },
+    {
+      "title": "Empty states",
+      "paragraphs": [
+        "No samples received yet means receipt has not created any records. Use Receive samples if your role permits. No samples match these filters means widen dates, check the ID or clear filters."
+      ],
+      "items": []
+    },
+    {
+      "title": "Column layout dialog",
+      "items": [
+        {
+          "label": "Column checkboxes",
+          "description": "Changes apply immediately. Check to show an optional column or uncheck to hide it. Always shown columns are fixed."
+        },
+        {
+          "label": "Move column up / down",
+          "description": "Moves an optional column within the displayed order; the first/last position disables the unavailable move. You can also drag movable table headers."
+        },
+        {
+          "label": "Reset columns",
+          "description": "Restores this table’s default order and visibility in this browser."
+        },
+        {
+          "label": "Done / Close",
+          "description": "Closes the dialog; layout changes have already been applied and saved locally. No laboratory record is changed."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/views.py",
+    "receipt/forms.py",
+    "receipt/models.py",
+    "receipt/services.py",
+    "accounts/roles.py",
+    "receipt/filters.py",
+    "receipt/lists.py",
+    "templates/receipt/sample_list.html",
+    "tests/test_receipt_grids.py",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js",
+    "receipt/tests/test_master_data.py"
+  ]
+}

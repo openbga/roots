@@ -1,0 +1,67 @@
+{
+  "id": "analytical-support-mdl-import-blanks",
+  "routes": [
+    "analytical:mdl-import-blanks"
+  ],
+  "title": "Import routine method blanks",
+  "purpose": "Copy current routine method-blank QC measurements into one open MDL study without losing non-detects or source context.",
+  "sections": [
+    {
+      "title": "Access and fields",
+      "paragraphs": [
+        "Active internal staff with a laboratory role can read MDL records. Analysts enter observations, import routine blanks and calculate. Analysts or reviewers can exclude observations and close studies; the page buttons for these two actions are shown to analysts. Only an independent reviewer can decide a calculation. Admin includes operational roles but never bypasses independence; client accounts and superuser status alone do not grant access.",
+        "Analyst access and an open study are required. The selected source must have undergone all required processing steps; the application cannot establish this from a batch label."
+      ],
+      "items": [
+        {
+          "label": "From / To",
+          "description": "Required inclusive local analysis dates, initially the date 24 calendar months before today through today. From cannot follow To. These are import selection dates, not a promise that all imported observations will fall inside a later calculation window."
+        },
+        {
+          "label": "Routine blank source basis",
+          "description": "Required Preparation-batch blanks or Analytical / combined full-procedure blanks. Default is preparation when the test currently has an active independent-preparation requirement, otherwise analytical. One basis is copied per submission."
+        },
+        {
+          "label": "Full-procedure evidence for alternative basis",
+          "description": "Optional for the current default basis; required when choosing the other basis. Explain actual full-method processing including required preparation. The reason is retained with every copied blank."
+        }
+      ]
+    },
+    {
+      "title": "Selection and provenance",
+      "paragraphs": [
+        "Only current method-blank QC measurements for the exact test definition, selected batch kind and inclusive analysis dates qualify. Previously imported measurement IDs in this study are skipped, including excluded observations; an updated current measurement has a new identity. The latest reject-data disposition for this analyte or a batch-wide finding excludes a blank when either its source or actual analytical batch is rejected. Rejections for another analyte do not exclude this test’s blanks. No QC pass-only filter is applied.",
+        "Copies original observed text, numerical/non-detect kind, value, preparation/analysis times, source batch and QC-sample labels, measurement link and selected basis/evidence. The importer becomes this observation’s entered-by contributor. If source preparation time is absent or later than its analysis, analysis time is substituted and marked assumed; it does not count toward actual preparation-date spread. Source instrument is not copied into the observation’s instrument field."
+      ],
+      "items": [
+        {
+          "label": "Import blanks",
+          "description": "Copies eligible observations and writes an attributed import audit event atomically, then returns to the study with imported count and rejected-batch skip count. A zero-record import does not fabricate data."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the study without copying anything."
+        }
+      ]
+    },
+    {
+      "title": "Historical meaning",
+      "paragraphs": [
+        "Imported observations retain a snapshot of their source context; later QC correction does not rewrite them or existing calculation snapshots. Re-import skips the old source measurement ID. Review the resulting records and readiness before calculating."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/mdl_views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/mdl_services.py",
+    "analytical/mdl.py",
+    "analytical/selectors.py",
+    "analytical/templates/analytical/form.html",
+    "analytical/tests/test_mdl_views.py",
+    "analytical/tests/test_mdl_workflow.py",
+    "analytical/tests/test_mdl_pure.py",
+    "analytical/tests/test_preparation_mdl.py"
+  ]
+}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block page_intro %}<p class="vr-page-intro">Batches that prepare aliquots from samples before analysis.</p>{% endblock %}
+{% block page_actions %}
+{% if can_enter %}<a class="btn btn-primary" href="{% url 'analytical:prep-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New preparation batch</a>{% endif %}
+{% endblock %}
+{% block content %}
+<section class="card vr-table-card" aria-labelledby="preparation-heading">
+  <h2 class="visually-hidden" id="preparation-heading">Preparation batches</h2>
+  {% include "includes/grid_toolbar.html" with label="Filter preparation batches" grid=grid_key %}
+  {% if page_obj.paginator.count %}
+  <div class="vr-table-wrap">
+    <table class="table table-hover vr-table" data-vr-grid="analytical.preparation" data-vr-grid-version="1" aria-labelledby="preparation-heading">
+      <thead><tr>
+        {% include "includes/sort_header.html" with label="Batch" asc="number" desc="-number" col="batch" locked=True %}
+        <th scope="col" data-vr-col="status">Status</th>
+        <th scope="col" data-vr-col="method">Preparation method</th>
+        <th scope="col" data-vr-col="matrix">Matrix</th>
+        {% include "includes/sort_header.html" with label="Aliquots" asc="aliquots" desc="-aliquots" col="aliquots" class="text-end" %}
+        <th scope="col" class="text-end" data-vr-col="tests">Tests covered</th>
+        <th scope="col" class="text-end" data-vr-col="used">Used in analysis</th>
+        <th scope="col" class="text-end" data-vr-col="qc">Open QC findings</th>
+        {% include "includes/sort_header.html" with label="Prep started" asc="started" desc="-started" col="started" %}
+        <th scope="col" data-vr-col="completed">Prep completed</th>
+        <th scope="col" data-vr-col="operator" data-vr-col-hidden>Created by</th>
+        <th scope="col" data-vr-col="equipment" data-vr-col-hidden>Equipment</th>
+        {% include "includes/sort_header.html" with label="Created" asc="created" desc="-created" col="created" hidden=True %}
+        <th scope="col" data-vr-col="notes" data-vr-col-hidden>Notes</th>
+      </tr></thead>
+      <tbody>{% for b in page_obj %}<tr>
+        <th scope="row"><a class="vr-row-link vr-id" href="{% url 'analytical:prep-detail' b.pk %}">{{ b.number }}</a></th>
+        <td>{% if b.completed_at %}{% include "includes/status.html" with label="Preparation completed" tone="neutral" plain=True %}{% elif b.status == "open" %}{% include "includes/status.html" with label="Open membership" tone="info" plain=True %}{% else %}{% include "includes/status.html" with label="Closed membership" tone="neutral" plain=True %}{% endif %}</td>
+        <td>{{ b.method }}</td><td>{{ b.get_matrix_display }}</td>
+        <td class="text-end">{{ b.aliquot_count }}</td><td class="text-end">{{ b.test_count }}</td>
+        <td class="text-end">{% if b.used_count %}{{ b.used_count }} batch{{ b.used_count|pluralize:"es" }}{% else %}<span class="vr-muted">Not used</span>{% endif %}</td>
+        <td class="text-end">{% if b.open_qc %}{% include "includes/status.html" with label=b.open_qc tone="warning" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td>
+        <td class="vr-nowrap">{% if b.prepared_at %}<time datetime="{{ b.prepared_at|date:'c' }}" title="{{ b.prepared_at|date:'Y-m-d H:i T' }}">{{ b.prepared_at|date:"Y-m-d H:i" }}</time>{% else %}<span class="vr-muted">Not recorded</span>{% endif %}</td>
+        <td class="vr-nowrap">{% if b.completed_at %}<time datetime="{{ b.completed_at|date:'c' }}" title="{{ b.completed_at|date:'Y-m-d H:i T' }}">{{ b.completed_at|date:"Y-m-d H:i" }}</time>{% else %}<span class="vr-muted">Not recorded</span>{% endif %}</td>
+        <td>{{ b.created_by.get_full_name|default:b.created_by.get_username }}</td>
+        <td>{{ b.equipment|default:"Not recorded" }}</td>
+        <td class="vr-nowrap"><time datetime="{{ b.created_at|date:'c' }}" title="{{ b.created_at|date:'Y-m-d H:i T' }}">{{ b.created_at|date:"Y-m-d H:i" }}</time></td>
+        <td>{{ b.notes|default:"—" }}</td>
+      </tr>{% endfor %}</tbody>
+    </table>
+  </div>
+  {% include "includes/pagination.html" with noun="preparation batches" filtered=filtered %}
+  {% elif filtered %}
+    {% include "includes/empty_state.html" with kind="no-results" title="No preparation batches match these filters" body="Search covers batch number, method, sample IDs and aliquot labels." clear_url=request.path %}
+  {% else %}
+    {% if can_enter %}{% url 'analytical:prep-create' as create_url %}{% endif %}
+    {% include "includes/empty_state.html" with title="No preparation batches yet" body="Create a batch for a configured preparation method, then add samples and the tests each aliquot covers." action_url=create_url action_label="New preparation batch" %}
+  {% endif %}
+</section>
+{% endblock %}

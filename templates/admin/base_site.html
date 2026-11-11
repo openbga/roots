@@ -1,0 +1,20 @@
+{% extends "admin/base.html" %}
+{% load static %}
+{% comment %}Django admin (restricted maintenance tooling) in OpenBGA Roots colours; its theme follows the application theme.{% endcomment %}
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | OpenBGA Roots administration{% endblock %}
+{% block dark-mode-vars %}
+  <script src="{% static 'js/admin-theme-sync.js' %}"></script>
+  {{ block.super }}
+{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static 'css/admin.css' %}"><link rel="stylesheet" href="{% static 'css/documentation.css' %}"><link rel="stylesheet" href="{% static 'css/admin-documentation.css' %}"><link rel="icon" href="{% static 'img/mark.svg' %}" type="image/svg+xml">{% endblock %}
+{% block extrahead %}{{ block.super }}<script src="{% static 'js/documentation.js' %}" defer></script>{% endblock %}
+{% block bodyclass %}{{ block.super }} vr-documentation-admin{% endblock %}
+{% block branding %}
+<div id="site-name"><a href="{% url 'admin:index' %}"><img src="{% static 'img/mark.svg' %}" alt="" width="24" height="24">OpenBGA Roots administration</a></div>
+{% if user.is_anonymous %}
+  {% include "admin/color_theme_toggle.html" %}
+{% endif %}
+{% endblock %}
+{% block nav-global %}{% include "documentation/button.html" %}{% endblock %}
+{% block footer %}<div id="footer">{% include "includes/source_footer.html" %}</div>{% endblock %}
+{% block extrabody %}{{ block.super }}{% include "documentation/panel.html" %}{% endblock %}

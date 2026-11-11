@@ -1,0 +1,54 @@
+{
+  "id": "accounts-email",
+  "routes": [
+    "account_email"
+  ],
+  "title": "Email addresses",
+  "purpose": "Manage the email addresses associated with your own account.",
+  "sections": [
+    {
+      "title": "Records and selection",
+      "paragraphs": [
+        "Requires a signed-in account and shows only its authentication addresses, ordered by email. Each radio row displays the address, Verified or Unverified, and Primary when applicable. The primary address, or the only address, is preselected; no selected address means the action leaves the list unchanged. On opening the page, an account email created through administration is synchronized into an unverified address record if missing. These records are not client reporting contacts."
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Make Primary",
+          "description": "Updates the selected address and the account’s email field. An unverified address can be primary only while this account has no verified addresses. If any verified address exists, choose a verified address; the old primary is unset. Account email uniqueness can also constrain the change."
+        },
+        {
+          "label": "Re-send Verification",
+          "description": "Requests another verification link for the selected unverified address, subject to rate limits and mail configuration. It does not verify the address by itself."
+        },
+        {
+          "label": "Remove",
+          "description": "With JavaScript, asks browser confirmation before submitting removal. A primary address cannot be removed while any other address remains: make another primary first. Because username login is also enabled, the final address may be removable. Without JavaScript the POST has no separate server confirmation page."
+        },
+        {
+          "label": "Email",
+          "description": "Required valid new address in Add Email Address; stored lowercase. Duplicate addresses already on this account are refused."
+        },
+        {
+          "label": "Add Email",
+          "description": "Adds an unverified address and requests a verification link. MFA currently blocks adding email addresses through this form while enabled, because link verification permits an unverified state. No maximum address count is set in this deployment; the configured-limit conditional does not hide the add form by default."
+        }
+      ]
+    },
+    {
+      "title": "Empty state and rules",
+      "paragraphs": [
+        "With no addresses, the page warns that an email is needed for notifications and password reset, and offers the add form. Verification is optional for ordinary login. MFA enrollment is separately blocked if any associated email record is unverified. Existing address actions are limited to the signed-in account; they do not modify report recipients. The committed configuration does not require separate recent reauthentication for ordinary email management."
+      ]
+    }
+  ],
+  "sources": [
+    "config/settings.py",
+    "templates/allauth/layouts/base.html",
+    "templates/allauth/layouts/manage.html",
+    "uv.lock",
+    "accounts/models.py"
+  ]
+}

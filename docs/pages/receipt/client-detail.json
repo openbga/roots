@@ -1,0 +1,112 @@
+{
+  "id": "receipt-client-detail",
+  "routes": [
+    "receipt:client-detail"
+  ],
+  "title": "Client record",
+  "purpose": "See one client’s account details, primary contact, mailing address, invoicing details, report instructions, additional people, projects, recent work and portal accounts in one place. All linked records belong to this client.",
+  "sections": [
+    {
+      "title": "Access and actions",
+      "paragraphs": [
+        "All laboratory staff can read this record; client portal accounts cannot use this staff page. The header shows the Account code when one is recorded, Active or Inactive, and the number of projects and chains of custody. An inactive banner means no new intake; existing information remains readable. Counts in the header show all projects and chains of custody."
+      ],
+      "items": [
+        {
+          "label": "Edit client",
+          "description": "Project managers and administrators update account details, contact, address, invoicing, report instructions, notes and availability."
+        },
+        {
+          "label": "Add contact / contact name",
+          "description": "Project managers and administrators add a person or open that person’s edit form. Other staff see contact names as text."
+        },
+        {
+          "label": "Add project / project name",
+          "description": "Project managers and administrators create a project prefilled with this client or open an existing project’s edit form."
+        },
+        {
+          "label": "All chains of custody",
+          "description": "Opens the full Chains of custody list filtered to this client."
+        },
+        {
+          "label": "Email links",
+          "description": "Open your email application for the recorded primary/additional address."
+        }
+      ]
+    },
+    {
+      "title": "Account details and contacts",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Primary contact and address: Contact, Email, Phone, Mailing address",
+          "description": "Values on the client itself; a dash indicates an unrecorded optional value. Mailing address shows the street, suite, then city, state and ZIP lines, or Not recorded."
+        },
+        {
+          "label": "Invoicing: Invoice to, Billing address, Payment terms, Purchase order",
+          "description": "Invoice to shows the invoice-to contact and invoice email, or Primary contact when neither is recorded. Billing address shows the recorded text or Same as mailing address. Payment terms shows the chosen terms or a dash. Purchase order reads Required on each chain of custody or Not required."
+        },
+        {
+          "label": "Report instructions and Internal notes",
+          "description": "Report instructions are how the client wants reports delivered; Internal notes are for laboratory staff. A dash means nothing recorded. Neither sends anything."
+        },
+        {
+          "label": "Additional contacts: Name, Role, Email, Phone, Reports",
+          "description": "Separate people under the client. Inactive contacts are marked and appear after active contacts; names are ordered within status. Reports shows Receives reports when selected, which is informational and sends nothing."
+        }
+      ]
+    },
+    {
+      "title": "Projects and recent work",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Projects: Project, Number, Status, Program, Project manager, Turnaround (days), Chains of custody",
+          "description": "All projects, ordered active first then name. Number is the project number. Program shows the regulatory program with the permit or program ID beneath it. Project manager is the assigned laboratory staff member, or a dash. Turnaround is the configured project setting. The chain count opens the full list filtered to that project when nonzero."
+        },
+        {
+          "label": "Recent chains of custody: Chain of custody, Project, Purchase order, Samples, Delivery target",
+          "description": "The newest eight orders by creation time, with the order’s purchase order or a dash, received sample count and explicit delivery target or Not set. The reference opens its order record."
+        },
+        {
+          "label": "Quotes: Quote, Status, Title",
+          "description": "Up to eight client quotes in their normal newest-first order. Project managers/administrators can follow quote numbers to quote detail; other staff see text."
+        },
+        {
+          "label": "Client submissions: Submission, Status, Chain of custody",
+          "description": "Up to eight client pre-login submissions in their normal newest-first order. Custodians, project managers and administrators can follow submission numbers. Submissions describe planned work; receipt is recorded separately."
+        }
+      ]
+    },
+    {
+      "title": "Portal accounts and history",
+      "paragraphs": [
+        "Each section has its own empty state. Recent lists are previews, not paginated full directories; use project/order links for the corresponding work."
+      ],
+      "items": [
+        {
+          "label": "Portal accounts: Name, Email, Status, Last sign-in",
+          "description": "All accounts explicitly associated with this client, active first then email. Never signed in means no login timestamp. Administrators manage invitation-only portal access separately; these accounts see their own client’s projects, samples and issued reports."
+        },
+        {
+          "label": "History",
+          "description": "The newest eight client audit events displayed chronologically, with action, actor, timestamp and reason. Contact changes have their own edit-form history."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/views.py",
+    "receipt/models.py",
+    "receipt/forms.py",
+    "receipt/services.py",
+    "accounts/roles.py",
+    "receipt/client_views.py",
+    "templates/receipt/client_detail.html",
+    "receipt/tests/test_clients.py",
+    "commercial/models.py",
+    "receipt/vocabulary.py",
+    "receipt/tests/test_master_data.py"
+  ]
+}

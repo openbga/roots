@@ -1,0 +1,3 @@
+{% load reporting %}
+{% if r.preparation %}<strong>Preparation:</strong> {{ r.preparation.batch }} · {{ r.preparation.aliquot_label }}; {{ r.preparation.method_code }} ({{ r.preparation.method_version }}); started {{ r.preparation.prepared_at|iso_time }}, completed {% if r.preparation.completed_at %}{{ r.preparation.completed_at|iso_time }}{% else %}not recorded{% endif %}; batch recorded by {{ r.preparation.prepared_by }}; equipment {{ r.preparation.equipment|default:"not recorded" }}. Preparation QC is included in the batch summary.
+{% else %}Preparation: independent identity not recorded in this issued version.{% if r.prepared_at %} Analytical batch preparation start: {{ r.prepared_at|iso_time }}.{% endif %}{% endif %}

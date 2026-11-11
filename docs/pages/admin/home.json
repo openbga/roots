@@ -1,0 +1,93 @@
+{
+  "id": "admin-home",
+  "routes": [
+    "admin:index",
+    "admin:app_list"
+  ],
+  "title": "Administration",
+  "purpose": "Maintain account and authentication records, roles and the laboratory retention statement.",
+  "sections": [
+    {
+      "title": "Scope and available modules",
+      "paragraphs": [
+        "The administration site requires an active account with Staff status. User, group, email address and authenticator pages additionally require Superuser status; a laboratory admin role alone or individual model permissions do not open them. These technical flags do not themselves confer operational roles or report-release authority.",
+        "The home page lists only modules and records this account can access. An app heading opens a module-specific list; its route shows that module instead of the full index. No laboratory custody/results/report editing tools are registered here."
+      ],
+      "items": [
+        {
+          "label": "Users",
+          "description": "Maintain staff/client accounts. Access requires active staff superuser status."
+        },
+        {
+          "label": "Groups",
+          "description": "Maintain role-group permissions. Membership itself is edited from Users, not from a group member picker."
+        },
+        {
+          "label": "Labs",
+          "description": "Maintain the laboratory retention statement. Requires a staff superuser who also has the laboratory admin role. Lab creation/deletion is disabled."
+        },
+        {
+          "label": "Email addresses",
+          "description": "Read-only list of account sign-in addresses and their verification state. Requires active staff superuser status; it does not edit report contacts."
+        },
+        {
+          "label": "Authenticators",
+          "description": "Enrolled sign-in factors, without their secrets. Requires active staff superuser status. A lost factor can be removed one at a time, with an audit event; enrollment stays on the user's own Two-factor authentication pages."
+        },
+        {
+          "label": "Recent actions",
+          "description": "Home index only: latest ten of your Django administration actions with action type, object and model links where available. No action timestamp is displayed in this sidebar. Deleted objects have no live object link. It is not the complete laboratory audit history."
+        }
+      ]
+    },
+    {
+      "title": "Navigation and actions",
+      "items": [
+        {
+          "label": "Add",
+          "description": "Appears beside models for which creation is permitted."
+        },
+        {
+          "label": "Change / View",
+          "description": "Opens a permitted model list. View appears instead of Change when only viewing is allowed."
+        },
+        {
+          "label": "View site",
+          "description": "Returns to the operational application."
+        },
+        {
+          "label": "Change password",
+          "description": "Changes your own password; shown in the header only when the account has a usable password."
+        },
+        {
+          "label": "Log out",
+          "description": "Immediately POSTs sign-out, then renders the signed-out acknowledgement with Log in again. There is no pre-sign-out confirmation, and direct GET requests are not accepted."
+        },
+        {
+          "label": "Toggle theme",
+          "description": "Cycles the administration theme between light, dark and automatic. The project synchronizes this setting with the operational Light, Dark and System preference in this browser."
+        },
+        {
+          "label": "Toggle navigation / Filter navigation items",
+          "description": "On pages with the sidebar, hide/show its module list and type to filter visible navigation destinations. This does not search account records."
+        }
+      ]
+    },
+    {
+      "title": "Empty and restricted states",
+      "paragraphs": [
+        "A user with Staff status but no permitted registered modules sees the administration shell without access to those records. This does not grant a laboratory role. Each direct record URL still checks its own permission."
+      ]
+    }
+  ],
+  "sources": [
+    "accounts/admin.py",
+    "accounts/models.py",
+    "accounts/roles.py",
+    "core/admin.py",
+    "config/settings.py",
+    "uv.lock",
+    "templates/admin/base_site.html",
+    "static/js/admin-theme-sync.js"
+  ]
+}

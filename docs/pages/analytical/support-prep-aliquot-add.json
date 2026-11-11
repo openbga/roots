@@ -1,0 +1,67 @@
+{
+  "id": "analytical-support-prep-aliquot-add",
+  "routes": [
+    "analytical:prep-aliquot-add"
+  ],
+  "title": "Add aliquot",
+  "purpose": "Record one labelled physical preparation of a received sample and the requested tests it covers.",
+  "sections": [
+    {
+      "title": "Context and access",
+      "paragraphs": [
+        "Active internal staff with a laboratory role can read this workspace. Analysts can create and change preparation work. An admin has operational analyst access; a client account or superuser status alone does not grant it.",
+        "The Preparation panel displays Batch, Preparation method, Matrix and Actual start. Membership must still be open when the save is checked."
+      ],
+      "items": [
+        {
+          "label": "Sample",
+          "description": "Required received sample of the batch matrix, excluding hold and reject, ordered by laboratory ID. Select it and use Load requested tests. A sample appearing here can still fail the later disposal or external-dispatch checks."
+        },
+        {
+          "label": "Load requested tests",
+          "description": "Reloads this form with the chosen sample and its preparation requirements. This is a GET navigation; do it before typing the aliquot label or selecting tests."
+        },
+        {
+          "label": "Aliquot label",
+          "description": "Required vessel/digestate label, at most 60 characters after trimming, unique within this preparation batch including cancelled labels."
+        },
+        {
+          "label": "Tests covered",
+          "description": "Choose at least one requested test from the loaded sample whose active preparation requirement points to this exact preparation method. One physical aliquot can cover several tests. Each test shows its requirement; unconfigured or other-method tests cannot be selected."
+        }
+      ]
+    },
+    {
+      "title": "Saving rules",
+      "paragraphs": [
+        "The selected tests and sample are rechecked together when saving. Every test must belong to this sample and match the batch matrix. Hold, reject, disposal or an active external dispatch blocks preparation; cancel an external dispatch first when appropriate. Preparation chronology must not precede sample collection, using collection end for composites, if a start exists. No start is invented when it is blank. Concurrent dependency or requested-test changes require reloading."
+      ],
+      "items": [
+        {
+          "label": "Add aliquot",
+          "description": "Creates the aliquot and all covered-test links atomically with an attributed audit event, then returns to the batch. Form and service errors are displayed for correction."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the preparation batch without adding an aliquot."
+        }
+      ]
+    },
+    {
+      "title": "Reuse and history",
+      "paragraphs": [
+        "This page always creates a new physical aliquot. To reuse an existing preparation, select its stable aliquot ID during analytical entry or mapped import. Prior links remain on record; a used aliquot cannot be cancelled."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/preparation_views.py",
+    "analytical/templates/analytical/preparation_form.html",
+    "analytical/preparation.py",
+    "analytical/services.py",
+    "analytical/models.py",
+    "analytical/tests/test_preparation_views.py",
+    "analytical/tests/test_preparation.py",
+    "analytical/holding.py"
+  ]
+}

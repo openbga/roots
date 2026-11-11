@@ -1,0 +1,142 @@
+# Workflow rules and limits
+
+What the application does at each step of laboratory work, and the limits a laboratory should
+know before relying on it. The help panel inside the application describes every page, field and
+action; this is the overview. [Product scope](product.md) explains why the rules exist.
+
+Synthetic catalog values in the demo seed are demonstration data, not approved methods or limits.
+
+## Time zones
+
+All collection and receipt times are interpreted in the configured lab time zone and stored with
+time zone support. Naive form and CSV timestamps use the deployment `TIME_ZONE`; explicit UTC
+offsets retain their instant. `Lab.timezone` is a recorded setup copy, not a parsing override.
+New reports freeze the chosen zone and timestamp offsets; issued reports retain their original
+presentation even if deployment settings later change.
+
+## Clients, projects and chains of custody
+
+Client records hold the mailing and invoicing details, projects the program, site, standing
+purchase order and laboratory project manager. Receipt lists (custody seal, preservation check,
+container type, preservative, condition) are starter vocabularies with an "Other" entry; edit
+`receipt/vocabulary.py` to suit the lab. They are not method requirements.
+
+Start a chain of custody under **Orders**, select its project and enter the COC reference once.
+Record its purchase order, turnaround, shipment and instructions there; **Edit details** changes
+them later with a reason.
+Receive each sample from that order, recording its containers and requested tests, then continue
+with the next sample. New accessions use `VR-000001` style numbers; gaps are normal and existing
+IDs remain unchanged. Custodians and project managers can resolve a held sample with a recorded
+reason. Project managers keep clients and projects at `/clients/<id>/`, which lists their projects,
+chains of custody, quotes, submissions, portal accounts and recent changes, and holds additional
+contacts. Changes keep their history. The demo seed includes synthetic water, wastewater and soil
+methods, analytes and QC settings; existing records and laboratory edits are retained.
+
+## Receipt corrections
+
+Use **Correct sample details** for reasoned receipt corrections: identity, collector, location,
+collection times, receipt observations, requested tests (add, or withdraw when no result, external
+dispatch or QC parent depends on it) and matrix. Each change needs a reason and keeps earlier values.
+Collection clocks, observations and matrix lock once analytical, QC or external work exists. Tests
+added after report issue are reported separately; issued reports never change. Corrections are
+refused after physical disposal and never rewrite custody or source observations. Reprint affected
+labels as needed. Correct a mistyped COC reference from the order page until an issued report lists
+the order. An empty chain of custody, or an accepted client submission that never arrives, can be
+cancelled and reinstated with a reason.
+
+## Preservation and preparation at report issue
+
+Every test in a new report issue or amendment is checked against current preservation evidence,
+including previously issued results that have not changed. Missing, manual, outside-limit and
+configured narrative findings need a current reasoned disposition; a hold or reject decision blocks
+issue. The first amendment of legacy work may therefore need assessments. Changes to the receipt,
+the test or its rule, including requirement, source or SOP wording, invalidate earlier matching
+assessments. Historical issued PDFs, snapshots and downloads stay unchanged and are never gated.
+
+A test's preparation requirement applies to new result entry and new approval only. An already
+approved result with no preparation link, or whose method changed since, can still be released or
+amended; its report shows the preparation identity as missing and nothing is backfilled. Existing
+linked identity, chronology, cancellation and QC checks still gate. Cancelled physical aliquots are
+counted conservatively, and labels state the count. Exports (native and NYSDEC EDD) carry the explicit
+actual preparation identity; a missing QC run blocks the EDD.
+
+The NYSDEC EDD is exploratory and requires recipient validation; it is not an accepted regulatory
+submission.
+
+## Delivery schedule
+
+Set an optional delivery target on the chain of custody, then use **Delivery schedule** to
+prioritize received tests by due date and stage. Held work remains visible; approved results
+stay outstanding until their current revision is issued. Changes to a target require a reason
+and retain history. Targets are explicit client commitments, separate from method holding times;
+project turnaround days do not silently create a calendar or business-day deadline.
+
+## Labels
+
+Order and sample **Labels** menus produce sample or container identity PDFs, one 4 × 2 inch
+label per page. Print at actual size and verify your printer/stock alignment. Barcodes encode
+the sample accession or a stable container identifier; printing does not record receipt or
+change custody. Up to 200 labels can be downloaded at once.
+
+## Subcontracted tests
+
+**Subcontracted tests** records completed handoffs of selected containers to an external
+laboratory. External observations retain their reported method, unit, qualifiers, analyst and
+source PDF; they do not create internal analytical batches or imply internal QC approval.
+A different reviewer checks the source before report release. Corrections add source versions
+and require a report amendment. Original external PDFs stay staff-only because they may contain
+other clients' information. Cancelling an unreported subcontract does not record a bottle return.
+
+## Sample storage and disposal
+
+Physical **Sample storage** records a laboratory-selected retain-through date, a separate disposal
+hold and attributed disposal. Dates are inclusive; no retention period is inferred. Outstanding
+latest results must be issued before disposal unless the sample was rejected, and receipt/disposal
+holds must be resolved first. Disposal keeps electronic custody, analytical and report history;
+it never deletes records or claims that the lab has satisfied a regulatory retention period.
+
+## Result imports
+
+Analytical **Import mappings** supports explicitly configured long or wide CSV/TSV layouts.
+Preview the mapping against the target batch before importing. Each import retains the source
+hash and mapping used; changing a saved profile does not reinterpret previous observations.
+These are operator-defined mappings, not validated vendor instrument adapters; Excel files and
+unverified vendor-specific layouts are outside this workflow.
+
+## MDL studies
+
+MDL studies show **Recalculate by** as 13 calendar months (lab time zone) after the calculation date of
+the latest adopted or retained calculation; review and adoption do not restart it. Confirm the interval
+against your method and accreditor.
+Routine MDL blank import records an explicit source basis, defaulting to the current preparation
+requirement. A combined or full-procedure basis needs a stored reason, and the observation freezes its
+source batch and actual analytical run. Observations recorded before this show the basis as not
+recorded; they are never reclassified.
+
+## Soil results
+
+New internal soil observations require an explicit wet- or dry-weight basis. Optional supplied
+percent solids must include its measurement/source reference; blank means not recorded. Manual
+entry and imports preserve the final value and applied reporting limit without conversion.
+Earlier observations retain their unknown basis; corrections record new metadata without
+rewriting prior revisions or issued PDFs. External results remain as supplied.
+
+## Electronic record retention
+
+Staff can read **Electronic record retention** at `/lab/record-retention/`. It starts as **Not
+recorded**. A deployment administrator with the `admin` role records or clears the laboratory's
+statement under **Administration → Core → Lab**, with a required reason and stale-edit protection.
+Changes preserve the prior statement and attribution. No duration or automatic deletion is inferred.
+
+## Tables and page help
+
+Table search, filters, sorting and pagination run on the server. DataTables/ColReorder enhance
+column visibility and order; column preferences stay in this browser. Vendor versions and licenses
+are included under `static/vendor/datatables/`.
+
+The documentation icon at the top right opens help for the current page or form in a resizable
+right panel. It explains the page's purpose, actions, fields and workflow rules. The panel follows
+navigation and remembers its width and open/closed state for each account in this browser.
+Drag its left edge or focus the separator and use the arrow keys to resize; use its close button
+or Escape from inside the panel to close it. Contributors use the
+[`document-page` skill](../skills/document-page/SKILL.md) to update help with each page change.

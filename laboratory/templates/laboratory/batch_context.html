@@ -1,0 +1,56 @@
+{% load laboratory_extras %}{% comment %}
+Laboratory records beside batch/sample work. Use {% load laboratory_extras %}{% laboratory_context request.user batch %}
+(or sample=sample, equipment=list_of_equipment). Current state, informational only.
+{% endcomment %}
+<section class="card mt-3" aria-labelledby="lab-context-heading">
+  <div class="card-header"><h2 class="card-title" id="lab-context-heading">Laboratory records</h2><span class="vr-count">Current as of {{ today|date:"Y-m-d" }}</span></div>
+  <div class="card-body">
+    <p class="vr-muted small">Shown for information. These are today's records; they do not show conditions when the work was done and do not grant or restrict anything.</p>
+    {% if batch %}
+    <h3 class="vr-section-title">Standards and reagents used</h3>
+    {% if uses %}
+    <div class="vr-table-wrap"><table class="table vr-table"><thead><tr><th scope="col">Material</th><th scope="col">Lot</th><th scope="col" class="text-end">Used</th><th scope="col">When</th><th scope="col">By</th><th scope="col">Notes</th></tr></thead><tbody>
+      {% for m in uses %}
+      <tr>
+        <th scope="row">{{ m.lot.material.name }}</th>
+        <td><a class="vr-id" href="{% url 'laboratory:lot-detail' m.lot_id %}">{{ m.lot.lot_number }}</a></td>
+        <td class="text-end vr-nowrap">{{ m.delta|qty }} {{ m.unit }}</td>
+        <td class="vr-nowrap">{{ m.occurred_at|date:"Y-m-d H:i:s" }}</td>
+        <td>{{ m.actor.get_full_name|default:m.actor.get_username }}</td>
+        <td>{% if m.reversed_by %}{% include "includes/status.html" with label="Use later reversed" tone="neutral" plain=True %} {% endif %}{% if m.expired_at_use %}{% include "includes/status.html" with label="Used after expiry" tone="warning" plain=True %}{% endif %}{% if m.purpose %} {{ m.purpose }}{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody></table></div>
+    {% else %}<p class="vr-muted">No stock use is recorded against this batch.</p>{% endif %}
+    {% endif %}
+
+    {% if open_nonconformances is not None %}
+    <h3 class="vr-section-title mt-3">Open nonconformances</h3>
+    {% if open_nonconformances %}
+    <ul class="mb-1">{% for nc in open_nonconformances %}<li><a class="vr-id" href="{% url 'laboratory:nc-detail' nc.pk %}">{{ nc.number }}</a> {{ nc.title }} <span class="vr-muted">({{ nc.get_status_display }}, {{ nc.get_severity_display|lower }}{% if nc.owner %}, {{ nc.owner.get_full_name|default:nc.owner.get_username }}{% endif %})</span></li>{% endfor %}</ul>
+    {% else %}<p class="vr-muted mb-1">None open.</p>{% endif %}
+    {% if closed_nonconformance_count %}<p class="vr-muted small">{{ closed_nonconformance_count }} closed nonconformance{{ closed_nonconformance_count|pluralize }} also linked.</p>{% endif %}
+    {% endif %}
+
+    {% if equipment %}
+    <h3 class="vr-section-title mt-3">Equipment</h3>
+    <div class="vr-table-wrap"><table class="table vr-table"><thead><tr><th scope="col">Asset</th><th scope="col">Status</th><th scope="col">Calibration due</th><th scope="col">Maintenance due</th></tr></thead><tbody>
+      {% for eq in equipment %}{% due_status eq.calibration_due today as cal %}{% due_status eq.maintenance_due today as mnt %}
+      <tr><th scope="row"><a class="vr-id" href="{% url 'laboratory:equipment-detail' eq.pk %}">{{ eq.asset_id }}</a> {{ eq.name }}</th><td>{{ eq.get_status_display }}</td>
+        <td class="vr-nowrap">{% if eq.calibration_due %}{{ eq.calibration_due|date:"Y-m-d" }} {% endif %}{% include "includes/status.html" with label=cal.label tone=cal.tone plain=True %}{% if eq.calibration_outcome == "not_acceptable" %} {% include "includes/status.html" with label="Last not acceptable" tone="danger" plain=True %}{% endif %}</td>
+        <td class="vr-nowrap">{% if eq.maintenance_due %}{{ eq.maintenance_due|date:"Y-m-d" }} {% endif %}{% include "includes/status.html" with label=mnt.label tone=mnt.tone plain=True %}</td></tr>
+      {% endfor %}
+    </tbody></table></div>
+    {% endif %}
+
+    {% if batch %}
+    <h3 class="vr-section-title mt-3">Current demonstrations of capability for {{ batch.method }}</h3>
+    {% if training %}
+    <div class="vr-table-wrap"><table class="table vr-table"><thead><tr><th scope="col">Staff</th><th scope="col">Record</th><th scope="col">Effective</th><th scope="col">Expires</th></tr></thead><tbody>
+      {% for r in training %}<tr><th scope="row">{{ r.staff.get_full_name|default:r.staff.get_username }}</th><td><a href="{% url 'laboratory:training-detail' r.pk %}">{{ r.title }}</a></td><td class="vr-nowrap">{{ r.effective_on|date:"Y-m-d" }}</td><td class="vr-nowrap">{{ r.expires_on|date:"Y-m-d"|default:"No expiry set" }}</td></tr>{% endfor %}
+    </tbody></table></div>
+    {% else %}<p class="vr-muted">No current record is shown for this method and matrix ({{ training_scope }}).</p>{% endif %}
+    <p class="vr-muted small">Scope: {{ training_scope }}. A missing record here does not mean someone is unqualified, and a current one does not authorize anything.</p>
+    {% endif %}
+  </div>
+</section>

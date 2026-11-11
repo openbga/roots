@@ -1,0 +1,186 @@
+{
+  "id": "client-commercial-submission-detail",
+  "routes": [
+    "client_commercial:submission-detail"
+  ],
+  "title": "Submission",
+  "purpose": "Review your shipment and declared samples, submit it for laboratory review, and follow acceptance and receipt.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "Sign in with an active client account. Every page, selection and action is limited to the client attached to your account, including work created by other users for the same client. Staff accounts cannot use these portal pages. Another client’s record is treated as missing."
+      ]
+    },
+    {
+      "title": "Header and states",
+      "items": [
+        {
+          "label": "Submission / Project / COC",
+          "description": "SUB number, current project and chain-of-custody reference identify the shipment."
+        },
+        {
+          "label": "Quote",
+          "description": "If linked, opens the accepted quote for this work."
+        },
+        {
+          "label": "Draft",
+          "description": "Editable and not yet sent."
+        },
+        {
+          "label": "Returned",
+          "description": "Displays what the laboratory asked you to correct. Edit details or samples and submit again; the prior submitted version remains frozen."
+        },
+        {
+          "label": "With the laboratory",
+          "description": "Submitted time and review status. Editing is locked while the laboratory reviews."
+        },
+        {
+          "label": "Accepted",
+          "description": "Laboratory opened intake and expects the samples. Does not mean any sample has physically arrived."
+        },
+        {
+          "label": "Cancelled",
+          "description": "Laboratory marked the shipment as not arriving. Contact them if you still plan to send it; clients cannot reinstate it."
+        },
+        {
+          "label": "Not collected yet",
+          "description": "Count of samples without actual collection time. Ask the laboratory for planned bottle labels while preparing; actual collection details are confirmed at receipt."
+        }
+      ]
+    },
+    {
+      "title": "Shipment",
+      "items": [
+        {
+          "label": "Expected arrival",
+          "description": "Planned arrival date or Not stated."
+        },
+        {
+          "label": "Carrier / tracking",
+          "description": "Transport/tracking text or a dash."
+        },
+        {
+          "label": "Coolers / packages",
+          "description": "Declared shipment package count; not verified at receipt. A dash is shown when blank or zero."
+        },
+        {
+          "label": "Contact",
+          "description": "Declared name and phone for shipment questions."
+        },
+        {
+          "label": "Instructions",
+          "description": "Your special instructions; no automatic approval or configured limit follows from this text."
+        }
+      ]
+    },
+    {
+      "title": "Samples",
+      "paragraphs": [
+        "The sample list is ordered by its declared position and has no filtering, sorting or pagination. Up to 200 samples can be declared. No samples yet offers Add sample."
+      ],
+      "items": [
+        {
+          "label": "Your sample ID",
+          "description": "Client identifier; opens editing only while Draft or Returned for changes."
+        },
+        {
+          "label": "Matrix",
+          "description": "Water, Wastewater or Soil, followed by the sample source when you declared one. Beneath it: Grab or Composite, and the sample type when it is not an ordinary field sample (for example Field duplicate or Trip blank)."
+        },
+        {
+          "label": "Collected",
+          "description": "Actual declared collection/end time or Not collected yet with optional planned date. Composite start is retained in the sample form but not displayed in this table."
+        },
+        {
+          "label": "Location · collector",
+          "description": "Declared collection place and collector."
+        },
+        {
+          "label": "Tests",
+          "description": "Number of intended test definitions, not completed analyses."
+        },
+        {
+          "label": "Containers",
+          "description": "Total individual containers across all declared types, including quantities."
+        },
+        {
+          "label": "Lab status",
+          "description": "Received as plus laboratory sample ID after physical receipt; Expected for an accepted unreceived sample; otherwise a dash. This is receipt status, not analysis or report status."
+        }
+      ]
+    },
+    {
+      "title": "Submitted versions",
+      "paragraphs": [
+        "Before first submission, Not submitted yet explains that versions appear after sending. The staff audit timeline is not shown in the client portal."
+      ],
+      "items": [
+        {
+          "label": "Version",
+          "description": "Number of each frozen submission, oldest first. These rows are informational; the client page does not open historical snapshot contents."
+        },
+        {
+          "label": "Submitted",
+          "description": "Timestamp the client sent that version."
+        },
+        {
+          "label": "Outcome",
+          "description": "Awaiting review, Returned or Accepted for that version. Shipment cancellation does not change an earlier Accepted outcome."
+        },
+        {
+          "label": "Note",
+          "description": "Laboratory correction note when returned, otherwise a dash."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "paragraphs": [
+        "A changed revision refuses submission or removal. Reload and review the current contents before trying again. Successful actions show a message. Retrying a completed submit does not create another snapshot."
+      ],
+      "items": [
+        {
+          "label": "Edit",
+          "description": "Open shipment/project fields while Draft or Returned for changes."
+        },
+        {
+          "label": "Add sample",
+          "description": "Add collection details, intended tests and containers while editable."
+        },
+        {
+          "label": "Remove",
+          "description": "Only while editable. Opens Remove sample confirmation. Confirm to remove that sample and its tests/containers; Cancel closes without removal. It can be added again before resubmitting. Stale removals are refused; a repeated already-completed removal is harmless."
+        },
+        {
+          "label": "Submit to laboratory",
+          "description": "Only while editable. Requires an active client/project, nonblank COC reference and at least one sample, with tests and containers for each. Tests must still be active and match each sample’s matrix. Uncollected planned samples are allowed. Freeze a new numbered snapshot and lock client editing pending review. No physical receipt is recorded."
+        },
+        {
+          "label": "Delete draft",
+          "description": "Only a Draft never previously submitted. Opens confirmation that deletes the draft and all entered samples/tests/containers; this cannot be undone. Cancel keeps it. The audit event remains. Returned or previously submitted records cannot be deleted this way."
+        },
+        {
+          "label": "Submissions",
+          "description": "Return to the client directory."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "commercial/portal_urls.py",
+    "commercial/portal_views.py",
+    "commercial/models.py",
+    "commercial/forms.py",
+    "commercial/permissions.py",
+    "accounts/roles.py",
+    "commercial/submissions.py",
+    "commercial/selectors.py",
+    "commercial/templates/commercial/portal/submission_detail.html",
+    "templates/includes/confirm_dialog.html",
+    "commercial/tests/test_submissions.py",
+    "commercial/tests/test_workflow.py",
+    "commercial/tests/test_cancellation.py",
+    "receipt/models.py"
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "id": "analytical-support-chart-detail",
+  "routes": [
+    "analytical:chart-detail"
+  ],
+  "title": "QC control chart",
+  "purpose": "Inspect exact current QC values, configured-limit status and descriptive statistical bands for one test, QC category, measure and phase.",
+  "sections": [
+    {
+      "title": "Access and identity",
+      "paragraphs": [
+        "Active internal staff with a laboratory role can read this workspace; clients cannot. Analysts manage mappings and import results. Admin includes analyst operational access; superuser status alone does not grant a laboratory role.",
+        "This page is read only. The heading identifies analyte, QC type and measure; metadata identifies exact method/version, matrix, unit and Analytical QC or Preparation QC. Recovery and RPD use percent; measured value uses the test unit. The QC control charts breadcrumb returns to the same phase. Unsupported QC-type/measure combinations or unknown tests are refused."
+      ]
+    },
+    {
+      "title": "Chart settings",
+      "items": [
+        {
+          "label": "QC phase",
+          "description": "Analytical QC by default, or Preparation QC. Measurements and configured limits stay within that phase."
+        },
+        {
+          "label": "Statistical baseline",
+          "description": "Most recent 30 points by default; Most recent 20 points, Most recent 50 points or Every point are available. Only computable plotted points count, ordered by analysis-start time then measurement identity."
+        },
+        {
+          "label": "Apply chart settings",
+          "description": "Recomputes the read-only view from current measurements. Invalid baseline choices show errors and no series. An unknown phase is refused. Settings do not store limits or modify QC evidence."
+        }
+      ]
+    },
+    {
+      "title": "Chart and summary",
+      "items": [
+        {
+          "label": "Chart",
+          "description": "Plots the newest 100 computable points in observation order. The displayed total and summary counts include every computable point, including older points omitted from the drawing. The table provides all points."
+        },
+        {
+          "label": "Configured limits",
+          "description": "Current active phase-specific acceptance bounds, solid red lines, with optional lower/upper bounds. Square markers identify failed configured limits. Missing limit is explicitly not configured."
+        },
+        {
+          "label": "Outside configured limits",
+          "description": "Count of points failing configured limits and, when present, count not evaluated because no limit or required input exists."
+        },
+        {
+          "label": "Baseline",
+          "description": "Number of actual selected baseline points, exact mean and sample standard deviation using the n minus 1 divisor, without bias correction."
+        },
+        {
+          "label": "Warning band (mean ± 2 SD, descriptive)",
+          "description": "Computed from baseline points; does not accept or reject QC."
+        },
+        {
+          "label": "Control band (mean ± 3 SD, descriptive)",
+          "description": "Computed from the same baseline; triangular markers identify beyond-3-SD points unless a failing configured limit takes the square marker."
+        },
+        {
+          "label": "Beyond the bands",
+          "description": "Beyond 2 SD includes both warning and beyond-3-SD points. Beyond 3 SD counts the latter. Equality at a band boundary is within that band."
+        },
+        {
+          "label": "Not plotted",
+          "description": "Counts non-detects for measured-value charts, or noncomputable recovery/RPD due to non-detects or missing inputs. ND is never changed to zero. These observations are omitted from points and baseline."
+        },
+        {
+          "label": "Computed recovery and RPD",
+          "description": "Recovery is (observed minus unspiked native result) divided by spike amount times 100 for matrix spikes, or observed divided by spike amount times 100 otherwise. RPD is the absolute pair difference divided by the absolute pair mean times 100; equal values yield zero, while an unequal pair with a zero mean cannot be plotted. These use stored QC inputs and do not change the original observations."
+        }
+      ]
+    },
+    {
+      "title": "Data points table",
+      "paragraphs": [
+        "The table lists all computable points newest first with exact decimal text, rather than only the newest 100 drawn. Rows per page is 25, 50 or 100, initially 25. First, Previous, Next and Last preserve the chart settings. Columns changes local visibility/order with reset and keyboard controls. There is no point search or user-selected sort."
+      ],
+      "items": [
+        {
+          "label": "Analysed",
+          "description": "Measurement analysis-start time in laboratory local time."
+        },
+        {
+          "label": "QC sample",
+          "description": "Owning QC sample label."
+        },
+        {
+          "label": "Batch",
+          "description": "Owning QC batch number, not the separate actual analytical-run link of a preparation measurement."
+        },
+        {
+          "label": "Observed",
+          "description": "Original supplied measurement text."
+        },
+        {
+          "label": "Plotted value",
+          "description": "Observed numerical value, computed percent recovery or computed RPD, with its unit. It can differ from original Observed text because it is a derived measure."
+        },
+        {
+          "label": "Configured limits",
+          "description": "Pass, Fail or Not evaluated for this measure against current configured limits. This is independent of statistical-band status."
+        },
+        {
+          "label": "Statistical band",
+          "description": "Within 2 SD, Beyond 2 SD or Beyond 3 SD; not evaluated without bands. In baseline identifies points that helped determine the bands."
+        }
+      ]
+    },
+    {
+      "title": "Rules and limitations",
+      "paragraphs": [
+        "Bands are shown only with at least 20 baseline points; the application’s display threshold is not a laboratory acceptance rule. Fewer points can still be plotted and evaluated against configured limits. Band notes describe mean/sample-SD construction and the limits of the cited guidance. Baseline data are used as they are, including excursions; the application does not establish statistical control. Bands are recomputed whenever the page opens, and baseline points are judged against bands they helped set.",
+        "For measured-value blank charts, mean and SD describe numerical detected values only and do not indicate how often blanks are clean. Every view uses current measurements and current configured limits, so this is not an immutable historical evaluation snapshot. Chart plotting uses display coordinates while tooltips and table retain exact decimal text. No point exclusion, baseline approval, limit-setting, export or measurement edit action is provided here. Nothing to plot and No data points appear when no computable current values exist."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/mdl_views.py",
+    "analytical/charts.py",
+    "analytical/forms.py",
+    "analytical/selectors.py",
+    "analytical/qc.py",
+    "analytical/models.py",
+    "analytical/tests/test_charts.py",
+    "core/grids.py",
+    "analytical/templates/analytical/chart_detail.html",
+    "analytical/static/analytical/control_chart.js"
+  ]
+}

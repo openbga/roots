@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% block breadcrumbs %}{% url 'receipt:sample-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Samples" section_url=list_url %}{% endblock %}
+{% block content %}
+<form class="vr-form" method="post" novalidate>
+  {% csrf_token %}
+  {% include "includes/form_errors.html" with form=form %}
+  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required. Times are laboratory local time.</p>
+
+  <fieldset class="vr-form-section">
+    <legend>Chain of custody</legend>
+    <div class="row g-3">
+      <div class="col-md-7">{{ form.project.as_field_group }}</div>
+      <div class="col-md-5">{{ form.coc_reference.as_field_group }}</div>
+    </div>
+  </fieldset>
+
+  {% include "receipt/_sample_fields.html" %}
+
+  {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+  <div class="vr-form-actions">
+    <a class="btn btn-link" href="{% url 'receipt:sample-list' %}">Cancel</a>
+    <button class="btn btn-primary" type="submit">Receive sample</button>
+  </div>
+</form>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'vendor/tom-select/tom-select.complete.js' %}" defer></script>
+<script src="{% static 'js/test-picker.js' %}" defer></script>
+{% endblock %}

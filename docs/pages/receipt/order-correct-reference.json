@@ -1,0 +1,52 @@
+{
+  "id": "receipt-order-correct-reference",
+  "routes": [
+    "receipt:order-correct-reference"
+  ],
+  "title": "Correct reference",
+  "purpose": "Correct a mistyped chain-of-custody reference for this order and every sample linked to it, retaining the earlier reference.",
+  "sections": [
+    {
+      "title": "Fields",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Chain of custody reference",
+          "description": "Required different reference, up to 120 characters, trimmed on saving."
+        },
+        {
+          "label": "Reason",
+          "description": "Required correction explanation, at most 4000 characters."
+        }
+      ]
+    },
+    {
+      "title": "Actions and rules",
+      "paragraphs": [
+        "An issued snapshot containing any sample on the order locks this path; changing draft scope does not remove the lock. The original report and receipt remain available; this path does not support released metadata correction. A client submission retains the reference exactly as entered by the client. Reprint affected paperwork/labels as needed. Concurrent order changes are refused; reload and compare the current reference. Form errors retain submitted text."
+      ],
+      "items": [
+        {
+          "label": "Correct reference",
+          "description": "Custodians, project managers and administrators save the new order reference with attributed old/new values and return to the order."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the order without saving."
+        },
+        {
+          "label": "History",
+          "description": "Chronological reference corrections with actor, time, reason and old/new reference."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/correction_views.py",
+    "receipt/correction_forms.py",
+    "receipt/corrections.py",
+    "templates/receipt/order_correction.html",
+    "receipt/tests/test_receipt_edits.py"
+  ]
+}

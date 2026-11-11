@@ -1,0 +1,110 @@
+{
+  "id": "receipt-sample-storage",
+  "routes": [
+    "receipt:sample-storage"
+  ],
+  "title": "Physical sample storage",
+  "purpose": "Review the sample’s physical retention and disposal record separately from its preserved electronic history.",
+  "sections": [
+    {
+      "title": "Physical sample facts",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Lab ID / Client sample / Client / Project",
+          "description": "Identifies the received sample and its ownership."
+        },
+        {
+          "label": "Current location",
+          "description": "Current receipt/custody location. Record transfer opens the sample’s custody-transfer form for receipt roles while undisposed."
+        },
+        {
+          "label": "Retain through",
+          "description": "Laboratory-selected inclusive physical retention date, or Not set by the laboratory. No default retention policy is inferred."
+        },
+        {
+          "label": "Disposal hold",
+          "description": "Active or Not active, independent of the sample receipt disposition."
+        },
+        {
+          "label": "Receipt disposition",
+          "description": "Current receipt decision; Hold also blocks disposal."
+        },
+        {
+          "label": "Receipt record",
+          "description": "Receipt and custody opens the full sample record."
+        },
+        {
+          "label": "Physically disposed at / Recorded by",
+          "description": "Completed disposal time and recording actor, displayed only after disposal."
+        },
+        {
+          "label": "Method / destination / Disposal reason",
+          "description": "Recorded disposal method, destination and reason; disposal preserves electronic records."
+        }
+      ]
+    },
+    {
+      "title": "Physical sample status",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Physically disposed",
+          "description": "A completed disposal event is recorded; it takes precedence over other display states."
+        },
+        {
+          "label": "Disposal blocked by hold",
+          "description": "A separate disposal hold or receipt disposition Hold is active."
+        },
+        {
+          "label": "Retention date not set",
+          "description": "No explicit laboratory-selected physical retention date exists."
+        },
+        {
+          "label": "Retention date elapsed",
+          "description": "The selected date is before today and no hold is displayed. This alone does not authorize disposal."
+        },
+        {
+          "label": "Within retention date",
+          "description": "The retention date is today or later; the sample must be retained through that date."
+        }
+      ]
+    },
+    {
+      "title": "Actions and history",
+      "paragraphs": [
+        "All staff can read; portal accounts cannot. After physical disposal these mutation actions and transfer link are unavailable, but receipt, custody, analytical records and issued reports remain available. A date change or removing a hold never disposes automatically."
+      ],
+      "items": [
+        {
+          "label": "Set retention date",
+          "description": "Custodians, project managers and administrators select/change an explicit physical retention date with a reason."
+        },
+        {
+          "label": "Change disposal hold",
+          "description": "Receipt roles place/remove a hold with a reason; it is separate from Change disposition."
+        },
+        {
+          "label": "Record physical disposal",
+          "description": "Receipt roles open the completed-disposal form. A visible action is not proof of eligibility; submission checks dates, holds, outstanding tests and preparation."
+        },
+        {
+          "label": "History",
+          "description": "Chronological retention-date changes, hold changes and disposal, with actor/time/reason. Date-change entries show the prior and new retention date. An empty history explains no storage decisions have been recorded."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/storage_views.py",
+    "receipt/storage_forms.py",
+    "receipt/storage_models.py",
+    "receipt/storage.py",
+    "receipt/models.py",
+    "accounts/roles.py",
+    "receipt/tests/test_storage.py",
+    "receipt/templates/receipt/storage/detail.html",
+    "receipt/templates/receipt/storage/status.html"
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "id": "admin-authenticator-form",
+  "routes": [
+    "admin:mfa_authenticator_change"
+  ],
+  "title": "Authenticator record",
+  "purpose": "Review one enrolled sign-in factor and, when its owner has lost it, remove it.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "Requires an active account with both Staff and Superuser status. A laboratory admin role, Staff status alone or individual authenticator or email-address model permissions granted to a user or group do not open this page.",
+        "The record is read only. Its secret and any recovery codes are never displayed."
+      ]
+    },
+    {
+      "title": "Fields",
+      "items": [
+        {
+          "label": "User",
+          "description": "Account that enrolled this factor."
+        },
+        {
+          "label": "Type",
+          "description": "Recovery codes or TOTP Authenticator."
+        },
+        {
+          "label": "Created at",
+          "description": "When the factor was enrolled."
+        },
+        {
+          "label": "Last used at",
+          "description": "Most recent successful use, or a dash if never used."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Delete",
+          "description": "Opens the removal confirmation for this one factor. Use it when the owner can no longer use the factor; they then enroll again from their own Two-factor authentication pages."
+        },
+        {
+          "label": "Close",
+          "description": "Returns to the authenticator list without changing anything."
+        },
+        {
+          "label": "History",
+          "description": "Opens Django administration history for this record. The account’s audit history is separate."
+        },
+        {
+          "label": "Home / app / model breadcrumbs",
+          "description": "Return to administration home, the application module or the authenticator list."
+        },
+        {
+          "label": "View site",
+          "description": "Header link to the operational application. Log out submits immediate sign-out."
+        }
+      ]
+    },
+    {
+      "title": "Related factors",
+      "paragraphs": [
+        "A user who enrolled an authenticator app normally also has a separate Recovery codes record. Removing one does not remove the other; open and remove each record that should no longer work."
+      ]
+    }
+  ],
+  "sources": [
+    "accounts/admin.py",
+    "accounts/models.py",
+    "accounts/roles.py",
+    "core/admin.py",
+    "config/settings.py",
+    "uv.lock"
+  ]
+}

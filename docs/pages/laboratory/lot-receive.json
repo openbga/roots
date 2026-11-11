@@ -1,0 +1,97 @@
+{
+  "id": "laboratory-lot-receive",
+  "routes": [
+    "laboratory:lot-receive"
+  ],
+  "title": "Record receipt",
+  "purpose": "Add more quantity of the same existing lot while retaining its original opening quantity.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "Admin, analyst and reviewer roles. Page shows material and current on-hand amount. Use New lot for another lot identity."
+      ]
+    },
+    {
+      "title": "Fields",
+      "items": [
+        {
+          "label": "Quantity received (…)",
+          "description": "Required positive exact amount in lot unit."
+        },
+        {
+          "label": "Received at",
+          "description": "Required effective local time; defaults to now."
+        },
+        {
+          "label": "Note",
+          "description": "Optional explanation retained with the movement."
+        }
+      ]
+    },
+    {
+      "title": "Stock rules",
+      "paragraphs": [
+        "The lot must not be retired. Use exact decimals with up to six decimal places and magnitude below 1,000,000,000,000. No unit conversion is applied. Current balance cannot become negative. Times default to local now to the second; minute precision is accepted. Effective time cannot precede the received date, or prepared date when no received date exists, and cannot be more than one minute in the future. Backdating does not recalculate earlier balance-after values."
+      ]
+    },
+    {
+      "title": "Record receipt",
+      "paragraphs": [
+        "Appends positive Received / prepared movement with purpose Received. Does not change original receipt date, opening amount, expiry or unit. Expired stock can receive more quantity without extending expiry."
+      ]
+    },
+    {
+      "title": "Saving and errors",
+      "paragraphs": [
+        "An asterisk marks required fields. Cancel returns to the parent record or list without saving. Success opens the saved record with a confirmation. Validation errors appear above the form and beside affected fields; correct them and submit again. Text input remains after validation errors; select an evidence file again if necessary. Dates use year-month-day; date and time fields use the deployment time zone."
+      ]
+    },
+    {
+      "title": "Concurrent changes and history",
+      "paragraphs": [
+        "Saving locks and rechecks the revision you opened. If another user changed the record, reload it, review the latest values and enter your change again. Failed validation writes no partial change. Successful changes and attributed audit events commit together."
+      ]
+    },
+    {
+      "title": "Form dialog controls",
+      "paragraphs": [
+        "With enhancement enabled, the form opens in a dialog, including when its URL is opened directly. Without enhancement it remains a normal page. While loading or saving, controls are disabled to avoid duplicate submissions; focus moves to the first invalid field or first editable field when ready. Saving successfully navigates to the resulting record."
+      ],
+      "items": [
+        {
+          "label": "Maximize / Restore size",
+          "description": "Expand the dialog to full screen or restore its normal size. Small screens use a full-screen layout."
+        },
+        {
+          "label": "Cancel / Close form / Escape",
+          "description": "Close an unchanged form. When opened over another page, return focus to its opening control; when opened directly, return to the Cancel destination. Clicking outside the dialog does not close it."
+        },
+        {
+          "label": "Keep editing / Discard changes",
+          "description": "After an input change, attempting to leave asks Discard your unsaved changes? Keep editing retains the form; Discard changes closes or follows the requested destination without saving. Escape during that prompt keeps editing."
+        },
+        {
+          "label": "Try again",
+          "description": "Shown after a failed initial load. Retry loading the form. Save/connection errors keep the current input and show an error so you can retry the submission. Validation errors replace the form with its submitted values and field messages; files may need selecting again."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "laboratory/urls.py",
+    "laboratory/forms.py",
+    "laboratory/models.py",
+    "laboratory/permissions.py",
+    "laboratory/inventory_views.py",
+    "laboratory/inventory.py",
+    "laboratory/templates/laboratory/form.html",
+    "laboratory/tests/test_inventory.py",
+    "laboratory/tests/test_views.py",
+    "core/form_surfaces.py",
+    "core/form_dialog.py",
+    "templates/includes/form_dialog.html",
+    "static/js/form-dialog.js",
+    "tests/test_form_dialog.py"
+  ]
+}

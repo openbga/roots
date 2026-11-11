@@ -1,0 +1,63 @@
+{
+  "id": "receipt-sample-disposition",
+  "routes": [
+    "receipt:sample-disposition"
+  ],
+  "title": "Change disposition",
+  "purpose": "Record a new receipt decision after client response or laboratory review, preserving the previous decision and its reason.",
+  "sections": [
+    {
+      "title": "Current record",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Current / Client / Project",
+          "description": "Current receipt disposition and the sample’s order ownership."
+        },
+        {
+          "label": "Receipt discrepancy",
+          "description": "Recorded receipt problem when present."
+        },
+        {
+          "label": "Current disposition note",
+          "description": "Existing decision explanation, when present."
+        }
+      ]
+    },
+    {
+      "title": "Fields and actions",
+      "paragraphs": [
+        "Physically disposed samples cannot change disposition. A concurrent sample/custody/retention change is refused; reload and review history before resubmitting. Prior decisions remain in history. Hold and Reject can block downstream work; a receipt Hold also blocks physical disposal. This form changes the decision, not the underlying observations."
+      ],
+      "items": [
+        {
+          "label": "Disposition",
+          "description": "Required Proceed, Qualify, Hold or Reject. Choose a different value from the current disposition."
+        },
+        {
+          "label": "Client response / reason",
+          "description": "Required explanation; it becomes the current disposition note and stays in attributed change history."
+        },
+        {
+          "label": "Change disposition",
+          "description": "Custodians, project managers and administrators save and return to the sample."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the sample without changing the decision."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/views.py",
+    "receipt/forms.py",
+    "receipt/models.py",
+    "receipt/services.py",
+    "accounts/roles.py",
+    "templates/receipt/disposition_form.html",
+    "tests/test_receipt_workflow.py",
+    "receipt/storage.py"
+  ]
+}

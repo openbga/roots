@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/openbga/roots/security/advisories/new
+    about: Report security problems privately, never in a public issue.
+  - name: Questions and support
+    url: https://github.com/openbga/roots#project-and-support
+    about: How community use and support work for this project.

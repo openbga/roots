@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% comment %}Edit the draft version. Context: quote, version, form (QuoteDraftForm), formset (prefix "lines"). Blank rows are ignored; "Add line" appends one (static/js/app.js).{% endcomment %}
+{% block breadcrumbs %}{% url 'commercial:quote-list' as list_url %}{% url 'commercial:quote-detail' quote.pk as record_url %}{% include "includes/breadcrumbs.html" with section="Quotes" section_url=list_url record=quote.number record_url=record_url current="Edit" %}{% endblock %}
+{% block page_meta %}
+<ul class="vr-page-meta">
+  <li>{% include "commercial/_quote_status.html" with plain=True %}</li>
+  <li>Version {{ version.number }}</li>
+  <li>{{ quote.client.name }}</li>
+</ul>
+{% endblock %}
+{% block page_intro %}<p class="vr-page-intro">Amounts are US dollars; saving a draft does not show it to the client, issuing does.</p>{% endblock %}
+{% block content %}
+{% with prefix=formset.prefix %}
+<form class="vr-form vr-form-wide" method="post" novalidate>
+  {% csrf_token %}
+  {% include "includes/form_errors.html" with form=form formset=formset formset_label="quote lines" %}
+  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+  {% for legend, fields in form.grouped %}
+  <fieldset class="vr-form-section">
+    <legend>{{ legend }}</legend>
+    <div class="row g-3">
+      {% for field in fields %}<div class="{% if field.name == 'scope_notes' or field.name == 'terms' or field.name == 'title' %}col-12{% else %}col-md-6{% endif %}">{{ field.as_field_group }}</div>{% endfor %}
+    </div>
+  </fieldset>
+  {% endfor %}
+  <fieldset class="vr-form-section" id="lines">
+    <legend>Lines</legend>
+    {{ formset.management_form }}
+    {% if formset.non_form_errors %}<ul class="vr-field-errors mb-2">{% for error in formset.non_form_errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+    <div class="vr-table-wrap">
+      <table class="table vr-table">
+        <caption class="visually-hidden">Quote lines</caption>
+        <thead><tr>
+          <th scope="col" class="text-end">#</th><th scope="col">Type</th><th scope="col">Test</th>
+          <th scope="col">Description</th><th scope="col" class="text-end">Qty</th>
+          <th scope="col" class="text-end">Unit price (USD)</th><th scope="col" class="text-center">Remove</th>
+        </tr></thead>
+        <tbody id="{{ prefix }}-rows">
+          {% for lform in formset %}{% include "commercial/_line_row.html" with number=forloop.counter %}{% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <template id="{{ prefix }}-empty">{% include "commercial/_line_row.html" with lform=formset.empty_form number="__num__" %}</template>
+    <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+      <button class="btn btn-outline-secondary btn-sm" type="button" data-formset-add="{{ prefix }}" hidden>{% include "includes/icon.html" with name="plus-lg" %}Add line</button>
+      <span class="form-text">A test line takes its price from the price list when the unit price is blank. Fees need a description and a price. Enter a discount as a negative amount, for example -50.00. Blank lines are ignored.</span>
+    </div>
+  </fieldset>
+  {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+  <div class="vr-form-actions">
+    <a class="btn btn-link" href="{% url 'commercial:quote-detail' quote.pk %}">Cancel</a>
+    <button class="btn btn-primary" type="submit">Save changes</button>
+  </div>
+</form>
+{% endwith %}
+{% endblock %}

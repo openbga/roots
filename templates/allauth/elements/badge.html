@@ -1,0 +1,1 @@
+{% load allauth %}<span class="vr-status" data-tone="{% if 'success' in attrs.tags %}success{% elif 'warning' in attrs.tags %}warning{% elif 'danger' in attrs.tags %}danger{% else %}neutral{% endif %}"{% if attrs.title %} title="{{ attrs.title }}"{% endif %}>{% slot %}{% endslot %}</span>

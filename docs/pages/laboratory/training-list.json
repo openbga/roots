@@ -1,0 +1,166 @@
+{
+  "id": "laboratory-training-list",
+  "routes": [
+    "laboratory:training-list"
+  ],
+  "title": "Training",
+  "purpose": "Find training and demonstrations of capability with their scope, dates, review and current state.",
+  "sections": [
+    {
+      "title": "Training access",
+      "paragraphs": [
+        "Admin, reviewer, approver and project manager roles can read all staff training and evidence. Custodian and analyst roles see only their own, including when guessing a record/download link. Only admin and reviewer roles can create, renew or correct training. Staff and reviewer selectors contain active non-client accounts ordered by username, showing full name and username where available."
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "New training record",
+          "description": "Admin and reviewer roles can record training or a demonstration. Open Subject for the full record and evidence."
+        }
+      ]
+    },
+    {
+      "title": "Search and filters",
+      "items": [
+        {
+          "label": "Search",
+          "description": "Search title, scope, reference, staff username/first/last name, and method code/title."
+        },
+        {
+          "label": "State",
+          "description": "All records by default. Current, Not yet effective, Not acceptable and Corrected select that computed state. Expiring or expired selects unrenewed Expired records plus unrenewed Current records expiring by the selected horizon. There is no separate Expired choice in the visible State filter."
+        },
+        {
+          "label": "Expiring within",
+          "description": "Choose 7, 14, 30, 60 or 90 days; blank and explicit 30 both mean 30 days. This display window does not define a lab schedule. Applies only to Expiring or expired; by itself does not narrow the list."
+        },
+        {
+          "label": "Type",
+          "description": "All types, Training, Initial demonstration of capability or Ongoing demonstration of capability."
+        },
+        {
+          "label": "Method",
+          "description": "Under More filters; Any method by default, including records without a method. A selected method is one configured method and version, including inactive definitions."
+        },
+        {
+          "label": "Staff",
+          "description": "Under More filters for lead roles only; Any person by default. Other staff remain server-scoped to their own records regardless of query parameters."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Subject",
+          "description": "Record title and link, always visible."
+        },
+        {
+          "label": "State",
+          "description": "Computed label and separate renewed marker."
+        },
+        {
+          "label": "Staff",
+          "description": "Person trained."
+        },
+        {
+          "label": "Type",
+          "description": "Training or initial/ongoing demonstration."
+        },
+        {
+          "label": "Method",
+          "description": "Configured method and version, or dash."
+        },
+        {
+          "label": "Matrix",
+          "description": "Water, Wastewater, Soil, or dash when nonspecific; initially hidden and not sortable."
+        },
+        {
+          "label": "Effective",
+          "description": "Date record becomes effective; initially clicking sorts newest first."
+        },
+        {
+          "label": "Expires",
+          "description": "Entered expiry or No expiry; default order is expiry ascending. Records without expiry sort after dated records in the default ascending order."
+        },
+        {
+          "label": "Reviewed",
+          "description": "Review date, initially hidden; initially clicking sorts newest first."
+        },
+        {
+          "label": "Reviewer",
+          "description": "Reviewing staff member; initially hidden and not sortable."
+        }
+      ]
+    },
+    {
+      "title": "Computed training state",
+      "paragraphs": [
+        "State is evaluated on the deployment local date. Corrected takes precedence when a replacement exists, then Not acceptable, then Not yet effective when the effective date is future, then Expired after expiry, otherwise Current. Records are valid through the expiry date, and blank expiry never expires by date. Renewed is a separate marker: an acceptable, effective, uncorrected renewal exists; its own expiry is not checked for that marker. Renewal does not rewrite the earlier record state. These records grant no application role, result-entry authorization or report-release permission."
+      ]
+    },
+    {
+      "title": "Table controls",
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Apply search and filters to all records, keeping sort and page size and returning to page 1. Search is case-insensitive and limited to 200 characters."
+        },
+        {
+          "label": "More filters",
+          "description": "Open additional filters where available. Opens automatically for active additional filters or filter errors."
+        },
+        {
+          "label": "Active filters",
+          "description": "Remove a chip to clear that filter and return to page 1. Clear all restores the unfiltered list, default sort and 25 rows per page. The default 30-day window is not an active filter."
+        },
+        {
+          "label": "Column headings",
+          "description": "Sortable headings order the full matching list and toggle direction. Ties use record ID ascending. Plain headings cannot sort. Invalid sort parameters use the default. Changing sort returns to page 1. Most headings start ascending; date/high-quantity exceptions are described under Columns. Text and stored-choice sorting is alphabetical, not an assessment of urgency or laboratory priority."
+        },
+        {
+          "label": "Rows per page",
+          "description": "Choose 25, 50 or 100, default 25. Show applies when automatic submission is unavailable. First, Previous, Next and Last keep filters and sort. The footer shows range and total. Invalid page text opens page 1; an out-of-range number opens the last page. Unsupported page sizes are rejected."
+        },
+        {
+          "label": "Columns",
+          "description": "When table enhancement is available, check columns to show them or uncheck to hide them. Changes apply immediately and remain in this browser. Use Move … up or Move … down controls, or drag headings. The identity column is Always shown and cannot move or hide. Reset columns restores the initial layout. Close or Done closes the dialog. These preferences do not change records, filters, sorting or paging. If browser storage is blocked, the layout applies only to this page."
+        }
+      ]
+    },
+    {
+      "title": "Empty and invalid states",
+      "paragraphs": [
+        "Invalid filters show These filters cannot be applied and no rows; correct the highlighted filter or clear it. No matches shows a filtered empty state. An empty unfiltered list explains what to create; create actions follow your role. There are no row selections or bulk actions."
+      ]
+    },
+    {
+      "title": "Laboratory context beside a batch",
+      "paragraphs": [
+        "Batch pages show Current initial/ongoing demonstrations for that exact method version, limited to a matching matrix or Not specific. Leads see all staff; other staff see only their own. Plain Training records are not included. This is current information, not a historical qualification statement or a gate on analysis/release. Renewed records are not excluded if they still meet Current criteria."
+      ]
+    }
+  ],
+  "sources": [
+    "laboratory/urls.py",
+    "laboratory/forms.py",
+    "laboratory/models.py",
+    "laboratory/permissions.py",
+    "laboratory/training_views.py",
+    "laboratory/training.py",
+    "laboratory/templates/laboratory/training_list.html",
+    "laboratory/templates/laboratory/training_detail.html",
+    "laboratory/tests/test_training.py",
+    "laboratory/tests/test_views.py",
+    "templates/includes/grid_toolbar.html",
+    "templates/includes/pagination.html",
+    "templates/includes/sort_header.html",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js",
+    "laboratory/selectors.py",
+    "laboratory/templates/laboratory/batch_context.html",
+    "laboratory/tests/test_context.py"
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "id": "core-shared",
+  "routes": [
+    "documentation:shared"
+  ],
+  "title": "Workspace controls",
+  "purpose": "Common controls used throughout the application.",
+  "sections": [
+    {
+      "title": "Using documentation",
+      "items": [
+        {
+          "label": "Documentation icon",
+          "description": "Opens this page’s guide on the right. Following a menu link or opening a form changes the guide to that page or form; closing a form restores the page guide."
+        },
+        {
+          "label": "Resize documentation",
+          "description": "Drag the panel’s left edge. With the separator focused, Left widens it and Right narrows it; hold Shift for larger steps. Home and End choose the allowed minimum and maximum. Width is limited to keep the panel usable in this window."
+        },
+        {
+          "label": "Close documentation",
+          "description": "Use the close button or Escape while focus is in the panel. The preferred width and open/closed state are remembered for this account in this browser. Different browsers/devices have separate preferences; clearing browser storage resets them. When storage is unavailable the panel still works for the current page."
+        },
+        {
+          "label": "Narrow screens",
+          "description": "The panel retains the preferred width when space allows and is bounded to the window with a small margin on narrow screens. Close it to return to the page; returning to a wider window restores the preferred desktop width."
+        }
+      ]
+    },
+    {
+      "title": "Navigation and appearance",
+      "items": [
+        {
+          "label": "OpenBGA Roots / Find sample ID",
+          "description": "The brand link returns to the workspace home. On staff pages, Find sample ID submits a search to Samples; its guide describes the search scope. Press Enter to search. The laboratory name identifies this deployment."
+        },
+        {
+          "label": "Menus and section tabs",
+          "description": "Select a menu destination or a section tab to change pages. The current destination is marked. Availability depends on the signed-in account and role; opening a direct link still checks permission."
+        },
+        {
+          "label": "Theme",
+          "description": "The Theme menu offers Light, Dark and System. System follows the device preference. The chosen appearance is saved in this browser."
+        },
+        {
+          "label": "Account menu",
+          "description": "Shows the signed-in name and laboratory roles or client. Change password and Two-factor authentication open account settings. Sign out ends the session."
+        },
+        {
+          "label": "Forms",
+          "description": "Required fields are marked. Validation errors identify fields or the reason an action is blocked. Some forms open in a dialog; close/cancel leaves the underlying page. Save applies the form only when server checks pass. A stale-edit message requires refreshing and checking current values before retrying."
+        },
+        {
+          "label": "Footer / Source code",
+          "description": "Every staff, client portal, sign-in and error page ends with the product name, a Source code link and the AGPL-3.0-only licence. Source code opens the published source of the software this deployment runs, which the licence requires to be offered to its users; a deployment running modified code points it at its own source. It opens an external site and changes no records."
+        }
+      ]
+    },
+    {
+      "title": "Tables where these controls appear",
+      "items": [
+        {
+          "label": "Search and filters",
+          "description": "Apply narrows the server query, not only visible rows. The page-specific sections describe the searchable fields and implicit exclusions. Removing a filter chip clears that filter; Clear all resets the filter selection."
+        },
+        {
+          "label": "Sort and pages",
+          "description": "Linked column headings change server-side ordering. Pagination moves through the filtered result set; the count describes that set. Rows per page sets the page size offered by that screen."
+        },
+        {
+          "label": "Columns",
+          "description": "Opens column visibility and order preferences. Use the controls to show/hide or move supported columns, or Reset columns to restore the defaults. Columns marked Always shown are locked. These preferences stay in this browser and do not change permissions or the underlying records."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "templates/includes/brand.html",
+    "templates/layouts/document.html",
+    "core/grids.py",
+    "static/js/grid.js",
+    "templates/includes/user_menu.html",
+    "templates/includes/theme_menu.html",
+    "static/js/documentation.js",
+    "templates/includes/source_footer.html",
+    "core/templatetags/source_code.py"
+  ]
+}

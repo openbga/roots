@@ -1,0 +1,192 @@
+{
+  "id": "analytical-support-prep-detail",
+  "routes": [
+    "analytical:prep-detail"
+  ],
+  "title": "Preparation batch record",
+  "purpose": "Inspect physical preparation membership, preparation QC and history, and follow the analytical batches that used each aliquot.",
+  "sections": [
+    {
+      "title": "Record and relationships",
+      "paragraphs": [
+        "Active internal staff with a laboratory role can read this workspace. Analysts can create and change preparation work. An admin has operational analyst access; a client account or superuser status alone does not grant it.",
+        "One preparation batch has one method/version and matrix. Each aliquot belongs to one received sample and covers one or more of its requested tests. Analytical result revisions explicitly select an aliquot; reuse retains the same identity, and re-preparation creates another aliquot. Cancellation retains original membership and history."
+      ],
+      "items": [
+        {
+          "label": "Open membership / Closed membership",
+          "description": "Controls adding aliquots and QC samples. Completion is a separate recorded event."
+        },
+        {
+          "label": "Created",
+          "description": "Batch creator and creation time."
+        },
+        {
+          "label": "Started / Completed",
+          "description": "Actual preparation event times, or Not recorded. Times display in laboratory local time with the zone available in the timestamp detail."
+        },
+        {
+          "label": "Equipment",
+          "description": "Primary equipment link, or Not recorded; informational attribution."
+        },
+        {
+          "label": "Membership closed",
+          "description": "Shown after closure with time and closing user."
+        },
+        {
+          "label": "Notes",
+          "description": "Shown when notes were supplied."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Close membership",
+          "description": "Analysts see this when membership is open and there is at least one aliquot. Confirmation posts the irreversible closure, attributes who/when, and prevents more aliquots or QC samples. It does not record start or completion; existing measurements and unused-aliquot cancellation remain possible."
+        },
+        {
+          "label": "Record actual start / Change actual start",
+          "description": "Opens the start form. Existing submitted or approved dependent result revisions prevent changing the preparation evidence."
+        },
+        {
+          "label": "Mark completed / Change completion",
+          "description": "Opens the actual completion form. A start must exist before saving completion, even when the button is visible without one."
+        },
+        {
+          "label": "Add aliquot",
+          "description": "Available to analysts while membership is open; choose a received sample, label its physical aliquot and select covered tests."
+        },
+        {
+          "label": "Cancel",
+          "description": "Shown to analysts only for an unused, uncancelled aliquot. Opens a required-reason form; used work needs a new preparation."
+        },
+        {
+          "label": "Sample",
+          "description": "Opens the receipt sample record using its laboratory ID."
+        },
+        {
+          "label": "Used in",
+          "description": "Links to every analytical batch with a result revision using the aliquot. Select this same aliquot during entry to reuse it."
+        },
+        {
+          "label": "Add QC sample",
+          "description": "Analysts can add while membership is open. Preparation QC samples belong to this preparation batch."
+        },
+        {
+          "label": "Record measurements",
+          "description": "Opens measurement entry/correction for the QC sample, including the actual analytical run. Existing QC can be measured after membership closes."
+        },
+        {
+          "label": "Record disposition",
+          "description": "Opens the current blocking finding. An independent reviewer must accept a qualification to clear its approval hold; a stale finding or conflicted decision cannot clear it."
+        },
+        {
+          "label": "QC configuration",
+          "description": "Available in the no-requirements message to review configured method QC requirements."
+        }
+      ]
+    },
+    {
+      "title": "Aliquots table",
+      "paragraphs": [
+        "All aliquots are shown on one page of up to 100 when the batch has no more than 100. Larger batches use the standard 25/50/100 page size, initially 25. Membership order is creation ID order within the batch. Columns changes presentation locally."
+      ],
+      "items": [
+        {
+          "label": "Aliquot label",
+          "description": "Unique vessel/digestate label within this batch, retained after cancellation."
+        },
+        {
+          "label": "Status",
+          "description": "Cancelled with cancellation reason in its detail; Used if any historical result revision uses it; otherwise Available."
+        },
+        {
+          "label": "Sample",
+          "description": "Laboratory ID link and client sample ID."
+        },
+        {
+          "label": "Tests covered",
+          "description": "Analytes for the requested tests linked to this physical aliquot."
+        },
+        {
+          "label": "Used in",
+          "description": "Distinct analytical batch numbers, or Not used. Historical revisions still establish use."
+        },
+        {
+          "label": "Created by / at",
+          "description": "Who added the aliquot and when."
+        },
+        {
+          "label": "Actions",
+          "description": "Cancel is available only while the aliquot is unused and uncancelled; batch closure alone does not remove it."
+        }
+      ]
+    },
+    {
+      "title": "Quality control tables",
+      "paragraphs": [
+        "Required for this method uses active configured requirements and physical aliquots covering each analyte, including cancelled aliquots. Frequency counts do not replace the need for a measurement for each analyte. No requirements configured means none are enforced by that requirement configuration."
+      ],
+      "items": [
+        {
+          "label": "Analyte / QC type",
+          "description": "Covered test analyte and configured QC category."
+        },
+        {
+          "label": "Physical aliquots",
+          "description": "Per-analyte physical aliquot count; identifies how many are cancelled. Several tests on one aliquot do not create extra physical aliquots for that analyte."
+        },
+        {
+          "label": "Required QC samples / QC samples in batch",
+          "description": "Configured frequency requirement and actual QC sample count."
+        },
+        {
+          "label": "Frequency status",
+          "description": "Met when the number of QC samples meets the requirement; Short otherwise."
+        },
+        {
+          "label": "QC sample / Parent sample",
+          "description": "QC label and type; a parent sample link is shown for sample-based QC."
+        },
+        {
+          "label": "Analyte / Actual analytical run",
+          "description": "Measured analyte and analytical batch link, or Not recorded."
+        },
+        {
+          "label": "Observed / Unit / Spike",
+          "description": "Original measurement text, stored test unit and supplied spike amount, rather than an acceptance limit."
+        },
+        {
+          "label": "Evaluation / Detail / Entered by",
+          "description": "Current configured-limit evaluation, its explanation and measurement contributor."
+        }
+      ]
+    },
+    {
+      "title": "Findings, history and empty states",
+      "paragraphs": [
+        "Preparation QC holds approval lists current blocking findings affecting analytical results using these aliquots, including independent-review conflicts or latest dispositions. Correct the evidence or record the appropriate current disposition. No aliquots yet offers Add aliquot while open. Missing QC samples or measurements have their own empty states. History shows the latest 100 batch and aliquot audit events in oldest-first order, with action, actor, time, reason and any displayed membership change. This is a recent timeline, not a complete export."
+      ],
+      "items": [
+        {
+          "label": "History events",
+          "description": "Includes batch creation, start/completion changes, equipment changes, membership closure, aliquot addition and cancellation. Cancellation reasons remain visible; no delete action is provided."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/preparation_views.py",
+    "analytical/templates/analytical/preparation_detail.html",
+    "analytical/preparation.py",
+    "analytical/services.py",
+    "analytical/models.py",
+    "analytical/tests/test_preparation_views.py",
+    "analytical/tests/test_preparation.py",
+    "analytical/templates/analytical/preparation_qc.html",
+    "analytical/qc.py",
+    "core/grids.py"
+  ]
+}

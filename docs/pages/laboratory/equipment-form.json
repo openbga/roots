@@ -1,0 +1,121 @@
+{
+  "id": "laboratory-equipment-form",
+  "routes": [
+    "laboratory:equipment-create",
+    "laboratory:equipment-edit"
+  ],
+  "title": "New or edit equipment",
+  "purpose": "Register an asset or correct its descriptive identity and placement.",
+  "sections": [
+    {
+      "title": "Access and variants",
+      "paragraphs": [
+        "Only admin and reviewer roles can save. Create equipment registers an asset In service. Edit preloads values and uses Save changes, with a required reason. Status changes are separate; editing descriptive details is allowed even on retired assets."
+      ]
+    },
+    {
+      "title": "Identity",
+      "items": [
+        {
+          "label": "Asset ID",
+          "description": "Required, maximum 40 characters, unique ignoring case."
+        },
+        {
+          "label": "Name",
+          "description": "Required, maximum 160 characters."
+        },
+        {
+          "label": "Equipment type",
+          "description": "Optional list, Not recorded first: Balance, Thermometer, Infrared thermometer, pH meter, Conductivity meter, Dissolved oxygen meter, Turbidimeter, Spectrophotometer, ICP-MS, ICP-OES, Mercury analyzer, Ion chromatograph, Autotitrator, Digestion block, Drying oven, Incubator, Refrigerator, Freezer, Pipette, Water purification system or Other…. Other… reveals a text box (Describe) whose text is stored, up to 80 characters; a type recorded before the list existed shows as Other with its text. The list is a starter vocabulary, not a requirement. While an asset is In service, any type containing the word thermometer (such as Thermometer or Infrared thermometer) makes it a suggestion in the Thermometer field when receiving samples; the suggestion is free text and does not link the asset to the sample."
+        },
+        {
+          "label": "Manufacturer",
+          "description": "Optional, maximum 120 characters."
+        },
+        {
+          "label": "Model",
+          "description": "Optional, maximum 120 characters."
+        },
+        {
+          "label": "Serial number",
+          "description": "Optional, maximum 120 characters."
+        }
+      ]
+    },
+    {
+      "title": "Placement and change",
+      "items": [
+        {
+          "label": "Location",
+          "description": "Required, maximum 160 characters."
+        },
+        {
+          "label": "Notes",
+          "description": "Optional descriptive text."
+        },
+        {
+          "label": "Reason",
+          "description": "Edit only; required explanation kept in audit history. Absent on creation."
+        }
+      ]
+    },
+    {
+      "title": "Saving and errors",
+      "paragraphs": [
+        "An asterisk marks required fields. Cancel returns to the parent record or list without saving. Success opens the saved record with a confirmation. Validation errors appear above the form and beside affected fields; correct them and submit again. Text input remains after validation errors; select an evidence file again if necessary. Dates use year-month-day; date and time fields use the deployment time zone."
+      ]
+    },
+    {
+      "title": "Concurrent changes and history",
+      "paragraphs": [
+        "Saving locks and rechecks the revision you opened. If another user changed the record, reload it, review the latest values and enter your change again. Failed validation writes no partial change. Successful changes and attributed audit events commit together."
+      ]
+    },
+    {
+      "title": "Form dialog controls",
+      "paragraphs": [
+        "With enhancement enabled, the form opens in a dialog, including when its URL is opened directly. Without enhancement it remains a normal page. While loading or saving, controls are disabled to avoid duplicate submissions; focus moves to the first invalid field or first editable field when ready. Saving successfully navigates to the resulting record."
+      ],
+      "items": [
+        {
+          "label": "Maximize / Restore size",
+          "description": "Expand the dialog to full screen or restore its normal size. Small screens use a full-screen layout."
+        },
+        {
+          "label": "Cancel / Close form / Escape",
+          "description": "Close an unchanged form. When opened over another page, return focus to its opening control; when opened directly, return to the Cancel destination. Clicking outside the dialog does not close it."
+        },
+        {
+          "label": "Keep editing / Discard changes",
+          "description": "After an input change, attempting to leave asks Discard your unsaved changes? Keep editing retains the form; Discard changes closes or follows the requested destination without saving. Escape during that prompt keeps editing."
+        },
+        {
+          "label": "Try again",
+          "description": "Shown after a failed initial load. Retry loading the form. Save/connection errors keep the current input and show an error so you can retry the submission. Validation errors replace the form with its submitted values and field messages; files may need selecting again."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "laboratory/urls.py",
+    "laboratory/forms.py",
+    "laboratory/models.py",
+    "laboratory/permissions.py",
+    "laboratory/equipment_views.py",
+    "laboratory/equipment.py",
+    "laboratory/templates/laboratory/form.html",
+    "laboratory/selectors.py",
+    "laboratory/templates/laboratory/equipment_list.html",
+    "laboratory/templates/laboratory/equipment_detail.html",
+    "laboratory/tests/test_equipment.py",
+    "laboratory/tests/test_views.py",
+    "core/form_surfaces.py",
+    "core/form_dialog.py",
+    "templates/includes/form_dialog.html",
+    "static/js/form-dialog.js",
+    "tests/test_form_dialog.py",
+    "core/widgets.py",
+    "receipt/forms.py",
+    "receipt/tests/test_master_data.py"
+  ]
+}

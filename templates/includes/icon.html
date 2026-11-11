@@ -1,0 +1,1 @@
+{% load static %}{% comment %}Decorative icon from the Bootstrap Icons subset (static/img/icons.svg). Parameters: name, class. Pair it with visible or visually-hidden text.{% endcomment %}<svg class="vr-icon{% if class %} {{ class }}{% endif %}" aria-hidden="true" focusable="false"><use href="{% static 'img/icons.svg' %}#i-{{ name }}"></use></svg>

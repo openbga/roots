@@ -1,0 +1,50 @@
+{
+  "id": "accounts-login-code",
+  "routes": [
+    "account_confirm_login_code"
+  ],
+  "title": "Confirm sign-in code",
+  "purpose": "Enter the emailed code in the browser window that requested it to continue signing in to your laboratory account.",
+  "sections": [
+    {
+      "title": "Fields and actions",
+      "items": [
+        {
+          "label": "Recipient",
+          "description": "Read-only email address entered on the request page. Its email link opens your mail application; it does not change the recipient. If the address is wrong, cancel and request a code again with the correct address. The confirmation screen appears for unknown addresses too, so it does not establish that an account exists."
+        },
+        {
+          "label": "Code",
+          "description": "Required one-time code from the latest sign-in email. Enter it in this browser window within five minutes of the original request. A code requested in another browser cannot complete this sign-in."
+        },
+        {
+          "label": "Confirm",
+          "description": "Checks the code for the pending sign-in. An incorrect code shows a field error; three unsuccessful submissions abandon the attempt and return to the request page. A valid code verifies the account email and continues to an enrolled second factor when applicable, then to the allowed requested destination or dashboard."
+        },
+        {
+          "label": "Request new code",
+          "description": "Emails a replacement to the same address without requiring the Code field. The replacement invalidates earlier codes. You can request two replacements during one attempt; the action then disappears. Resending does not restart the five-minute deadline or reset unsuccessful submissions."
+        },
+        {
+          "label": "Cancel",
+          "description": "Ends the pending sign-in and returns to the password sign-in page. No account is created and no laboratory access is granted."
+        }
+      ]
+    },
+    {
+      "title": "Expired or missing sign-in attempt",
+      "paragraphs": [
+        "This page requires a pending code request in the current browser session. If the attempt expires or is missing, you return to the code request page when email-code sign-in is enabled, or to password sign-in when it is disabled. Request a fresh code to start again. A successful code completes only its pending attempt; it cannot start a new session by itself.",
+        "Use the account your laboratory issued. Unknown or inactive accounts receive no usable sign-in code even though the confirmation page looks the same. If no sign-in email arrives, check the address and mail folders, then contact your laboratory for account or delivery assistance."
+      ]
+    }
+  ],
+  "sources": [
+    "config/settings.py",
+    "accounts/adapter.py",
+    "accounts/tests/test_login.py",
+    "templates/account/request_login_code.html",
+    "templates/allauth/layouts/base.html",
+    "uv.lock"
+  ]
+}

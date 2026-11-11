@@ -1,0 +1,136 @@
+{
+  "id": "receipt-storage-list",
+  "routes": [
+    "receipt:storage-list"
+  ],
+  "title": "Sample storage",
+  "purpose": "Find physical samples, their locations, chosen retention dates and disposal holds. Electronic receipt, analytical and report retention are separate.",
+  "sections": [
+    {
+      "title": "Search and filters",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Case-insensitive contains over lab ID, client sample ID, current location and client name."
+        },
+        {
+          "label": "State",
+          "description": "All samples includes disposed and undisposed. In storage means not disposed. Retention date not set means undisposed with no date. Within retention date means undisposed and date today or later. Retention date elapsed means undisposed, date before today and no disposal/receipt Hold. Disposal blocked by hold means undisposed with either hold. Physically disposed means a recorded disposal event exists."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Lab ID",
+          "description": "Opens this sample’s storage record; client sample ID appears below. Default sort is lab ID ascending."
+        },
+        {
+          "label": "Physical sample status",
+          "description": "Computed display state, not an authorization to dispose."
+        },
+        {
+          "label": "Client",
+          "description": "Client derived from the sample’s order/project."
+        },
+        {
+          "label": "Current location",
+          "description": "Location from receipt/custody; completed disposal changes it to disposal destination."
+        },
+        {
+          "label": "Retain through",
+          "description": "Inclusive physical retention date, or Not set."
+        },
+        {
+          "label": "Disposed at",
+          "description": "Completed physical disposal timestamp or Not disposed."
+        }
+      ]
+    },
+    {
+      "title": "Physical sample status",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Physically disposed",
+          "description": "A completed disposal event is recorded; it takes precedence over other display states."
+        },
+        {
+          "label": "Disposal blocked by hold",
+          "description": "A separate disposal hold or receipt disposition Hold is active."
+        },
+        {
+          "label": "Retention date not set",
+          "description": "No explicit laboratory-selected physical retention date exists."
+        },
+        {
+          "label": "Retention date elapsed",
+          "description": "The selected date is before today and no hold is displayed. This alone does not authorize disposal."
+        },
+        {
+          "label": "Within retention date",
+          "description": "The retention date is today or later; the sample must be retained through that date."
+        }
+      ]
+    },
+    {
+      "title": "Table controls",
+      "paragraphs": [
+        "All laboratory staff can read; portal accounts cannot. Invalid filters show errors and no rows; invalid page size is refused. No samples match invites a wider search or cleared criteria; No received samples means no physical sample records exist."
+      ],
+      "items": [
+        {
+          "label": "Apply / Clear all / filter chips",
+          "description": "Apply combines criteria over all samples and returns to page 1. Clear all restores the default list; removing one chip retains others."
+        },
+        {
+          "label": "Column headings / Columns",
+          "description": "Linked headings sort the complete matching set, with record ID breaking ties. Status is not sortable. Columns controls browser-local visibility/order with reset; lab ID stays visible."
+        },
+        {
+          "label": "Rows per page / Show / Pagination",
+          "description": "25 by default; 25, 50 or 100 allowed. Show is the fallback submission. Changing size starts at page 1. First/Previous/Next/Last retain criteria; the footer counts all matches."
+        }
+      ]
+    },
+    {
+      "title": "Column layout dialog",
+      "items": [
+        {
+          "label": "Column checkboxes",
+          "description": "Changes apply immediately. Check to show an optional column or uncheck to hide it. Always shown columns are fixed."
+        },
+        {
+          "label": "Move column up / down",
+          "description": "Moves an optional column within the displayed order; the first/last position disables the unavailable move. You can also drag movable table headers."
+        },
+        {
+          "label": "Reset columns",
+          "description": "Restores this table’s default order and visibility in this browser."
+        },
+        {
+          "label": "Done / Close",
+          "description": "Closes the dialog; layout changes have already been applied and saved locally. No laboratory record is changed."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/storage_views.py",
+    "receipt/storage_forms.py",
+    "receipt/storage_models.py",
+    "receipt/storage.py",
+    "receipt/models.py",
+    "accounts/roles.py",
+    "receipt/tests/test_storage.py",
+    "receipt/templates/receipt/storage/list.html",
+    "receipt/templates/receipt/storage/status.html",
+    "core/grids.py",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js"
+  ]
+}

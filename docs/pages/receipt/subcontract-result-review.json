@@ -1,0 +1,97 @@
+{
+  "id": "receipt-subcontract-result-review",
+  "routes": [
+    "receipt:subcontract-result-review"
+  ],
+  "title": "Review external source",
+  "purpose": "Independently compare the entered observation, units, limits, dilution, qualifiers and provenance against the stored external report PDF before accepting or rejecting the latest source.",
+  "sections": [
+    {
+      "title": "Source observation and evidence",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Exact reported result",
+          "description": "Original reported text and unit; ND is preserved as non-detect rather than numeric zero."
+        },
+        {
+          "label": "Reporting limit / dilution",
+          "description": "Exact applied reporting limit in the reported unit and the external dilution; these are source facts, not catalog defaults."
+        },
+        {
+          "label": "External method and version",
+          "description": "Method/version transcribed from the external report, which may differ from the catalog request."
+        },
+        {
+          "label": "External analyst / analysis time",
+          "description": "Reported analyst and analysis start in laboratory local time."
+        },
+        {
+          "label": "External laboratory / sample ID",
+          "description": "Frozen source identity, including actual external sample ID; not merely an ID tentatively known at dispatch."
+        },
+        {
+          "label": "External report reference",
+          "description": "Reference identifying the supplied source report."
+        },
+        {
+          "label": "External qualifiers and meanings",
+          "description": "Recorded qualifiers/explanations or None recorded."
+        },
+        {
+          "label": "Entered by",
+          "description": "Local transcription actor and entry timestamp, separate from the external analyst."
+        },
+        {
+          "label": "Correction reason / source note",
+          "description": "Reason for a new version or Initial external source entry when the first has no note."
+        },
+        {
+          "label": "Source PDF",
+          "description": "Download staff-only source opens the exact attachment for this version. Size and SHA-256 identify stored bytes. The download verifies size/hash and refuses a corrupt file with a contact-the-laboratory error; it is unavailable to portal accounts."
+        },
+        {
+          "label": "Source review",
+          "description": "Awaiting independent source review, or Accepted source/Rejected source with reviewer, time and note. Source acceptance is separate from internal analytical/QC approval."
+        }
+      ]
+    },
+    {
+      "title": "Source review fields and actions",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Decision",
+          "description": "Required Accepted source or Rejected source. Acceptance is external source acceptance and does not claim internal batch/QC approval or issue a report."
+        },
+        {
+          "label": "Note",
+          "description": "Required explanation of the source review, at most 4000 characters."
+        },
+        {
+          "label": "Review external source",
+          "description": "Reviewers and administrators record actor/time/decision/note and audit, then return to the subcontract. The source must still be the latest, have no decision and belong to an active dispatch. The entry author cannot review it, even with reviewer/admin role. A decision cannot be edited; a corrected source creates another version for review."
+        }
+      ]
+    },
+    {
+      "title": "Saving and concurrency",
+      "paragraphs": [
+        "Validation errors keep submitted text on the form. A concurrent subcontract change refuses saving; reload and review its current source history before resubmitting. Cancel returns to the subcontract without changing it. Cancelled dispatches cannot receive source entry/review or further cancellation."
+      ],
+      "items": []
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/subcontract_views.py",
+    "receipt/subcontract_forms.py",
+    "receipt/subcontract_models.py",
+    "receipt/subcontracts.py",
+    "receipt/models.py",
+    "accounts/roles.py",
+    "receipt/tests/test_subcontracts.py",
+    "receipt/templates/receipt/subcontract/form.html",
+    "receipt/templates/receipt/subcontract/source_summary.html"
+  ]
+}

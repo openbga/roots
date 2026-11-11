@@ -1,0 +1,23 @@
+{
+  "id": "accounts-signup",
+  "routes": [
+    "account_signup"
+  ],
+  "title": "Accounts are issued by the laboratory",
+  "purpose": "This deployment does not offer public account registration.",
+  "sections": [
+    {
+      "title": "Closed registration",
+      "paragraphs": [
+        "The page displays Sign Up Closed without a registration form. Public signup is closed by the account adapter. Ask the laboratory to issue a staff or client account. The branding link returns to the application; this page has no sign-up action."
+      ]
+    }
+  ],
+  "sources": [
+    "config/settings.py",
+    "templates/allauth/layouts/base.html",
+    "templates/allauth/layouts/manage.html",
+    "uv.lock",
+    "accounts/adapter.py"
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "id": "analytical-main-config-qc-limit",
+  "routes": [
+    "analytical:config-new",
+    "analytical:config-edit"
+  ],
+  "match": {
+    "kind": "qc-limit"
+  },
+  "title": "QC limit",
+  "purpose": "Add or edit inclusive acceptance bounds for one test definition, QC phase, QC type and measured/calculated quantity.",
+  "sections": [
+    {
+      "title": "Create, edit and access",
+      "paragraphs": [
+        "Staff can read this form, but only administrators may save it. Add creates a new configuration record; Edit prepopulates the existing record and requires a Reason for change. Unknown configuration kinds are unavailable. These are lab policy values, and synthetic seed data is not a validated set."
+      ]
+    },
+    {
+      "title": "Fields",
+      "items": [
+        {
+          "label": "Definition",
+          "description": "Required exact method/version, analyte and matrix. Choices include catalog definitions ordered by method, analyte and matrix; this is not a limit for every analyte in a method."
+        },
+        {
+          "label": "Phase",
+          "description": "Required Analysis (initial Add default) or Preparation. Keeps analytical QC limits separate from independent preparation QC limits."
+        },
+        {
+          "label": "Qc type",
+          "description": "Required Method blank, Laboratory control sample, Matrix spike, Matrix spike duplicate, Laboratory duplicate or Calibration verification."
+        },
+        {
+          "label": "Measure",
+          "description": "Required Measured value, Percent recovery or Relative percent difference. Choose the quantity this QC type actually evaluates."
+        },
+        {
+          "label": "Lower",
+          "description": "Optional inclusive lower bound. Uses result unit for Measured value and percent for recovery/RPD. Decimal field supports up to 10 decimal places and 24 total digits."
+        },
+        {
+          "label": "Upper",
+          "description": "Optional inclusive upper bound in the same quantity/unit. At least one bound must be supplied; lower cannot exceed upper."
+        },
+        {
+          "label": "Basis",
+          "description": "Optional method/SOP reference for the bounds and applicability."
+        },
+        {
+          "label": "Is active",
+          "description": "Initially checked. Current QC evaluation uses only active limits; deactivating does not create an assumed pass."
+        }
+      ]
+    },
+    {
+      "title": "Applicability and current evaluation",
+      "paragraphs": [
+        "Only one limit row can exist for a definition, phase, QC type and measure, including inactive rows. An unrelated measure does not replace a required applicable measure. All applicable quantities need active bounds; missing ones produce Not evaluated and hold approval.",
+        "Current measurements are reevaluated under current limits. Changing a limit can restore or create a hold and invalidate the context of a prior accepted disposition. Approved result QC evidence and issued report snapshots remain historical records rather than being rewritten."
+      ],
+      "items": [
+        {
+          "label": "Method blank",
+          "description": "Uses Measured value. For ND, a configured upper bound is essential: the applied reporting limit must be no greater than that bound."
+        },
+        {
+          "label": "Laboratory control sample / Calibration verification",
+          "description": "Use Percent recovery."
+        },
+        {
+          "label": "Matrix spike",
+          "description": "Uses Percent recovery with the native sample result subtracted."
+        },
+        {
+          "label": "Matrix spike duplicate",
+          "description": "Requires both Percent recovery and Relative percent difference limits."
+        },
+        {
+          "label": "Laboratory duplicate",
+          "description": "Uses Relative percent difference."
+        }
+      ]
+    },
+    {
+      "title": "Creation action",
+      "items": [
+        {
+          "label": "Add QC limit",
+          "description": "Validate bounds and uniqueness, create the audited limit and return to QC configuration."
+        }
+      ]
+    },
+    {
+      "title": "Save, cancel and history",
+      "paragraphs": [
+        "Validation errors preserve entered form values. A stale record is refused rather than overwriting another person’s edit; input stays visible, but reload and compare current values before saving again. A reload is a new form, so retain any needed unsaved notes before leaving."
+      ],
+      "items": [
+        {
+          "label": "Reason for change",
+          "description": "Optional on creation; required nonblank for every existing-row save. Recorded with actor, time and before/after values."
+        },
+        {
+          "label": "Save changes",
+          "description": "For an edit, validate fields and uniqueness, recheck that the record still matches the version opened, and save with its audit event. The Add form’s named submit button creates instead. Success returns to QC configuration."
+        },
+        {
+          "label": "Cancel",
+          "description": "Return to QC configuration without saving typed changes."
+        },
+        {
+          "label": "History",
+          "description": "Existing records show their latest 20 audit events, displayed oldest to newest, with action, actor, time and reason. No history section appears before any events exist."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/templates/analytical/form.html",
+    "core/concurrency.py",
+    "analytical/tests/test_config_concurrency.py",
+    "analytical/qc.py",
+    "analytical/tests/test_pure.py",
+    "analytical/tests/test_integrity.py",
+    "analytical/tests/test_views.py"
+  ]
+}

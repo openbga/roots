@@ -1,0 +1,142 @@
+{
+  "id": "reporting-portal-project-list",
+  "routes": [
+    "portal:project-list"
+  ],
+  "title": "Client projects",
+  "purpose": "Find your projects and navigate to their received samples.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Only an active signed-in account linked to a client can use these pages. Every project, sample, report and download is limited to that client. Other clients’ records are treated as missing. Internal staff and unrelated accounts cannot use the portal. These reporting views are read-only; drafts never appear here.",
+        "When Demonstration appears, all clients, samples and results are synthetic and must not be used as laboratory results or for regulatory or compliance purposes.",
+        "The portal’s top navigation marks the current area. No staff work queue or result-edit controls are available here."
+      ],
+      "items": [
+        {
+          "label": "Home",
+          "description": "Client overview, recent reports and live sample-status counts."
+        },
+        {
+          "label": "Projects",
+          "description": "Client projects with sample/report counts."
+        },
+        {
+          "label": "Quotes",
+          "description": "Open the separate client quote workflow."
+        },
+        {
+          "label": "Submissions",
+          "description": "Open the separate client pre-login/submission workflow."
+        },
+        {
+          "label": "Samples",
+          "description": "Live status of the client’s received samples."
+        },
+        {
+          "label": "Reports",
+          "description": "Issued reports and stored downloads."
+        }
+      ]
+    },
+    {
+      "title": "Search and defaults",
+      "paragraphs": [
+        "Default order is project name ascending. The server validates any supplied project query parameter against your client but this page does not use it to restrict project rows. Invalid choices produce no rows; use Clear all to reset."
+      ],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Case-insensitive search of project name and program/permit text within your client; outer whitespace is ignored."
+        },
+        {
+          "label": "Apply",
+          "description": "Apply search across all client projects. No visible project-selection filter is offered on this page."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Project",
+          "description": "Project name; fixed visible identity. There is no separate project-detail link here."
+        },
+        {
+          "label": "Program / permit",
+          "description": "Lab-recorded program or permit label, or a dash if not set; not a certification claim."
+        },
+        {
+          "label": "Turnaround (days)",
+          "description": "Project’s configured turnaround-day count; hidden initially. It is not an actual order due date or remaining-time calculation."
+        },
+        {
+          "label": "Samples",
+          "description": "Count of all received samples under this project’s orders, including held/rejected ones. A nonzero count links to Samples filtered to this project."
+        },
+        {
+          "label": "Last received",
+          "description": "Latest receipt date/time among project samples, or a dash if none."
+        },
+        {
+          "label": "Reports",
+          "description": "Count of distinct issued report scopes, not versions or exports. Draft scopes are excluded; this count has no report-list link."
+        }
+      ]
+    },
+    {
+      "title": "Using the table",
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Apply combined search and filters to all matching records and return to page 1."
+        },
+        {
+          "label": "Clear all",
+          "description": "Remove search, filters and query-based sorting/page settings. An active-filter chip removes only that filter and returns to page 1."
+        },
+        {
+          "label": "Column headings",
+          "description": "Linked headings sort ascending or descending across the full filtered set. Unlinked headings cannot sort. Equal values use record ID as a tie-breaker; unsupported sorts fall back to the page default."
+        },
+        {
+          "label": "Rows per page",
+          "description": "Choose 25, 50 or 100, default 25. Changing this returns to page 1 and preserves other filters. Show applies the choice when automatic submission is unavailable. Other sizes are refused."
+        },
+        {
+          "label": "First page / Previous page / Next page / Last page",
+          "description": "Move through matching records while preserving filters and sort. The footer shows visible range, total, current page and page count. Invalid page text selects page 1; out-of-range pages select the last page."
+        },
+        {
+          "label": "Columns",
+          "description": "With browser enhancement, change optional column visibility and order using the dialog’s move controls or by dragging headings. Changes apply immediately and are saved in this browser only. Locked identity/action columns stay visible and fixed. Reset columns restores defaults; Done or Close closes the dialog. Presentation settings do not change records, filters or exports."
+        }
+      ]
+    },
+    {
+      "title": "Empty states",
+      "paragraphs": [
+        "No projects match asks you to clear search. No projects yet means your laboratory contact has not set up client projects; there is no client create/edit control here."
+      ]
+    }
+  ],
+  "sources": [
+    "reporting/portal_urls.py",
+    "reporting/portal_views.py",
+    "reporting/queries.py",
+    "reporting/models.py",
+    "reporting/content.py",
+    "reporting/templates/reporting/portal/notice.html",
+    "templates/layouts/portal.html",
+    "reporting/tests/test_portal.py",
+    "reporting/tests/test_grids.py",
+    "reporting/templates/reporting/portal/project_list.html",
+    "receipt/models.py",
+    "core/grids.py",
+    "templates/includes/grid_toolbar.html",
+    "templates/includes/pagination.html",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js"
+  ]
+}

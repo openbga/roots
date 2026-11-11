@@ -1,0 +1,59 @@
+{
+  "id": "admin-mfa_authenticator-history",
+  "routes": [
+    "admin:mfa_authenticator_history"
+  ],
+  "title": "Authenticator administration history",
+  "purpose": "Read maintenance actions recorded by Django administration for this factor record.",
+  "sections": [
+    {
+      "title": "Access and scope",
+      "paragraphs": [
+        "Requires an active account with both Staff and Superuser status. A laboratory admin role, Staff status alone or individual authenticator or email-address model permissions granted to a user or group do not open this page.",
+        "Shows only this record’s Django administration entries, oldest first, 100 per page. Enrollment and use by the account holder are not entered here, and a removal is recorded in the account’s audit history."
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Date/time",
+          "description": "Administration action timestamp in the display time zone."
+        },
+        {
+          "label": "User",
+          "description": "Acting administrator’s username and full name when present."
+        },
+        {
+          "label": "Action",
+          "description": "Django’s rendered change message. It is not a snapshot of old/new values or a domain reason."
+        }
+      ]
+    },
+    {
+      "title": "Navigation and empty state",
+      "items": [
+        {
+          "label": "Numbered pages",
+          "description": "Move through older-to-newer 100-entry pages with an entry count; no search or sort controls."
+        },
+        {
+          "label": "Home / app / model / object breadcrumbs",
+          "description": "Return through the permitted maintenance hierarchy."
+        },
+        {
+          "label": "No change history",
+          "description": "Explains that this object may not have been added through administration. Absence here does not mean no self-service events exist."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "accounts/admin.py",
+    "accounts/models.py",
+    "accounts/roles.py",
+    "core/admin.py",
+    "config/settings.py",
+    "uv.lock"
+  ]
+}

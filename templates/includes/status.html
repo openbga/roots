@@ -1,0 +1,8 @@
+{% comment %}
+Status label: text plus a tone glyph, so colour is never the only cue. Parameters:
+  label  visible text (e.g. sample.get_status_display)
+  tone   neutral | info | progress | success | warning | danger | hold
+  plain  truthy for the compact table-cell variant without the pill
+  title  optional longer explanation (tooltip and accessible description)
+{% endcomment %}
+<span class="vr-status{% if plain %} vr-status-plain{% endif %}" data-tone="{{ tone|default:'neutral' }}"{% if title %} title="{{ title }}"{% endif %}>{{ label }}</span>

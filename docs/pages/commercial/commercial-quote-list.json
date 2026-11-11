@@ -1,0 +1,136 @@
+{
+  "id": "commercial-quote-list",
+  "routes": [
+    "commercial:quote-list"
+  ],
+  "title": "Quotes",
+  "purpose": "Find client quotes, latest staff versions, decision states and prices.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "Project managers and admins can use price lists and quotes. Other staff roles do not grant this access. Admin includes the project manager role. A superuser flag alone supplies no application role."
+      ]
+    },
+    {
+      "title": "Find and arrange records",
+      "paragraphs": [
+        "There is no bulk action or selection across pages. Invalid filters show errors and no rows; correct or clear them. No matches means the filters found nothing. An unfiltered empty list means no eligible records exist."
+      ],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Search number, current title, client name, project name and client purchase-order/reference. Case-insensitive partial matching trims surrounding spaces and accepts at most 200 characters. Search and filters apply together to the full record set."
+        },
+        {
+          "label": "Status",
+          "description": "All statuses initially: Draft, Issued, Being revised, Accepted, Declined and Withdrawn. Expired selects issued quotes past the latest valid-until date. Issued excludes expired quotes."
+        },
+        {
+          "label": "Client",
+          "description": "Any client initially; restrict to one client. Inactive clients remain available for existing records."
+        },
+        {
+          "label": "Apply",
+          "description": "Apply search and filters and return to page 1. Current sorting and page size are kept."
+        },
+        {
+          "label": "Clear all",
+          "description": "Remove search, filters, sorting and page settings and return to this list’s defaults. Removing one active filter keeps the others and returns to page 1."
+        },
+        {
+          "label": "Sort",
+          "description": "Newest quote numbers appear first. Select a sortable heading to change direction. Sortable columns: Quote, Client, Project, Title, Status, Total (USD), Valid until and Issued. Sorting applies to all matching records, with record identity as a stable tie-breaker."
+        },
+        {
+          "label": "Rows per page",
+          "description": "25 by default; choose 50 or 100. A change returns to page 1 and preserves other query settings. Show applies the choice without automatic submission."
+        },
+        {
+          "label": "First page / Previous page / Next page / Last page",
+          "description": "Move through matching records. The footer shows the visible range, count and page. Unavailable directions are disabled. Invalid page numbers resolve to an available page; unsupported page sizes are refused."
+        },
+        {
+          "label": "Columns",
+          "description": "With enhanced controls, show/hide columns and use Move up / Move down or drag headings to reorder. Quote is always shown and fixed. Changes apply immediately and are saved in this browser for this table; they do not filter or change records."
+        },
+        {
+          "label": "Reset columns / Done / Close",
+          "description": "Reset columns restores shipped visibility and order. Done or Close dismisses the Columns dialog; changes already apply."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Quote",
+          "description": "Assigned QT number; select to open the document, versions and actions."
+        },
+        {
+          "label": "Client",
+          "description": "Current client name."
+        },
+        {
+          "label": "Project",
+          "description": "Optional current project; hidden initially. A dash means none."
+        },
+        {
+          "label": "Title",
+          "description": "Current staff title, including unissued revision changes."
+        },
+        {
+          "label": "Status",
+          "description": "Current workflow state; Expired is calculated from validity, not saved as a decision."
+        },
+        {
+          "label": "Version",
+          "description": "Latest version number, including an unissued draft. Not sortable."
+        },
+        {
+          "label": "Total (USD)",
+          "description": "Exact total of the latest version, including an unissued draft."
+        },
+        {
+          "label": "Valid until",
+          "description": "Latest version’s date, or a dash if unset."
+        },
+        {
+          "label": "Issued",
+          "description": "Latest version’s issue timestamp; blank for a draft. Hidden initially."
+        },
+        {
+          "label": "Client reference",
+          "description": "Purchase order/reference recorded at acceptance, or a dash. Hidden initially and not sortable."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "New quote",
+          "description": "Open a header form, then enter prices and terms. Project managers and admins can create quotes; the empty state offers this action."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "commercial/urls.py",
+    "commercial/views.py",
+    "commercial/models.py",
+    "commercial/forms.py",
+    "commercial/permissions.py",
+    "accounts/roles.py",
+    "commercial/lists.py",
+    "commercial/selectors.py",
+    "core/grids.py",
+    "templates/includes/grid_toolbar.html",
+    "templates/includes/pagination.html",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js",
+    "commercial/quotes.py",
+    "commercial/templates/commercial/quote_list.html",
+    "commercial/templates/commercial/_quote_status.html"
+  ]
+}

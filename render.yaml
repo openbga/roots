@@ -1,0 +1,36 @@
+# Paid web and database services. Review and accept the estimate before deploying.
+# Existing service and database identifiers stay stable to preserve deployed resources.
+services:
+  - type: web
+    name: openbga-roots
+    runtime: docker
+    plan: 1c-2g
+    region: virginia
+    autoDeployTrigger: "off"
+    healthCheckPath: /health/
+    preDeployCommand: python manage.py migrate --noinput
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: vibe-roots-iq-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "false"
+      - key: WEB_CONCURRENCY
+        value: "2"
+      - key: TIME_ZONE
+        value: America/New_York
+      - key: EMAIL_BACKEND
+        value: django.core.mail.backends.dummy.EmailBackend
+
+databases:
+  - name: vibe-roots-iq-db
+    databaseName: vibe_roots
+    user: vibe_roots
+    plan: 0.5c-1g
+    region: virginia
+    postgresMajorVersion: "17"
+    diskSizeGB: 5
+    ipAllowList: []

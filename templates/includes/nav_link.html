@@ -1,0 +1,25 @@
+{% comment %}
+One navigation item, rendered by the {% nav_item %} and {% portal_nav_item %} tags
+(core/templatetags/navigation.py), which declare every item and the routes that mark it current.
+Parameters:
+  url      resolved URL; empty renders a "Planned" placeholder (sidebar only)
+  label    link text
+  icon     Bootstrap Icons name shown before the label (sidebar; decorative)
+  current  truthy when the page belongs to this item: renders aria-current="page"
+  portal   truthy for the client-portal top bar (Bootstrap .nav-link) instead of the staff rail
+  count    optional number shown at the end (sidebar)
+Usage: {% load navigation %}<ul class="vr-nav-list">{% nav_item "samples" %}</ul>
+{% endcomment %}
+{% if portal %}
+{% if url %}<li class="nav-item"><a class="nav-link" href="{{ url }}"{% if current %} aria-current="page"{% endif %}>{{ label }}</a></li>{% endif %}
+{% else %}
+<li>
+  {% if url %}
+  <a class="vr-navlink" href="{{ url }}"{% if current %} aria-current="page"{% endif %}>
+    {% if icon %}{% include "includes/icon.html" with name=icon %}{% endif %}<span>{{ label }}</span>{% if count %}<span class="vr-navlink-count">{{ count }}</span>{% endif %}
+  </a>
+  {% else %}
+  <span class="vr-navlink is-unavailable">{% if icon %}{% include "includes/icon.html" with name=icon %}{% endif %}<span>{{ label }}</span> <span class="vr-navlink-note">Planned</span></span>
+  {% endif %}
+</li>
+{% endif %}

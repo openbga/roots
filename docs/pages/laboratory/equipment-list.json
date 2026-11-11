@@ -1,0 +1,144 @@
+{
+  "id": "laboratory-equipment-list",
+  "routes": [
+    "laboratory:equipment-list"
+  ],
+  "title": "Equipment",
+  "purpose": "Find registered assets and their current status and calibration or maintenance attention.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Available to active signed-in lab staff with an admin, custodian, analyst, reviewer, approver or project manager role. Client accounts and accounts without a lab role cannot open laboratory pages. Sidebar links open Lab overview, Inventory, Equipment, Training and Nonconformances. Breadcrumbs return to the list or parent record."
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "New equipment",
+          "description": "Admin and reviewer roles can register an asset. Open Asset ID to see the record and event history."
+        }
+      ]
+    },
+    {
+      "title": "Search and filters",
+      "items": [
+        {
+          "label": "Search",
+          "description": "Search Asset ID, name, manufacturer, model, serial number and type."
+        },
+        {
+          "label": "Status",
+          "description": "All statuses by default; In service, Out of service or Retired."
+        },
+        {
+          "label": "Due",
+          "description": "All by default. Overdue selects non-retired assets with either due date before today. Due soon selects either due date from today through the chosen horizon inclusive. No due date recorded requires In service and both due dates missing. Last event not acceptable selects non-retired assets whose latest calibration or maintenance outcome is Not acceptable. An asset can have one overdue kind and one due-soon kind."
+        },
+        {
+          "label": "Due within",
+          "description": "Choose 7, 14, 30, 60 or 90 days; blank and explicit 30 both mean 30 days. This display window does not define a lab schedule. Narrows Due soon only; alone does not filter dates."
+        },
+        {
+          "label": "Type",
+          "description": "Under More filters; optional case-insensitive text within the equipment type, maximum 80 characters."
+        },
+        {
+          "label": "Location",
+          "description": "Under More filters; optional case-insensitive text within location, maximum 160 characters."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Asset ID",
+          "description": "Unique identifier and detail link; always visible. Default sort is Asset ID ascending."
+        },
+        {
+          "label": "Name",
+          "description": "Asset name."
+        },
+        {
+          "label": "Type",
+          "description": "Optional equipment type; initially hidden."
+        },
+        {
+          "label": "Model / serial",
+          "description": "Model and serial number prefixed S/N; initially hidden, not sortable."
+        },
+        {
+          "label": "Location",
+          "description": "Current placement."
+        },
+        {
+          "label": "Status",
+          "description": "In service, Out of service or Retired."
+        },
+        {
+          "label": "Calibration due",
+          "description": "For each kind, dates and outcomes come from the latest uncorrected event by performed date, then record ID descending. No interval is calculated. A date is overdue only after it passes. Within the fixed 30-day highlight, the label is Due today or Due in … d; later dates are Scheduled; blank is Not scheduled. The filter window may differ from this fixed highlight. Last not acceptable is additionally marked for calibration. Retired assets show a dash for date, though the last unacceptable calibration marker can remain."
+        },
+        {
+          "label": "Maintenance due",
+          "description": "Latest uncorrected maintenance due date and highlight. Retired assets show a dash. A failed maintenance outcome can be found using Due even though this column does not show a failure marker."
+        }
+      ]
+    },
+    {
+      "title": "Table controls",
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Apply search and filters to all records, keeping sort and page size and returning to page 1. Search is case-insensitive and limited to 200 characters."
+        },
+        {
+          "label": "More filters",
+          "description": "Open additional filters where available. Opens automatically for active additional filters or filter errors."
+        },
+        {
+          "label": "Active filters",
+          "description": "Remove a chip to clear that filter and return to page 1. Clear all restores the unfiltered list, default sort and 25 rows per page. The default 30-day window is not an active filter."
+        },
+        {
+          "label": "Column headings",
+          "description": "Sortable headings order the full matching list and toggle direction. Ties use record ID ascending. Plain headings cannot sort. Invalid sort parameters use the default. Changing sort returns to page 1. Most headings start ascending; date/high-quantity exceptions are described under Columns. Text and stored-choice sorting is alphabetical, not an assessment of urgency or laboratory priority."
+        },
+        {
+          "label": "Rows per page",
+          "description": "Choose 25, 50 or 100, default 25. Show applies when automatic submission is unavailable. First, Previous, Next and Last keep filters and sort. The footer shows range and total. Invalid page text opens page 1; an out-of-range number opens the last page. Unsupported page sizes are rejected."
+        },
+        {
+          "label": "Columns",
+          "description": "When table enhancement is available, check columns to show them or uncheck to hide them. Changes apply immediately and remain in this browser. Use Move … up or Move … down controls, or drag headings. The identity column is Always shown and cannot move or hide. Reset columns restores the initial layout. Close or Done closes the dialog. These preferences do not change records, filters, sorting or paging. If browser storage is blocked, the layout applies only to this page."
+        }
+      ]
+    },
+    {
+      "title": "Empty and invalid states",
+      "paragraphs": [
+        "Invalid filters show These filters cannot be applied and no rows; correct the highlighted filter or clear it. No matches shows a filtered empty state. An empty unfiltered list explains what to create; create actions follow your role. There are no row selections or bulk actions."
+      ]
+    }
+  ],
+  "sources": [
+    "laboratory/urls.py",
+    "laboratory/forms.py",
+    "laboratory/models.py",
+    "laboratory/permissions.py",
+    "laboratory/equipment_views.py",
+    "laboratory/equipment.py",
+    "laboratory/selectors.py",
+    "laboratory/templates/laboratory/equipment_list.html",
+    "laboratory/templates/laboratory/equipment_detail.html",
+    "laboratory/tests/test_equipment.py",
+    "laboratory/tests/test_views.py",
+    "templates/includes/grid_toolbar.html",
+    "templates/includes/pagination.html",
+    "templates/includes/sort_header.html",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js"
+  ]
+}

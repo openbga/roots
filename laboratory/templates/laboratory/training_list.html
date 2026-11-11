@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load laboratory_extras %}
+{% comment %}Training records. Context: page_obj (with_state), filter_form, q, sort, per_page, active_filters, filtered, own_only, can_record_training.{% endcomment %}
+{% block page_intro %}<p class="vr-page-intro">{% if own_only %}Your records{% else %}All staff records{% endif %}; they document training and do not grant roles or release permission.</p>{% endblock %}
+{% block page_actions %}{% if can_record_training %}<a class="btn btn-primary" href="{% url 'laboratory:training-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New training record</a>{% endif %}{% endblock %}
+{% block content %}
+<section class="card vr-table-card" aria-labelledby="tr-heading">
+  <h2 class="visually-hidden" id="tr-heading">Training records</h2>
+  {% include "includes/grid_toolbar.html" with label="Filter training records" q=q placeholder="Person, title, method or reference" inline=inline more=more more_open=more_open grid="laboratory.training" %}
+  {% if page_obj.paginator.count %}
+  <div class="vr-table-wrap">
+    <table class="table table-hover vr-table" data-vr-grid="laboratory.training" data-vr-grid-version="2" aria-labelledby="tr-heading">
+      <thead><tr>
+        {% include "includes/sort_header.html" with label="Subject" asc="title" desc="-title" col="title" locked=True %}
+        {% include "includes/sort_header.html" with label="State" asc="state" desc="-state" col="state" %}
+        {% include "includes/sort_header.html" with label="Staff" asc="staff" desc="-staff" col="staff" %}
+        {% include "includes/sort_header.html" with label="Type" asc="type" desc="-type" col="type" %}
+        {% include "includes/sort_header.html" with label="Method" asc="method" desc="-method" col="method" %}
+        <th scope="col" data-vr-col="matrix" data-vr-col-label="Matrix" data-vr-col-hidden>Matrix</th>
+        {% include "includes/sort_header.html" with label="Effective" asc="effective" desc="-effective" first="desc" col="effective" %}
+        {% include "includes/sort_header.html" with label="Expires" asc="expires" desc="-expires" col="expires" %}
+        {% include "includes/sort_header.html" with label="Reviewed" asc="reviewed" desc="-reviewed" first="desc" col="reviewed" hidden=True %}
+        <th scope="col" data-vr-col="reviewer" data-vr-col-label="Reviewer" data-vr-col-hidden>Reviewer</th>
+      </tr></thead>
+      <tbody>
+        {% for r in page_obj %}
+        <tr>
+          <th scope="row"><a class="vr-row-link" href="{% url 'laboratory:training-detail' r.pk %}">{{ r.title }}</a></th>
+          <td>{% include "laboratory/_status.html" with kind="training" value=r.state label=r.state|training_label plain=True %}{% if r.is_renewed %} <span class="vr-muted small">renewed</span>{% endif %}</td>
+          <td>{{ r.staff.get_full_name|default:r.staff.get_username }}</td>
+          <td>{{ r.get_record_type_display }}</td>
+          <td>{% if r.method %}{{ r.method }}{% else %}—{% endif %}</td>
+          <td>{{ r.get_matrix_display|default:"—" }}</td>
+          <td class="vr-nowrap">{{ r.effective_on|date:"Y-m-d" }}</td>
+          <td class="vr-nowrap">{{ r.expires_on|date:"Y-m-d"|default:"No expiry" }}</td>
+          <td class="vr-nowrap">{{ r.reviewed_on|date:"Y-m-d" }}</td>
+          <td>{{ r.reviewed_by.get_full_name|default:r.reviewed_by.get_username }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "includes/pagination.html" with noun="records" filtered=filtered %}
+  {% elif filter_form.errors %}
+  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above." clear_url=request.path %}
+  {% elif filtered %}
+  {% include "includes/empty_state.html" with kind="no-results" title="No records match these filters" body="Check the person or method, or clear the filters." clear_url=request.path %}
+  {% else %}
+  {% if can_record_training %}{% url 'laboratory:training-create' as create_url %}{% endif %}
+  {% include "includes/empty_state.html" with title="No training records yet" body="Record training and demonstrations of capability with their review, dates and evidence." action_url=create_url action_label="New training record" %}
+  {% endif %}
+</section>
+{% endblock %}

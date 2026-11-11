@@ -1,0 +1,152 @@
+{
+  "id": "reporting-report-list",
+  "routes": [
+    "reporting:report-list"
+  ],
+  "title": "Reports",
+  "purpose": "Find report scopes, distinguish drafts from issued versions and identify work needing attention.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Active internal staff with an application role can read this page. Client accounts cannot use staff reporting pages. Project managers, approvers and users with explicit release authority can prepare and edit reports. Admin includes project-manager operational access, but release separately requires the explicit report release permission; admin or superuser status alone does not grant it."
+      ],
+      "items": [
+        {
+          "label": "Prepare report",
+          "description": "Open project and sample selection when you have preparation access."
+        },
+        {
+          "label": "Report",
+          "description": "Open detail and readiness by its RPT number."
+        }
+      ]
+    },
+    {
+      "title": "Filters",
+      "items": [
+        {
+          "label": "Search",
+          "description": "Case-insensitive title, project and client search. A numeric ID or RPT-prefixed zero-padded ID also matches the report number; outer whitespace is ignored."
+        },
+        {
+          "label": "Status",
+          "description": "Any status; Draft (never issued); Issued, v1; or Amended. Uses latest issued version count, not unsaved or post-issue scope changes."
+        },
+        {
+          "label": "Client",
+          "description": "One client, or Any client by default."
+        },
+        {
+          "label": "Needs attention",
+          "description": "Any; Results or samples changed since issue; or Draft with unapproved tests. Changed detects current result/source revision and sample-scope differences, not narrative, QC or catalog changes. Unapproved compares approved/accepted count to requested count and is not a full readiness check."
+        },
+        {
+          "label": "More filters",
+          "description": "Reveal Project and release-date bounds; opens when a value or filter error is present."
+        },
+        {
+          "label": "Project",
+          "description": "One project. When Client is set, it must own the project; mismatches show errors and no rows."
+        },
+        {
+          "label": "Released from / Released to",
+          "description": "Inclusive local dates of the latest release. Either bound excludes never-issued drafts. Invalid dates/choices show errors and no rows, never a widened search."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Report",
+          "description": "Unique RPT number/detail link; locked visible."
+        },
+        {
+          "label": "Title",
+          "description": "Current editable title, which may differ from the issued PDF."
+        },
+        {
+          "label": "Client / project",
+          "description": "Current owner and project beneath; the heading sorts by client name."
+        },
+        {
+          "label": "Status",
+          "description": "Draft means never issued; Issued v1 is original; Amended vN is latest released amendment."
+        },
+        {
+          "label": "Results",
+          "description": "Draft: approved/accepted tests of requested tests. Issued: Results or samples changed, or No result changes. This indicator excludes QC/narrative/catalog changes; preview makes the precise comparison."
+        },
+        {
+          "label": "Samples",
+          "description": "Current selection count for next version."
+        },
+        {
+          "label": "Released",
+          "description": "Latest issue date/time, or Not released."
+        },
+        {
+          "label": "Released by",
+          "description": "Latest release actor; hidden initially and empty for drafts."
+        },
+        {
+          "label": "Prepared",
+          "description": "Original scope-creation time; hidden initially, not last edit."
+        }
+      ]
+    },
+    {
+      "title": "Using the table",
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Apply combined search and filters to all matching records and return to page 1."
+        },
+        {
+          "label": "Clear all",
+          "description": "Remove search, filters and query-based sorting/page settings. An active-filter chip removes only that filter and returns to page 1."
+        },
+        {
+          "label": "Column headings",
+          "description": "Linked headings sort ascending or descending across the full filtered set. Unlinked headings cannot sort. Equal values use record ID as a tie-breaker; unsupported sorts fall back to the page default."
+        },
+        {
+          "label": "Rows per page",
+          "description": "Choose 25, 50 or 100, default 25. Changing this returns to page 1 and preserves other filters. Show applies the choice when automatic submission is unavailable. Other sizes are refused."
+        },
+        {
+          "label": "First page / Previous page / Next page / Last page",
+          "description": "Move through matching records while preserving filters and sort. The footer shows visible range, total, current page and page count. Invalid page text selects page 1; out-of-range pages select the last page."
+        },
+        {
+          "label": "Columns",
+          "description": "With browser enhancement, change optional column visibility and order using the dialog’s move controls or by dragging headings. Changes apply immediately and are saved in this browser only. Locked identity/action columns stay visible and fixed. Reset columns restores defaults; Done or Close closes the dialog. Presentation settings do not change records, filters or exports."
+        }
+      ]
+    },
+    {
+      "title": "Defaults and empty states",
+      "paragraphs": [
+        "Default order is newest release first and never-issued drafts last. No reports yet offers preparation when permitted. No matches offers clearing filters. Invalid filters ask for correction."
+      ]
+    }
+  ],
+  "sources": [
+    "reporting/views.py",
+    "reporting/forms.py",
+    "reporting/queries.py",
+    "reporting/models.py",
+    "reporting/services.py",
+    "reporting/content.py",
+    "accounts/roles.py",
+    "reporting/templates/reporting/report_list.html",
+    "reporting/templates/reporting/version_status.html",
+    "core/grids.py",
+    "templates/includes/grid_toolbar.html",
+    "templates/includes/pagination.html",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js",
+    "reporting/tests/test_grids.py"
+  ]
+}

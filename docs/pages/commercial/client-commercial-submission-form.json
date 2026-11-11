@@ -1,0 +1,128 @@
+{
+  "id": "client-commercial-submission-form",
+  "routes": [
+    "client_commercial:submission-create",
+    "client_commercial:submission-edit"
+  ],
+  "title": "Submission details",
+  "purpose": "Create or edit shipment and project information before sending a declaration to the laboratory. Samples are added on the submission page.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "Sign in with an active client account. Every page, selection and action is limited to the client attached to your account, including work created by other users for the same client. Staff accounts cannot use these portal pages. Another client’s record is treated as missing."
+      ]
+    },
+    {
+      "title": "Eligibility",
+      "paragraphs": [
+        "New records start as Draft. Existing details are editable only while Draft or Returned for changes. Submitted, Accepted and Cancelled records are read-only to clients. This declaration does not replace signed shipment custody paperwork."
+      ]
+    },
+    {
+      "title": "Project",
+      "items": [
+        {
+          "label": "Project",
+          "description": "Required active project belonging to your client; your client must also be active. Contact the laboratory if the needed project is unavailable."
+        },
+        {
+          "label": "Accepted quote",
+          "description": "Optional accepted quote belonging to your client. No project or test-coverage match is automatically enforced; select the quote actually covering this work. A quote is not required to submit."
+        },
+        {
+          "label": "Chain of custody reference",
+          "description": "Required reference printed on your field chain of custody, up to 120 characters. Used to match paperwork and open laboratory intake after acceptance."
+        }
+      ]
+    },
+    {
+      "title": "Shipment",
+      "items": [
+        {
+          "label": "Expected arrival",
+          "description": "Optional calendar date of intended arrival; not a physical receipt or a delivery commitment."
+        },
+        {
+          "label": "Carrier / tracking",
+          "description": "Optional carrier/tracking details, up to 160 characters."
+        },
+        {
+          "label": "Number of coolers / packages",
+          "description": "Optional non-negative whole-number package count. Describes the shipment, not sample containers; accepted up to 32,767."
+        }
+      ]
+    },
+    {
+      "title": "Contact and notes",
+      "items": [
+        {
+          "label": "Contact name",
+          "description": "Optional person the laboratory should call about this shipment, up to 160 characters."
+        },
+        {
+          "label": "Contact phone",
+          "description": "Optional phone details, up to 40 characters."
+        },
+        {
+          "label": "Special instructions",
+          "description": "Optional notes such as requested rush approval, hazards, permit limits or reporting instructions. Text does not automatically approve a rush request or configure analytical limits."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Create submission",
+          "description": "Assign a SUB number and save a Draft, then open detail so you can add samples. Repeating the same creation request returns the same record. Nothing is sent or received yet."
+        },
+        {
+          "label": "Save changes",
+          "description": "Save the current Draft or Returned record and return to detail. Does not submit. If any submission content changed after opening, saving is refused; reload and review the current record."
+        },
+        {
+          "label": "Cancel / Submissions / submission number",
+          "description": "Return to the list when creating, or to this record when editing, without saving."
+        }
+      ]
+    },
+    {
+      "title": "Form controls and errors",
+      "items": [
+        {
+          "label": "Required fields and errors",
+          "description": "Asterisks mark required fields. Errors appear beside fields or above the form; entered values stay available for correction after validation fails. A stale-record error requires reloading and reviewing the current record before retrying."
+        },
+        {
+          "label": "Maximize / Restore size",
+          "description": "When this form opens in a dialog, change its size without saving. Small screens already use the full screen."
+        },
+        {
+          "label": "Close form / Cancel",
+          "description": "Leave without saving. If the dialog detects edits, Keep editing returns to the form and Discard changes leaves without saving."
+        },
+        {
+          "label": "Try again",
+          "description": "Retry if loading the dialog failed. During saving, wait for the request to finish; the submit button indicates work is running."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "commercial/portal_urls.py",
+    "commercial/portal_views.py",
+    "commercial/models.py",
+    "commercial/forms.py",
+    "commercial/permissions.py",
+    "accounts/roles.py",
+    "commercial/submissions.py",
+    "commercial/templates/commercial/portal/submission_form.html",
+    "commercial/tests/test_submissions.py",
+    "commercial/tests/test_concurrency.py",
+    "core/form_surfaces.py",
+    "templates/includes/form_dialog.html",
+    "static/js/form-dialog.js",
+    "static/js/app.js"
+  ]
+}

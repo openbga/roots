@@ -1,0 +1,71 @@
+{
+  "id": "analytical-main-batch-create",
+  "routes": [
+    "analytical:batch-create"
+  ],
+  "title": "New batch",
+  "purpose": "Create an empty analytical batch for one active method version and sample matrix, then add compatible requested tests.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "Only analysts, including administrators with operational access, can open and submit this form. Reviewer access alone cannot create batches."
+      ]
+    },
+    {
+      "title": "Fields",
+      "items": [
+        {
+          "label": "Method",
+          "description": "Required active method version. Tests added later must use this exact version."
+        },
+        {
+          "label": "Matrix",
+          "description": "Required Water, Wastewater or Soil. Both test definition and physical sample must match."
+        },
+        {
+          "label": "Preparation start",
+          "description": "Optional combined-batch start in laboratory local time. Needed when holding rules start or end at preparation. Cannot be more than two minutes in the future. When samples are added, preparation must not precede their collection event."
+        },
+        {
+          "label": "Instrument or equipment",
+          "description": "Optional primary asset, shown beside results for information. Choices exclude retired assets. Not recorded leaves the link blank. This does not gate approval or release."
+        },
+        {
+          "label": "Notes",
+          "description": "Optional batch notes displayed on the batch detail page."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Create batch",
+          "description": "Save an open batch with creator, creation time and attributed audit event, then open Add tests. This creates no sample or QC result."
+        },
+        {
+          "label": "Cancel",
+          "description": "Return to Batches & QC without creating a record."
+        }
+      ]
+    },
+    {
+      "title": "Errors and next steps",
+      "paragraphs": [
+        "Invalid input remains on the form with errors. After creation, add compatible tests and configured QC samples, then record QC and sample measurements. Demonstration configuration is synthetic laboratory data, not validated policy."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/templates/analytical/form.html",
+    "analytical/tests/test_views.py",
+    "analytical/tests/test_batch_equipment.py"
+  ]
+}

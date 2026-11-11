@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% comment %}Create a receipt order once per chain of custody. Context: page_title, form (OrderForm, a GroupedForm).{% endcomment %}
+{% block breadcrumbs %}{% url 'receipt:order-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Chains of custody" section_url=list_url %}{% endblock %}
+{% block content %}
+<form class="vr-form" method="post" novalidate>
+  {% csrf_token %}
+  {% include "includes/form_errors.html" with form=form %}
+  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required. Enter the chain of custody once; you then receive each of its samples without retyping it.</p>
+  {% include "receipt/_grouped_fields.html" %}
+  <div class="vr-form-actions">
+    <a class="btn btn-link" href="{% url 'receipt:order-list' %}">Cancel</a>
+    <button class="btn btn-primary" type="submit">Create chain of custody</button>
+  </div>
+</form>
+{% endblock %}

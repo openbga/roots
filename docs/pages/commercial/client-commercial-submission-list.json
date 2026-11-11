@@ -1,0 +1,119 @@
+{
+  "id": "client-commercial-submission-list",
+  "routes": [
+    "client_commercial:submission-list"
+  ],
+  "title": "Submissions",
+  "purpose": "Find your client’s planned shipments, drafts and laboratory submission decisions.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "Sign in with an active client account. Every page, selection and action is limited to the client attached to your account, including work created by other users for the same client. Staff accounts cannot use these portal pages. Another client’s record is treated as missing."
+      ]
+    },
+    {
+      "title": "Find and arrange records",
+      "paragraphs": [
+        "There is no bulk action or selection across pages. Invalid filters show errors and no rows; correct or clear them. No matches means the filters found nothing. An unfiltered empty list means no eligible records exist."
+      ],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Search submission number, COC reference and current project name. Case-insensitive partial matching trims surrounding spaces, up to 200 characters. Search and filters apply together to all eligible records."
+        },
+        {
+          "label": "Status",
+          "description": "All statuses initially includes Draft, Submitted, Returned for changes, Accepted and Cancelled. Select one to restrict the list."
+        },
+        {
+          "label": "Apply",
+          "description": "Apply search and filters and return to page 1. Current sorting and page size are kept."
+        },
+        {
+          "label": "Clear all",
+          "description": "Remove search, filters, sorting and page settings and return to this list’s defaults. Removing one active filter keeps the others and returns to page 1."
+        },
+        {
+          "label": "Sort",
+          "description": "Newest record numbers appear first. Select a sortable heading to change direction. Sortable columns: Submission, Project, COC reference, Status, Samples, Expected arrival and Submitted. Sorting applies to all matches with record identity as a stable tie-breaker."
+        },
+        {
+          "label": "Rows per page",
+          "description": "25 by default; choose 50 or 100. A change returns to page 1 and preserves other query settings. Show applies the choice without automatic submission."
+        },
+        {
+          "label": "First page / Previous page / Next page / Last page",
+          "description": "Move through matching records. The footer shows the visible range, count and page. Unavailable directions are disabled. Invalid page numbers resolve to an available page; unsupported page sizes are refused."
+        },
+        {
+          "label": "Columns",
+          "description": "With enhanced controls, show/hide columns and use Move up / Move down or drag headings to reorder. Submission is always shown and fixed. Changes apply immediately and are saved in this browser for this table. They do not filter or change records."
+        },
+        {
+          "label": "Reset columns / Done / Close",
+          "description": "Reset columns restores shipped visibility and order. Done or Close dismisses the Columns dialog; changes already apply."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Submission",
+          "description": "Assigned SUB number; select to review its shipment, samples and allowed actions."
+        },
+        {
+          "label": "Project",
+          "description": "Current project associated with the submission."
+        },
+        {
+          "label": "COC reference",
+          "description": "Reference from your field chain-of-custody paperwork."
+        },
+        {
+          "label": "Status",
+          "description": "Draft is editable and unsent; Submitted is awaiting review; Returned for changes is editable again; Accepted is expected in laboratory intake; Cancelled means marked as not arriving."
+        },
+        {
+          "label": "Samples",
+          "description": "Current number of declared samples; not the number physically received."
+        },
+        {
+          "label": "Expected arrival",
+          "description": "Optional planned arrival date; a dash means unstated."
+        },
+        {
+          "label": "Submitted",
+          "description": "Most recent submission time or a dash before first submission. This is not the last edit time."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "New submission",
+          "description": "Start a draft header, then add samples, intended tests and containers. The empty state offers this action. This declaration does not replace the signed chain of custody that travels with the samples."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "commercial/portal_urls.py",
+    "commercial/portal_views.py",
+    "commercial/models.py",
+    "commercial/forms.py",
+    "commercial/permissions.py",
+    "accounts/roles.py",
+    "commercial/lists.py",
+    "commercial/selectors.py",
+    "core/grids.py",
+    "templates/includes/grid_toolbar.html",
+    "templates/includes/pagination.html",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js",
+    "commercial/submissions.py",
+    "commercial/templates/commercial/portal/submission_list.html"
+  ]
+}

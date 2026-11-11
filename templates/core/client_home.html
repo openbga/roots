@@ -1,0 +1,24 @@
+{% extends "layouts/portal.html" %}
+{% block page_heading %}{{ client.name }}{% endblock %}
+{% block page_meta %}<ul class="vr-page-meta"><li>Client workspace</li></ul>{% endblock %}
+{% block content %}
+<section class="card vr-table-card" aria-labelledby="client-projects-heading">
+  <div class="card-header"><h2 class="card-title" id="client-projects-heading">Your projects</h2><span class="vr-count">{{ projects|length }}</span></div>
+  <div class="card-body">
+    {% if projects %}
+    <div class="vr-table-wrap">
+      <table class="table vr-table">
+        <thead><tr><th scope="col">Project</th><th scope="col">Program / permit</th><th scope="col" class="text-end">Turnaround (days)</th></tr></thead>
+        <tbody>
+          {% for project in projects %}
+          <tr><th scope="row">{{ project.name }}</th><td>{{ project.program|default:"—" }}</td><td class="text-end">{{ project.turnaround_days }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    {% include "includes/empty_state.html" with title="No projects yet" body="Your laboratory contact sets up projects. Sample status and issued reports will appear here." %}
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,51 @@
+name: Bug report
+description: Something in OpenBGA Roots does not work as documented
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use synthetic data only. Do not paste real laboratory, client or personal data,
+        screenshots of real records, or secrets.
+        Security problems are reported privately, see the security policy.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, what you expected and what you saw instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Page or command, the role you were signed in as, and the exact steps.
+      placeholder: |
+        1. Sign in as demo_custodian
+        2. Open Orders, then ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Commit hash, or the date you pulled `main`.
+    validations:
+      required: true
+  - type: dropdown
+    id: environment
+    attributes:
+      label: How are you running it
+      options:
+        - Local development (uv and PostgreSQL)
+        - Docker Compose
+        - Render Blueprint
+        - Other container or host
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error output
+      description: Relevant log lines or traceback, with the X-Request-ID if you have it. Remove anything sensitive.
+      render: text

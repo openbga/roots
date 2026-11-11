@@ -1,0 +1,91 @@
+{
+  "id": "catalog-test-form",
+  "routes": [
+    "catalog:test-create",
+    "catalog:test-edit"
+  ],
+  "title": "Test definition",
+  "purpose": "Define one analyte by one method version in one matrix, with its unit and optional default reporting limit. Receipt requests and analytical work refer to this definition.",
+  "sections": [
+    {
+      "title": "What is measured",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Method",
+          "description": "Required exact version. Creation offers active methods; editing also retains its current method even when inactive. Labels include code, version and title."
+        },
+        {
+          "label": "Analyte",
+          "description": "Required existing analyte, sorted by name and labeled with CAS number when present."
+        },
+        {
+          "label": "Matrix",
+          "description": "Required Water, Wastewater or Soil. A method version/analyte/matrix combination may occur only once."
+        }
+      ]
+    },
+    {
+      "title": "Reporting and availability",
+      "paragraphs": [
+        "Any referring record, including QC or policy configuration, locks Method, Analyte, Matrix and Unit. Default reporting limit and availability remain editable with a reason. Existing result revisions keep their applied limit. Create a separate definition when a locked identity must differ."
+      ],
+      "items": [
+        {
+          "label": "Unit",
+          "description": "Required, up to 40 characters. Suggestions combine existing spellings and common examples. Text is trimmed and stored without conversion; use consistent spelling."
+        },
+        {
+          "label": "Default reporting limit",
+          "description": "Optional exact positive decimal in the unit above. At most 8 decimal places within 20 total digits. Blank means set per result. Each result preserves its applied limit."
+        },
+        {
+          "label": "Active (available for new work)",
+          "description": "Checked initially. New receipt requires both this flag and the method version flag."
+        }
+      ]
+    },
+    {
+      "title": "Saving and history",
+      "paragraphs": [
+        "A record changed since opening cannot be overwritten. Submitted input remains on the error page; reload and compare current values before re-entering the intended change. Records are retained rather than deleted."
+      ],
+      "items": [
+        {
+          "label": "Create / Save changes",
+          "description": "Only administrators submit. Creation is audited; an existing change records before/after values and requires a reason. An unchanged submission returns to the list with No changes to save and adds no edit event."
+        },
+        {
+          "label": "Reason for change",
+          "description": "Existing records only: explain any changed value or availability decision."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the corresponding list without saving."
+        },
+        {
+          "label": "What depends on this",
+          "description": "Counts referring records. Methods/analytes also show active tests out of all tests. These facts can include more dependencies than list work counts."
+        },
+        {
+          "label": "Locked values",
+          "description": "Dependent identity values become read-only facts with lock reasons. Locks are rechecked when saving, including concurrent references."
+        },
+        {
+          "label": "History",
+          "description": "The newest 20 audit events appear in chronological order with actor, timestamp and reason."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "catalog/urls.py",
+    "catalog/views.py",
+    "catalog/forms.py",
+    "catalog/models.py",
+    "catalog/services.py",
+    "catalog/tests/test_catalog.py",
+    "catalog/templates/catalog/form.html",
+    "core/concurrency.py"
+  ]
+}

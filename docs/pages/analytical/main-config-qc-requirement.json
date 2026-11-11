@@ -1,0 +1,106 @@
+{
+  "id": "analytical-main-config-qc-requirement",
+  "routes": [
+    "analytical:config-new",
+    "analytical:config-edit"
+  ],
+  "match": {
+    "kind": "qc-requirement"
+  },
+  "title": "QC requirement",
+  "purpose": "Add or edit the number of QC samples required for one method/version and QC type.",
+  "sections": [
+    {
+      "title": "Create, edit and access",
+      "paragraphs": [
+        "Staff can read this form, but only administrators may save it. Add creates a new configuration record; Edit prepopulates the existing record and requires a Reason for change. Unknown configuration kinds are unavailable. These are lab policy values, and synthetic seed data is not a validated set."
+      ]
+    },
+    {
+      "title": "Fields",
+      "items": [
+        {
+          "label": "Method",
+          "description": "Required exact method/version, including catalog inactive versions where shown. The requirement follows that method’s batches; it is not a lab-wide frequency."
+        },
+        {
+          "label": "Qc type",
+          "description": "Required Method blank, Laboratory control sample, Matrix spike, Matrix spike duplicate, Laboratory duplicate or Calibration verification."
+        },
+        {
+          "label": "Min per batch",
+          "description": "Required nonnegative whole-number minimum, initially 1 on Add. Set the actual laboratory policy; no fixed one-per-20 assumption is imposed."
+        },
+        {
+          "label": "Every n samples",
+          "description": "Optional positive whole number. Adds a requirement of one QC sample per this many field samples, rounding up. Blank means no sample-frequency component."
+        },
+        {
+          "label": "Basis",
+          "description": "Optional method/SOP source supporting the configured frequency."
+        },
+        {
+          "label": "Is active",
+          "description": "Initially checked. Only active requirements enforce frequency; clearing preserves the record and history."
+        }
+      ]
+    },
+    {
+      "title": "Counts and uniqueness",
+      "paragraphs": [
+        "Only one row can exist for each method/version and QC type, including inactive rows. Required count is the greater of Min per batch and rounded-up sample count divided by Every n samples; the two counts are not added.",
+        "Analytical frequency counts distinct field samples, retaining historical revision membership after results move for reanalysis. Independent preparation counts physical aliquots, and per-definition preparation requirements can differ with membership; cancellation does not erase historical work.",
+        "A QC sample’s existence contributes to frequency, but its applicable analyte measurements are separately required and evaluated. A frequency shortfall holds approval until corrected or independently accepted for its current context. If no requirements are active, no frequency is enforced; this does not validate laboratory policy."
+      ]
+    },
+    {
+      "title": "Creation action",
+      "items": [
+        {
+          "label": "Add QC requirement",
+          "description": "Save the frequency rule and attributed audit event, then return to QC configuration."
+        }
+      ]
+    },
+    {
+      "title": "Save, cancel and history",
+      "paragraphs": [
+        "Validation errors preserve entered form values. A stale record is refused rather than overwriting another person’s edit; input stays visible, but reload and compare current values before saving again. A reload is a new form, so retain any needed unsaved notes before leaving."
+      ],
+      "items": [
+        {
+          "label": "Reason for change",
+          "description": "Optional on creation; required nonblank for every existing-row save. Recorded with actor, time and before/after values."
+        },
+        {
+          "label": "Save changes",
+          "description": "For an edit, validate fields and uniqueness, recheck that the record still matches the version opened, and save with its audit event. The Add form’s named submit button creates instead. Success returns to QC configuration."
+        },
+        {
+          "label": "Cancel",
+          "description": "Return to QC configuration without saving typed changes."
+        },
+        {
+          "label": "History",
+          "description": "Existing records show their latest 20 audit events, displayed oldest to newest, with action, actor, time and reason. No history section appears before any events exist."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/templates/analytical/form.html",
+    "core/concurrency.py",
+    "analytical/tests/test_config_concurrency.py",
+    "analytical/qc.py",
+    "analytical/tests/test_pure.py",
+    "analytical/tests/test_workflow.py",
+    "analytical/tests/test_integrity.py",
+    "analytical/tests/test_preparation.py"
+  ]
+}

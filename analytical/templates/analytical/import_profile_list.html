@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% comment %}Saved import mappings. Server owns search, filters, sort and paging; grid.js presents columns.{% endcomment %}
+{% block page_intro %}<p class="vr-page-intro">A mapping tells the importer which column of a long or wide delimited file holds what; it describes a file and is not a validated instrument adapter.</p>{% endblock %}
+{% block page_actions %}
+{% if can_enter %}<a class="btn btn-primary" href="{% url 'analytical:import-profile-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New mapping</a>{% endif %}
+{% endblock %}
+{% block content %}
+<section class="card vr-table-card" aria-labelledby="profiles-heading">
+  <h2 class="visually-hidden" id="profiles-heading">Import mappings</h2>
+  {% include "includes/grid_toolbar.html" with label="Filter import mappings" grid=grid_key %}
+  {% if page_obj.paginator.count %}
+  <div class="vr-table-wrap">
+    <table class="table table-hover vr-table" data-vr-grid="analytical.import_profiles" data-vr-grid-version="1" aria-labelledby="profiles-heading">
+      <thead><tr>
+        {% include "includes/sort_header.html" with label="Name" asc="name" desc="-name" col="name" locked=True %}
+        {% include "includes/sort_header.html" with label="Layout" asc="layout" desc="-layout" col="layout" %}
+        <th scope="col" data-vr-col="delimiter">Delimiter</th>
+        <th scope="col" data-vr-col="state">State</th>
+        {% include "includes/sort_header.html" with label="Last changed" asc="updated" desc="-updated" first="desc" col="updated" %}
+        <th scope="col" data-vr-col="notes" data-vr-col-hidden>Notes</th>
+        {% include "includes/sort_header.html" with label="Created" asc="created" desc="-created" first="desc" col="created" hidden=True %}
+        <th scope="col" data-vr-col="created_by" data-vr-col-hidden>Created by</th>
+      </tr></thead>
+      <tbody>
+        {% for p in page_obj %}
+        <tr>
+          <th scope="row">{% if can_enter %}<a class="vr-row-link" href="{% url 'analytical:import-profile-edit' p.pk %}">{{ p.name }}</a>{% else %}{{ p.name }}{% endif %}</th>
+          <td>{{ p.get_layout_display }}</td>
+          <td>{{ p.get_delimiter_display }}</td>
+          <td>{% if p.is_active %}{% include "includes/status.html" with label="Active" tone="success" plain=True %}{% else %}{% include "includes/status.html" with label="Inactive" tone="neutral" plain=True %}{% endif %}</td>
+          <td class="vr-nowrap"><time datetime="{{ p.updated_at|date:'c' }}" title="{{ p.updated_at|date:'Y-m-d H:i T' }}">{{ p.updated_at|date:"Y-m-d H:i" }}</time></td>
+          <td>{{ p.notes|truncatechars:80 }}</td>
+          <td class="vr-nowrap"><time datetime="{{ p.created_at|date:'c' }}" title="{{ p.created_at|date:'Y-m-d H:i T' }}">{{ p.created_at|date:"Y-m-d H:i" }}</time></td>
+          <td>{{ p.created_by.get_full_name|default:p.created_by.get_username }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "includes/pagination.html" with noun="mappings" filtered=filtered %}
+  {% elif filtered %}
+  {% include "includes/empty_state.html" with kind="no-results" title="No mappings match these filters" body="Clear the filters to see every mapping." clear_url=request.path %}
+  {% else %}
+  {% url 'analytical:import-profile-create' as create_url %}
+  {% include "includes/empty_state.html" with title="No import mappings yet" body="Describe a long or wide delimited results file once, then reuse it for batch imports." action_url=create_url action_label="New mapping" %}
+  {% endif %}
+</section>
+{% endblock %}

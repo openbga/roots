@@ -1,0 +1,63 @@
+/* Print stylesheet for issued report PDFs (WeasyPrint). No external fonts or images. */
+@page {
+  size: letter;
+  margin: 24mm 13mm 18mm;
+  @top-left { content: element(header); width: 100%; }
+  @bottom-left { content: element(footer); }
+  @bottom-right { content: "Page " counter(page) " of " counter(pages); font: 7.5pt "DejaVu Sans", sans-serif; color: #555; }
+}
+html { font-family: "DejaVu Sans", "Helvetica", "Arial", sans-serif; font-size: 8.5pt; color: #111; line-height: 1.35; }
+body { margin: 0; }
+.running-header { position: running(header); width: 100%; font-size: 7.5pt; color: #333; }
+.running-header .header-row { display: flex; justify-content: space-between; border-bottom: 0.6pt solid #888; padding-bottom: 1.5mm; }
+.running-header .lab { font-weight: bold; }
+.running-footer { position: running(footer); font-size: 7pt; color: #555; }
+.hash { font-family: "DejaVu Sans Mono", monospace; }
+.synthetic-banner { margin-top: 1.5mm; text-align: center; font-size: 7.5pt; font-weight: bold; color: #7a2e00; background: #fff1e6; border: 0.6pt solid #d07a3a; padding: 0.8mm; }
+.watermark { position: fixed; top: 105mm; left: -10mm; right: -10mm; text-align: center; font-size: 46pt; font-weight: bold; color: rgba(180, 0, 0, 0.12); transform: rotate(-30deg); }
+
+h1 { font-size: 15pt; margin: 0 0 3mm; }
+h2 { font-size: 10.5pt; margin: 6mm 0 2mm; padding-bottom: 1mm; border-bottom: 0.6pt solid #bbb; break-after: avoid; }
+h3 { font-size: 9pt; margin: 4mm 0 1.5mm; break-after: avoid; }
+p { margin: 0 0 2mm; }
+ul { margin: 0 0 2mm; padding-left: 5mm; }
+.eyebrow { text-transform: uppercase; letter-spacing: 0.08em; font-size: 7.5pt; color: #555; margin: 0 0 1mm; }
+.muted { color: #555; font-size: 7.5pt; }
+.id { font-family: "DejaVu Sans Mono", monospace; font-size: 8pt; white-space: nowrap; }
+.nowrap { white-space: nowrap; }
+.strong { font-weight: bold; }
+
+table { border-collapse: collapse; width: 100%; margin-bottom: 3mm; }
+th, td { text-align: left; vertical-align: top; padding: 1mm 1.4mm; }
+table.facts th { width: 17%; color: #444; font-weight: normal; }
+table.facts td { width: 33%; }
+table.facts tr { border-bottom: 0.4pt solid #e2e2e2; }
+table.compact th, table.compact td { padding: 0.7mm 1.2mm; }
+table.grid { font-size: 7.6pt; }
+table.grid thead th { background: #eef1f4; border-bottom: 0.8pt solid #777; font-weight: bold; }
+table.grid td { border-bottom: 0.4pt solid #ddd; }
+table.grid tr { break-inside: avoid; }
+table.grid thead { display: table-header-group; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+tr.note td { color: #333; font-size: 7.2pt; background: #fafafa; }
+.note-part + .note-part::before { content: " · "; }
+/* A result row keeps its revision/comment note: WeasyPrint ignores break-inside on a lone first
+   tbody, so pair the rows explicitly (a split would repeat the header over the note alone). */
+table.results tbody.result { break-inside: avoid; }
+table.results tbody.result tr:first-child { break-after: avoid; }
+table.results tr.note { break-before: avoid; }
+/* A short results table moves whole to the next page, header included, rather than splitting
+   after its only row and repeating the header over a note. */
+table.results.short { break-inside: avoid; }
+
+.title-block { margin-bottom: 4mm; }
+.amendment { border: 0.8pt solid #9a6700; background: #fff8e1; padding: 2mm 3mm; margin: 4mm 0; }
+.amendment h2 { border: 0; margin-top: 0; }
+.sample table.facts { break-inside: avoid; break-after: avoid; }
+.sample h2 .id { font-size: 10pt; }
+.qc-table thead tr:first-child th { background: #f6f7f8; font-weight: normal; }
+.legend, .authorization { break-inside: avoid; }
+/* A section heading and its introduction stay with the table that follows. */
+.subcontracted p { break-after: avoid; }
+.authorization { margin-top: 6mm; padding-top: 2mm; border-top: 0.8pt solid #333; }
+td.strong .muted { font-weight: normal; }

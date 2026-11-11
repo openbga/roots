@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load catalog_extras %}
+{% block page_heading %}Catalog{% endblock %}
+{% block page_intro %}<p class="vr-page-intro">A test is one analyte by one method version in one matrix; receipt offers it only while the test and its method version are both active.</p>{% endblock %}
+{% block page_actions %}{% if can_edit %}<a class="btn btn-primary" href="{% url 'catalog:test-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New test</a>{% endif %}{% endblock %}
+{% block content %}
+{% include "catalog/_tabs.html" %}
+<section class="card vr-table-card" aria-labelledby="tests-heading">
+  <h2 class="visually-hidden" id="tests-heading">Tests</h2>
+  {% include "includes/grid_toolbar.html" with label="Filter tests" q=filter_form.q.value placeholder=filter_form.q.field.widget.attrs.placeholder inline=inline more=more more_open=more_open grid=grid_key %}
+  {% if page_obj.paginator.count %}
+  <div class="vr-table-wrap">
+    <table class="table table-hover vr-table" data-vr-grid="catalog.tests" data-vr-grid-version="2" aria-labelledby="tests-heading">
+      <thead><tr>
+        {% include "includes/sort_header.html" with label="Analyte" asc="analyte" desc="-analyte" col="analyte" locked=True %}
+        {% include "includes/sort_header.html" with label="Method version" asc="method" desc="-method" col="method" %}
+        {% include "includes/sort_header.html" with label="Matrix" asc="matrix" col="matrix" %}
+        {% include "includes/sort_header.html" with label="Unit" asc="unit" col="unit" %}
+        {% include "includes/sort_header.html" with label="Reporting limit" asc="reporting_limit" desc="-reporting_limit" class="text-end" col="reporting_limit" %}
+        {% include "includes/sort_header.html" with label="Status" asc="status" desc="-status" col="status" %}
+        {% include "includes/sort_header.html" with label="Technique" asc="technique" desc="-technique" col="technique" hidden=True %}
+        {% include "includes/sort_header.html" with label="Analyte group" asc="group" desc="-group" col="group" hidden=True %}
+        {% include "includes/sort_header.html" with label="Requested on samples" asc="requested" desc="-requested" class="text-end" col="requested" hidden=True %}
+        {% include "includes/sort_header.html" with label="Last changed" asc="changed_at" desc="-changed_at" col="changed_at" hidden=True %}
+      </tr></thead>
+      <tbody>
+        {% for t in page_obj %}
+        <tr>
+          <th scope="row">{% if can_edit %}<a class="vr-row-link" href="{% url 'catalog:test-edit' t.pk %}">{{ t.analyte.name }}<span class="visually-hidden">, {{ t.method }}, {{ t.get_matrix_display }}</span></a>{% else %}{{ t.analyte.name }}{% endif %}</th>
+          <td>{{ t.method }}<div class="text-body-secondary small">{{ t.method.title }}</div></td>
+          <td>{{ t.get_matrix_display }}</td>
+          <td class="vr-nowrap">{{ t.unit }}</td>
+          <td class="text-end vr-nowrap">{{ t.reporting_limit|plain_decimal }}</td>
+          <td>{% if t.is_active and t.method.is_active %}{% include "includes/status.html" with label="Active" tone="success" plain=True %}{% elif t.is_active %}{% include "includes/status.html" with label="Method inactive" tone="warning" plain=True title="The test is active but its method version is not, so receipt does not offer it." %}{% else %}{% include "includes/status.html" with label="Inactive" tone="neutral" plain=True %}{% endif %}</td>
+          <td>{{ t.method.get_technique_display|default:"—" }}</td>
+          <td>{{ t.analyte.get_group_display|default:"—" }}</td>
+          <td class="text-end">{{ t.requested }}</td>
+          <td class="vr-nowrap text-body-secondary">{% if t.changed_at %}{{ t.changed_at|date:"Y-m-d H:i" }}{% else %}—{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "includes/pagination.html" with noun="tests" filtered=filtered %}
+  {% elif filter_form.errors %}
+  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above." clear_url=request.path %}
+  {% elif filtered %}
+  {% include "includes/empty_state.html" with kind="no-results" title="No tests match these filters" body="Change or clear the filters." clear_url=request.path %}
+  {% else %}
+  {% if can_edit %}{% url 'catalog:test-create' as create_url %}{% endif %}
+  {% include "includes/empty_state.html" with title="No tests defined yet" body="Create a method version and an analyte, then define a test so receipt and the bench can use it." action_url=create_url action_label="New test" %}
+  {% endif %}
+</section>
+{% endblock %}

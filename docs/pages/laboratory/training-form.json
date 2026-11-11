@@ -1,0 +1,164 @@
+{
+  "id": "laboratory-training-form",
+  "routes": [
+    "laboratory:training-create",
+    "laboratory:training-renew",
+    "laboratory:training-correct"
+  ],
+  "title": "New, renew or correct training record",
+  "purpose": "Append training or a demonstration of capability while preserving earlier entries.",
+  "sections": [
+    {
+      "title": "Training access",
+      "paragraphs": [
+        "Admin, reviewer, approver and project manager roles can read all staff training and evidence. Custodian and analyst roles see only their own, including when guessing a record/download link. Only admin and reviewer roles can create, renew or correct training. Staff and reviewer selectors contain active non-client accounts ordered by username, showing full name and username where available."
+      ]
+    },
+    {
+      "title": "Variants",
+      "paragraphs": [
+        "New training record uses Create training record. A staff query from another page can preselect Staff member. Renew record preloads person, type, title, method, matrix, scope and reviewer; person, type and method are fixed, and new dates/outcome/reference/notes/evidence must be supplied as appropriate. Correct record also preloads original dates, outcome, reference and notes, fixes person/type/method and requires Correction reason. Earlier evidence is not automatically copied. A record already corrected redirects with an error; correct the newer record."
+      ]
+    },
+    {
+      "title": "Person and subject",
+      "items": [
+        {
+          "label": "Staff member",
+          "description": "Required active non-client account; fixed during renewal/correction."
+        },
+        {
+          "label": "Type",
+          "description": "Required: Training, Initial demonstration of capability or Ongoing demonstration of capability; fixed during renewal/correction. New forms initially show Training."
+        },
+        {
+          "label": "Title",
+          "description": "Required topic/SOP/demonstration, maximum 200 characters."
+        },
+        {
+          "label": "Method",
+          "description": "Optional for Training, required for either demonstration type. Selects an exact method/version. Fixed during renewal/correction; choices include inactive methods."
+        },
+        {
+          "label": "Matrix",
+          "description": "Optional Not specific, Water, Wastewater or Soil."
+        },
+        {
+          "label": "Scope",
+          "description": "Optional analytes, techniques or limits of what was shown."
+        }
+      ]
+    },
+    {
+      "title": "Dates and outcome",
+      "items": [
+        {
+          "label": "Outcome",
+          "description": "Required Acceptable or Not acceptable. New and renewal forms initially show Acceptable."
+        },
+        {
+          "label": "Completed on",
+          "description": "Required, cannot be future."
+        },
+        {
+          "label": "Effective on",
+          "description": "Required, on or after completion. May be future, yielding Not yet effective."
+        },
+        {
+          "label": "Expires on",
+          "description": "Optional lab-set date strictly after effective date; blank means no expiry. No interval is suggested."
+        }
+      ]
+    },
+    {
+      "title": "Review and evidence",
+      "items": [
+        {
+          "label": "Reviewed by",
+          "description": "Required active non-client account different from the trainee. No particular reviewer application role is required for the selected person."
+        },
+        {
+          "label": "Reviewed on",
+          "description": "Required, defaults to today for new/renewed records, on or after completion and not future."
+        },
+        {
+          "label": "Reference",
+          "description": "Optional training sheet, DOC dataset or SOP identifier, maximum 160 characters."
+        },
+        {
+          "label": "Evidence file",
+          "description": "Optional validated attachment for this new entry."
+        },
+        {
+          "label": "Notes",
+          "description": "Optional supplemental text."
+        },
+        {
+          "label": "Correction reason",
+          "description": "Correction only; required reason retained on the new entry and in history."
+        }
+      ]
+    },
+    {
+      "title": "Save and limits",
+      "paragraphs": [
+        "Creates a new immutable record, then opens its detail page. Renewal must retain person, type and exact method version. There is no automatic renewal interval or requirement that a renewal start after the prior record expires. Multiple renewals are possible. A record that has already been corrected cannot be renewed: renew the corrected record instead. A correction of a renewal keeps the renewal link, so the record it renewed still counts as renewed. Correction checks under a lock that no other correction already replaced the original. Neither recording nor renewal grants roles or release permissions."
+      ]
+    },
+    {
+      "title": "Evidence files",
+      "paragraphs": [
+        "Attach a nonempty PDF, PNG, JPEG, TXT or CSV no larger than 10 MiB. TXT/CSV must be UTF-8; PDF and image bytes must match the extension. Evidence is optional unless a step requires a reference or file. Downloads are attachments, not inline previews. File links show name, size and the first 12 SHA-256 checksum characters. No file indicates no stored attachment. Staff can download equipment/nonconformance evidence; training evidence is limited to the person and lead roles. A correction is a new record: an earlier attachment is not copied automatically, so attach evidence again if it belongs on the new record."
+      ]
+    },
+    {
+      "title": "Saving and errors",
+      "paragraphs": [
+        "An asterisk marks required fields. Cancel returns to the parent record or list without saving. Success opens the saved record with a confirmation. Validation errors appear above the form and beside affected fields; correct them and submit again. Text input remains after validation errors; select an evidence file again if necessary. Dates use year-month-day; date and time fields use the deployment time zone."
+      ]
+    },
+    {
+      "title": "Form dialog controls",
+      "paragraphs": [
+        "With enhancement enabled, the form opens in a dialog, including when its URL is opened directly. Without enhancement it remains a normal page. While loading or saving, controls are disabled to avoid duplicate submissions; focus moves to the first invalid field or first editable field when ready. Saving successfully navigates to the resulting record."
+      ],
+      "items": [
+        {
+          "label": "Maximize / Restore size",
+          "description": "Expand the dialog to full screen or restore its normal size. Small screens use a full-screen layout."
+        },
+        {
+          "label": "Cancel / Close form / Escape",
+          "description": "Close an unchanged form. When opened over another page, return focus to its opening control; when opened directly, return to the Cancel destination. Clicking outside the dialog does not close it."
+        },
+        {
+          "label": "Keep editing / Discard changes",
+          "description": "After an input change, attempting to leave asks Discard your unsaved changes? Keep editing retains the form; Discard changes closes or follows the requested destination without saving. Escape during that prompt keeps editing."
+        },
+        {
+          "label": "Try again",
+          "description": "Shown after a failed initial load. Retry loading the form. Save/connection errors keep the current input and show an error so you can retry the submission. Validation errors replace the form with its submitted values and field messages; files may need selecting again."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "laboratory/urls.py",
+    "laboratory/forms.py",
+    "laboratory/models.py",
+    "laboratory/permissions.py",
+    "laboratory/training_views.py",
+    "laboratory/training.py",
+    "laboratory/templates/laboratory/form.html",
+    "laboratory/evidence.py",
+    "laboratory/templates/laboratory/training_list.html",
+    "laboratory/templates/laboratory/training_detail.html",
+    "laboratory/tests/test_training.py",
+    "laboratory/tests/test_views.py",
+    "core/form_surfaces.py",
+    "core/form_dialog.py",
+    "templates/includes/form_dialog.html",
+    "static/js/form-dialog.js",
+    "tests/test_form_dialog.py"
+  ]
+}

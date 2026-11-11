@@ -1,0 +1,6 @@
+{% comment %}Report issue state as a status label. Parameters: report; plain (table-cell variant).{% endcomment %}
+{% with v=report.latest_version|stringformat:"s" %}
+{% if report.latest_version == 0 %}{% include "includes/status.html" with label="Draft" tone="neutral" plain=plain %}
+{% elif report.latest_version == 1 %}{% include "includes/status.html" with label="Issued v1" tone="success" plain=plain %}
+{% else %}{% include "includes/status.html" with label="Amended v"|add:v tone="info" plain=plain %}{% endif %}
+{% endwith %}

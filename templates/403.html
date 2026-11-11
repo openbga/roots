@@ -1,0 +1,8 @@
+{% extends "layouts/error.html" %}
+{% block title %}Access denied · OpenBGA Roots{% endblock %}
+{% block page_heading %}You do not have access to this page{% endblock %}
+{% block content %}
+<p>Your account does not include the role or client access this page needs. Nothing was changed.</p>
+<p class="vr-muted">If you need access, ask a laboratory administrator.</p>
+<a class="btn btn-primary" href="/">Go to your home page</a>
+{% endblock %}

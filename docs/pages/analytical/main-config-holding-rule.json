@@ -1,0 +1,119 @@
+{
+  "id": "analytical-main-config-holding-rule",
+  "routes": [
+    "analytical:config-new",
+    "analytical:config-edit"
+  ],
+  "match": {
+    "kind": "holding-rule"
+  },
+  "title": "Holding-time rule",
+  "purpose": "Add or edit a laboratory holding-time clock for one exact method version, matrix and start/end event pair.",
+  "sections": [
+    {
+      "title": "Create, edit and access",
+      "paragraphs": [
+        "Staff can read this form, but only administrators may save it. Add creates a new configuration record; Edit prepopulates the existing record and requires a Reason for change. Unknown configuration kinds are unavailable. These are lab policy values, and synthetic seed data is not a validated set."
+      ]
+    },
+    {
+      "title": "Fields",
+      "items": [
+        {
+          "label": "Method",
+          "description": "Required exact method/version. The form lists catalog methods, including inactive ones; the rule applies only where this method and matrix are used."
+        },
+        {
+          "label": "Matrix",
+          "description": "Required Water, Wastewater or Soil."
+        },
+        {
+          "label": "Name",
+          "description": "Required readable clock name, up to 120 characters, shown in evaluations and missing-preparation notices."
+        },
+        {
+          "label": "Start event",
+          "description": "Required Collection (composite: end of collection) or Preparation start. The selected event supplies the clock start."
+        },
+        {
+          "label": "End event",
+          "description": "Required Preparation start or Analysis start. Preparation-start clocks may end only at Analysis start. Collection may end at either event."
+        },
+        {
+          "label": "Maximum time (hours)",
+          "description": "Required positive decimal hours, minimum 0.01, at most two decimal places and nine total digits. The form converts hours to seconds; 0.25 is 15 minutes, 48 is two days, and 672 is 28 days. This is a configured limit, not an observed time."
+        },
+        {
+          "label": "Warn when remaining (hours)",
+          "description": "Optional positive decimal hours, minimum 0.01, with at most two decimal places and nine total digits. A running clock is At risk when this much or less remains; blank gives no warning window."
+        },
+        {
+          "label": "Basis",
+          "description": "Optional method/SOP reference for this clock; document applicable policy rather than relying on synthetic defaults."
+        },
+        {
+          "label": "Is active",
+          "description": "Initially checked on Add. Only active rules are used in new entry evaluation and queue deadlines; clearing keeps the row/history but disables its current use."
+        }
+      ]
+    },
+    {
+      "title": "Rules and effects",
+      "paragraphs": [
+        "Only one row may exist for each method/version, matrix and start/end pair, including inactive rows. Edit the existing row rather than creating a duplicate.",
+        "Deadline equals recorded start plus maximum time. The end event exactly at the deadline meets the clock; later exceeds it. Missing required events or an end before start is Not evaluable. Composite collection uses the recorded collection end, never the start.",
+        "New result entry evaluates every applicable active analytical clock and any linked preparation-method clocks. Queue Hold deadline uses only the shortest active collection-start rule. Preparation-start clocks therefore need actual preparation information and are not fully represented in the queue deadline.",
+        "Changing a rule does not rewrite the holding evaluation already captured in an older result revision or issued report. A new entry uses current configuration. Exceeded holding time requires a qualifier marked for holding-time exceedance before submission; missing-event/chronology problems cannot be resolved by a qualifier."
+      ]
+    },
+    {
+      "title": "Creation action",
+      "items": [
+        {
+          "label": "Add holding-time rule",
+          "description": "Validate and create the configured clock, then return to QC configuration."
+        }
+      ]
+    },
+    {
+      "title": "Save, cancel and history",
+      "paragraphs": [
+        "Validation errors preserve entered form values. A stale record is refused rather than overwriting another person’s edit; input stays visible, but reload and compare current values before saving again. A reload is a new form, so retain any needed unsaved notes before leaving."
+      ],
+      "items": [
+        {
+          "label": "Reason for change",
+          "description": "Optional on creation; required nonblank for every existing-row save. Recorded with actor, time and before/after values."
+        },
+        {
+          "label": "Save changes",
+          "description": "For an edit, validate fields and uniqueness, recheck that the record still matches the version opened, and save with its audit event. The Add form’s named submit button creates instead. Success returns to QC configuration."
+        },
+        {
+          "label": "Cancel",
+          "description": "Return to QC configuration without saving typed changes."
+        },
+        {
+          "label": "History",
+          "description": "Existing records show their latest 20 audit events, displayed oldest to newest, with action, actor, time and reason. No history section appears before any events exist."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/templates/analytical/form.html",
+    "core/concurrency.py",
+    "analytical/tests/test_config_concurrency.py",
+    "analytical/holding.py",
+    "analytical/templates/analytical/_holding.html",
+    "analytical/tests/test_pure.py",
+    "analytical/tests/test_observation_metadata.py",
+    "analytical/tests/test_workflow.py"
+  ]
+}

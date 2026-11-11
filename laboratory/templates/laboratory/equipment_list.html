@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load laboratory_extras %}
+{% comment %}Equipment. Context: page_obj (equipment_with_due), filter_form, q, sort, per_page, active_filters, filtered, today, can_manage_equipment.{% endcomment %}
+{% block page_actions %}{% if can_manage_equipment %}<a class="btn btn-primary" href="{% url 'laboratory:equipment-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New equipment</a>{% endif %}{% endblock %}
+{% block content %}
+<section class="card vr-table-card" aria-labelledby="eq-heading">
+  <h2 class="visually-hidden" id="eq-heading">Equipment</h2>
+  {% include "includes/grid_toolbar.html" with label="Filter equipment" q=q placeholder="Asset ID, name, model or serial number" inline=inline more=more more_open=more_open grid="laboratory.equipment" %}
+  {% if page_obj.paginator.count %}
+  <div class="vr-table-wrap">
+    <table class="table table-hover vr-table" data-vr-grid="laboratory.equipment" data-vr-grid-version="1" aria-labelledby="eq-heading">
+      <thead><tr>
+        {% include "includes/sort_header.html" with label="Asset ID" asc="asset" desc="-asset" col="asset" locked=True %}
+        {% include "includes/sort_header.html" with label="Name" asc="name" desc="-name" col="name" %}
+        {% include "includes/sort_header.html" with label="Type" asc="type" desc="-type" col="type" hidden=True %}
+        <th scope="col" data-vr-col="model" data-vr-col-label="Model / serial" data-vr-col-hidden>Model / serial</th>
+        {% include "includes/sort_header.html" with label="Location" asc="location" desc="-location" col="location" %}
+        {% include "includes/sort_header.html" with label="Status" asc="status" desc="-status" col="status" %}
+        {% include "includes/sort_header.html" with label="Calibration due" asc="calibration_due" desc="-calibration_due" col="calibration_due" %}
+        {% include "includes/sort_header.html" with label="Maintenance due" asc="maintenance_due" desc="-maintenance_due" col="maintenance_due" %}
+      </tr></thead>
+      <tbody>
+        {% for eq in page_obj %}
+        {% due_status eq.calibration_due today as cal %}{% due_status eq.maintenance_due today as mnt %}
+        <tr>
+          <th scope="row"><a class="vr-row-link vr-id" href="{% url 'laboratory:equipment-detail' eq.pk %}">{{ eq.asset_id }}</a></th>
+          <td>{{ eq.name }}</td>
+          <td>{{ eq.equipment_type|default:"—" }}</td>
+          <td>{{ eq.model|default:"—" }}{% if eq.serial_number %} <span class="vr-muted small">S/N {{ eq.serial_number }}</span>{% endif %}</td>
+          <td>{{ eq.location }}</td>
+          <td>{% include "laboratory/_status.html" with kind="equipment" value=eq.status label=eq.get_status_display plain=True %}</td>
+          <td class="vr-nowrap">{% if eq.status == "retired" %}<span class="vr-muted">—</span>{% else %}{% if eq.calibration_due %}{{ eq.calibration_due|date:"Y-m-d" }} {% endif %}{% include "includes/status.html" with label=cal.label tone=cal.tone plain=True %}{% endif %}{% if eq.calibration_outcome == "not_acceptable" %} {% include "includes/status.html" with label="Last not acceptable" tone="danger" plain=True %}{% endif %}</td>
+          <td class="vr-nowrap">{% if eq.status == "retired" %}<span class="vr-muted">—</span>{% else %}{% if eq.maintenance_due %}{{ eq.maintenance_due|date:"Y-m-d" }} {% endif %}{% include "includes/status.html" with label=mnt.label tone=mnt.tone plain=True %}{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "includes/pagination.html" with noun="assets" filtered=filtered %}
+  {% elif filter_form.errors %}
+  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above." clear_url=request.path %}
+  {% elif filtered %}
+  {% include "includes/empty_state.html" with kind="no-results" title="No equipment matches these filters" body="Check the asset ID or clear the filters." clear_url=request.path %}
+  {% else %}
+  {% if can_manage_equipment %}{% url 'laboratory:equipment-create' as create_url %}{% endif %}
+  {% include "includes/empty_state.html" with title="No equipment registered" body="Add each asset, then record its calibration and maintenance with the dates the lab sets." action_url=create_url action_label="New equipment" %}
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% comment %}QC control chart index: one row per test and QC type with current QC measurements.{% endcomment %}
+{% block page_intro %}<p class="vr-page-intro">Control charts show QC history; the configured limits decide QC status, and the statistical bands are descriptive only.</p>{% endblock %}
+{% block content %}
+<section class="card vr-table-card" aria-labelledby="charts-heading">
+  <h2 class="visually-hidden" id="charts-heading">QC series</h2>
+  {% include "includes/grid_toolbar.html" with label="Filter QC series" grid=grid_key %}
+  {% if page_obj.paginator.count %}
+  <div class="vr-table-wrap">
+    <table class="table table-hover vr-table" data-vr-grid="analytical.charts" data-vr-grid-version="1" aria-labelledby="charts-heading">
+      <thead><tr>
+        {% include "includes/sort_header.html" with label="Analyte" asc="analyte" desc="-analyte" col="analyte" locked=True %}
+        {% include "includes/sort_header.html" with label="Method" asc="method" desc="-method" col="method" %}
+        <th scope="col" data-vr-col="matrix">Matrix</th>
+        <th scope="col" data-vr-col="qc_type">QC type</th>
+        {% include "includes/sort_header.html" with label="Measurements" asc="n" desc="-n" class="text-end" col="measurements" %}
+        {% include "includes/sort_header.html" with label="Latest" asc="latest" desc="-latest" first="desc" col="latest" %}
+        <th scope="col" data-vr-col="charts">Charts</th>
+      </tr></thead>
+      <tbody>
+        {% for row in page_obj %}
+        <tr>
+          <th scope="row">{% with first=row.measures.0 %}<a class="vr-row-link" href="{% url 'analytical:chart-detail' row.definition_id row.qc_sample__qc_type first.0 %}{{ phase_query }}">{{ row.definition__analyte__name }}</a>{% endwith %}</th>
+          <td>{{ row.definition__method__code }} <span class="vr-muted small">({{ row.definition__method__version }})</span></td>
+          <td>{{ row.definition__matrix|capfirst }}</td>
+          <td>{{ row.qc_label }}</td>
+          <td class="text-end">{{ row.n }}</td>
+          <td class="vr-nowrap"><time datetime="{{ row.latest|date:'c' }}" title="{{ row.latest|date:'Y-m-d H:i T' }}">{{ row.latest|date:"Y-m-d H:i" }}</time></td>
+          <td>{% for key, label in row.measures %}<a href="{% url 'analytical:chart-detail' row.definition_id row.qc_sample__qc_type key %}{{ phase_query }}">{{ label }}<span class="visually-hidden"> chart for {{ row.definition__analyte__name }}, {{ row.qc_label }}</span></a>{% if not forloop.last %} · {% endif %}{% endfor %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "includes/pagination.html" with noun="series" filtered=filtered %}
+  {% elif filtered %}
+  {% include "includes/empty_state.html" with kind="no-results" title="No QC series match these filters" body="Clear the filters to see every series in this QC phase." clear_url=request.path|add:phase_query %}
+  {% else %}
+  {% include "includes/empty_state.html" with title="No QC measurements yet" body="Series appear here once QC samples are measured in batches." %}
+  {% endif %}
+</section>
+{% endblock %}

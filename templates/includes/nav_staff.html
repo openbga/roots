@@ -1,0 +1,76 @@
+{% load navigation %}{% comment %}
+Staff navigation, grouped by the lab's work sequence. Labels, targets and the routes that mark each
+item current are declared in core/templatetags/navigation.py; this template only groups the items
+and hides those a role never uses. An unmounted route renders as "Planned".
+{% endcomment %}
+{% url 'laboratory:overview' as lab_overview_url %}
+<ul class="vr-nav-list">
+  {% nav_item "dashboard" %}
+</ul>
+{% comment %}Sales: shown to the roles the commercial views admit (pricing/quotes: admin,
+project_manager; client submissions: custodian, project_manager). Views still enforce access.{% endcomment %}
+{% if "admin" in user_roles or "project_manager" in user_roles or can_receive %}
+<div class="vr-nav-section">
+  <p class="vr-nav-heading" id="vr-nav-sales">Sales</p>
+  <ul class="vr-nav-list" aria-labelledby="vr-nav-sales">
+    {% if "admin" in user_roles or "project_manager" in user_roles %}
+    {% nav_item "quotes" %}
+    {% nav_item "price-lists" %}
+    {% endif %}
+    {% if can_receive %}
+    {% nav_item "client-submissions" %}
+    {% endif %}
+  </ul>
+</div>
+{% endif %}
+<div class="vr-nav-section">
+  <p class="vr-nav-heading" id="vr-nav-intake">Intake</p>
+  <ul class="vr-nav-list" aria-labelledby="vr-nav-intake">
+    {% nav_item "clients" %}
+    {% nav_item "projects" %}
+    {% nav_item "orders" %}
+    {% nav_item "samples" %}
+    {% nav_item "storage" %}
+  </ul>
+</div>
+<div class="vr-nav-section">
+  <p class="vr-nav-heading" id="vr-nav-bench">Bench</p>
+  <ul class="vr-nav-list" aria-labelledby="vr-nav-bench">
+    {% nav_item "schedule" %}
+    {% nav_item "worklist" %}
+    {% nav_item "prep" %}
+    {% nav_item "batches" %}
+    {% nav_item "subcontracts" %}
+    {% nav_item "mdl" %}
+    {% nav_item "charts" %}
+  </ul>
+</div>
+<div class="vr-nav-section">
+  <p class="vr-nav-heading" id="vr-nav-release">Release</p>
+  <ul class="vr-nav-list" aria-labelledby="vr-nav-release">
+    {% nav_item "review" %}
+    {% nav_item "reports" %}
+  </ul>
+</div>
+{% if lab_overview_url %}
+<div class="vr-nav-section">
+  <p class="vr-nav-heading" id="vr-nav-lab">Laboratory</p>
+  <ul class="vr-nav-list" aria-labelledby="vr-nav-lab">
+    {% nav_item "lab-overview" %}
+    {% nav_item "inventory" %}
+    {% nav_item "equipment" %}
+    {% nav_item "training" %}
+    {% nav_item "nonconformances" %}
+  </ul>
+</div>
+{% endif %}
+<div class="vr-nav-section">
+  <p class="vr-nav-heading" id="vr-nav-setup">Setup</p>
+  <ul class="vr-nav-list" aria-labelledby="vr-nav-setup">
+    {% nav_item "catalog" %}
+    {% nav_item "qc-config" %}
+    {% nav_item "import-mappings" %}
+    {% nav_item "record-retention" %}
+    {% if user.is_superuser %}{% nav_item "accounts-roles" %}{% endif %}
+  </ul>
+</div>

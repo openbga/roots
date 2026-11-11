@@ -1,0 +1,149 @@
+{
+  "id": "reporting-report-detail",
+  "routes": [
+    "reporting:report-detail"
+  ],
+  "title": "Report detail",
+  "purpose": "Review live next-version scope/readiness and retrieve every immutable issued version.",
+  "sections": [
+    {
+      "title": "Access and header",
+      "paragraphs": [
+        "Active internal staff with an application role can read this page. Client accounts cannot use staff reporting pages. Project managers, approvers and users with explicit release authority can prepare and edit reports. Admin includes project-manager operational access, but release separately requires the explicit report release permission; admin or superuser status alone does not grant it.",
+        "Header shows report number, latest issue status, current editable title, client and project. Scope/readiness use live records. Issued versions describe stored snapshots. Records changed means the complete current fingerprint differs from latest issue, including differences missed by the list’s Results indicator."
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Download vN",
+          "description": "Get latest stored PDF; SHA-256 is checked before serving. Integrity failure refuses it and asks you to contact the laboratory."
+        },
+        {
+          "label": "Edit",
+          "description": "Open next-version scope form when permitted."
+        },
+        {
+          "label": "Preview and release",
+          "description": "Review proposed first issue and authorize when explicitly permitted."
+        },
+        {
+          "label": "Preview amendment",
+          "description": "Compare current content to latest issue and prepare next amendment."
+        },
+        {
+          "label": "NYSDEC data check (optional)",
+          "description": "Read-only early exploratory export-format check; does not control PDF release."
+        }
+      ]
+    },
+    {
+      "title": "Scope of the next version",
+      "items": [
+        {
+          "label": "Prepared",
+          "description": "Original scope creator and date/time."
+        },
+        {
+          "label": "Samples",
+          "description": "Currently selected sample count."
+        },
+        {
+          "label": "Results",
+          "description": "Displayed approved count counts assembled internal revisions only. Accepted external sources can appear in readiness/content without increasing this count."
+        },
+        {
+          "label": "Case narrative",
+          "description": "Current narrative or None when blank."
+        }
+      ]
+    },
+    {
+      "title": "Release readiness columns",
+      "items": [
+        {
+          "label": "Sample",
+          "description": "Lab ID links to receipt; client sample ID and current disposition identify the source sample."
+        },
+        {
+          "label": "Test",
+          "description": "Every requested test of every selected sample is checked. Preparation identifies and links the independent preparation batch, physical aliquot and exact method/version, or says independent preparation is not recorded."
+        },
+        {
+          "label": "Result status",
+          "description": "Approved or accepted current work can be ready. Blocked means release checks fail; approved counts on lists are not readiness decisions."
+        },
+        {
+          "label": "Blocking issues",
+          "description": "Names missing batch assignment, entry, submission or review; returned work; newer correction in progress; current QC or holding-time findings; changed preparation evidence; preservation or source-review problems. Sample-level reasons include another project, Hold, Reject or no requested tests."
+        },
+        {
+          "label": "Fix in",
+          "description": "Preservation opens the test assessment. Result and Batch open existing analytical work; Worklist searches lab sample ID when no result exists. Subcontracts opens external-source work. Sample opens receipt. Resolve source issues and reload this page."
+        }
+      ]
+    },
+    {
+      "title": "Issued versions",
+      "paragraphs": [
+        "No selected samples asks you to edit scope. No issued versions asks for preview and authorized release."
+      ],
+      "items": [
+        {
+          "label": "Version",
+          "description": "Newest first. Current is latest issue; Superseded versions remain available. Draft edits do not create rows."
+        },
+        {
+          "label": "Released",
+          "description": "Recorded issue time including timezone."
+        },
+        {
+          "label": "Released by",
+          "description": "Person explicitly authorizing this version."
+        },
+        {
+          "label": "Amendment",
+          "description": "Original for v1. Later versions identify replaced issue, reason and recorded change summary."
+        },
+        {
+          "label": "File",
+          "description": "Stored PDF size and shortened SHA-256, full hash on hover; saved NYSDEC export count when present."
+        },
+        {
+          "label": "Actions / Download",
+          "description": "Get that specific stored PDF; it is not regenerated from current data."
+        },
+        {
+          "label": "Actions / NYSDEC EDD",
+          "description": "Open recipient preview of that exact released version."
+        }
+      ]
+    },
+    {
+      "title": "Release rules and failures",
+      "paragraphs": [
+        "A report contains 1 to 100 samples from one project and at most 1,000 internal and external results combined. All requested tests of the selected samples must be reportable; individual tests cannot be selected out of a sample here. Hold and Reject receipt dispositions block release.",
+        "Internal work needs a current approved revision, independent technical review and no newer unapproved correction. Release rechecks current QC measurements, limits, requirements and dispositions, stored holding-time evaluation, preparation consistency and current receipt preservation evidence. Earlier approval alone does not guarantee release. Every test is checked again for an amendment, including unchanged results.",
+        "The releasing person needs explicit release permission and cannot have entered or submitted any internal result in this report, or entered an external result in it. A technical reviewer can also release when explicitly authorized. Actor-specific independence checks run in the preview for a releasing user and on submission; another staff member may see different readiness.",
+        "The fingerprint must still match the preview. Relevant ownership, sample, requested-test, result, batch, method-policy and source records are locked and rechecked after PDF rendering. Changed records or a concurrent release require reviewing the refreshed preview and confirming again. No partial release is stored.",
+        "PDF bytes, frozen snapshot, version links, hashes, actor, release time and audit event commit together. Rendering failure or a PDF above 10 MiB leaves nothing released. Correct the reported issue and retry from the preview. Release does not send email."
+      ]
+    }
+  ],
+  "sources": [
+    "reporting/views.py",
+    "reporting/forms.py",
+    "reporting/queries.py",
+    "reporting/models.py",
+    "reporting/services.py",
+    "reporting/content.py",
+    "accounts/roles.py",
+    "reporting/templates/reporting/report_detail.html",
+    "reporting/templates/reporting/readiness_table.html",
+    "analytical/eligibility.py",
+    "analytical/services.py",
+    "reporting/tests/test_release.py",
+    "reporting/tests/test_subcontract_release.py"
+  ]
+}

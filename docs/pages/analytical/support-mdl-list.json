@@ -1,0 +1,125 @@
+{
+  "id": "analytical-support-mdl-list",
+  "routes": [
+    "analytical:mdl-list"
+  ],
+  "title": "MDL studies",
+  "purpose": "Find initial determinations and ongoing verification studies, their latest calculation state and the current adopted MDL for each test.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Active internal staff with a laboratory role can read MDL records. Analysts enter observations, import routine blanks and calculate. Analysts or reviewers can exclude observations and close studies; the page buttons for these two actions are shown to analysts. Only an independent reviewer can decide a calculation. Admin includes operational roles but never bypasses independence; client accounts and superuser status alone do not grant access.",
+        "This records the laboratory’s MDL work; it does not establish method acceptability, accreditation or compliance. It never changes configured reporting limits or QC limits. Quarterly spiked runs can be recorded, but the application does not check coverage of every quarter of method use."
+      ],
+      "items": [
+        {
+          "label": "New MDL study",
+          "description": "Analysts open study creation for one method, analyte and matrix."
+        },
+        {
+          "label": "Study",
+          "description": "Open its observations, readiness, calculations and current test MDL."
+        }
+      ]
+    },
+    {
+      "title": "Search and filters",
+      "paragraphs": [
+        "Apply searches and filters all matching records on the server and returns to page 1. More filters reveals the additional filters; chips remove a single filter, and Clear all resets the query. Invalid filters display errors and no rows. Rows per page is 25, 50 or 100, initially 25; other sizes are refused. First, Previous, Next and Last preserve the query. Sortable headings change direction. Columns changes column order/visibility in this browser, with reset and keyboard controls; it does not change the records.",
+        "Initial ordering is Analyte, then method code. Sorts are Analyte, Method, Current MDL, Last review and the optional Created column."
+      ],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Case-insensitive analyte name or method code; a complete number such as MDL-00012, MDL12 or 12 also matches study 12."
+        },
+        {
+          "label": "Method",
+          "description": "Optional exact active method/version ordered by code and version. Leaving blank does not restrict studies to active methods."
+        },
+        {
+          "label": "Matrix",
+          "description": "Any matrix, Water, Wastewater or Soil."
+        },
+        {
+          "label": "State",
+          "description": "Any state, No calculation yet, Last calculation not evaluated, Awaiting review, Last calculation rejected or Current MDL in place. This filter checks the latest calculation within this study; a different study can still supply the test’s current MDL."
+        },
+        {
+          "label": "Kind",
+          "description": "More filters: Any kind, Initial determination or Ongoing verification."
+        },
+        {
+          "label": "Study status",
+          "description": "More filters: Any, Open or Closed. Closing is separate from the latest calculation state."
+        },
+        {
+          "label": "Recalculation",
+          "description": "More filters: Any or Past 13 months since calculation. Only studies with an accepted calculation basis and a passed due time qualify. Due date uses thirteen calendar months in laboratory local time, clamped at month end; review does not restart it."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Study",
+          "description": "Stable MDL-number link."
+        },
+        {
+          "label": "Analyte / Method / Matrix",
+          "description": "Exact test definition for which this study was created."
+        },
+        {
+          "label": "Kind",
+          "description": "Initial determination or Ongoing verification, with closed indicated separately."
+        },
+        {
+          "label": "Spikes / blanks",
+          "description": "Counts of non-excluded observations, not distinct preparations or necessarily the chosen calculation window."
+        },
+        {
+          "label": "State",
+          "description": "Latest calculation’s decision/status for this study: Current MDL in place, Rejected, Awaiting review, Not evaluated or No calculation yet."
+        },
+        {
+          "label": "Current MDL",
+          "description": "Latest adopted or retained MDL across all studies of the same exact test, with test unit; blank when none exists."
+        },
+        {
+          "label": "Last review",
+          "description": "Review time of that test’s current adopted/retained calculation, not necessarily a calculation in this study."
+        },
+        {
+          "label": "Recalculate by",
+          "description": "Thirteen months after the latest performed calculation subsequently adopted or retained for the test. Past due flags elapsed time. A newer unreviewed calculation is identified without replacing the current MDL."
+        },
+        {
+          "label": "Created / Created by / Spiking level",
+          "description": "Initially hidden columns showing study creation time, creator and exact study spiking level in the test unit."
+        }
+      ]
+    },
+    {
+      "title": "Empty states",
+      "paragraphs": [
+        "No MDL studies yet offers New MDL study. No studies match these filters offers clearing the query. Expand What a recorded MDL does and does not mean for the reporting-limit and quarterly-coverage limitations."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/mdl_views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/mdl_services.py",
+    "analytical/mdl.py",
+    "analytical/selectors.py",
+    "analytical/templates/analytical/mdl_list.html",
+    "analytical/templates/analytical/_mdl_state.html",
+    "analytical/tests/test_mdl_views.py",
+    "analytical/tests/test_mdl_workflow.py",
+    "analytical/tests/test_mdl_pure.py",
+    "core/grids.py"
+  ]
+}

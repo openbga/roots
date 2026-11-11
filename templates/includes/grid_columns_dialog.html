@@ -1,0 +1,20 @@
+{% comment %}Shared Columns dialog; static/js/grid.js fills the list for the list whose Columns button opened it.{% endcomment %}
+<div class="modal fade" id="vr-columns-dialog" tabindex="-1" aria-labelledby="vr-columns-title" aria-describedby="vr-columns-help" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="vr-columns-title">Columns</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="vr-form-note" id="vr-columns-help">Choose which columns to show and their order. Changes apply now and are saved in this browser. You can also drag column headers.</p>
+        <ul class="vr-columns-list" data-vr-columns-list aria-label="Columns"></ul>
+        <p class="visually-hidden" role="status" data-vr-columns-status></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary me-auto" data-vr-columns-reset>{% include "includes/icon.html" with name="arrow-counterclockwise" %}Reset columns</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Done</button>
+      </div>
+    </div>
+  </div>
+</div>

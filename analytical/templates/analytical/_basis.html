@@ -1,0 +1,5 @@
+{% load catalog_extras %}
+{% if rev.matrix == "soil" %}
+<span>{{ rev.get_result_basis_display }}</span>
+{% if rev.percent_solids is not None %}<div class="small">{{ rev.percent_solids|plain_decimal }}% solids · {{ rev.solids_reference }}</div>{% else %}<div class="vr-muted small">Percent solids not recorded</div>{% endif %}
+{% elif rev.result_basis == "unknown" %}<span class="vr-muted small">Basis not recorded</span>{% endif %}

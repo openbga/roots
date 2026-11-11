@@ -1,0 +1,83 @@
+{
+  "id": "receipt-sample-dispose",
+  "routes": [
+    "receipt:sample-dispose"
+  ],
+  "title": "Record physical disposal",
+  "purpose": "Record a completed, laboratory-authorized physical disposal and custody transfer while retaining all electronic records.",
+  "sections": [
+    {
+      "title": "Required fields",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Physically disposed at",
+          "description": "Completed action time, initially now, in laboratory local time. Cannot be future or earlier than the latest custody event. Its local date must be strictly after the inclusive retention-through date."
+        },
+        {
+          "label": "Disposal method",
+          "description": "Required list: Select…, Returned to client, Neutralized and discharged to sanitary sewer, Hazardous waste contractor, Solid waste (non-hazardous), Consumed in analysis or Other…. Other… reveals a text box (Describe) whose text is stored, up to 160 characters. The choices are starter wording only; the application does not choose a disposal policy or confirm that a method is authorized."
+        },
+        {
+          "label": "Disposal destination",
+          "description": "Required destination, up to 160 characters; becomes current location."
+        },
+        {
+          "label": "Relinquished by / Received by",
+          "description": "Required actual custodians, each up to 160 characters; separate from the recording actor."
+        },
+        {
+          "label": "Reason",
+          "description": "Required explanation of the completed authorized action."
+        },
+        {
+          "label": "I confirm this records physical disposal and the laboratory authorized the action.",
+          "description": "Required confirmation checkbox. It records the operator’s confirmation rather than authorizing an otherwise ineligible sample."
+        }
+      ]
+    },
+    {
+      "title": "Submission gates",
+      "paragraphs": [
+        "An explicit retention date must exist and have elapsed before the disposal date. Both the separate disposal hold and receipt disposition Hold must be clear. Every requested test’s latest internal or active external result must belong to an issued report, unless the receipt disposition is Reject. Rejection bypasses the outstanding-test gate only; it does not bypass retention, holds, custody chronology or open preparation. Preparation work that still blocks disposal must be closed or cancelled first; its records remain. A corrected latest result reopens the issued-result requirement even when an older version was reported."
+      ],
+      "items": []
+    },
+    {
+      "title": "Actions",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Record physical disposal",
+          "description": "Receipt roles save disposal actor/time/method/destination/reason, append custody and audit events, and update location together. Returns to storage. Afterward receipt/custody and storage mutations are blocked; electronic samples, analyses and reports remain readable."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to storage without recording disposal."
+        }
+      ]
+    },
+    {
+      "title": "Access and safeguards",
+      "paragraphs": [
+        "Custodians, project managers and administrators can save. The header names the client and current location. A concurrent custody, retention or sample change is refused; submitted input remains on the error page. Reload and review current custody/retention before resubmitting. A disposed sample shows a retained-history notice instead of an editable form and rejects further changes."
+      ],
+      "items": []
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/storage_views.py",
+    "receipt/storage_forms.py",
+    "receipt/storage_models.py",
+    "receipt/storage.py",
+    "receipt/models.py",
+    "accounts/roles.py",
+    "receipt/tests/test_storage.py",
+    "receipt/templates/receipt/storage/form.html",
+    "receipt/tests/test_preparation_dependencies.py",
+    "receipt/tests/test_external_delivery.py",
+    "core/widgets.py",
+    "receipt/vocabulary.py"
+  ]
+}

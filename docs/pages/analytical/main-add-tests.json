@@ -1,0 +1,146 @@
+{
+  "id": "analytical-main-add-tests",
+  "routes": [
+    "analytical:batch-add-tests"
+  ],
+  "title": "Add tests",
+  "purpose": "Add or move requested tests into this analytical batch. Approved work is marked Reanalysis and keeps its earlier approval until a new revision is entered.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "These are staff pages. Active users with an application staff role can read them; client accounts cannot. Analysts perform result entry and batch work, reviewers decide results, and administrators maintain configuration. Administrators also have operational analyst and reviewer access, but independence rules still apply. Superuser status alone does not grant an application role."
+      ]
+    },
+    {
+      "title": "Eligibility",
+      "paragraphs": [
+        "Candidates have an active definition for this exact method/version and matrix, matching sample matrix, no receipt Hold or Reject, no disposal and no active external dispatch. Tests already here or with entered/submitted revisions are excluded. Unassigned, awaiting, returned and approved work can appear. Preparation chronology and all eligibility rules are rechecked on save. Closed batches show a notice without add controls."
+      ]
+    },
+    {
+      "title": "Filters",
+      "items": [
+        {
+          "label": "Search",
+          "description": "Partial, case-insensitive lab ID, client sample ID or analyte."
+        },
+        {
+          "label": "Kind of work",
+          "description": "All includes unfinished work and approved reanalysis. Not yet analysed excludes approved results but can include returned work. Reanalysis includes approved results only."
+        },
+        {
+          "label": "More filters",
+          "description": "Expand Client."
+        },
+        {
+          "label": "Client",
+          "description": "Limit candidates to one client across its projects."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Sample",
+          "description": "Lab ID opening the sample."
+        },
+        {
+          "label": "Currently",
+          "description": "Not in a batch, current batch/status, or Reanalysis and the batch where its latest result was approved."
+        },
+        {
+          "label": "Analyte",
+          "description": "Requested analyte; method and matrix appear above the table."
+        },
+        {
+          "label": "Client / project",
+          "description": "Order’s client and project."
+        },
+        {
+          "label": "Collected",
+          "description": "Collection event used by collection clocks; composite end where applicable."
+        },
+        {
+          "label": "Hold deadline",
+          "description": "Shortest active collection-start deadline and any running warning/time remaining. Approved work has no running entry clock."
+        },
+        {
+          "label": "Received",
+          "description": "Receipt date/time; hidden initially."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Select all tests on this page",
+          "description": "Check all visible candidates, including Reanalysis. Selection is limited to this page."
+        },
+        {
+          "label": "Select only new work",
+          "description": "Check visible candidates that are not approved; excludes Reanalysis rows."
+        },
+        {
+          "label": "What happens to a Reanalysis test",
+          "description": "Expand the explanation of preserved approval and new-review requirements."
+        },
+        {
+          "label": "Add selected to",
+          "description": "Analysts add the checked tests to this open batch. A failed or changed selection rejects the whole assignment. Already-assigned tests are skipped. Moves are audited with their prior batch."
+        },
+        {
+          "label": "Cancel",
+          "description": "Return to the batch without assigning work."
+        }
+      ]
+    },
+    {
+      "title": "Filtering and table controls",
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Apply search and filters to the entire matching dataset and return to page 1. Invalid filters show errors and no rows; they never widen the query."
+        },
+        {
+          "label": "Clear all",
+          "description": "Remove search and filters and restore this page’s defaults. A filter chip removes only that filter."
+        },
+        {
+          "label": "Rows per page",
+          "description": "Choose 25 (default), 50 or 100. First, Previous, Next and Last page links retain filters. Counts describe all matching records."
+        },
+        {
+          "label": "Columns",
+          "description": "Show or hide optional columns and change their order using movement controls or header dragging. Changes apply immediately and are saved for this table in this browser. Locked columns stay available."
+        },
+        {
+          "label": "Reset columns",
+          "description": "Restore the original column visibility and order. Done or Close dismisses the Columns dialog."
+        }
+      ],
+      "paragraphs": [
+        "Fixed oldest collection first, then lab ID and analyte. No sortable column headings."
+      ]
+    },
+    {
+      "title": "Reanalysis and history",
+      "paragraphs": [
+        "Moving an approved result changes current batch assignment, preserving the old approved revision and issued reports. Use the result page or import with a reason to enter its next revision; the ordinary entry grid excludes approved results. Submit it for independent review under the new batch’s QC. Historical source-batch QC obligations remain after movement. If no eligible tests appear, resolve the stated eligibility restrictions; clear filters for a filtered empty result."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/templates/analytical/batch_add_tests.html",
+    "analytical/tests/test_lists.py",
+    "analytical/tests/test_integrity.py"
+  ]
+}

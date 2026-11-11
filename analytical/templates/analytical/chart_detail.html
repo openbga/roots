@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load catalog_extras static %}
+{% block breadcrumbs %}{% url 'analytical:chart-list' as list_url %}{% include "includes/breadcrumbs.html" with section="QC control charts" section_url=list_url|add:phase_query %}{% endblock %}
+{% block page_meta %}
+<ul class="vr-page-meta">
+  <li>{{ definition.method }}</li><li>{{ definition.get_matrix_display }}</li>
+  <li>Unit: {{ series.unit|default:definition.unit }}</li>
+  <li>{% if phase == "preparation" %}Preparation QC{% else %}Analytical QC{% endif %}</li>
+</ul>
+{% endblock %}
+{% block page_intro %}<p class="vr-page-intro">The laboratory's configured limits decide QC status; the statistical bands describe the recent data only.</p>{% endblock %}
+{% block content %}
+<section class="card mb-3" aria-labelledby="baseline-heading">
+  <div class="card-header"><h2 class="card-title" id="baseline-heading">Chart settings</h2></div>
+  <div class="card-body">
+    <form class="vr-form" method="get" action="{{ request.path }}" novalidate>
+      <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+      {{ baseline_form }}
+      <div class="vr-form-actions"><button class="btn btn-outline-secondary" type="submit">Apply chart settings</button></div>
+    </form>
+  </div>
+</section>
+{% if series %}
+<section class="card mb-3" aria-labelledby="chart-heading">
+  <div class="card-header"><h2 class="card-title" id="chart-heading">Chart</h2>
+    <span class="vr-count">{{ series.counts.points }} plotted point{{ series.counts.points|pluralize }}{% if series.counts.points > max_plotted %}; the latest {{ max_plotted }} are drawn{% endif %}</span></div>
+  <div class="card-body">
+    <p class="vr-form-note"><strong>Configured limits</strong> (solid red line, square markers when a point is outside) are the lab's own acceptance limits and decide QC status. <strong>Statistical bands</strong> (dashed lines, triangle markers beyond 3 SD) describe the recent data only. They are not QC limits: they do not set, replace or certify a configured limit, and a point inside them is not thereby accepted.</p>
+    {% if chart_data %}
+    <div class="ratio ratio-16x9">
+      <canvas id="control-chart" role="img" aria-label="Control chart of {{ definition.analyte }}, {{ qc_label }}, {{ measure_label }}: {{ series.counts.points }} point{{ series.counts.points|pluralize }} in observation order, {{ series.counts.outside_configured }} outside configured limits. The data table below lists every point.">Control chart. The data table below lists every point.</canvas>
+    </div>
+    {{ chart_data|json_script:"control-chart-data" }}
+    {% else %}{% include "includes/empty_state.html" with title="Nothing to plot" body="No current QC measurement gives a numerical value for this measure." %}{% endif %}
+    <dl class="vr-facts mt-3">
+      <div><dt>Configured limits</dt><dd>{% if series.configured %}{% if series.configured.0 is not None %}{{ series.configured.0|plain_decimal }}{% else %}no lower{% endif %} to {% if series.configured.1 is not None %}{{ series.configured.1|plain_decimal }}{% else %}no upper{% endif %} {{ series.unit }}{% else %}<span class="vr-muted">none configured for this measure</span>{% endif %}</dd></div>
+      <div><dt>Outside configured limits</dt><dd>{{ series.counts.outside_configured }}{% if series.counts.unevaluated %} · {{ series.counts.unevaluated }} not evaluated (no limit or missing input){% endif %}</dd></div>
+      {% if series.stats %}
+      <div><dt>Baseline</dt><dd>{{ series.stats.n }} points · mean {{ series.stats.mean|plain_decimal }} · sample SD {{ series.stats.sd|plain_decimal }}</dd></div>
+      <div><dt>Warning band (mean ± 2 SD, descriptive)</dt><dd>{{ series.stats.warning.0|plain_decimal }} to {{ series.stats.warning.1|plain_decimal }}</dd></div>
+      <div><dt>Control band (mean ± 3 SD, descriptive)</dt><dd>{{ series.stats.control.0|plain_decimal }} to {{ series.stats.control.1|plain_decimal }}</dd></div>
+      <div><dt>Beyond the bands</dt><dd>{{ series.counts.warning }} beyond 2 SD · {{ series.counts.control }} beyond 3 SD</dd></div>
+      {% endif %}
+      {% for reason, count in series.not_plotted.items %}<div><dt>Not plotted</dt><dd>{{ count }} · {{ reason }}</dd></div>{% endfor %}
+    </dl>
+    {% if series.measure == "value" %}<p class="vr-form-note mt-3 mb-0"><strong>{{ series.non_detect_count }} non-detect{{ series.non_detect_count|pluralize }} left out.</strong> This application does not plot non-detects or use them in the bands, so the mean and SD describe the detected results only and say nothing about how often these blanks are clean. That handling is this application's own choice, not a requirement of the sources cited above.</p>{% endif %}
+    {% if not series.stats %}<p class="vr-form-note mt-3 mb-0"><strong>Statistical bands are not shown.</strong> {{ series.stats_reason }}</p>{% endif %}
+  </div>
+</section>
+<section class="card vr-table-card mb-3" aria-labelledby="points-heading">
+  <div class="card-header"><h2 class="card-title" id="points-heading">Data points</h2><span class="vr-count">newest first, exact values</span>
+    <div class="ms-auto">{% include "includes/grid_columns_button.html" with grid="analytical.chart_points" %}</div></div>
+  {% if page_obj.paginator.count %}
+  <div class="vr-table-wrap"><table class="table vr-table" data-vr-grid="analytical.chart_points" data-vr-grid-version="1" aria-labelledby="points-heading">
+    <thead><tr><th scope="col" data-vr-col="analysed" data-vr-col-locked>Analysed</th><th scope="col" data-vr-col="qc_sample">QC sample</th><th scope="col" data-vr-col="batch">Batch</th><th scope="col" data-vr-col="observed">Observed</th><th scope="col" class="text-end" data-vr-col="plotted">Plotted value ({{ series.unit }})</th><th scope="col" data-vr-col="configured">Configured limits</th><th scope="col" data-vr-col="band">Statistical band</th></tr></thead>
+    <tbody>{% for p in page_obj %}
+      <tr>
+        <th scope="row" class="vr-nowrap"><time datetime="{{ p.when|date:'c' }}" title="{{ p.when|date:'Y-m-d H:i T' }}">{{ p.when|date:"Y-m-d H:i" }}</time></th>
+        <td class="vr-id">{{ p.qc_sample }}</td><td>{{ p.batch }}</td><td class="vr-id">{{ p.observed_text }}</td>
+        <td class="text-end">{{ p.value|plain_decimal }}</td>
+        <td>{% include "analytical/_qc_status.html" with status=p.configured_status %}</td>
+        <td>{% if not series.stats %}<span class="vr-muted">not evaluated</span>{% elif p.band == "control" %}Beyond 3 SD{% elif p.band == "warning" %}Beyond 2 SD{% else %}Within 2 SD{% endif %}{% if series.stats and p.in_baseline %} <span class="vr-muted small">(in baseline)</span>{% endif %}</td>
+      </tr>{% endfor %}</tbody>
+  </table></div>
+  {% include "includes/pagination.html" with noun="points" %}
+  {% else %}{% include "includes/empty_state.html" with title="No data points" body="No current QC measurement gives a numerical value for this measure." %}{% endif %}
+</section>
+<details class="card mb-3" id="band-notes">
+  <summary class="card-header">How the statistical bands are made, and what they are not</summary>
+  <div class="card-body">
+    <ul class="mb-2 ps-3">
+      <li>The bands are the mean plus or minus 2 and 3 <strong>sample standard deviations</strong> (n − 1 divisor, no bias correction) of the baseline points chosen below.</li>
+      <li>The chosen recent points are used <strong>as they are</strong>. Nothing checks that the process was in statistical control during them, so excursions in the baseline widen the bands.</li>
+      <li>The bands are <strong>recomputed every time this page opens</strong>. They are not fixed reference limits, and points inside the baseline are compared with bands they helped set.</li>
+      <li>Drawing bands only from {{ min_baseline }} or more points is this application's display threshold. EPA 815-R-05-004 section 7.2.8 (laboratory fortified blank recoveries: usually 20 to 30 results, 3 S limits, 2 S warning) and MARLAP Chapter 18 Procedure 18.1 (ideally at least 20 points) describe the common practice; neither makes it a requirement for these charts.</li>
+      <li>Using the same bands for blanks, matrix spikes or RPD is common practice, not something those passages state.</li>
+    </ul>
+    <p class="vr-form-note mb-0">The laboratory's configured limits alone decide QC status at approval and release. These charts are an aid for looking at trends.</p>
+  </div>
+</details>
+{% elif baseline_form.errors %}
+{% include "includes/empty_state.html" with kind="error" title="These chart settings cannot be applied" body="Choose a listed QC phase and baseline; nothing is drawn from an invalid choice." clear_url=request.path|add:phase_query %}
+{% endif %}
+{% endblock %}
+{% block extra_js %}{% if chart_data %}
+<script src="{% static 'vendor/chartjs-4.6.1/chart.umd.min.js' %}"></script>
+<script src="{% static 'analytical/control_chart.js' %}"></script>
+{% endif %}{% endblock %}

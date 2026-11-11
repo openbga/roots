@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block breadcrumbs %}{% if batch.kind == 'preparation' %}{% url 'analytical:prep-list' as list_url %}{% url 'analytical:prep-detail' batch.pk as batch_url %}{% include "includes/breadcrumbs.html" with section="Preparation batches" section_url=list_url record=batch.number record_url=batch_url %}{% else %}{% url 'analytical:batch-list' as list_url %}{% url 'analytical:batch-detail' batch.pk as batch_url %}{% include "includes/breadcrumbs.html" with section="Batches & QC" section_url=list_url record=batch.number record_url=batch_url %}{% endif %}{% endblock %}
+{% block page_meta %}<ul class="vr-page-meta"><li>QC sample <span class="vr-id">{{ qc_sample.label }}</span></li><li>{{ qc_sample.get_qc_type_display }}</li>{% if qc_sample.parent_sample %}<li>Parent <span class="vr-id">{{ qc_sample.parent_sample.lab_id }}</span></li>{% endif %}</ul>{% endblock %}
+{% block content %}
+<form class="vr-form" method="post" novalidate>
+  {% csrf_token %}
+  {% include "includes/form_errors.html" with form=common %}
+  {{ formset.management_form }}
+  {% if not can_enter %}<div class="alert alert-info" role="status">{% include "includes/status.html" with label="Read only" tone="neutral" plain=True %}<div>Only analysts can record QC measurements.</div></div>{% endif %}
+  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required for every row where you enter an observed value; leave an analyte's observed value blank to skip it.</p>
+  <p class="vr-form-note">Enter a number or ND. Limits are never assumed: an analyte without a configured limit is recorded as not evaluated and holds approval.
+  Spike amount is the amount added or true value in the result unit. Where an unspiked sample result is asked for, enter 0 explicitly if the analyte was not detected.
+  Replacing an existing measurement needs a reason; the earlier one is kept.</p>
+  {% if error_rows %}
+  <div class="alert alert-danger" role="alert" id="grid-errors" tabindex="-1">
+    {% include "includes/status.html" with label="Error" tone="danger" plain=True %}
+    <div>
+      <p class="mb-1">{{ error_rows|length }} row{{ error_rows|length|pluralize }} need{{ error_rows|length|pluralize:"s," }} attention. Nothing was saved; your entries were kept.</p>
+      <ul class="mb-0 ps-3">{% for form, item in error_rows %}<li><a href="#row-{{ form.prefix }}">{{ item.analyte }}</a></li>{% endfor %}</ul>
+    </div>
+  </div>
+  {% endif %}
+  <fieldset{% if not can_enter %} disabled{% endif %}>
+  <legend class="visually-hidden">QC measurements{% if not can_enter %} (read only: only analysts can record them){% endif %}</legend>
+  <div class="row g-3 mb-3">
+    <div class="col-md-5">{{ common.analysis_started_at.as_field_group }}</div>
+    <div class="col-md-7">{{ common.reason.as_field_group }}</div>
+    {% if batch.kind == 'preparation' %}<div class="col-md-7">{{ common.analysis_batch_id.as_field_group }}</div>{% endif %}
+  </div>
+  <section class="card vr-table-card" aria-labelledby="qc-grid-heading">
+    <h2 class="visually-hidden" id="qc-grid-heading">QC measurements</h2>
+    <div class="vr-table-wrap">
+      <table class="table vr-table">
+        <thead><tr>
+          <th scope="col">Analyte</th><th scope="col">Unit</th><th scope="col">Current</th>
+          <th scope="col">Observed<span class="vr-req" aria-hidden="true">*</span></th><th scope="col">Reporting limit<span class="vr-req" aria-hidden="true">*</span></th>
+          {% if formset.empty_form.spike_value %}<th scope="col">Spike / true value<span class="vr-req" aria-hidden="true">*</span></th>{% endif %}
+          {% if formset.empty_form.native_value %}<th scope="col">Unspiked result<span class="vr-req" aria-hidden="true">*</span></th>{% endif %}
+          {% if formset.empty_form.reference_value %}<th scope="col">Reference result<span class="vr-req" aria-hidden="true">*</span></th>{% endif %}
+        </tr></thead>
+        <tbody>
+          {% for form, d, current in rows %}
+          <tr id="row-{{ form.prefix }}"{% if form.errors %} class="table-danger"{% endif %}>
+            <th scope="row">{{ form.definition_id }}{{ d.analyte }}</th>
+            <td>{{ d.unit }}</td>
+            <td>{% if current %}<span class="vr-id">{{ current.observed_text }}</span>{% else %}<span class="vr-muted">—</span>{% endif %}</td>
+            <td>{{ form.observed_text }}</td>
+            <td>{{ form.reporting_limit_applied }}</td>
+            {% if form.spike_value %}<td>{{ form.spike_value }}</td>{% endif %}
+            {% if form.native_value %}<td>{{ form.native_value }}</td>{% endif %}
+            {% if form.reference_value %}<td>{{ form.reference_value }}</td>{% endif %}
+          </tr>
+          {% if form.errors %}
+          <tr class="table-danger"><td colspan="{{ column_count }}"><ul class="vr-field-errors mb-0" id="{{ form.prefix }}-errors">
+            {% for field in form %}{% for error in field.errors %}<li>{{ field.label }}: {{ error }}</li>{% endfor %}{% endfor %}
+            {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+          </ul></td></tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  </fieldset>
+  <div class="vr-form-actions">
+    <a class="btn btn-link" href="{% if batch.kind == 'preparation' %}{% url 'analytical:prep-detail' batch.pk %}{% else %}{% url 'analytical:batch-detail' batch.pk %}{% endif %}">Cancel</a>
+    {% if can_enter %}<button class="btn btn-primary" type="submit">Record measurements</button>{% endif %}
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,17 @@
+<article data-vr-documentation-id="{{ page_documentation.id }}">
+  <h2 class="vr-documentation-page-title" tabindex="-1">{{ page_documentation.title }}</h2>
+  <p class="vr-documentation-purpose">{{ page_documentation.purpose }}</p>
+  {% for section in page_documentation.sections %}
+  <section class="vr-documentation-section">
+    <h3>{{ section.title }}</h3>
+    {% for paragraph in section.paragraphs %}<p>{{ paragraph }}</p>{% endfor %}
+    {% if section.items %}
+    <table class="table vr-documentation-table">
+      <caption class="visually-hidden">{{ section.title }}</caption>
+      <thead><tr><th scope="col">Item</th><th scope="col">Description</th></tr></thead>
+      <tbody>{% for item in section.items %}<tr><th scope="row">{{ item.label }}</th><td>{{ item.description }}</td></tr>{% endfor %}</tbody>
+    </table>
+    {% endif %}
+  </section>
+  {% endfor %}
+</article>

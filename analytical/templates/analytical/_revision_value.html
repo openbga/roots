@@ -1,0 +1,4 @@
+{% load catalog_extras %}
+{% comment %}Result as supplied. Parameter: rev (ResultRevision). Non-detects show ND, never zero.{% endcomment %}
+{% if rev.kind == "non_detect" %}<span class="vr-id">ND</span> <span class="vr-muted small">&lt; {{ rev.reporting_limit_applied|plain_decimal }}</span>{% else %}<span class="vr-id">{{ rev.supplied_text }}</span>{% endif %}
+{% if rev.matrix == "soil" %}<span class="vr-muted small"> · {{ rev.get_result_basis_display }}</span>{% endif %}

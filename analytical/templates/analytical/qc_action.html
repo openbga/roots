@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block breadcrumbs %}{% if batch.kind == 'preparation' %}{% url 'analytical:prep-list' as list_url %}{% url 'analytical:prep-detail' batch.pk as batch_url %}{% include "includes/breadcrumbs.html" with section="Preparation batches" section_url=list_url record=batch.number record_url=batch_url %}{% else %}{% url 'analytical:batch-list' as list_url %}{% url 'analytical:batch-detail' batch.pk as batch_url %}{% include "includes/breadcrumbs.html" with section="Batches & QC" section_url=list_url record=batch.number record_url=batch_url %}{% endif %}{% endblock %}
+{% block page_meta %}<ul class="vr-page-meta"><li>Batch <span class="vr-id">{{ batch.number }}</span></li><li>{{ batch.method }}</li></ul>{% endblock %}
+{% block content %}
+<div class="alert alert-warning" role="status">{% include "includes/status.html" with label="QC finding" tone="warning" plain=True %}<div>{{ issue.message }}</div></div>
+<form class="vr-form" method="post" novalidate>
+  {% csrf_token %}
+  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+  <fieldset class="vr-form-section">
+  <legend class="visually-hidden">Disposition</legend>
+  {{ form }}
+  <p class="vr-form-note">Accepting data with qualification is a reviewer decision and releases the hold for this finding only. You cannot accept QC you measured or QC affecting results you entered or submitted. A disposition applies to this finding as evaluated now; if the QC, its limits or the batch counts change, it must be decided again. Reanalysis or rejection keeps results held. The latest disposition governs, and every disposition is kept.</p>
+  </fieldset>
+  <div class="vr-form-actions">
+    <a class="btn btn-link" href="{% if batch.kind == 'preparation' %}{% url 'analytical:prep-detail' batch.pk %}{% else %}{% url 'analytical:batch-detail' batch.pk %}{% endif %}">Cancel</a>
+    <button class="btn btn-primary" type="submit">Record disposition</button>
+  </div>
+</form>
+{% if history %}
+<section class="card mt-3" aria-labelledby="actions-heading">
+  <div class="card-header"><h2 class="card-title" id="actions-heading">History</h2></div>
+  <div class="card-body"><ol class="vr-timeline">
+    {% for a in history %}{% include "includes/history_item.html" with title=a.get_disposition_display at=a.recorded_at actor=a.recorded_by reason=a.note %}{% endfor %}
+  </ol></div>
+</section>
+{% endif %}
+{% endblock %}

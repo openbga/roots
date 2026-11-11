@@ -1,0 +1,23 @@
+<div class="modal fade vr-form-dialog" id="vr-form-dialog" tabindex="-1" aria-labelledby="vr-form-title" aria-hidden="true" data-bs-backdrop="static" hx-request='{"timeout":30000}'>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable modal-fullscreen-sm-down">
+    <div class="modal-content">
+      <div class="modal-header vr-form-dialog-header">
+        <h2 class="modal-title" id="vr-form-title" tabindex="-1">Loading form…</h2>
+        <div class="d-flex align-items-center gap-2 ms-auto">
+          {% include "documentation/button.html" %}
+          <button type="button" class="btn btn-outline-secondary btn-sm d-none d-sm-inline-flex" data-vr-form-maximize aria-pressed="false">Maximize</button>
+          <button type="button" class="btn-close" data-vr-form-close aria-label="Close form"></button>
+        </div>
+      </div>
+      <div class="alert alert-danger m-3" id="vr-form-error" role="alert" hidden></div>
+      <div class="alert alert-warning m-3" id="vr-form-discard" role="alert" hidden>
+        <p class="mb-2">Discard your unsaved changes?</p>
+        <div class="d-flex flex-wrap gap-2">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-vr-form-keep>Keep editing</button>
+          <button type="button" class="btn btn-danger btn-sm" data-vr-form-discard>Discard changes</button>
+        </div>
+      </div>
+      <div class="modal-body" id="vr-form-content"></div>
+    </div>
+  </div>
+</div>

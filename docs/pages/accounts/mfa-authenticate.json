@@ -1,0 +1,54 @@
+{
+  "id": "accounts-mfa-authenticate",
+  "routes": [
+    "mfa_authenticate",
+    "mfa_reauthenticate"
+  ],
+  "title": "Verify two-factor authentication",
+  "purpose": "Confirm a sign-in or sensitive account action with an enrolled factor.",
+  "sections": [
+    {
+      "title": "Page variants",
+      "paragraphs": [
+        "The sign-in variant requires a pending MFA login stage for an account with an enabled primary factor. Without it, the page returns to sign-in. The reauthentication variant requires a signed-in account with an available enrolled code method and may be opened without a stored pending operation. These pages verify existing factors; they do not enroll or reset one."
+      ]
+    },
+    {
+      "title": "Fields and actions",
+      "items": [
+        {
+          "label": "Code",
+          "description": "Required current six-digit authenticator code or unused eight-digit recovery code. Recovery codes are consumed on successful validation. TOTP uses the default 30-second step and refuses reuse of an already accepted current code. Invalid attempts are rate limited."
+        },
+        {
+          "label": "Sign In",
+          "description": "Sign-in variant: validates the factor, records usage and completes the pending stage."
+        },
+        {
+          "label": "Cancel",
+          "description": "Sign-in variant only: posts sign-out, abandons the stage and returns to sign-in. The reauthentication form does not have this button."
+        },
+        {
+          "label": "Confirm",
+          "description": "Reauthentication variant: records a recent factor check, then resumes the protected action or returns to the application destination."
+        },
+        {
+          "label": "Alternative options",
+          "description": "Reauthentication variant: Use your password appears when a usable password is available. Security-key alternatives are not offered by the committed factor configuration."
+        }
+      ]
+    },
+    {
+      "title": "Limits",
+      "paragraphs": [
+        "A successful code proves this account’s enrolled factor, not a laboratory qualification or role. The committed configuration does not offer trusted-browser skipping. Reauthentication is considered recent for five minutes; normal sign-in and sensitive-action policies remain distinct."
+      ]
+    }
+  ],
+  "sources": [
+    "config/settings.py",
+    "templates/allauth/layouts/base.html",
+    "templates/allauth/layouts/manage.html",
+    "uv.lock"
+  ]
+}

@@ -1,0 +1,21 @@
+{% comment %}
+One quote line as a table row of the lines formset (dense editor). Parameters: lform, number ("__num__" in the
+empty template). Labels are visually hidden; the column headers name each input.
+{% endcomment %}
+<tr data-formset-row>
+  <th scope="row" class="text-end vr-count">{{ number }}</th>
+  {% for field in lform.visible_fields %}
+  {% if field.name != "DELETE" %}
+  <td>
+    <label class="visually-hidden" for="{{ field.id_for_label }}">{{ field.label }}, line {{ number }}</label>
+    {% if field.name == "unit_price" %}<div class="input-group"><span class="input-group-text">$</span>{{ field }}</div>{% else %}{{ field }}{% endif %}
+    {% if field.errors %}<ul class="vr-field-errors" id="{{ field.auto_id }}_error">{% for error in field.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+  </td>
+  {% endif %}
+  {% endfor %}
+  <td class="text-center">
+    {% if lform.DELETE %}<div class="form-check d-inline-block">{{ lform.DELETE }}<label class="form-check-label" for="{{ lform.DELETE.id_for_label }}">Remove<span class="visually-hidden"> line {{ number }}</span></label></div>{% endif %}
+    {% for hidden in lform.hidden_fields %}{{ hidden }}{% endfor %}
+    {% if lform.non_field_errors %}<ul class="vr-field-errors">{% for error in lform.non_field_errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+  </td>
+</tr>

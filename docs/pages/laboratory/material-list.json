@@ -1,0 +1,133 @@
+{
+  "id": "laboratory-material-list",
+  "routes": [
+    "laboratory:material-list"
+  ],
+  "title": "Inventory: materials",
+  "purpose": "Find definitions shared by stock lots, including units and handling requirements.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Available to active signed-in lab staff with an admin, custodian, analyst, reviewer, approver or project manager role. Client accounts and accounts without a lab role cannot open laboratory pages. Sidebar links open Lab overview, Inventory, Equipment, Training and Nonconformances. Breadcrumbs return to the list or parent record."
+      ]
+    },
+    {
+      "title": "Tabs and actions",
+      "items": [
+        {
+          "label": "Materials",
+          "description": "Current tab. Materials have no balance; lots hold quantity and expiry."
+        },
+        {
+          "label": "Lots",
+          "description": "Open individual stock lots."
+        },
+        {
+          "label": "New material",
+          "description": "Admin and reviewer roles can create materials. Open a Material name for details."
+        }
+      ]
+    },
+    {
+      "title": "Search and filters",
+      "items": [
+        {
+          "label": "Search",
+          "description": "Search name, CAS number and specification."
+        },
+        {
+          "label": "Kind",
+          "description": "All kinds by default; Standard, Reagent or Other material."
+        },
+        {
+          "label": "Status",
+          "description": "All by default; Active or Inactive. Inactive prevents new lots but preserves existing stock and history."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Material",
+          "description": "Name and link; always visible. Default sort is name ascending."
+        },
+        {
+          "label": "Kind",
+          "description": "Material category."
+        },
+        {
+          "label": "CAS number",
+          "description": "Optional identifier; not sortable."
+        },
+        {
+          "label": "Unit",
+          "description": "Counting unit for its lots."
+        },
+        {
+          "label": "Storage",
+          "description": "Optional storage requirements; not sortable."
+        },
+        {
+          "label": "Status",
+          "description": "Active or Inactive; sorted by active flag."
+        }
+      ]
+    },
+    {
+      "title": "Table controls",
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Apply search and filters to all records, keeping sort and page size and returning to page 1. Search is case-insensitive and limited to 200 characters."
+        },
+        {
+          "label": "More filters",
+          "description": "Open additional filters where available. Opens automatically for active additional filters or filter errors."
+        },
+        {
+          "label": "Active filters",
+          "description": "Remove a chip to clear that filter and return to page 1. Clear all restores the unfiltered list, default sort and 25 rows per page. The default 30-day window is not an active filter."
+        },
+        {
+          "label": "Column headings",
+          "description": "Sortable headings order the full matching list and toggle direction. Ties use record ID ascending. Plain headings cannot sort. Invalid sort parameters use the default. Changing sort returns to page 1. Most headings start ascending; date/high-quantity exceptions are described under Columns. Text and stored-choice sorting is alphabetical, not an assessment of urgency or laboratory priority."
+        },
+        {
+          "label": "Rows per page",
+          "description": "Choose 25, 50 or 100, default 25. Show applies when automatic submission is unavailable. First, Previous, Next and Last keep filters and sort. The footer shows range and total. Invalid page text opens page 1; an out-of-range number opens the last page. Unsupported page sizes are rejected."
+        },
+        {
+          "label": "Columns",
+          "description": "When table enhancement is available, check columns to show them or uncheck to hide them. Changes apply immediately and remain in this browser. Use Move … up or Move … down controls, or drag headings. The identity column is Always shown and cannot move or hide. Reset columns restores the initial layout. Close or Done closes the dialog. These preferences do not change records, filters, sorting or paging. If browser storage is blocked, the layout applies only to this page."
+        }
+      ]
+    },
+    {
+      "title": "Empty and invalid states",
+      "paragraphs": [
+        "Invalid filters show These filters cannot be applied and no rows; correct the highlighted filter or clear it. No matches shows a filtered empty state. An empty unfiltered list explains what to create; create actions follow your role. There are no row selections or bulk actions."
+      ]
+    }
+  ],
+  "sources": [
+    "laboratory/urls.py",
+    "laboratory/forms.py",
+    "laboratory/models.py",
+    "laboratory/permissions.py",
+    "laboratory/inventory_views.py",
+    "laboratory/inventory.py",
+    "laboratory/lists.py",
+    "core/grids.py",
+    "laboratory/templates/laboratory/material_list.html",
+    "laboratory/templates/laboratory/form.html",
+    "laboratory/tests/test_inventory.py",
+    "laboratory/tests/test_views.py",
+    "templates/includes/grid_toolbar.html",
+    "templates/includes/pagination.html",
+    "templates/includes/sort_header.html",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js"
+  ]
+}

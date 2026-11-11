@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+{% comment %}
+Receive one sample into an existing order; project and chain of custody carry over.
+Context: page_title, order, form (OrderSampleForm), container_formset (prefix "containers"),
+optional defaults (receipt.defaults.sample_defaults: reused values copied from an earlier sample on
+this order) and offer_next_defaults (shows "Receive and start next"; the planned-sample receipt page
+that extends this template does not set it).
+"Add container" clones the formset's empty_form and keeps TOTAL_FORMS accurate (static/js/app.js);
+without JavaScript the extra rows rendered by the formset still work.
+{% endcomment %}
+{% block breadcrumbs %}{% url 'receipt:order-list' as list_url %}{% url 'receipt:order-detail' order.pk as order_url %}{% include "includes/breadcrumbs.html" with section="Chains of custody" section_url=list_url record=order.coc_reference record_url=order_url %}{% endblock %}
+{% block page_meta %}
+<ul class="vr-page-meta">
+  <li>Chain of custody <span class="vr-id">{{ order.coc_reference }}</span></li>
+  <li>{{ order.project.client }} / {{ order.project.name }}</li>
+  {% if order.is_rush %}<li>{% include "includes/status.html" with label="Rush" tone="warning" plain=True %}</li>{% endif %}
+  <li>{% with n=order.samples.count %}{{ n }} sample{{ n|pluralize }} received so far{% endwith %}</li>
+</ul>
+{% endblock %}
+{% block content %}
+{% with formset=container_formset prefix=container_formset.prefix %}
+<form class="vr-form" method="post" novalidate>
+  {% csrf_token %}
+  {% if defaults %}
+  <div class="alert alert-info" role="status" id="reused-defaults">
+    {% include "includes/status.html" with label="Defaults" tone="info" plain=True %}
+    <div>
+      <strong>Defaults reused from {{ defaults.source.lab_id }} ({{ defaults.source.client_sample_id }}).</strong>
+      These shared values are prefilled and editable; check them against this sample's labels and paperwork.
+      <ul class="mb-1 mt-1 ps-3">
+        {% for label, value in defaults.reused %}<li><span class="text-body-secondary">{{ label }}:</span> {{ value }}</li>{% endfor %}
+      </ul>
+      {% if defaults.skipped_tests %}<div><strong>{{ defaults.skipped_tests }} test{{ defaults.skipped_tests|pluralize }} from that sample {{ defaults.skipped_tests|pluralize:"is,are" }} no longer active or matching and {{ defaults.skipped_tests|pluralize:"was,were" }} not copied.</strong></div>{% endif %}
+      <div>Not copied, enter for this sample: client sample ID, collection place and times, sample type and remarks, receipt time, cooler temperature, coolant, custody seal, container condition, preservation check, storage location and disposition.
+      <a href="{% url 'receipt:order-add-sample' order.pk %}">Start with a blank form</a></div>
+    </div>
+  </div>
+  {% endif %}
+  {% if order.instructions or order.project.instructions %}
+  <div class="alert alert-secondary" role="note" id="intake-instructions">
+    {% include "includes/status.html" with label="Instructions" tone="neutral" plain=True %}
+    <div>
+      {% if order.project.instructions %}<p class="mb-1"><strong>Project:</strong> {{ order.project.instructions|linebreaksbr }}</p>{% endif %}
+      {% if order.instructions %}<p class="mb-0"><strong>This chain of custody:</strong> {{ order.instructions|linebreaksbr }}</p>{% endif %}
+    </div>
+  </div>
+  {% endif %}
+  {% include "includes/form_errors.html" with form=form formset=formset formset_label="container details" %}
+  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required. Times are laboratory local time.</p>
+
+  {% include "receipt/_sample_fields.html" %}
+
+  <fieldset class="vr-form-section" id="containers">
+    <legend>Containers</legend>
+    {{ formset.management_form }}
+    {% if formset.non_form_errors %}
+    <ul class="vr-field-errors mb-2">{% for error in formset.non_form_errors %}<li>{{ error }}</li>{% endfor %}</ul>
+    {% endif %}
+    <div class="vr-container-rows" id="{{ prefix }}-rows">
+      {% for cform in formset %}{% include "receipt/_container_row.html" with number=forloop.counter %}{% endfor %}
+    </div>
+    <template id="{{ prefix }}-empty">{% include "receipt/_container_row.html" with cform=formset.empty_form number="__num__" %}</template>
+    <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+      <button class="btn btn-outline-secondary btn-sm" type="button" data-formset-add="{{ prefix }}" hidden>{% include "includes/icon.html" with name="plus-lg" %}Add container</button>
+      <span class="form-text" id="{{ prefix }}-limit">Between 1 and {{ formset.max_num }} containers. Blank rows are ignored.</span>
+    </div>
+  </fieldset>
+
+  {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+  <div class="vr-form-actions">
+    {# Cancel returns where the user came from; commercial/receive_sample.html overrides cancel_url. #}
+    <a class="btn btn-link" href="{% block cancel_url %}{% url 'receipt:order-detail' order.pk %}{% endblock %}">Cancel</a>
+    {# Primary stays first in the markup so Enter submits it; order-last shows it at the end of the row. #}
+    <button class="btn btn-primary order-last" type="submit">Receive sample</button>
+    {% if offer_next_defaults %}<button class="btn btn-outline-secondary" type="submit" name="next" value="defaults" title="Receive this sample, then open the next form with the same shared defaults">Receive and add another</button>{% endif %}
+  </div>
+</form>
+{% endwith %}
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'vendor/tom-select/tom-select.complete.js' %}" defer></script>
+<script src="{% static 'js/test-picker.js' %}" defer></script>
+{% endblock %}

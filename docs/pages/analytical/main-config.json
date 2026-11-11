@@ -1,0 +1,231 @@
+{
+  "id": "analytical-main-config",
+  "routes": [
+    "analytical:qc-config"
+  ],
+  "title": "QC configuration",
+  "purpose": "Inspect six types of laboratory configuration controlling preservation, independent preparation, holding clocks, QC frequencies/limits and result qualifiers.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "These are staff pages. Active users with an application staff role can read them; client accounts cannot. Analysts perform result entry and batch work, reviewers decide results, and administrators maintain configuration. Administrators also have operational analyst and reviewer access, but independence rules still apply. Superuser status alone does not grant an application role."
+      ]
+    },
+    {
+      "title": "Scope and controls",
+      "items": [
+        {
+          "label": "Method",
+          "description": "All methods by default; choices include inactive method versions. Filters preservation rules, independent preparation requirements, holding rules, QC requirements and QC limits. It does not filter result qualifiers."
+        },
+        {
+          "label": "Apply",
+          "description": "Apply the selected method across five tables. An invalid method shows an error and no rows in those five tables; qualifiers remain visible."
+        },
+        {
+          "label": "Clear all",
+          "description": "Restore all methods."
+        },
+        {
+          "label": "Columns",
+          "description": "Each table has its own browser-saved visibility/order dialog and Reset columns. Identifier columns stay available. These tables have no sortable header links."
+        },
+        {
+          "label": "Rows per page",
+          "description": "Only QC limits are paginated: 25 by default, 50 or 100. Their page links retain the method filter. Other tables show their full selected sets."
+        }
+      ]
+    },
+    {
+      "title": "Preservation rules",
+      "items": [
+        {
+          "label": "Test",
+          "description": "Exact test definition (method/version, analyte and matrix); opens edit for administrators."
+        },
+        {
+          "label": "Temperature",
+          "description": "Configured range with lower/upper/unit, No temperature requirement, or Manual temperature assessment."
+        },
+        {
+          "label": "Source / applicability",
+          "description": "Method/SOP source and applicability text used in assessment evidence."
+        },
+        {
+          "label": "Active",
+          "description": "Whether the rule is used in current screening."
+        },
+        {
+          "label": "Add preservation rule",
+          "description": "Administrators create a rule for one exact test. No configured rule does not imply acceptance; chemical/container requirements remain manual."
+        }
+      ]
+    },
+    {
+      "title": "Independent preparation requirements",
+      "items": [
+        {
+          "label": "Test",
+          "description": "Exact analytical test definition; opens edit for administrators."
+        },
+        {
+          "label": "Preparation method",
+          "description": "Required exact preparation method/version for new observations."
+        },
+        {
+          "label": "Source / applicability",
+          "description": "Laboratory source and applicability."
+        },
+        {
+          "label": "Active",
+          "description": "Whether new observations require an explicit prepared aliquot."
+        },
+        {
+          "label": "Add preparation requirement",
+          "description": "Administrators link a test to its independent preparation method. No requirement does not establish that physical preparation is unnecessary."
+        }
+      ]
+    },
+    {
+      "title": "Holding-time rules",
+      "items": [
+        {
+          "label": "Rule",
+          "description": "Rule name; opens edit for administrators."
+        },
+        {
+          "label": "Method",
+          "description": "Exact method/version."
+        },
+        {
+          "label": "Matrix",
+          "description": "Water, Wastewater or Soil."
+        },
+        {
+          "label": "From → to",
+          "description": "Collection/composite end or Preparation start through Preparation start or Analysis start."
+        },
+        {
+          "label": "Maximum",
+          "description": "Configured maximum duration; optional warning shows the remaining-time threshold."
+        },
+        {
+          "label": "Active",
+          "description": "Whether the clock is applied to new evaluations."
+        },
+        {
+          "label": "Add holding-time rule",
+          "description": "Administrators define an explicit clock. No active rule gives a not-evaluated holding status, not a fabricated threshold."
+        }
+      ]
+    },
+    {
+      "title": "QC requirements",
+      "items": [
+        {
+          "label": "Method",
+          "description": "Exact method/version; opens that type’s requirement for administrators."
+        },
+        {
+          "label": "QC type",
+          "description": "Configured QC sample type."
+        },
+        {
+          "label": "Minimum per batch",
+          "description": "Minimum count for the type."
+        },
+        {
+          "label": "One per N samples",
+          "description": "Optional additional sample-frequency count; required total is the greater of the minimum and rounded-up samples/N."
+        },
+        {
+          "label": "Active",
+          "description": "Whether the frequency is enforced."
+        },
+        {
+          "label": "Add QC requirement",
+          "description": "Administrators create a frequency requirement. With none configured, no QC sample frequency is enforced."
+        }
+      ]
+    },
+    {
+      "title": "QC limits",
+      "items": [
+        {
+          "label": "Test",
+          "description": "Exact definition; phase Analysis or Preparation appears beneath it. Opens edit for administrators."
+        },
+        {
+          "label": "QC type",
+          "description": "Type whose measure is evaluated."
+        },
+        {
+          "label": "Measure",
+          "description": "Measured value, Percent recovery or Relative percent difference."
+        },
+        {
+          "label": "Lower",
+          "description": "Inclusive lower acceptance bound, or a dash if none."
+        },
+        {
+          "label": "Upper",
+          "description": "Inclusive upper acceptance bound, or a dash if none."
+        },
+        {
+          "label": "Active",
+          "description": "Whether current QC evaluation uses the limit."
+        },
+        {
+          "label": "Add QC limit",
+          "description": "Administrators create bounds for the exact test, phase, QC type and measure. Missing applicable limits produce Not evaluated and hold approval."
+        }
+      ]
+    },
+    {
+      "title": "Result qualifiers",
+      "items": [
+        {
+          "label": "Code",
+          "description": "Result qualifier code; opens edit for administrators."
+        },
+        {
+          "label": "Description",
+          "description": "Meaning captured into a result revision when used."
+        },
+        {
+          "label": "Marks holding-time exceedance",
+          "description": "Whether this qualifier can identify a result’s exceeded holding time for submission/review checks."
+        },
+        {
+          "label": "Active",
+          "description": "Whether new entries may select the code."
+        },
+        {
+          "label": "Add qualifier",
+          "description": "Administrators define a code and meaning. Qualifiers are not filtered by method."
+        }
+      ]
+    },
+    {
+      "title": "Policy and history",
+      "paragraphs": [
+        "Only administrators can save configuration. Existing edits require a reason, preserve before/after audit values and reject stale edit forms. Inactive rows remain listed. Configuration represents lab-owned policy, not regulatory defaults; synthetic seed values are not validated. Frozen result/report snapshots retain their earlier values, while current QC and preservation checks can change approval/release eligibility. Empty sections explain the consequence of absent configuration and offer Add controls to administrators."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/templates/analytical/config.html",
+    "analytical/qc.py",
+    "analytical/holding.py",
+    "analytical/tests/test_views.py",
+    "analytical/tests/test_lists.py",
+    "analytical/tests/test_preservation_workflow.py"
+  ]
+}

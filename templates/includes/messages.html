@@ -1,0 +1,14 @@
+{% comment %}Django messages as Bootstrap alerts. Errors and warnings interrupt (role=alert); others are polite.{% endcomment %}
+{% if messages %}
+<div class="vr-messages">
+  {% for message in messages %}
+  {% with tone=message.level_tag|default:"info" %}
+  <div class="alert alert-{% if tone == 'error' %}danger{% elif tone == 'debug' %}secondary{% else %}{{ tone }}{% endif %} alert-dismissible" role="{% if tone == 'error' or tone == 'warning' %}alert{% else %}status{% endif %}">
+    {% if tone == 'error' %}{% include "includes/status.html" with label="Error" tone="danger" plain=True %}{% elif tone == 'warning' %}{% include "includes/status.html" with label="Warning" tone="warning" plain=True %}{% elif tone == 'success' %}{% include "includes/status.html" with label="Done" tone="success" plain=True %}{% else %}{% include "includes/status.html" with label="Note" tone=tone plain=True %}{% endif %}
+    <div>{{ message }}</div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Dismiss"></button>
+  </div>
+  {% endwith %}
+  {% endfor %}
+</div>
+{% endif %}

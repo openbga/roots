@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="OpenBGA Roots is an environmental laboratory LIMS for US water, wastewater and soil labs, from sample custody through analytical work, independent review and versioned reports.">
+  <meta name="theme-color" content="#e5efe9">
+  <title>OpenBGA Roots · Environmental laboratory LIMS</title>
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="OpenBGA Roots home">
+      <img src="assets/mark.svg" alt="" width="32" height="32">
+      <span>OpenBGA Roots</span>
+    </a>
+    <nav aria-label="Main navigation">
+      <a href="#workflow">Workflow</a>
+      <a href="#records">Laboratory records</a>
+      <a href="#project">Project</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="intro-title">
+      <div class="hero-inner">
+        <h1 id="intro-title">Every sample.<br>Its whole story.</h1>
+        <div class="hero-description">
+          <p>OpenBGA Roots is a laboratory information management system for US environmental labs testing water, wastewater and soil.</p>
+          <p>Follow the work from receipt and custody to analytical results, independent review and the report your client receives.</p>
+          <a class="button" href="https://github.com/openbga/roots">View OpenBGA/roots on GitHub</a>
+          <p class="project-status">In development · AGPL-3.0-only</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="workflow" aria-labelledby="workflow-title">
+      <div class="section-intro">
+        <h2 id="workflow-title">From the cooler<br>to the client.</h2>
+        <p>One connected record of the work, with the people, observations and decisions that belong to each step.</p>
+      </div>
+      <ol class="workflow">
+        <li><h3>Receive</h3><p>Record chain of custody, containers and receipt observations. Give every sample its laboratory identity.</p></li>
+        <li><h3>Analyze</h3><p>Organize preparation and analytical batches. Keep results with their units, limits, qualifiers and method versions.</p></li>
+        <li><h3>Review</h3><p>Evaluate QC and holding times. Independent review keeps analysts from reviewing their own results.</p></li>
+        <li><h3>Release</h3><p>Authorize a report version and make it available in the client portal. Amendments preserve earlier issued versions.</p></li>
+      </ol>
+    </section>
+
+    <section class="section records" id="records" aria-labelledby="records-title">
+      <div class="section-intro">
+        <h2 id="records-title">The detail behind<br>the result.</h2>
+        <p>Designed for one laboratory organization per deployment, with staff workspaces and access scoped to each client's records.</p>
+      </div>
+      <table>
+        <caption>Records managed by OpenBGA Roots</caption>
+        <thead><tr><th scope="col">Area</th><th scope="col">What stays with the work</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Custody and receipt</th><td>Client and project records, collection times, container conditions, preservation observations and attributed custody events.</td></tr>
+          <tr><th scope="row">Analytical work</th><td>Preparation, batches, manual or mapped file entry, exact decimal results and the method version used.</td></tr>
+          <tr><th scope="row">Quality and review</th><td>Configured QC limits, holding-time findings, corrective dispositions and independent technical review.</td></tr>
+          <tr><th scope="row">Reports and delivery</th><td>Stored PDF report versions, release authorization, amendment history and client access.</td></tr>
+          <tr><th scope="row">Laboratory operations</th><td>Quotes, scheduling, subcontracted work, reagent lots, equipment, training and sample retention.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section project" id="project" aria-labelledby="project-title">
+      <div>
+        <h2 id="project-title">Meet the project.</h2>
+        <p>OpenBGA Roots is maintained in <a href="https://github.com/openbga/roots">OpenBGA/roots</a>. It uses Django and PostgreSQL, with a browser-based workspace for laboratory staff and clients.</p>
+        <p>Release validation is in progress. Use synthetic data while evaluating the software. OpenBGA Roots supports laboratory records and quality systems; it does not certify compliance or accreditation.</p>
+        <a class="text-link" href="https://github.com/openbga/roots/blob/main/README.md">Read the documentation</a>
+      </div>
+      <aside class="support" aria-label="Support">
+        <p>Are you looking for support?<br>Contact <a href="https://bgasoft.com">bgasoft.com</a>.</p>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>OpenBGA Roots</span>
+    <a href="https://github.com/openbga/roots">Source code</a>
+    <a href="https://github.com/openbga/roots/blob/main/LICENSE">AGPL-3.0-only</a>
+  </footer>
+</body>
+</html>

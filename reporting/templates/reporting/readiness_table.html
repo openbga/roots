@@ -1,0 +1,39 @@
+{% comment %}
+Release readiness rows with links to the record that must change. Parameters:
+  samples       Assembly.samples (SampleReadiness list)
+  only_blocked  truthy: list only samples/tests with a blocking issue (preview)
+Links: a test with a result opens analytical's result (and its batch); a test with no result opens
+the worklist filtered to the sample; a subcontracted test opens receipt's subcontract list; sample-level
+issues (receipt disposition) open the sample.
+{% endcomment %}
+<div class="vr-table-wrap">
+  <table class="table vr-table">
+    <thead><tr><th scope="col" class="text-wrap">Sample</th><th scope="col" class="text-wrap">Test</th>{% if not only_blocked %}<th scope="col">Result status</th>{% endif %}<th scope="col" class="text-wrap">Blocking issues</th><th scope="col" class="text-wrap">Fix in</th></tr></thead>
+    <tbody>
+      {% for state in samples %}
+      {% if not only_blocked or not state.ready %}
+      {% for t in state.tests %}
+      {% if not only_blocked or t.problems %}
+      <tr>
+        <th scope="row"{% if only_blocked %} class="text-wrap text-break"{% endif %}><a class="vr-id" href="{% url 'receipt:sample-detail' state.sample.pk %}">{{ state.sample.lab_id }}</a><div class="vr-muted small fw-normal">{{ state.sample.client_sample_id }} · {{ state.sample.get_disposition_display }}</div></th>
+        <td{% if only_blocked %} class="text-wrap text-break"{% endif %}>{{ t.analyte }}{% if only_blocked %}<div>{% include "includes/status.html" with label="Blocked" tone="warning" plain=True %}</div>{% endif %}<div class="vr-form-note">{% if t.preparation %}Preparation <a href="{% url 'analytical:prep-detail' t.preparation.batch_id %}">{{ t.preparation.batch }}</a> · {{ t.preparation.aliquot_label }} · {{ t.preparation.method_code }} ({{ t.preparation.method_version }}){% else %}Independent preparation not recorded{% endif %}</div></td>
+        {% if not only_blocked %}<td>{% if t.problems %}{% include "includes/status.html" with label="Blocked" tone="warning" plain=True %}{% else %}{% include "includes/status.html" with label=t.label tone="success" plain=True %}{% endif %}</td>{% endif %}
+        <td class="{% if only_blocked %}text-wrap text-break{% else %}vr-wrap{% endif %}">{% if t.problems %}<ul class="mb-0 ps-3">{% for p in t.problems %}<li>{{ p }}</li>{% endfor %}</ul>{% else %}<span class="vr-muted">None</span>{% endif %}</td>
+        <td class="{% if only_blocked %}text-wrap text-break{% else %}vr-nowrap{% endif %}">{% if t.preservation_id %}<a href="{% url 'analytical:preservation-assess' t.preservation_id %}">Preservation</a> · {% endif %}{% if t.problems and t.subcontract_id %}{% url 'receipt:subcontract-list' as subcontract_url %}{% if subcontract_url %}<a href="{{ subcontract_url }}">Subcontracts<span class="visually-hidden"> for {{ state.sample.lab_id }} {{ t.analyte }}</span></a>{% else %}<span class="vr-muted">Receipt subcontracts</span>{% endif %}{% elif t.problems %}{% if t.result_id %}<a href="{% url 'analytical:result-detail' t.result_id %}">Result<span class="visually-hidden"> for {{ state.sample.lab_id }} {{ t.analyte }}</span></a>{% if t.batch_id %} · <a href="{% url 'analytical:batch-detail' t.batch_id %}">Batch<span class="visually-hidden"> for {{ state.sample.lab_id }} {{ t.analyte }}</span></a>{% endif %}{% else %}<a href="{% url 'analytical:batch-worklist' %}?q={{ state.sample.lab_id|urlencode }}">Worklist<span class="visually-hidden"> for {{ state.sample.lab_id }}</span></a>{% endif %}{% else %}<span class="vr-muted">—</span>{% endif %}</td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+      {% for p in state.blockers %}
+      <tr>
+        <th scope="row"{% if only_blocked %} class="text-wrap text-break"{% endif %}><a class="vr-id" href="{% url 'receipt:sample-detail' state.sample.pk %}">{{ state.sample.lab_id }}</a><div class="vr-muted small fw-normal">{{ state.sample.client_sample_id }}</div></th>
+        <td><span class="vr-muted">Sample</span>{% if only_blocked %}<div>{% include "includes/status.html" with label="Blocked" tone="warning" plain=True %}</div>{% endif %}</td>
+        {% if not only_blocked %}<td>{% include "includes/status.html" with label="Blocked" tone="warning" plain=True %}</td>{% endif %}
+        <td class="{% if only_blocked %}text-wrap text-break{% else %}vr-wrap{% endif %}">{{ p }}</td>
+        <td class="{% if only_blocked %}text-wrap text-break{% else %}vr-nowrap{% endif %}"><a href="{% url 'receipt:sample-detail' state.sample.pk %}">Sample<span class="visually-hidden"> {{ state.sample.lab_id }}</span></a></td>
+      </tr>
+      {% endfor %}
+      {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

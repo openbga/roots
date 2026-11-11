@@ -1,0 +1,6 @@
+{% comment %}State of a study's last calculation. Parameter: s (annotated study).{% endcomment %}
+{% if s.latest_decision == "adopted" or s.latest_decision == "retained" %}{% include "includes/status.html" with label="Current MDL in place" tone="success" plain=True %}
+{% elif s.latest_decision == "rejected" %}{% include "includes/status.html" with label="Rejected" tone="danger" plain=True %}
+{% elif s.latest_status == "calculated" %}{% include "includes/status.html" with label="Awaiting review" tone="progress" plain=True %}
+{% elif s.latest_status == "not_evaluated" %}{% include "includes/status.html" with label="Not evaluated" tone="warning" plain=True title="The data did not meet the procedure; see the calculation's reasons." %}
+{% else %}{% include "includes/status.html" with label="No calculation yet" tone="neutral" plain=True %}{% endif %}

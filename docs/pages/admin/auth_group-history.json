@@ -1,0 +1,60 @@
+{
+  "id": "admin-auth_group-history",
+  "routes": [
+    "admin:auth_group_history"
+  ],
+  "title": "Group administration history",
+  "purpose": "Read maintenance actions recorded by Django administration for this object.",
+  "sections": [
+    {
+      "title": "Access and scope",
+      "paragraphs": [
+        "The administration site requires an active account with Staff status. User and group pages additionally require Superuser status; a laboratory admin role alone or individual model permissions do not open them. These technical flags do not themselves confer operational roles or report-release authority.",
+        "Project group changes also create separate attributed group audit events with permission/name snapshots.",
+        "Shows only this object’s Django administration LogEntry records, oldest action first, 100 per page. It is read only and is not a full scientific provenance or authentication-usage history."
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Date/time",
+          "description": "Administration action timestamp in the display time zone."
+        },
+        {
+          "label": "User",
+          "description": "Acting administrator’s username and full name when present."
+        },
+        {
+          "label": "Action",
+          "description": "Django’s rendered change message, usually added/changed fields. It is not a snapshot of every old/new value or the complete domain reason."
+        }
+      ]
+    },
+    {
+      "title": "Navigation and empty state",
+      "items": [
+        {
+          "label": "Numbered pages",
+          "description": "Move through older-to-newer 100-entry pages with an entry count; no search or sort controls."
+        },
+        {
+          "label": "Home / app / model / object breadcrumbs",
+          "description": "Return through the permitted maintenance hierarchy."
+        },
+        {
+          "label": "No change history",
+          "description": "Explains that this object may not have been added through administration. Absence here does not mean no domain or self-service events exist."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "accounts/admin.py",
+    "accounts/models.py",
+    "accounts/roles.py",
+    "core/admin.py",
+    "config/settings.py",
+    "uv.lock"
+  ]
+}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block breadcrumbs %}{% url 'analytical:batch-list' as list_url %}{% url 'analytical:batch-detail' batch.pk as batch_url %}{% include "includes/breadcrumbs.html" with section="Batches & QC" section_url=list_url record=batch.number record_url=batch_url %}{% endblock %}
+{% block page_meta %}<ul class="vr-page-meta"><li>Batch <span class="vr-id">{{ batch.number }}</span></li><li>{{ batch.method }}</li><li>{{ batch.get_matrix_display }}</li></ul>{% endblock %}
+{% block page_intro %}<p class="vr-page-intro">Choose received tests for this method and matrix; a test marked Reanalysis moves here from the batch where it was approved.</p>{% endblock %}
+{% block content %}
+{% if batch.status != "open" %}
+<div class="alert alert-info" role="status">{% include "includes/status.html" with label="Closed" tone="neutral" plain=True %}<div>This batch is closed; tests cannot be added.</div></div>
+{% endif %}
+<section class="card vr-table-card" aria-labelledby="eligible-heading">
+  <h2 class="visually-hidden" id="eligible-heading">Tests that can be added</h2>
+  {% include "includes/grid_toolbar.html" with label="Filter tests to add" grid=grid_key %}
+  {% if page_obj.paginator.count %}
+  <form method="post" action="{{ request.get_full_path }}">
+    {% csrf_token %}
+    {% if batch.status == "open" and can_enter %}<p class="vr-form-note px-3 pt-2 mb-0"><span data-vr-select-count="requested_tests" aria-live="polite">0 selected</span>. The header checkbox selects the tests on this page only, Reanalysis rows included. {% include "includes/select_all.html" with name="requested_tests" ready_label="Select only new work" %}</p>{% endif %}
+    <div class="vr-table-wrap">
+      <table class="table table-hover vr-table" data-vr-grid="analytical.add_tests" data-vr-grid-version="1" aria-label="Tests that can be added to {{ batch.number }}">
+        <caption class="visually-hidden">Received tests for {{ batch.method }}, {{ batch.get_matrix_display }}, oldest collection first, with holding deadlines</caption>
+        <thead><tr>
+          <th scope="col" data-vr-col="select" data-vr-col-locked data-vr-col-label="Select">{% if batch.status == "open" and can_enter %}{% include "includes/select_all.html" with name="requested_tests" label="Select all tests on this page" %}{% else %}<span class="visually-hidden">Select</span>{% endif %}</th>
+          <th scope="col" data-vr-col="sample" data-vr-col-locked>Sample</th>
+          <th scope="col" data-vr-col="currently">Currently</th>
+          <th scope="col" data-vr-col="analyte">Analyte</th>
+          <th scope="col" data-vr-col="client_project">Client / project</th>
+          <th scope="col" data-vr-col="collected">Collected</th>
+          <th scope="col" data-vr-col="hold_deadline">Hold deadline</th>
+          <th scope="col" data-vr-col="received" data-vr-col-hidden>Received</th>
+        </tr></thead>
+        <tbody>
+          {% for rt in page_obj %}
+          <tr>
+            <td>{% if batch.status == "open" and can_enter %}<input class="form-check-input" type="checkbox" name="requested_tests" value="{{ rt.pk }}"{% if not rt.is_reanalysis %} data-ready{% endif %} aria-label="Select {{ rt.sample.lab_id }} {{ rt.definition.analyte }}{% if rt.result.status == 'approved' %} (reanalysis of an approved result){% endif %}">{% endif %}</td>
+            <th scope="row"><a class="vr-row-link vr-id" href="{% url 'receipt:sample-detail' rt.sample.pk %}">{{ rt.sample.lab_id }}</a></th>
+            <td>{% if rt.result.status == "approved" %}{% include "includes/status.html" with label="Reanalysis" tone="warning" plain=True title="Moves an approved result into this batch for correction or reanalysis. The approval stays until a corrected revision is entered with a reason and approved by a different person." %}<div class="vr-muted small">approved in {{ rt.result.batch.number }}</div>{% elif rt.result.batch %}In {{ rt.result.batch.number }} ({{ rt.result.get_status_display }}){% else %}<span class="vr-muted">Not in a batch</span>{% endif %}</td>
+            <td>{{ rt.definition.analyte }}</td>
+            <td>{{ rt.sample.order.project.client }}<div class="vr-muted small">{{ rt.sample.order.project.name }}</div></td>
+            <td class="vr-nowrap"><time datetime="{{ rt.sample.collected_at|date:'c' }}" title="{{ rt.sample.collected_at|date:'Y-m-d H:i T' }}">{{ rt.sample.collected_at|date:"Y-m-d H:i" }}</time></td>
+            <td class="vr-nowrap">{% include "analytical/_hold_clock.html" %}</td>
+            <td class="vr-nowrap"><time datetime="{{ rt.sample.received_at|date:'c' }}" title="{{ rt.sample.received_at|date:'Y-m-d H:i T' }}">{{ rt.sample.received_at|date:"Y-m-d H:i" }}</time></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if batch.status == "open" and can_enter %}
+    <details class="px-3 pb-3 vr-form-note">
+      <summary>What happens to a Reanalysis test</summary>
+      <p class="mt-2 mb-0">Its approved result stays in force until a corrected revision is entered with a reason (from the result page, or by import with a reason), submitted, and approved by a different person. This batch's own QC applies to the new revision.</p>
+    </details>
+    <div class="vr-form-actions">
+      <a class="btn btn-link" href="{% url 'analytical:batch-detail' batch.pk %}">Cancel</a>
+      <button class="btn btn-primary" type="submit">Add selected to {{ batch.number }}</button>
+    </div>
+    {% endif %}
+  </form>
+  {% include "includes/pagination.html" with noun="tests" filtered=filtered %}
+  {% elif filtered %}
+  {% include "includes/empty_state.html" with kind="no-results" title="No tests match" body="Clear the search to see every eligible test." clear_url=request.path %}
+  {% else %}
+  {% include "includes/empty_state.html" with title="No eligible tests" body="Eligible tests are received, not on hold or rejected, requested under this method and matrix, and not already in this batch." %}
+  {% endif %}
+</section>
+{% endblock %}

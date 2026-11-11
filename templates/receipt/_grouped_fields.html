@@ -1,0 +1,10 @@
+{% comment %}Sections of a receipt.forms.GroupedForm: one fieldset per group, fields on a 12-column grid. Parameter: form.{% endcomment %}
+{% for legend, fields in form.grouped %}
+<fieldset class="vr-form-section">
+  <legend>{{ legend }}</legend>
+  <div class="row g-3">
+    {% for field, css in fields %}<div class="{{ css }}">{{ field.as_field_group }}</div>{% endfor %}
+  </div>
+</fieldset>
+{% endfor %}
+{% for field in form.hidden_fields %}{{ field }}{% endfor %}

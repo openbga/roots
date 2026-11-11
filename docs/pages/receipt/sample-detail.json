@@ -1,0 +1,231 @@
+{
+  "id": "receipt-sample-detail",
+  "routes": [
+    "receipt:sample-detail"
+  ],
+  "title": "Sample record",
+  "purpose": "Follow one received physical sample from its collection and receipt through containers, test work, preservation decisions, custody and issued report versions.",
+  "sections": [
+    {
+      "title": "Access and header",
+      "paragraphs": [
+        "All laboratory staff can read this record; portal accounts cannot use this staff page. A discrepancy or non-Proceed disposition is highlighted with the receipt discrepancy and current disposition note."
+      ],
+      "items": [
+        {
+          "label": "Lab ID / Client sample / Matrix",
+          "description": "Stable laboratory accession, client identifier, and the recorded matrix with the sample source after a dot when one is recorded."
+        },
+        {
+          "label": "Sample type / Rush",
+          "description": "The sample type is shown in the header when it is not an ordinary Field sample (Field duplicate, Field blank, Trip blank or Equipment / rinsate blank). A Rush marker appears when the chain of custody’s turnaround is Rush."
+        },
+        {
+          "label": "Client / Project / Delivery target",
+          "description": "Ownership and explicit target inherited from the chain of custody; the target is not an analytical holding deadline."
+        },
+        {
+          "label": "Change disposition",
+          "description": "Custodians, project managers and administrators open a reasoned decision change."
+        },
+        {
+          "label": "Correct sample details",
+          "description": "Receipt roles open correction tabs for identity, collection, observations, requested tests and matrix; later work can lock individual sections."
+        },
+        {
+          "label": "Labels",
+          "description": "Any authorized staff member opens identity-label options. Each container is the default; Each sample prints sample identity. Copies of each is 1–10, initially 1. Download PDF opens one 4 × 2 inch label per page, maximum 200 total, for printing at actual size. No sample/custody state changes; reprint when displayed identity facts are corrected."
+        }
+      ]
+    },
+    {
+      "title": "Collection and receipt",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Chain of custody",
+          "description": "Reference links to the order containing this sample."
+        },
+        {
+          "label": "Sample type",
+          "description": "Field sample, Field duplicate, Field blank, Trip blank or Equipment / rinsate blank, as written on the chain of custody."
+        },
+        {
+          "label": "Matrix and source",
+          "description": "The recorded matrix and, after a dot, the sample source; source not recorded appears when none was entered."
+        },
+        {
+          "label": "Collection type / Composite started / Collected or Composite ended",
+          "description": "Grab or composite, with composite start only when recorded, and collection/composite-end timestamp. Displayed times use the configured laboratory zone."
+        },
+        {
+          "label": "Collection location / Collector",
+          "description": "Specific collection place and person. A missing place reads Not recorded."
+        },
+        {
+          "label": "Sample remarks",
+          "description": "Shown only when remarks were recorded: appearance, odor, hazards or field readings from the chain of custody."
+        },
+        {
+          "label": "Received / Received by",
+          "description": "Actual receipt time and staff member who recorded receipt."
+        },
+        {
+          "label": "Cooler temperature / Instrument",
+          "description": "Original exact reading text in °C when available; otherwise the numeric value is shown with reading text not recorded. The optional thermometer is shown below as Instrument. This observation is not itself a global acceptance threshold."
+        },
+        {
+          "label": "Coolant on arrival",
+          "description": "Wet ice, Ice packs, Dry ice or None, or Not recorded for samples received before coolant was captured. Independent of the temperature reading."
+        },
+        {
+          "label": "Custody seal / Preservation check",
+          "description": "Observed receipt conditions as recorded, including any text entered under Other…; distinct from later test-specific screening."
+        },
+        {
+          "label": "Current location",
+          "description": "Latest recorded sample custody location."
+        },
+        {
+          "label": "Physical storage",
+          "description": "Retention and disposal opens the separate physical storage record."
+        }
+      ]
+    },
+    {
+      "title": "Requested tests",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Analyte and method",
+          "description": "One row per requested definition, ordered by analyte then record ID; displays analyte and exact method version."
+        },
+        {
+          "label": "Default reporting limit",
+          "description": "Current catalog default with unit. A blank/default-free definition is not a zero. Each actual result retains its applied limit."
+        },
+        {
+          "label": "Work status and holding time",
+          "description": "Not in a batch, Awaiting entry, Entered, Awaiting review, Returned, Approved, or Sent to an external laboratory. The batch number opens batch detail; Result appears once a revision exists. An active external route links its subcontract."
+        },
+        {
+          "label": "Send out",
+          "description": "Receipt roles can start an external handoff on a test shown as Not in a batch. Submission rechecks sample disposition, storage, preparation and internal work; a visible link does not guarantee dispatch eligibility."
+        },
+        {
+          "label": "Holding time",
+          "description": "Before a result revision exists, shows the shortest active collection-start rule’s deadline for method/matrix. Not-batched, awaiting-entry and returned work can show time left, At risk within the configured warning window, or Expired after the deadline. No rule means no active collection-start rule. With a result revision, shows its frozen Met, Exceeded, Not evaluable or No rule evaluation; it is not recalculated from today’s clock."
+        },
+        {
+          "label": "Preservation",
+          "description": "Screens recorded cooler temperature against this test’s configured rule. This is not a statement about container or chemical preservation. Shows current assessment disposition or Needs an assessment. An Out of date assessment no longer matches receipt, rule or test evidence. Earlier Hold/Reject can still block approval/release until reassessed even when evidence changed. Findings are Within configured temperature range, Outside configured temperature range, No temperature requirement, Rule not configured or Manual review required. Configured bounds are inclusive and the exact unrounded reading is compared without unit conversion; no temperature requirement does not assess other preservation requirements."
+        },
+        {
+          "label": "Assess / Assessment",
+          "description": "Opens evidence and assessment history. Custodians, project managers, reviewers and administrators may record decisions there; the destination enforces its permissions."
+        },
+        {
+          "label": "Reported",
+          "description": "Links stored issued PDFs for this test, newest first. Latest issued marks the newest; prior version is an older version of the same report; earlier, separate report is another lineage. Not reported means no issued link. A newer unissued correction does not erase old report links."
+        },
+        {
+          "label": "Add or withdraw tests",
+          "description": "Receipt roles open test changes. No tests requested is an explicit empty state."
+        }
+      ]
+    },
+    {
+      "title": "Containers",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Label",
+          "description": "Generated container identity under this sample."
+        },
+        {
+          "label": "Container type",
+          "description": "Container type recorded at receipt (a listed value or text entered under Other…)."
+        },
+        {
+          "label": "Preservative",
+          "description": "Container-specific recorded preservative or a dash. It is an observation recorded at receipt, not a method assessment."
+        },
+        {
+          "label": "Condition at receipt",
+          "description": "Original observed condition. No containers recorded is a separate empty state."
+        }
+      ]
+    },
+    {
+      "title": "Laboratory records",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Current as of",
+          "description": "These are today’s informational laboratory records; they do not show historic conditions or grant/block authority."
+        },
+        {
+          "label": "Open nonconformances",
+          "description": "Linked open issues, newest first, showing identifier/title, status, severity and optional owner; the identifier opens detail. Closed linked issues are counted separately."
+        },
+        {
+          "label": "Equipment: Asset, Status, Calibration due, Maintenance due",
+          "description": "Equipment explicitly assigned to this sample’s analytical batches, ordered by asset ID. Asset opens its record. Latest due dates show Not scheduled, Due today, Due in days, Overdue days or Scheduled; calibration can also show Last not acceptable. Missing equipment is not inferred."
+        }
+      ]
+    },
+    {
+      "title": "History and custody transfer",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "History",
+          "description": "Chronological receipt/transfers/disposal, disposition changes, corrections and preservation assessments, including actor, event time, reason and old/new values where relevant. Custody entries also name relinquishing/receiving custodians, movement and recorded time. Superseded preservation assessments remain visible."
+        },
+        {
+          "label": "To location",
+          "description": "Transfer-only required destination, up to 160 characters; becomes the sample’s current location. It is free text with suggestions from storage locations already recorded on samples."
+        },
+        {
+          "label": "Relinquished by / Received by",
+          "description": "Required names of both actual custodians, each up to 160 characters, separate from the signed-in recording actor."
+        },
+        {
+          "label": "Occurred at",
+          "description": "Required completed transfer time, initially now, in laboratory local time. Must follow or equal the latest custody event and cannot be future."
+        },
+        {
+          "label": "Reason",
+          "description": "Required explanation of the transfer."
+        },
+        {
+          "label": "Record transfer",
+          "description": "Receipt roles append a custody event and audit event and update location together. Earlier events are retained. Physically disposed samples cannot transfer. Concurrent changes are refused; reload the sample and review custody history before trying again."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/views.py",
+    "receipt/forms.py",
+    "receipt/models.py",
+    "receipt/services.py",
+    "accounts/roles.py",
+    "templates/receipt/sample_detail.html",
+    "receipt/work_status.py",
+    "receipt/correction_views.py",
+    "receipt/labels.py",
+    "analytical/selectors.py",
+    "analytical/holding.py",
+    "analytical/preservation_services.py",
+    "laboratory/selectors.py",
+    "laboratory/templates/laboratory/batch_context.html",
+    "receipt/tests/test_sample_detail.py",
+    "tests/test_custody.py",
+    "analytical/preservation.py",
+    "receipt/vocabulary.py",
+    "core/widgets.py",
+    "receipt/tests/test_master_data.py"
+  ]
+}

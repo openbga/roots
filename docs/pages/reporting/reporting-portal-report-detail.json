@@ -1,0 +1,171 @@
+{
+  "id": "reporting-portal-report-detail",
+  "routes": [
+    "portal:report-detail"
+  ],
+  "title": "Issued report",
+  "purpose": "Read the latest issued result summary and retrieve all retained report versions and generated export files.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Only an active signed-in account linked to a client can use these pages. Every project, sample, report and download is limited to that client. Other clients’ records are treated as missing. Internal staff and unrelated accounts cannot use the portal. These reporting views are read-only; drafts never appear here.",
+        "When Demonstration appears, all clients, samples and results are synthetic and must not be used as laboratory results or for regulatory or compliance purposes.",
+        "The portal’s top navigation marks the current area. No staff work queue or result-edit controls are available here."
+      ],
+      "items": [
+        {
+          "label": "Home",
+          "description": "Client overview, recent reports and live sample-status counts."
+        },
+        {
+          "label": "Projects",
+          "description": "Client projects with sample/report counts."
+        },
+        {
+          "label": "Quotes",
+          "description": "Open the separate client quote workflow."
+        },
+        {
+          "label": "Submissions",
+          "description": "Open the separate client pre-login/submission workflow."
+        },
+        {
+          "label": "Samples",
+          "description": "Live status of the client’s received samples."
+        },
+        {
+          "label": "Reports",
+          "description": "Issued reports and stored downloads."
+        }
+      ]
+    },
+    {
+      "title": "Header and navigation",
+      "paragraphs": [
+        "The summary is loaded from the latest immutable issue, never live analytical results. Changes after issue appear only after a further release. Sample and analysis timestamps show their frozen UTC offsets."
+      ],
+      "items": [
+        {
+          "label": "Report number / version",
+          "description": "RPT identity with Issued v1 or Amended vN for the latest released issue."
+        },
+        {
+          "label": "Title",
+          "description": "Frozen title from the latest issued snapshot; unlike list titles it does not use a later draft edit."
+        },
+        {
+          "label": "Project",
+          "description": "Current owning project name in the header; analytical/sample content below remains frozen."
+        },
+        {
+          "label": "Released / by",
+          "description": "Latest release time/timezone and person authorizing it."
+        },
+        {
+          "label": "Download version N (PDF)",
+          "description": "Get latest original PDF bytes. The PDF is the report of record; this page is a summary. Integrity checks refuse a corrupted stored file rather than regenerating it."
+        },
+        {
+          "label": "Page contents",
+          "description": "When at least three sample sections exist, jump links list client sample IDs and Version history. Fewer samples omit this contents list."
+        },
+        {
+          "label": "Amended report",
+          "description": "Latest amendment names replaced version and reason. Earlier versions remain in history."
+        }
+      ]
+    },
+    {
+      "title": "Sample sections",
+      "items": [
+        {
+          "label": "Sample heading",
+          "description": "Frozen client sample ID and lab ID, location or Location not recorded, matrix and collection time. These sections are not editable."
+        },
+        {
+          "label": "Analyte",
+          "description": "Reported substance or parameter."
+        },
+        {
+          "label": "Result",
+          "description": "Exact issued text; ND means not detected at or above the reporting limit, not zero. Soil basis is Wet weight, Dry weight or Basis not recorded; saved percent solids/reference appears when present. No conversion or report rounding is performed."
+        },
+        {
+          "label": "Unit",
+          "description": "Frozen unit for this reported quantity."
+        },
+        {
+          "label": "Qualifiers",
+          "description": "Internal qualifier codes, explained in the PDF legend; external qualifier text is marked as reported by the external laboratory."
+        },
+        {
+          "label": "Reporting limit",
+          "description": "Exact limit applied to this result, including dilution, rather than today’s method default."
+        },
+        {
+          "label": "Method",
+          "description": "Frozen internal method code/version, or external method with performing-laboratory attribution."
+        },
+        {
+          "label": "Analyzed",
+          "description": "Frozen analysis-start timestamp/offset, not analysis completion."
+        }
+      ]
+    },
+    {
+      "title": "Evidence below each result",
+      "items": [
+        {
+          "label": "Receipt preservation screening",
+          "description": "Screening label, original cooler reading/unit, temperature finding when different, recorded manual requirements, rule basis and any lab decision with reason and actor. This does not establish container temperature, continuous preservation or regulatory acceptance. Legacy issued versions can say screening was not recorded."
+        },
+        {
+          "label": "Preparation",
+          "description": "Independent batch, aliquot label, method/version, start/completion, batch recorder and equipment when linked. Missing completion/equipment is explicit; preparation QC is in the PDF batch summary. A legacy analytical-batch preparation timestamp does not imply independent preparation identity."
+        }
+      ]
+    },
+    {
+      "title": "Version history",
+      "paragraphs": [
+        "Clients cannot generate EDDs, edit context/mappings, approve results or release reports here. Ask the laboratory about errors or required amendments. ZIP integrity failure refuses the file and asks you to contact the laboratory. Both report ownership and export-to-report/version linkage are checked before download."
+      ],
+      "items": [
+        {
+          "label": "Version 1 / Version N",
+          "description": "Chronological history, oldest first and newest last. Latest is Current; others are Superseded. Each entry records release actor/time, Original issue or Amendment of version N, reason and change list when applicable."
+        },
+        {
+          "label": "Download PDF",
+          "description": "Retrieve that version’s unchanged stored bytes and see its file size. Previous versions remain retrievable after amendments."
+        },
+        {
+          "label": "NYSDEC EDD (exploratory) ZIP",
+          "description": "Shown for every stored export belonging to each version, with generation date. These are generated files, not automatically created by PDF release. They are not validated by EQuIS EDP. Multiple exports of one issue can use different mappings/context; downloading returns the exact stored file rather than current settings."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "reporting/portal_urls.py",
+    "reporting/portal_views.py",
+    "reporting/queries.py",
+    "reporting/models.py",
+    "reporting/content.py",
+    "reporting/templates/reporting/portal/notice.html",
+    "templates/layouts/portal.html",
+    "reporting/tests/test_portal.py",
+    "reporting/tests/test_grids.py",
+    "reporting/templates/reporting/portal/report_detail.html",
+    "reporting/templates/reporting/portal/_version_files.html",
+    "reporting/templates/reporting/preservation_record.html",
+    "reporting/templates/reporting/preparation_record.html",
+    "reporting/templatetags/reporting.py",
+    "reporting/views.py",
+    "reporting/edd/views.py",
+    "reporting/tests/test_edd_views.py",
+    "reporting/tests/test_soil_basis.py",
+    "reporting/tests/test_subcontract_release.py"
+  ]
+}

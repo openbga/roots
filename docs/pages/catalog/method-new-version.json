@@ -1,0 +1,75 @@
+{
+  "id": "catalog-method-new-version",
+  "routes": [
+    "catalog:method-new-version"
+  ],
+  "title": "New method version",
+  "purpose": "Create a separate active version with the predecessor’s method code while preserving work that used it.",
+  "sections": [
+    {
+      "title": "Fields",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Version",
+          "description": "Required new revision/edition/year text, up to 40 characters. Code/version must not already exist, ignoring case."
+        },
+        {
+          "label": "Title",
+          "description": "Required, up to 200 characters; prefilled from the predecessor and editable."
+        },
+        {
+          "label": "Source or SOP reference",
+          "description": "Optional; prefilled from the predecessor and editable."
+        },
+        {
+          "label": "Reference source",
+          "description": "Optional; prefilled from the predecessor and editable. Not recorded leaves it blank. Descriptor only: not printed on reports."
+        },
+        {
+          "label": "Technique",
+          "description": "Optional; prefilled from the predecessor and editable. Not recorded leaves it blank. Descriptor only: not printed on reports."
+        },
+        {
+          "label": "Copy the active tests",
+          "description": "Checked initially; label gives the active-test count. Copies analyte, matrix, unit and default limit into active new definitions. Inactive definitions and QC, holding, preservation and preparation rules are not copied; configure applicable rules for the new version separately."
+        },
+        {
+          "label": "Retire the previous version",
+          "description": "Unchecked initially. Check to inactivate the predecessor for new work. If unchecked, both versions can stay active and receipt can offer both. Existing work keeps the old version either way."
+        },
+        {
+          "label": "Reason for the new version",
+          "description": "Required reason stored with creation, copied definitions and optional retirement."
+        }
+      ]
+    },
+    {
+      "title": "Actions and context",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Based on",
+          "description": "Predecessor title and dependency facts, including active/all test counts."
+        },
+        {
+          "label": "Create version",
+          "description": "Administrators create the new version, optional copies and retirement together, then open its edit form. Existing predecessor fields and definitions remain intact."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to Methods without creating a version."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "catalog/urls.py",
+    "catalog/views.py",
+    "catalog/forms.py",
+    "catalog/models.py",
+    "catalog/services.py",
+    "catalog/tests/test_catalog.py",
+    "catalog/templates/catalog/form.html"
+  ]
+}

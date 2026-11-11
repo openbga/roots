@@ -1,0 +1,88 @@
+{
+  "id": "receipt-order-edit",
+  "routes": [
+    "receipt:order-edit"
+  ],
+  "title": "Edit chain of custody details",
+  "purpose": "Change the turnaround, purchase order, shipment details and special instructions of an existing chain of custody, with an attributed reason. The reference and delivery target are changed on their own pages.",
+  "sections": [
+    {
+      "title": "Access and eligibility",
+      "paragraphs": [
+        "Custodians, project managers and administrators open this page with Edit details on the chain of custody record; other roles are refused. The header shows the reference and the client and project. A cancelled chain of custody cannot be edited: the page returns to the order with a message to reinstate it first.",
+        "To change the reference use Correct reference, and to change the delivery target use Change delivery target on the chain of custody. Neither can be changed here, and nothing on this page touches samples, containers or custody."
+      ],
+      "items": []
+    },
+    {
+      "title": "Fields",
+      "paragraphs": [
+        "The form opens with the recorded values. Fields marked with an asterisk are required."
+      ],
+      "items": [
+        {
+          "label": "Turnaround",
+          "description": "Standard or Rush. Rush marks the order and its samples in lists and on their records. If omitted, the recorded turnaround is kept."
+        },
+        {
+          "label": "Purchase order",
+          "description": "Optional, up to 60 characters. Clearing it removes the purchase order from this chain of custody; the project’s standing purchase order is applied only when an order is created. A client that requires a purchase order shows a warning on the order while this is blank."
+        },
+        {
+          "label": "Delivery method",
+          "description": "Optional list: Not recorded, Client drop-off, Laboratory courier / pickup, Commercial carrier, Mail or Other. How the samples reached, or will reach, the laboratory."
+        },
+        {
+          "label": "Carrier / tracking number",
+          "description": "Optional, up to 160 characters."
+        },
+        {
+          "label": "Coolers / packages",
+          "description": "Optional whole number of coolers or packages in the shipment. It must be between 1 and 200."
+        },
+        {
+          "label": "Special instructions",
+          "description": "Optional multi-line text such as rush approval, hazards, report or invoicing instructions. Shown above the receipt form for each sample on this order and on the order record."
+        },
+        {
+          "label": "Reason for change",
+          "description": "Required explanation, kept with the change in the record’s history."
+        }
+      ]
+    },
+    {
+      "title": "Saving, safeguards and history",
+      "paragraphs": [
+        "Saving rechecks the order as it was when you opened the page. If another change was saved first, the save is refused with Order changed; reload the order, review its current details and enter your change again. Saving with no difference from the recorded details is refused with Change at least one detail. A missing reason is refused. Errors appear on the form with your input kept.",
+        "A successful save records an attributed audit event with the previous and new values of these fields and your reason, shows a confirmation and returns to the chain of custody record, whose Detail changes section lists the change with actor, time and reason."
+      ],
+      "items": [
+        {
+          "label": "Save changes",
+          "description": "Updates the details and the order’s revision together and returns to the chain of custody."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the chain of custody without saving."
+        },
+        {
+          "label": "Form dialog",
+          "description": "With enhancement enabled the form can open in a large dialog; without it, it is a normal page."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/views.py",
+    "receipt/forms.py",
+    "receipt/models.py",
+    "receipt/services.py",
+    "accounts/roles.py",
+    "core/form_surfaces.py",
+    "templates/receipt/order_edit.html",
+    "templates/receipt/_grouped_fields.html",
+    "templates/receipt/order_detail.html",
+    "receipt/tests/test_master_data.py"
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "id": "receipt-sample-retention",
+  "routes": [
+    "receipt:sample-retention"
+  ],
+  "title": "Set retention date",
+  "purpose": "Record the laboratory’s chosen date through which this physical sample must be retained. This does not set electronic record retention.",
+  "sections": [
+    {
+      "title": "Fields and actions",
+      "paragraphs": [
+        "Retention is explicit; neither the system nor an elapsed date authorizes actual disposal. A future date can extend retention."
+      ],
+      "items": [
+        {
+          "label": "Retain physical sample through",
+          "description": "Required date, inclusive, prefilled when already set. Must be on or after the receipt date in laboratory local time and differ from the current date. This page cannot clear an existing date."
+        },
+        {
+          "label": "Retention basis / reason",
+          "description": "Required explanation of the laboratory’s chosen physical-retention policy/decision; retained with old/new date and actor."
+        },
+        {
+          "label": "Set retention date",
+          "description": "Saves the physical storage decision and audit together, then returns to the storage record. It creates a storage record if needed but no custody movement."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to storage without saving."
+        }
+      ]
+    },
+    {
+      "title": "Access and safeguards",
+      "paragraphs": [
+        "Custodians, project managers and administrators can save. The header names the client and current location. A concurrent custody, retention or sample change is refused; submitted input remains on the error page. Reload and review current custody/retention before resubmitting. A disposed sample shows a retained-history notice instead of an editable form and rejects further changes."
+      ],
+      "items": []
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/storage_views.py",
+    "receipt/storage_forms.py",
+    "receipt/storage_models.py",
+    "receipt/storage.py",
+    "receipt/models.py",
+    "accounts/roles.py",
+    "receipt/tests/test_storage.py",
+    "receipt/templates/receipt/storage/form.html"
+  ]
+}

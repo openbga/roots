@@ -1,0 +1,115 @@
+{
+  "id": "analytical-support-prep-list",
+  "routes": [
+    "analytical:prep-list"
+  ],
+  "title": "Preparation batches",
+  "purpose": "Find independent preparation batches, their labelled aliquots, actual preparation events and QC findings before analytical work.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Active internal staff with a laboratory role can read this workspace. Analysts can create and change preparation work. An admin has operational analyst access; a client account or superuser status alone does not grant it."
+      ],
+      "items": [
+        {
+          "label": "New preparation batch",
+          "description": "Analysts create a batch for an active preparation method. A batch number opens its preparation record; analytical batches are excluded from this list."
+        }
+      ]
+    },
+    {
+      "title": "Search and filters",
+      "paragraphs": [
+        "Apply searches and filters across all records, returning to page 1. More filters opens additional filters; active filter chips remove one filter, and Clear all resets the query. Invalid filters show errors and no records. Rows per page offers 25, 50 or 100, initially 25; other page sizes are refused. First, Previous, Next and Last keep the query. Sortable headings reverse their sort. Columns changes local column visibility/order, with reset and keyboard controls; it does not change which records qualify.",
+        "The initial order is newest created first. Batch, Aliquots, Prep started and Created support ascending or descending sorting. Counts include historical membership, including cancelled aliquots."
+      ],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Case-insensitive matches on preparation method code, aliquot label, laboratory sample ID and client sample ID. A complete P-number such as P-00012 matches that batch number. Method version, notes and creator are not searched."
+        },
+        {
+          "label": "Method",
+          "description": "Optional exact preparation method/version; choices are active methods with at least one active preparation requirement, ordered by code and version."
+        },
+        {
+          "label": "Matrix",
+          "description": "Any matrix, Water, Wastewater or Soil."
+        },
+        {
+          "label": "Status",
+          "description": "Any status, Open membership, Closed membership or Preparation completed. Completed checks the actual completion timestamp independently of membership; open and closed check membership independently of completion."
+        },
+        {
+          "label": "Attention",
+          "description": "Under More filters: Any attention, Aliquots not yet used, or Open QC findings. Unused means an uncancelled aliquot has no result revision using it. QC findings uses the same current blocking evaluator as the detail page."
+        },
+        {
+          "label": "Prep start from / Prep start to",
+          "description": "Optional inclusive dates of actual start in laboratory local time; the end cannot precede the start. A start date restriction excludes batches with no start recorded."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Batch",
+          "description": "Stable P-number opening the preparation batch."
+        },
+        {
+          "label": "Status",
+          "description": "Preparation completed takes precedence when a completion exists; otherwise Open membership or Closed membership."
+        },
+        {
+          "label": "Preparation method / Matrix",
+          "description": "The exact method version and sample matrix shared by the batch."
+        },
+        {
+          "label": "Aliquots",
+          "description": "Number of distinct labelled physical aliquots, including cancelled ones."
+        },
+        {
+          "label": "Tests covered",
+          "description": "Distinct requested tests linked through aliquots; a test covered by several aliquots counts once."
+        },
+        {
+          "label": "Used in analysis",
+          "description": "Distinct analytical batches having any result revision linked to an aliquot; otherwise Not used."
+        },
+        {
+          "label": "Open QC findings",
+          "description": "Number of current blocking preparation findings. Zero does not itself mean analytical results are approved."
+        },
+        {
+          "label": "Prep started / Prep completed",
+          "description": "Actual event times, or Not recorded. Membership closure never fills these times."
+        },
+        {
+          "label": "Created by / Equipment / Created / Notes",
+          "description": "Optional columns hidden initially: batch creator, primary equipment or Not recorded, creation time and notes. Equipment is informational and does not decide approval."
+        }
+      ]
+    },
+    {
+      "title": "Empty states",
+      "paragraphs": [
+        "No preparation batches yet offers creation to analysts. No preparation batches match these filters offers clearing the filters. Review configured preparation requirements if the new-batch method choices are empty."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/preparation_views.py",
+    "analytical/templates/analytical/preparation_list.html",
+    "analytical/preparation.py",
+    "analytical/services.py",
+    "analytical/models.py",
+    "analytical/tests/test_preparation_views.py",
+    "analytical/tests/test_preparation.py",
+    "core/grids.py",
+    "templates/includes/grid_toolbar.html",
+    "templates/includes/pagination.html",
+    "analytical/qc.py"
+  ]
+}

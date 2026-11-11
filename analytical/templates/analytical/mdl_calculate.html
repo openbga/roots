@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block breadcrumbs %}{% url 'analytical:mdl-list' as list_url %}{% url 'analytical:mdl-detail' study.pk as study_url %}{% include "includes/breadcrumbs.html" with section="MDL studies" section_url=list_url record=study.number record_url=study_url %}{% endblock %}
+{% block page_meta %}<ul class="vr-page-meta"><li>Study <span class="vr-id">{{ study.number }}</span></li><li>{{ study.definition }}</li></ul>{% endblock %}
+{% block content %}
+{% if study.status != "open" %}
+<div class="alert alert-info" role="status">{% include "includes/status.html" with label="Closed" tone="neutral" plain=True %}<div>This study is closed.</div></div>
+{% else %}
+{% include "analytical/_mdl_ready.html" %}
+<form class="vr-form" method="post" novalidate>
+  {% csrf_token %}
+  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+  <fieldset class="vr-form-section">
+    <legend class="visually-hidden">Calculation</legend>
+    {{ form }}
+    <p class="vr-form-note">The calculation keeps a numbered snapshot of every input and intermediate value. It is not an MDL until an independent reviewer, who did not enter the data or run it, adopts it.</p>
+  </fieldset>
+  <div class="vr-form-actions">
+    <a class="btn btn-link" href="{% url 'analytical:mdl-detail' study.pk %}">Cancel</a>
+    <button class="btn btn-primary" type="submit">Calculate and keep the snapshot</button>
+  </div>
+</form>
+{% endif %}
+{% endblock %}

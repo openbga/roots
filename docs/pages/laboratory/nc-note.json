@@ -1,0 +1,96 @@
+{
+  "id": "laboratory-nc-note",
+  "routes": [
+    "laboratory:nc-note"
+  ],
+  "title": "Add note or evidence",
+  "purpose": "Append supporting information without changing nonconformance status or current findings.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Available to active signed-in lab staff with an admin, custodian, analyst, reviewer, approver or project manager role. Client accounts and accounts without a lab role cannot open laboratory pages. Sidebar links open Lab overview, Inventory, Equipment, Training and Nonconformances. Breadcrumbs return to the list or parent record."
+      ]
+    },
+    {
+      "title": "Access and effect",
+      "paragraphs": [
+        "Any lab staff member can add information, including to a closed issue and when they are not its owner. This adds a timeline entry and audit event. It does not change status, assignment, due date, findings or revision. There is no edit/delete action for an earlier note; append clarification instead."
+      ]
+    },
+    {
+      "title": "Fields",
+      "items": [
+        {
+          "label": "Note",
+          "description": "Optional narrative."
+        },
+        {
+          "label": "Reference",
+          "description": "Optional reference, maximum 160 characters."
+        },
+        {
+          "label": "Evidence file",
+          "description": "Optional supporting attachment. At least one of Note, Reference or Evidence file must be provided; a completely empty submission is refused."
+        },
+        {
+          "label": "Add note or evidence",
+          "description": "Saves the new entry and returns to issue details."
+        }
+      ]
+    },
+    {
+      "title": "Evidence files",
+      "paragraphs": [
+        "Attach a nonempty PDF, PNG, JPEG, TXT or CSV no larger than 10 MiB. TXT/CSV must be UTF-8; PDF and image bytes must match the extension. Evidence is optional unless a step requires a reference or file. Downloads are attachments, not inline previews. File links show name, size and the first 12 SHA-256 checksum characters. No file indicates no stored attachment. Staff can download equipment/nonconformance evidence; training evidence is limited to the person and lead roles. A correction is a new record: an earlier attachment is not copied automatically, so attach evidence again if it belongs on the new record."
+      ]
+    },
+    {
+      "title": "Saving and errors",
+      "paragraphs": [
+        "An asterisk marks required fields. Cancel returns to the parent record or list without saving. Success opens the saved record with a confirmation. Validation errors appear above the form and beside affected fields; correct them and submit again. Text input remains after validation errors; select an evidence file again if necessary. Dates use year-month-day; date and time fields use the deployment time zone."
+      ]
+    },
+    {
+      "title": "Form dialog controls",
+      "paragraphs": [
+        "With enhancement enabled, the form opens in a dialog, including when its URL is opened directly. Without enhancement it remains a normal page. While loading or saving, controls are disabled to avoid duplicate submissions; focus moves to the first invalid field or first editable field when ready. Saving successfully navigates to the resulting record."
+      ],
+      "items": [
+        {
+          "label": "Maximize / Restore size",
+          "description": "Expand the dialog to full screen or restore its normal size. Small screens use a full-screen layout."
+        },
+        {
+          "label": "Cancel / Close form / Escape",
+          "description": "Close an unchanged form. When opened over another page, return focus to its opening control; when opened directly, return to the Cancel destination. Clicking outside the dialog does not close it."
+        },
+        {
+          "label": "Keep editing / Discard changes",
+          "description": "After an input change, attempting to leave asks Discard your unsaved changes? Keep editing retains the form; Discard changes closes or follows the requested destination without saving. Escape during that prompt keeps editing."
+        },
+        {
+          "label": "Try again",
+          "description": "Shown after a failed initial load. Retry loading the form. Save/connection errors keep the current input and show an error so you can retry the submission. Validation errors replace the form with its submitted values and field messages; files may need selecting again."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "laboratory/urls.py",
+    "laboratory/forms.py",
+    "laboratory/models.py",
+    "laboratory/permissions.py",
+    "laboratory/nc_views.py",
+    "laboratory/nonconformance.py",
+    "laboratory/tests/test_nonconformance.py",
+    "laboratory/tests/test_views.py",
+    "laboratory/templates/laboratory/form.html",
+    "laboratory/evidence.py",
+    "core/form_surfaces.py",
+    "core/form_dialog.py",
+    "templates/includes/form_dialog.html",
+    "static/js/form-dialog.js",
+    "tests/test_form_dialog.py"
+  ]
+}

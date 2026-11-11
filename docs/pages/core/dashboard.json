@@ -1,0 +1,138 @@
+{
+  "id": "core-dashboard",
+  "routes": [
+    "dashboard"
+  ],
+  "title": "Dashboard",
+  "purpose": "See the work waiting for your laboratory roles and open the queue that needs attention.",
+  "sections": [
+    {
+      "title": "Actions and sections",
+      "items": [
+        {
+          "label": "Receive samples",
+          "description": "Opens a new chain of custody for actual receipt. Available to custodians and project managers, including the admin role’s operational access."
+        },
+        {
+          "label": "Your work queues",
+          "description": "Queue labels open the corresponding filtered list when the count is nonzero. Zero counts remain visible without a link. “Nothing is waiting for you right now” means all your displayed queues are zero."
+        },
+        {
+          "label": "Recently received / All samples",
+          "description": "Shows the ten most recently received samples across the laboratory. Lab ID opens the sample; All samples opens the complete sample list. There are no dashboard search, sorting or paging controls."
+        }
+      ]
+    },
+    {
+      "title": "Queue columns",
+      "items": [
+        {
+          "label": "Queue",
+          "description": "Type of work, with notes about conditions or items requiring another person."
+        },
+        {
+          "label": "Waiting",
+          "description": "Computed number of records matching that queue’s filters. Different queues count samples, tests, batches, reports or laboratory records; these counts are not interchangeable."
+        },
+        {
+          "label": "Oldest item",
+          "description": "Age of the earliest relevant timestamp when that queue supplies one; a dash means no age is supplied. Hover over a timestamp for the exact time."
+        }
+      ]
+    },
+    {
+      "title": "Queue rules",
+      "items": [
+        {
+          "label": "Samples on hold at receipt",
+          "description": "Receipt disposition is Hold. Each sample needs a disposition decision."
+        },
+        {
+          "label": "Client submissions to accept",
+          "description": "Only client submissions in Submitted status."
+        },
+        {
+          "label": "Tests past their delivery target",
+          "description": "Delivery target is at or before now; excludes Reported stage and rejected samples. Delivery targets are separate from method holding times."
+        },
+        {
+          "label": "Draft quotes",
+          "description": "Quotes in Draft status, shown to staff who can manage quotations."
+        },
+        {
+          "label": "Tests not yet in a batch / awaiting entry / returned",
+          "description": "Analyst queues use the analytical worklist’s eligibility and current result state."
+        },
+        {
+          "label": "Holding time at risk or expired",
+          "description": "Uses the analytical worklist’s holding-time rule. The note counts already-expired work within the risk queue."
+        },
+        {
+          "label": "Batches awaiting technical review",
+          "description": "Counts batches containing results this reviewer can review. A note identifies additional batches containing only the reviewer’s own results; another reviewer must act."
+        },
+        {
+          "label": "External source results awaiting review",
+          "description": "Unreviewed latest subcontract results excluding those entered by the current reviewer. Own entries are reported separately in a note."
+        },
+        {
+          "label": "Draft reports / issued reports with changed results",
+          "description": "Shown to preparers or explicit release-authority holders. Changed issued work requires an amendment; the released version remains unchanged."
+        },
+        {
+          "label": "Equipment overdue / expired materials on hand",
+          "description": "Equipment uses calibration/maintenance due state; materials count active lots expired before today with quantity remaining."
+        },
+        {
+          "label": "Nonconformances assigned to me",
+          "description": "Open records owned by the signed-in person, excluding Closed."
+        },
+        {
+          "label": "My training records",
+          "description": "Own records not superseded by a renewal and either expired or current with expiry within 30 days."
+        }
+      ]
+    },
+    {
+      "title": "Recent sample fields",
+      "items": [
+        {
+          "label": "Lab ID / Client sample ID",
+          "description": "Laboratory accession and the client-supplied sample identity."
+        },
+        {
+          "label": "Client / project",
+          "description": "The client and project linked through the sample’s order."
+        },
+        {
+          "label": "Matrix",
+          "description": "Sample material category used to select applicable tests and rules."
+        },
+        {
+          "label": "Received",
+          "description": "Recorded laboratory receipt time in the deployment timezone."
+        },
+        {
+          "label": "Disposition",
+          "description": "Proceed, qualify, hold or reject decision controlling downstream eligibility."
+        },
+        {
+          "label": "Location",
+          "description": "Current recorded custody/storage location."
+        }
+      ]
+    },
+    {
+      "title": "Access and records",
+      "paragraphs": [
+        "Active internal users see queues for their effective roles; admin includes operational roles but does not imply report-release authority. Client-linked users are redirected to their own portal. Dashboard counts are live queries over the linked operational records, not saved tasks."
+      ]
+    }
+  ],
+  "sources": [
+    "core/views.py",
+    "templates/core/dashboard.html",
+    "accounts/roles.py",
+    "tests/test_dashboard.py"
+  ]
+}

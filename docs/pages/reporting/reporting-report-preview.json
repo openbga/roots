@@ -1,0 +1,210 @@
+{
+  "id": "reporting-report-preview",
+  "routes": [
+    "reporting:report-preview",
+    "reporting:report-release"
+  ],
+  "title": "Preview and release a report",
+  "purpose": "Inspect the proposed first issue or next amendment, resolve blockers and explicitly authorize immutable release.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Active internal staff with an application role can read this page. Client accounts cannot use staff reporting pages. Project managers, approvers and users with explicit release authority can prepare and edit reports. Admin includes project-manager operational access, but release separately requires the explicit report release permission; admin or superuser status alone does not grant it."
+      ],
+      "items": [
+        {
+          "label": "Preview version 1 / Preview amendment vN",
+          "description": "Identifies proposed issue. Header shows current issue state, client/project, sample count and shortened content SHA-256 with full hash on hover."
+        },
+        {
+          "label": "Page contents",
+          "description": "Jump to blockers, changes or readiness, Release, Samples and PDF preview sections."
+        },
+        {
+          "label": "Open PDF preview",
+          "description": "Open the watermarked, unstored preview in another tab. If its fingerprint no longer matches, reload this page. Embedded PDF uses the same check."
+        }
+      ]
+    },
+    {
+      "title": "Before authorization",
+      "items": [
+        {
+          "label": "Blocking issues",
+          "description": "Only blocked samples/tests and report-level reasons appear. Fix in links lead to source workflows; resolve and reload."
+        },
+        {
+          "label": "Changes from version N",
+          "description": "Amendment comparison includes additions/removals, result and preparation/preservation evidence, QC, narrative and identity changes. Identical content cannot be amended."
+        },
+        {
+          "label": "Ready to release",
+          "description": "First issue has no blockers; still inspect results and PDF."
+        },
+        {
+          "label": "Release report / Release amendment",
+          "description": "Explains permission or blockers that prevent release."
+        },
+        {
+          "label": "Amendment reason",
+          "description": "Required only for amendments; explain why this replaces the previous issue. Printed and retained with new version; absent for first issue."
+        },
+        {
+          "label": "I authorize release of exactly the content previewed above.",
+          "description": "Required checkbox tied to displayed content fingerprint. Reconfirm after changed-content errors; the reason may carry forward, but confirmation must cover refreshed content."
+        },
+        {
+          "label": "Release version 1 / Release version N",
+          "description": "Generate/store snapshot/PDF with actor/time and audit; make issue available to owning client and return to detail. Does not modify prior versions."
+        },
+        {
+          "label": "run the NYSDEC data check",
+          "description": "Open optional early EDD check. Its findings do not directly block PDF release."
+        }
+      ]
+    },
+    {
+      "title": "Samples and results",
+      "paragraphs": [
+        "Headers show lab/client IDs, result count, location or Location not recorded, matrix, collection and receipt times. Up to ten samples open expanded; above ten, open each collapsed sample. No approved results and no samples are stated explicitly."
+      ],
+      "items": [
+        {
+          "label": "Analyte",
+          "description": "The reported substance or parameter. Staff preview also shows internal revision/batch or external source revision/report reference."
+        },
+        {
+          "label": "Result",
+          "description": "Exact analyst-supplied text, without report rounding. ND means not detected at or above the applied reporting limit, not zero. Internal soil results show Wet weight, Dry weight or Basis not recorded; percent solids/reference appear when recorded. No wet/dry conversion occurs here. Recorded basis and solids values are not inferred from current catalog settings."
+        },
+        {
+          "label": "Unit",
+          "description": "Saved unit for the result and applied reporting limit."
+        },
+        {
+          "label": "Qualifiers",
+          "description": "Internal codes refer to limitations explained in the PDF legend. External text is shown as reported by the performing laboratory, without conversion into internal codes."
+        },
+        {
+          "label": "RL",
+          "description": "Applied reporting limit, including dilution; distinct from the configured method default."
+        },
+        {
+          "label": "DF",
+          "description": "Saved dilution factor; this screen does not recalculate the observation."
+        },
+        {
+          "label": "Method",
+          "description": "Internal exact method code/version or external method as reported."
+        },
+        {
+          "label": "Analyzed",
+          "description": "Analysis start, with the UTC offset frozen in report content; not completion."
+        },
+        {
+          "label": "Analyst / reviewer",
+          "description": "Internal entry and technical-review identities. External rows show subcontract laboratory and local source-entry/source-review identities; source review is not this laboratory’s batch QC."
+        },
+        {
+          "label": "Holding time",
+          "description": "Internal revision’s evaluation. External rows say Not evaluated by this laboratory, which is not a passing assessment."
+        }
+      ]
+    },
+    {
+      "title": "Evidence below each result",
+      "items": [
+        {
+          "label": "Receipt preservation screening",
+          "description": "Screening label, original cooler reading/unit, temperature finding when different, recorded manual requirements, rule basis and any lab decision with reason and actor. This does not establish container temperature, continuous preservation or regulatory acceptance. Legacy issued versions can say screening was not recorded."
+        },
+        {
+          "label": "Preparation",
+          "description": "Independent batch, aliquot label, method/version, start/completion, batch recorder and equipment when linked. Missing completion/equipment is explicit; preparation QC is in the PDF batch summary. A legacy analytical-batch preparation timestamp does not imply independent preparation identity."
+        }
+      ]
+    },
+    {
+      "title": "PDF preview contents",
+      "items": [
+        {
+          "label": "Report / Version / Client / Project / Released / Released by / Samples / Times",
+          "description": "Identity/title, client/contact, project/program, count and laboratory timezone. Preview has no release actor/time. Issued content freezes zone and UTC offsets; later timezone changes do not reinterpret old records."
+        },
+        {
+          "label": "Case narrative",
+          "description": "Printed when entered in scope."
+        },
+        {
+          "label": "Sample summary",
+          "description": "Lab ID, Client sample ID, Location, Matrix, collection Type, Collected, Received and Receipt disposition."
+        },
+        {
+          "label": "Sample facts",
+          "description": "COC reference, matrix/type, collection location, collector and grab time or composite start/end, receiver/time, original cooler reading/unit and instrument, seal, preservation check and discrepancy/disposition note."
+        },
+        {
+          "label": "Results",
+          "description": "Analyte and CAS when present, exact Result, soil basis, Unit, Qual., RL, DF, method/version and batch, Analyzed, Analyst, Reviewed by/date, Holding time. Notes preserve correction reason, comments, percent solids/reference, external qualifiers and preparation/preservation evidence."
+        },
+        {
+          "label": "Batch quality control summary",
+          "description": "Analytical and independent preparation batch identities, method/matrix and per-analyte field-sample/physical-aliquot counts, including cancelled aliquots when present. QC sample, Type, Observed/unit, Evaluation and Detail are shown with issue/disposition notes. QC from samples outside this report withholds identities, values and sensitive notes while retaining type, outcome and disposition."
+        },
+        {
+          "label": "Subcontracted analyses",
+          "description": "Performing laboratory, external report/hash, lab/external sample IDs, analyte, method, qualifiers and analyst as reported. Source review differs from this laboratory’s QC; source reports are held by the laboratory."
+        },
+        {
+          "label": "Methods, qualifiers and abbreviations",
+          "description": "Internal method code/version/title/source and qualifier meanings; ND, RL and DF definitions. External information keeps source attribution."
+        },
+        {
+          "label": "Amended report / Authorization",
+          "description": "Issued amendments identify prior issue, reason and changes. Final authorization names actor/time; preview states it is not issued."
+        }
+      ]
+    },
+    {
+      "title": "Release rules and failures",
+      "paragraphs": [
+        "A report contains 1 to 100 samples from one project and at most 1,000 internal and external results combined. All requested tests of the selected samples must be reportable; individual tests cannot be selected out of a sample here. Hold and Reject receipt dispositions block release. To reduce a report that exceeds the result or rendered-file limit, split its samples across smaller report scopes.",
+        "Internal work needs a current approved revision, independent technical review and no newer unapproved correction. Release rechecks current QC measurements, limits, requirements and dispositions, stored holding-time evaluation, preparation consistency and current receipt preservation evidence. Earlier approval alone does not guarantee release. Every test is checked again for an amendment, including unchanged results.",
+        "The releasing person needs explicit release permission and cannot have entered or submitted any internal result in this report, or entered an external result in it. A technical reviewer can also release when explicitly authorized. Actor-specific independence checks run in the preview for a releasing user and on submission; another staff member may see different readiness. Account status, client assignment and release permission are checked again after PDF rendering; a deactivated or client-linked account cannot complete release.",
+        "The fingerprint must still match the preview. Relevant laboratory identity, ownership, sample, requested-test, result, batch, method-policy and source records are locked and rechecked after PDF rendering. Changed records or a concurrent release require reviewing the refreshed preview and confirming again. No partial release is stored. The retry page reloads the current issued version, including amendment requirements when another release completed first.",
+        "PDF bytes, frozen snapshot, version links, hashes, actor, release time and audit event commit together. Rendering failure or a PDF above 10 MiB leaves nothing released. Correct the reported issue and retry from the preview. Release does not send email."
+      ]
+    },
+    {
+      "title": "Failure recovery",
+      "paragraphs": [
+        "Nothing was released accompanies stale content, concurrent release or failed rendering. Review refreshed content and reconfirm. Validation errors identify fields/blockers; rendering problems can be retried after resolution. Prior issued PDFs remain available through detail."
+      ]
+    }
+  ],
+  "sources": [
+    "reporting/views.py",
+    "reporting/forms.py",
+    "reporting/queries.py",
+    "reporting/models.py",
+    "reporting/services.py",
+    "reporting/content.py",
+    "accounts/roles.py",
+    "reporting/pdf.py",
+    "reporting/templates/reporting/report_preview.html",
+    "reporting/templates/reporting/readiness_table.html",
+    "reporting/templates/reporting/pdf/report.html",
+    "reporting/templates/reporting/preservation_record.html",
+    "reporting/templates/reporting/preparation_record.html",
+    "reporting/templatetags/reporting.py",
+    "analytical/eligibility.py",
+    "analytical/services.py",
+    "reporting/tests/test_release.py",
+    "reporting/tests/test_release_serialization.py",
+    "reporting/tests/test_preservation_release.py",
+    "reporting/tests/test_preparation_release.py",
+    "reporting/tests/test_soil_basis.py",
+    "reporting/tests/test_portal.py"
+  ]
+}
