@@ -12,7 +12,7 @@ from core.models import AuditEvent
 
 from .lists import toolbar_context
 from .models import Sample
-from .storage import dispose_sample, set_disposal_hold, set_retention
+from .storage import disposal_blocker, dispose_sample, set_disposal_hold, set_retention
 from .storage_forms import DisposalForm, DisposalHoldForm, RetentionForm, StorageFilter
 from .storage_models import SampleStorage
 
@@ -177,6 +177,13 @@ def _change(request, pk, form_class, service, title, initial=None):
             "storage": storage,
             "form": form,
             "is_disposal": form_class is DisposalForm,
+            # Shown above the disposal form when any entry would be refused. After a refused
+            # POST the form's own error says the same, so it is not repeated.
+            "blocker": disposal_blocker(sample, storage)
+            if form_class is DisposalForm
+            and request.method != "POST"
+            and not (storage and storage.disposed_at)
+            else "",
         },
     )
 

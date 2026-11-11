@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% comment %}Shared create/edit/action form. Context: form (grouped), back_url, submit_label, destructive, crumbs [(label, url|None)], notes, meta, multipart.{% endcomment %}
+{% comment %}Shared create/edit/action form. Context: form (grouped), back_url, submit_label, destructive, crumbs [(label, url|None)], notes, meta, multipart, has_times (the form has a time field).{% endcomment %}
 {% block breadcrumbs %}{% include "includes/breadcrumbs.html" with crumbs=crumbs %}{% endblock %}
 {% block page_meta %}{% if meta %}<ul class="vr-page-meta">{% for item in meta %}<li>{{ item }}</li>{% endfor %}</ul>{% endif %}{% endblock %}
 {% block content %}
 <form class="vr-form" method="post" novalidate{% if multipart %} enctype="multipart/form-data"{% endif %}>
   {% csrf_token %}
   {% include "includes/form_errors.html" with form=form %}
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.{% if has_times %} Times are laboratory local time.{% endif %}</p>
   {% for note in notes %}<p class="vr-form-note">{{ note }}</p>{% endfor %}
   {% with sections=form.grouped %}{% for legend, fields in sections %}
   <fieldset class="vr-form-section">

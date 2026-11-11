@@ -121,6 +121,7 @@
     });
 
     var control = picker.control_input;
+    select.setAttribute("aria-hidden", "true"); // The labelled combobox is the accessible control.
     var bulk = false;
     picker.wrapper.after(summary, notice, announcer, hint);
     var describedBy = [select.getAttribute("aria-describedby"), summary.id, hint.id].filter(Boolean).join(" ");

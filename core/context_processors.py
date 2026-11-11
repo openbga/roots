@@ -1,3 +1,5 @@
+from django.contrib.auth.models import AnonymousUser
+
 from accounts.roles import effective_roles
 
 from .form_surfaces import form_route_patterns, surface_for_request
@@ -19,7 +21,7 @@ def form_presentation(request):
 
 
 def workspace(request):
-    roles = effective_roles(request.user)
+    roles = effective_roles(getattr(request, "user", AnonymousUser()))
     return {
         "lab": Lab.objects.first(),
         "user_roles": roles,

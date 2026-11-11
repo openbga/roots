@@ -39,6 +39,10 @@
       // Storage blocked: the choice applies to this page only.
     }
     applyTheme(choice);
+    var toggle = option.closest(".dropdown").querySelector("[data-vr-theme-button]");
+    if (toggle) {
+      toggle.focus();
+    }
   });
 
   if (systemDark) {
@@ -132,18 +136,11 @@
         syncSelection(event.target.name);
       }
     }
-    // Rows-per-page and similar single selects submit their GET form on change.
-    if (event.target.matches("select[data-vr-autosubmit]") && event.target.form) {
-      event.target.form.requestSubmit();
-    }
   });
 
   document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll("[data-vr-select-all]").forEach(function (master) {
       syncSelection(master.getAttribute("data-vr-select-all"));
-    });
-    document.querySelectorAll("[data-vr-autosubmit-fallback]").forEach(function (button) {
-      button.hidden = true;
     });
   });
 
@@ -186,7 +183,23 @@
     document.querySelectorAll(".vr-choices").forEach(addChoiceFilter);
   });
 
-  // After a failed submission, put keyboard focus on the first field with an error.
+  // Native focus scrolling can place entry-grid fields behind a sticky row identifier.
+  // Use its actual width, including enlarged text, rather than assuming a column size.
+  document.addEventListener("focusin", function (event) {
+    var control = event.target;
+    var wrap = control.closest(".vr-table-wrap");
+    var row = wrap && control.closest("tr");
+    var identifier = row && row.querySelector('th[scope="row"]:first-child');
+    if (!identifier || identifier.contains(control) || getComputedStyle(identifier).position !== "sticky") {
+      return;
+    }
+    var overlap = identifier.getBoundingClientRect().right - control.getBoundingClientRect().left;
+    if (overlap > 0) {
+      wrap.scrollLeft -= overlap + 4;
+    }
+  });
+
+  // After a failed submission, focus the first invalid field or the form-level error.
   document.addEventListener("DOMContentLoaded", function () {
     var invalid = document.querySelector("form [aria-invalid=true]");
     if (invalid && invalid.tagName === "FIELDSET") {
@@ -197,6 +210,12 @@
     }
     if (invalid) {
       invalid.focus();
+    } else {
+      var error = document.querySelector(".vr-main .alert-danger[role=alert], .vr-entrance-panel .alert-danger[role=alert], .vr-messages [role=alert]");
+      if (error) {
+        error.setAttribute("tabindex", "-1");
+        error.focus();
+      }
     }
   });
 
@@ -304,11 +323,15 @@
     document.querySelectorAll("[data-vr-select-all]").forEach(function (master) {
       syncSelection(master.getAttribute("data-vr-select-all"));
     });
-    document.querySelectorAll("[data-vr-autosubmit-fallback]").forEach(function (button) {
-      button.hidden = true;
-    });
     document.querySelectorAll(".vr-choices").forEach(addChoiceFilter);
     document.querySelectorAll("[data-formset-add]").forEach(initFormsetButton);
+  });
+
+  // Print actions remain declarative so a strict script policy can stay enabled.
+  document.addEventListener("click", function (event) {
+    if (event.target.closest("[data-vr-print]")) {
+      window.print();
+    }
   });
 
   // HTMX transport and server errors: keep the page as it is and say what happened.

@@ -10,7 +10,8 @@ rules:
 - The built-in role groups keep their names. Every account and group change, and every
   password change, writes an attributed audit event; password values are never recorded.
 - The identity library's own admin pages are replaced. Authenticator secrets and recovery
-  codes are never shown; a superuser may only remove a lost authenticator, which is audited.
+  codes are never shown or filterable; a superuser may only remove a lost authenticator, which
+  is audited.
   Authentication email addresses are read only here.
 """
 
@@ -24,6 +25,7 @@ from django.contrib.auth.forms import AdminUserCreationForm, UserChangeForm
 from django.contrib.auth.models import Group, Permission
 from django.db import transaction
 from django.db.models import Count, Prefetch, Q
+from django.db.models.constants import LOOKUP_SEP
 
 from core.audit import record_event
 
@@ -336,6 +338,13 @@ class AuthenticatorAdmin(SuperuserOnly, admin.ModelAdmin):
     list_filter = ("type", "created_at", "last_used_at")
     list_select_related = ("user",)
     actions = None
+
+    def lookup_allowed(self, lookup, value, request=None):
+        # As UserAdmin does for password: a changelist filter on the stored secret, such as
+        # ?data__secret__startswith=<prefix>, would reveal it one character per request.
+        if lookup.split(LOOKUP_SEP, 1)[0] == "data":
+            return False
+        return super().lookup_allowed(lookup, value, request)
 
     def has_add_permission(self, request):
         return False

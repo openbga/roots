@@ -12,7 +12,14 @@ from django.urls import reverse
 from laboratory import equipment as equipment_service
 from laboratory import nonconformance as nc_service
 from laboratory import training
-from laboratory.models import EquipmentEvent, MaterialLot, Nonconformance
+from laboratory.models import (
+    Equipment,
+    EquipmentEvent,
+    Material,
+    MaterialLot,
+    Nonconformance,
+    TrainingRecord,
+)
 
 from .conftest import PASSWORD, today
 
@@ -397,14 +404,53 @@ def test_event_upload_validation_through_view(people, asset):
     )
 
 
+def demo_lab(name="Example Environmental Lab"):
+    from core.models import Lab
+
+    Lab.objects.filter(pk=1).delete()
+    if name:
+        Lab.objects.create(pk=1, name=name)
+
+
 def test_demo_seed_is_idempotent_and_synthetic(people, lab_records):
     from django.core.management import call_command
 
+    demo_lab()
     call_command("seed_laboratory_demo")
     call_command("seed_laboratory_demo")
     assert MaterialLot.objects.filter(lot_number__startswith="DEMO-").count() == 3
     assert Nonconformance.objects.filter(title__startswith="Demo").count() == 1
     assert EquipmentEvent.objects.count() == 3
+
+
+@pytest.mark.parametrize("name", [None, "Riverside Water Laboratory"])
+def test_demo_seed_refuses_a_missing_or_real_laboratory(people, lab_records, name):
+    """Staff accounts and a catalog are not enough: synthetic records go only into the demo lab."""
+    from django.core.management import call_command
+    from django.core.management.base import CommandError
+
+    demo_lab(name)
+    with pytest.raises(CommandError, match="non-demo laboratory"):
+        call_command("seed_laboratory_demo", verbosity=0)
+    assert not Material.objects.exists() and not MaterialLot.objects.exists()
+    assert not Equipment.objects.exists() and not TrainingRecord.objects.exists()
+    assert not Nonconformance.objects.exists()
+
+
+def test_demo_seed_failing_half_way_writes_nothing(people, lab_records, monkeypatch):
+    from django.core.management import call_command
+
+    from laboratory import nonconformance
+
+    def fail(**kwargs):
+        raise RuntimeError("synthetic failure after the first records")
+
+    demo_lab()
+    monkeypatch.setattr(nonconformance, "open_nonconformance", fail)
+    with pytest.raises(RuntimeError):
+        call_command("seed_laboratory_demo", verbosity=0)
+    assert not Material.objects.exists() and not Equipment.objects.exists()
+    assert not TrainingRecord.objects.exists()
 
 
 def test_nc_create_requires_deliberate_severity_and_category(people):

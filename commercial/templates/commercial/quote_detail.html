@@ -17,7 +17,7 @@ styles read it as the quote.
 </ul>
 {% endblock %}
 {% block page_actions %}
-<button class="btn btn-outline-secondary" type="button" onclick="window.print()">{% include "includes/icon.html" with name="printer" %}Print</button>
+<button class="btn btn-outline-secondary" type="button" data-vr-print>{% include "includes/icon.html" with name="printer" %}Print</button>
 {% if can_edit and is_latest %}
 {% if is_draft %}
 <a class="btn btn-outline-secondary" href="{% url 'commercial:quote-edit' quote.pk %}">Edit</a>

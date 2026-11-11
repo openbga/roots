@@ -9,7 +9,8 @@
     {
       "title": "Header and actions",
       "paragraphs": [
-        "All laboratory staff can read; portal accounts cannot. Source status considers the latest version, not a historical acceptance. Cancelled records retain their history."
+        "All laboratory staff can read; portal accounts cannot. Source status considers the latest version, not a historical acceptance. Cancelled records retain their history.",
+        "When the latest source reports a unit other than the catalog unit, a Unit differs warning naming both units appears above the record. The source is still recorded and reported as supplied."
       ],
       "items": [
         {
@@ -91,6 +92,10 @@
         {
           "label": "Exact reported result",
           "description": "Original reported text and unit; ND is preserved as non-detect rather than numeric zero."
+        },
+        {
+          "label": "Catalog unit",
+          "description": "The unit of the requested catalog test, frozen with the source. An external source is transcribed exactly, so its reported unit can differ. When it does, this row shows Unit differs with the reported unit. The source is still recorded, reviewed and reported in the unit as supplied, and nothing is converted."
         },
         {
           "label": "Reporting limit / dilution",

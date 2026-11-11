@@ -209,7 +209,7 @@ def test_new_grids_meet_the_column_adapter_contract(config, client, analyst, rev
     assert seen == {"analytical.mdl_studies", "analytical.charts", "analytical.import_profiles"}
 
 
-def test_forms_have_breadcrumbs_and_meaningful_empty_choices(config, client, analyst):
+def test_forms_have_breadcrumbs_and_meaningful_empty_choices(config, client, analyst, admin_user):
     client.force_login(analyst)
     pages = {
         "analytical:mdl-create": ("MDL studies", "Choose a test"),
@@ -220,6 +220,7 @@ def test_forms_have_breadcrumbs_and_meaningful_empty_choices(config, client, ana
         assert 'aria-label="Breadcrumb"' in html and crumb in html, name
         assert f">{empty}</option>" in html, name
         assert "---------" not in html, name
+    client.force_login(admin_user)  # configuration forms open for administrators only
     limit = client.get(reverse("analytical:config-new", args=["qc-limit"])).content.decode()
     assert ">Choose a test</option>" in limit and "---------" not in limit
 

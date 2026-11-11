@@ -3,6 +3,8 @@ from pathlib import Path
 
 import dj_database_url
 
+from core.security_headers import DEFAULT_CONTENT_SECURITY_POLICY
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = os.environ.get("DEBUG", "false").lower() == "true"
 SECRET_KEY = os.environ.get("SECRET_KEY", "")
@@ -42,7 +44,9 @@ INSTALLED_APPS = [
     "reporting",
 ]
 MIDDLEWARE = [
+    "core.security_headers.SecurityHeadersMiddleware",
     "core.request_logging.RequestLogMiddleware",
+    "core.request_limits.RequestBodyLimitMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -107,6 +111,9 @@ ACCOUNT_LOGOUT_ON_GET = False
 # everyone out. Set this to the number of trusted proxies that append to X-Forwarded-For
 # (0 trusts none). Too high a count lets a client spoof its address: verify it on a real request.
 ALLAUTH_TRUSTED_PROXY_COUNT = int(os.environ.get("ALLAUTH_TRUSTED_PROXY_COUNT", "0"))
+# Alternative for platforms that set a client-address header themselves and replace any value a
+# client sends (never one a client can supply). When set, it is used instead of the proxy count.
+ALLAUTH_TRUSTED_CLIENT_IP_HEADER = os.environ.get("ALLAUTH_TRUSTED_CLIENT_IP_HEADER") or None
 LOGIN_URL = "account_login"
 LOGIN_REDIRECT_URL = "/"
 ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
@@ -136,6 +143,16 @@ STATICFILES_DIRS = [BASE_DIR / "static"] if (BASE_DIR / "static").exists() else 
 # Only public presentation files live here; no root index, so the dashboard keeps "/".
 WHITENOISE_ROOT = BASE_DIR / "website"
 WHITENOISE_INDEX_FILE = True
+# Static files and the presentation are served from this origin only, and never inside a frame.
+# WhiteNoise answers before the clickjacking middleware runs, so it sets the header itself.
+WHITENOISE_ALLOW_ALL_ORIGINS = False
+
+
+def _static_file_headers(headers, path, url):
+    headers["X-Frame-Options"] = "DENY"
+
+
+WHITENOISE_ADD_HEADERS_FUNCTION = _static_file_headers
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
     "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
@@ -144,10 +161,21 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
+CSRF_FAILURE_VIEW = "core.views.csrf_failure"
 SECURE_SSL_REDIRECT = not DEBUG
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-SECURE_HSTS_SECONDS = 3600 if not DEBUG else 0
+# One hour by default so a mistake is short-lived. Raise it (for example 31536000, one year)
+# once every host that serves this deployment is known to work over HTTPS only.
+SECURE_HSTS_SECONDS = int(os.environ.get("SECURE_HSTS_SECONDS", "3600")) if not DEBUG else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = (
+    os.environ.get("SECURE_HSTS_INCLUDE_SUBDOMAINS", "false").lower() == "true"
+)
 X_FRAME_OPTIONS = "DENY"
+# Replace the default policy as a whole when a deployment needs different approved sources.
+CONTENT_SECURITY_POLICY = os.environ.get("CONTENT_SECURITY_POLICY", DEFAULT_CONTENT_SECURITY_POLICY)
+# Requests declaring a larger body are refused before any of it is read. The largest upload a
+# form accepts is 10 MiB; the rest is room for the other fields of a multipart form.
+MAX_REQUEST_BODY_BYTES = int(os.environ.get("MAX_REQUEST_BODY_BYTES", str(12 * 1024 * 1024)))
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024
 

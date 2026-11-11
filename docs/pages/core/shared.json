@@ -36,11 +36,11 @@
         },
         {
           "label": "Menus and section tabs",
-          "description": "Select a menu destination or a section tab to change pages. The current destination is marked. Availability depends on the signed-in account and role; opening a direct link still checks permission."
+          "description": "Select a menu destination or a section tab to change pages. The current destination is marked and keyboard focus has a visible outline. Portal destinations wrap onto another line on narrow screens. Availability depends on the signed-in account and role; opening a direct link still checks permission."
         },
         {
           "label": "Theme",
-          "description": "The Theme menu offers Light, Dark and System. System follows the device preference. The chosen appearance is saved in this browser."
+          "description": "The Theme menu offers Light, Dark and System. System follows the device preference. The chosen appearance is saved in this browser. After choosing an appearance, focus returns to the Theme button."
         },
         {
           "label": "Account menu",
@@ -48,7 +48,7 @@
         },
         {
           "label": "Forms",
-          "description": "Required fields are marked. Validation errors identify fields or the reason an action is blocked. Some forms open in a dialog; close/cancel leaves the underlying page. Save applies the form only when server checks pass. A stale-edit message requires refreshing and checking current values before retrying."
+          "description": "Required fields are marked. Validation errors identify fields or the reason an action is blocked. After a failed page submission, focus moves to the first invalid field or the error summary when no field is invalid. Some forms open in a dialog; close/cancel leaves the underlying page. A direct form link opens the same dialog with its title as the page heading; Cancel returns to the related page or list. Sticky action buttons stay at the bottom while long forms scroll. Save applies the form only when server checks pass. A stale-edit message requires refreshing and checking current values before retrying."
         },
         {
           "label": "Footer / Source code",
@@ -65,12 +65,18 @@
         },
         {
           "label": "Sort and pages",
-          "description": "Linked column headings change server-side ordering. Pagination moves through the filtered result set; the count describes that set. Rows per page sets the page size offered by that screen."
+          "description": "Linked column headings change server-side ordering. Pagination moves through the filtered result set; the count describes that set. Choose Rows per page, then select Show to apply that page size and return to page 1 while keeping the other filters. Changing the selection alone does not reload the page."
         },
         {
           "label": "Columns",
           "description": "Opens column visibility and order preferences. Use the controls to show/hide or move supported columns, or Reset columns to restore the defaults. Columns marked Always shown are locked. These preferences stay in this browser and do not change permissions or the underlying records."
         }
+      ]
+    },
+    {
+      "title": "Submission size",
+      "paragraphs": [
+        "The deployment limits the total size of a form submission, including files and form fields. The default limit is 12 MiB, leaving room for a supported 10 MiB upload and form overhead. A larger declared request is rejected with Request body is too large before the form is processed. Reduce the upload or submitted data and try again. Unsaved input may need to be entered again. Individual upload limits still apply."
       ]
     }
   ],
@@ -79,10 +85,17 @@
     "templates/layouts/document.html",
     "core/grids.py",
     "static/js/grid.js",
+    "static/js/app.js",
+    "static/js/form-dialog.js",
+    "templates/includes/pagination.html",
+    "static/css/app.css",
+    "e2e/test_keyboard_focus.py",
     "templates/includes/user_menu.html",
     "templates/includes/theme_menu.html",
     "static/js/documentation.js",
     "templates/includes/source_footer.html",
-    "core/templatetags/source_code.py"
+    "core/templatetags/source_code.py",
+    "core/request_limits.py",
+    "tests/test_core_request_limits.py"
   ]
 }

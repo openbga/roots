@@ -285,6 +285,7 @@ def mdl_import_blanks(request, pk):
 @login_required
 def mdl_exclude(request, pk):
     _staff(request)
+    mdl_services.require_role(request.user, mdl_services.ANALYST, mdl_services.REVIEWER)
     observation = get_object_or_404(
         MDLObservation.objects.select_related("study__definition__analyte"), pk=pk
     )

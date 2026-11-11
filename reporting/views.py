@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
+from django.db.models import Prefetch
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.clickjacking import xframe_options_sameorigin
@@ -17,7 +18,7 @@ from receipt.models import Project, Sample
 
 from .content import assemble, describe_changes
 from .forms import ProjectChoiceForm, ReleaseForm, ReportForm
-from .models import MAX_SAMPLES, Report, ReportFile, ReportVersion
+from .models import MAX_SAMPLES, EddExport, Report, ReportFile, ReportVersion
 from .pdf import ReportRenderError, render_pdf
 from .queries import (
     PER_PAGE,
@@ -75,7 +76,11 @@ def _report(pk):
 
 
 def _versions(report):
-    return list(report.versions.select_related("released_by", "amends").order_by("-number"))
+    return list(
+        report.versions.select_related("released_by", "amends")
+        .prefetch_related(Prefetch("edd_exports", queryset=EddExport.objects.only("pk", "version")))
+        .order_by("-number")
+    )
 
 
 @login_required

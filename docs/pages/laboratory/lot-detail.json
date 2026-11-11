@@ -99,7 +99,7 @@
         },
         {
           "label": "When",
-          "description": "Effective time to the second, not necessarily system recording time."
+          "description": "Effective time to the second, in the laboratory time zone, whose abbreviation follows the time (for example EST or EDT). Not necessarily system recording time."
         },
         {
           "label": "Movement",

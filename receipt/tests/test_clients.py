@@ -108,3 +108,32 @@ def test_new_project_from_the_client_page_preselects_that_client(client, intake)
     ]
     assert form["client"].value() == str(intake["client"].pk)
     assert client.get(reverse("receipt:client-create")).status_code == 200
+
+
+def test_client_and_contact_history_show_readable_titles_not_action_codes(client, intake):
+    from receipt.services import update_client
+
+    manager = intake["user"]("history_pm", "project_manager")
+    owner = intake["client"]
+    update_client(
+        actor=manager,
+        client_id=owner.pk,
+        expected_revision=owner.revision,
+        reason="New billing address",
+        phone="555-0199",
+    )
+    contact = add_contact(
+        actor=manager, client_id=owner.pk, name="Synthetic Lab Contact", phone="1"
+    )
+    update_contact(
+        actor=manager, contact_id=contact.pk, expected_revision=1, reason="Moved", phone="2"
+    )
+    client.force_login(manager)
+    pages = {
+        reverse("receipt:client-detail", args=[owner.pk]): "Client updated",
+        reverse("receipt:contact-edit", args=[owner.pk, contact.pk]): "Client contact updated",
+    }
+    for url, title in pages.items():
+        body = client.get(url).content.decode()
+        assert title in body, url
+        assert "client_contact." not in body and "client.updated" not in body, url

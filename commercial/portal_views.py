@@ -51,6 +51,7 @@ SUBMISSION_COLUMNS = {
 
 
 LOCKED = "This submission is with the laboratory and can no longer be edited."
+GONE = "This draft was deleted, perhaps in another window. Nothing was saved."
 
 
 def _client_quotes(user):
@@ -66,6 +67,12 @@ def _client_submissions(user):
 
 def _problem(request, exc):
     messages.error(request, " ".join(exc.messages))
+
+
+def _gone(request):
+    """The draft was discarded after this request found it, before the service locked it."""
+    messages.error(request, GONE)
+    return redirect("client_commercial:submission-list")
 
 
 # ------------------------------------------------------------------ quotes
@@ -240,6 +247,8 @@ def submission_edit(request, pk):
                 expected_revision=form.cleaned_data["expected_revision"],
                 **form.service_data(),
             )
+        except Submission.DoesNotExist:
+            return _gone(request)
         except ValidationError as exc:
             apply_errors(form, exc)
         else:
@@ -293,6 +302,8 @@ def submission_submit(request, pk):
                 submission_id=pk,
                 expected_revision=form.cleaned_data["expected_revision"],
             )
+        except Submission.DoesNotExist:
+            return _gone(request)
         except ValidationError as exc:
             _problem(request, exc)
         else:
@@ -384,6 +395,8 @@ def sample_edit(request, pk, sample_pk=None):
                 containers=containers.rows(),
                 **data,
             )
+        except Submission.DoesNotExist:
+            return _gone(request)
         except ValidationError as exc:
             apply_errors(form, exc)
         else:
@@ -421,6 +434,8 @@ def sample_delete(request, pk, sample_pk):
             sample_id=sample_pk,
             expected_revision=form.cleaned_data["expected_revision"],
         )
+    except Submission.DoesNotExist:
+        return _gone(request)
     except ValidationError as exc:
         _problem(request, exc)
     else:

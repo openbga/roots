@@ -158,7 +158,7 @@
         },
         {
           "label": "Delete draft",
-          "description": "Only a Draft never previously submitted. Opens confirmation that deletes the draft and all entered samples/tests/containers; this cannot be undone. Cancel keeps it. The audit event remains. Returned or previously submitted records cannot be deleted this way."
+          "description": "Only a Draft never previously submitted. Opens confirmation that deletes the draft and all entered samples/tests/containers; this cannot be undone. Cancel keeps it. The audit event remains. Returned or previously submitted records cannot be deleted this way. If you delete a draft in one window while another window still shows it, saving, removing a sample or submitting in the other window returns you to Submissions with the message that the draft was deleted; nothing is saved."
         },
         {
           "label": "Submissions",

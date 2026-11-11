@@ -2,6 +2,7 @@
 {% load catalog_extras %}
 <dl class="vr-facts">
   <div><dt>Exact reported result</dt><dd>{{ source.observed_text }} {{ source.unit }}</dd></div>
+  <div><dt>Catalog unit</dt><dd>{{ source.catalog_unit }}{% if source.unit_differs %} {% include "includes/status.html" with label="Unit differs" tone="warning" plain=True %} <strong>The source reports {{ source.unit }}; it is recorded and reported as supplied, never converted.</strong>{% endif %}</dd></div>
   <div><dt>Reporting limit / dilution</dt><dd>{{ source.reporting_limit|plain_decimal }} {{ source.unit }} / {{ source.dilution|plain_decimal }}</dd></div>
   <div><dt>External method and version</dt><dd>{{ source.external_method }}</dd></div>
   <div><dt>External analyst / analysis time</dt><dd>{{ source.external_analyst }} / {{ source.analyzed_at|date:"Y-m-d H:i T" }}</dd></div>

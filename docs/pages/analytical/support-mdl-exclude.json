@@ -10,7 +10,7 @@
       "title": "Access and field",
       "paragraphs": [
         "Active internal staff with a laboratory role can read MDL records. Analysts enter observations, import routine blanks and calculate. Analysts or reviewers can exclude observations and close studies; the page buttons for these two actions are shown to analysts. Only an independent reviewer can decide a calculation. Admin includes operational roles but never bypasses independence; client accounts and superuser status alone do not grant access.",
-        "Analysts or reviewers may submit this form while the study remains open. The page identifies the study and observation type/result."
+        "Only analysts or reviewers can open and submit this form, while the study remains open; other staff roles are refused. The page identifies the study and observation type/result."
       ],
       "items": [
         {

@@ -19,6 +19,15 @@ from receipt.services import receive_sample
 class Command(BaseCommand):
     help = "Create synthetic demo records once; never reset existing data or passwords."
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--full",
+            action="store_true",
+            help="Also create a synthetic working week: a second client, a few dozen samples in "
+            "every state, batches with QC, control-chart history, an MDL study, draft, released "
+            "and amended reports, and the commercial and laboratory demo records.",
+        )
+
     @transaction.atomic
     def handle(self, *args, **options):
         password = os.environ.get("DEMO_PASSWORD")
@@ -119,6 +128,15 @@ class Command(BaseCommand):
                 disposition="proceed",
                 disposition_note="",
                 current_location="Receipt bench",
+            )
+        if options.get("full"):
+            from ._demo_full import seed_full_demo  # loads reporting/PDF code only when asked
+
+            created = seed_full_demo(stdout=self.stdout, verbosity=options["verbosity"])
+            self.stdout.write(
+                "Synthetic working week created."
+                if created
+                else "Synthetic working week already present; nothing added."
             )
         self.stdout.write(
             self.style.SUCCESS("Synthetic demo ready; existing records/passwords retained.")

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block breadcrumbs %}{% url 'analytical:batch-list' as list_url %}{% url 'analytical:batch-detail' batch.pk as batch_url %}{% include "includes/breadcrumbs.html" with section="Batches & QC" section_url=list_url record=batch.number record_url=batch_url %}{% endblock %}
 {% block page_meta %}<ul class="vr-page-meta"><li>Batch <span class="vr-id">{{ batch.number }}</span></li><li>{{ batch.method }}</li><li>{{ batch.get_matrix_display }}</li>
   <li>Preparation start: {% if batch.prepared_at %}{{ batch.prepared_at|date:"Y-m-d H:i T" }}{% else %}not recorded{% endif %}</li></ul>{% endblock %}
@@ -27,7 +28,7 @@
   {% include "includes/form_errors.html" with form=defaults %}
   {{ formset.management_form }}
   <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required for every row where you enter a result; a row with no result is skipped.</p>
-  <p class="vr-form-note">Type the result exactly as read: a number, or <strong>ND</strong> for a non-detect. Values are stored exactly; entries needing rounding are rejected. The reporting limit applied defaults to the method limit times the dilution; check it. Units come from the test and are not converted.</p>
+  <p class="vr-form-note">Type the result exactly as read: a number, or <strong>ND</strong> for a non-detect. Values are stored exactly; entries needing rounding are rejected. The reporting limit applied defaults to the method limit times the dilution; check it. Units come from the test and are not converted. Times are laboratory local time.</p>
   <fieldset{% if not can_enter %} disabled{% endif %}>
   <legend class="visually-hidden">Result entry{% if not can_enter %} (read only: only analysts can enter results){% endif %}</legend>
   <div class="row g-3 mb-3"><div class="col-md-5">{{ defaults.default_analysis_started_at.as_field_group }}</div></div>
@@ -110,26 +111,5 @@
 {% endif %}
 {% endblock %}
 {% block extra_js %}
-<script>
-/* Reporting limit = method limit x dilution, only for whole-number dilutions and only until the
-   analyst edits the limit. Exact integer arithmetic; the server validates every value again. */
-(function () {
-  var grid = document.getElementById("entry-grid");
-  if (!grid) return;
-  grid.addEventListener("input", function (event) {
-    var input = event.target, name = input.name || "";
-    var row = input.closest("tr");
-    if (!row) return;
-    var limit = row.querySelector('[name$="-reporting_limit_applied"]');
-    if (name.endsWith("-reporting_limit_applied")) { input.dataset.edited = "1"; return; }
-    if (!name.endsWith("-dilution_factor") || !limit || limit.dataset.edited) return;
-    var base = limit.dataset.baseLimit, factor = input.value.trim();
-    if (!base || !/^[0-9]+$/.test(factor) || factor === "0") return;
-    var parts = base.split("."), scale = (parts[1] || "").length;
-    var scaled = (BigInt(parts[0] + (parts[1] || "")) * BigInt(factor)).toString();
-    while (scaled.length <= scale) scaled = "0" + scaled;
-    limit.value = scale ? scaled.slice(0, -scale) + "." + scaled.slice(-scale) : scaled;
-  });
-})();
-</script>
+<script src="{% static 'analytical/entry_grid.js' %}"></script>
 {% endblock %}

@@ -17,7 +17,7 @@
       "items": [
         {
           "label": "Look ahead",
-          "description": "Choose 7, 14, 30, 60 or 90 days; blank and explicit 30 mean 30 days. This display window does not define expiry dates or lab policy. Default and invalid values use 30 days. Selection applies automatically when supported; Apply submits otherwise."
+          "description": "Choose 7, 14, 30, 60 or 90 days; blank and explicit 30 mean 30 days. This display window does not define expiry dates or lab policy. Default and invalid values use 30 days. Choosing a window changes nothing until you press Apply, which reloads the counts and links for that window."
         }
       ]
     },

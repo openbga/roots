@@ -282,3 +282,8 @@ def record_retention(request):
             .order_by("-occurred_at")[:20],
         },
     )
+
+
+def csrf_failure(request, reason=""):
+    """Use the normal error shell without echoing CSRF diagnostics or request values."""
+    return render(request, "403.html", {"csrf_failure": True}, status=403)

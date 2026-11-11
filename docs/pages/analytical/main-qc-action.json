@@ -9,7 +9,7 @@
     {
       "title": "Access",
       "paragraphs": [
-        "These are staff pages. Active users with an application staff role can read them; client accounts cannot. Analysts perform result entry and batch work, reviewers decide results, and administrators maintain configuration. Administrators also have operational analyst and reviewer access, but independence rules still apply. Superuser status alone does not grant an application role."
+        "Analysts and reviewers can open this page and record a disposition; other staff roles and client accounts are refused, and read the finding and its decisions on the batch and review pages instead. Administrators also have operational analyst and reviewer access, but independence rules still apply. Superuser status alone does not grant an application role."
       ]
     },
     {

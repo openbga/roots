@@ -129,11 +129,72 @@ def test_strict_import_page_records_the_source_file_hash(config, client, analyst
 
     raw = b"\xef\xbb\xbf" + fix_times(csv_text(OK1), config).replace("\n", "\r\n").encode()
     client.force_login(analyst)
+    commit = preview_page(client, batch, raw).context["commit_form"].initial
+    assert commit["payload"] == encode_payload(raw)
     done = client.post(
-        reverse("analytical:batch-import", args=[batch.pk]),
-        {"step": "commit", "filename": "run1.csv", "payload": encode_payload(raw)},
+        reverse("analytical:batch-import", args=[batch.pk]), commit | {"step": "commit"}
     )
     assert done.status_code == 302
     after = AuditEvent.objects.get(action="batch.results_imported").after
     assert after["file_sha256"] == file_digest(raw) and after["file_bytes"] == len(raw)
     assert after["filename"] == "run1.csv"
+
+
+def preview_page(client, batch, raw, name="run1.csv"):
+    from django.core.files.uploadedfile import SimpleUploadedFile
+    from django.urls import reverse
+
+    return client.post(
+        reverse("analytical:batch-import", args=[batch.pk]),
+        {"step": "preview", "file": SimpleUploadedFile(name, raw)},
+    )
+
+
+def test_strict_commit_refuses_a_preview_made_stale_by_another_entry(config, analyst, batch):
+    """Someone saved a draft for a targeted result after the preview: the commit must not
+    supersede it unseen."""
+    from analytical.importing import file_digest
+
+    raw = fix_times(csv_text(OK1), config).encode()
+    preview = parse_import(batch, decode_upload(raw), file_hash=file_digest(raw))
+    assert preview.ok
+    other = fix_times(csv_text(OK1.replace("0.0120", "0.0130")), config)
+    commit_import(actor=analyst, batch_id=batch.pk, text=other)
+    with pytest.raises(ValidationError, match="changed after the preview"):
+        commit_import(actor=analyst, batch_id=batch.pk, data=raw, state_token=preview.state_token)
+    assert ResultRevision.objects.get().supplied_text == "0.0130"
+
+
+def test_strict_import_refuses_the_same_file_twice(config, analyst, batch):
+    from analytical.importing import file_digest
+
+    raw = fix_times(csv_text(OK1), config).encode()
+    first = parse_import(batch, decode_upload(raw), file_hash=file_digest(raw))
+    commit_import(actor=analyst, batch_id=batch.pk, data=raw, state_token=first.state_token)
+    again = parse_import(batch, decode_upload(raw), file_hash=file_digest(raw))
+    assert not again.ok and "already imported into this batch by analyst1" in again.file_errors[0]
+    with pytest.raises(ValidationError, match="Nothing was imported"):
+        commit_import(actor=analyst, batch_id=batch.pk, data=raw, state_token=again.state_token)
+    assert ResultRevision.objects.count() == 1
+    # A changed file is a new import, and a mapped import of these bytes is judged separately.
+    edited = raw.replace(b"0.0120", b"0.0125")
+    assert parse_import(batch, decode_upload(edited), file_hash=file_digest(edited)).ok
+
+
+def test_strict_import_page_refuses_a_repeated_commit(config, client, analyst, batch):
+    """The confirm button pressed twice (or the page resubmitted) imports the file once."""
+    from django.urls import reverse
+
+    raw = fix_times(csv_text(OK1), config).encode()
+    client.force_login(analyst)
+    commit = preview_page(client, batch, raw).context["commit_form"].initial | {"step": "commit"}
+    url = reverse("analytical:batch-import", args=[batch.pk])
+    assert client.post(url, commit).status_code == 302
+    again = client.post(url, commit)
+    assert again.status_code == 200
+    assert b"already imported into this batch" in again.content
+    assert b'name="step" value="commit"' not in again.content
+    assert ResultRevision.objects.count() == 1
+    missing = {k: v for k, v in commit.items() if k != "state_token"}
+    assert client.post(url, missing).status_code == 200
+    assert ResultRevision.objects.count() == 1

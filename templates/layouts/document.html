@@ -29,7 +29,7 @@ core/templatetags/navigation.py. Error pages (400/403/404) keep this shell for s
   <meta name="color-scheme" content="light dark">
   {# Synchronous on purpose: sets data-bs-theme from the saved choice before the first paint. #}
   <script src="{% static 'js/theme-init.js' %}"></script>
-  <meta name="htmx-config" content='{"includeIndicatorStyles": false, "responseHandling": [{"code": "204", "swap": false}, {"code": "[23]..", "swap": true}, {"code": "422", "swap": true}, {"code": "[45]..", "swap": false, "error": true}]}'>
+  <meta name="htmx-config" content='{"allowEval": false, "includeIndicatorStyles": false, "responseHandling": [{"code": "204", "swap": false}, {"code": "[23]..", "swap": true}, {"code": "422", "swap": true}, {"code": "[45]..", "swap": false, "error": true}]}'>
   <title>{% block title %}{% if page_title %}{{ page_title }} · {% endif %}OpenBGA Roots{% endblock %}</title>
   <link rel="icon" href="{% static 'img/mark.svg' %}" type="image/svg+xml">
   <link rel="stylesheet" href="{% static 'vendor/bootstrap-5.3.8/css/bootstrap.min.css' %}">

@@ -10,6 +10,7 @@ import hashlib
 from zoneinfo import ZoneInfo
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
 from django.utils import timezone
@@ -143,6 +144,42 @@ def _lock_inputs(report, assembly):
     )
 
 
+def _lock_release_grants(actor):
+    """Hold the actual grant rows: locking User/Group alone cannot block M2M deletes.
+
+    Called after Lab and User, before Report. Memberships, direct grants and group
+    grants are locked in that order, each by primary key. No Group row lock is
+    needed: group admin may already hold that row while deleting its grant rows.
+    A deletion that wins these locks is seen by the subsequent authority query.
+    """
+    user_model = get_user_model()
+    group_ids = list(
+        user_model.groups.through.objects.select_for_update(of=("self",))
+        .filter(user_id=actor.pk)
+        .order_by("pk")
+        .values_list("group_id", flat=True)
+    )
+    permission = {
+        "permission__codename": "authorize_release",
+        "permission__content_type__app_label": "accounts",
+    }
+    direct_grants = list(
+        user_model.user_permissions.through.objects.select_for_update(of=("self",))
+        .filter(user_id=actor.pk, **permission)
+        .order_by("pk")
+    )
+    group_grants = list(
+        Group.permissions.through.objects.select_for_update(of=("self",))
+        .filter(group_id__in=group_ids, **permission)
+        .order_by("pk")
+    )
+
+    # A fresh query alone could accept a grant inserted after the lock queries.
+    # Require a locked witness that cannot disappear before this transaction commits.
+    if not direct_grants and not group_grants:
+        raise PermissionDenied("Explicit report release permission is required.")
+
+
 def release_report(*, actor, report_id, expected_fingerprint, reason=""):
     """Issue the next version of a report from its previewed content.
 
@@ -210,6 +247,7 @@ def release_report(*, actor, report_id, expected_fingerprint, reason=""):
         # than request.user's cached active/client flags, and hold its identity
         # stable until the release commits.
         actor = get_user_model().objects.select_for_update(no_key=True).get(pk=actor.pk)
+        _lock_release_grants(actor)
         require_release_authority(actor)
         report = (
             Report.objects.select_for_update(of=("self",))

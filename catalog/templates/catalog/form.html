@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load laboratory_extras %}
 {% comment %}
 Catalog create/edit/new-version form. A test, method or analyte has no record page: this form is the
 record page. Context: page_title, section, form (grouped()), cancel_url, instance, facts
@@ -50,7 +51,7 @@ related_url/related_label.
   <div class="card-header"><h2 class="card-title" id="history-heading">History</h2></div>
   <div class="card-body">
     <ol class="vr-timeline">
-      {% for event in history reversed %}{% include "includes/history_item.html" with title=event.action at=event.occurred_at actor=event.actor reason=event.reason %}{% endfor %}
+      {% for event in history reversed %}{% include "includes/history_item.html" with title=event.action|action_label at=event.occurred_at actor=event.actor reason=event.reason %}{% endfor %}
     </ol>
   </div>
 </section>

@@ -209,9 +209,9 @@ def test_import_pages_preview_then_commit(config, client, analyst):
     good = f"{header}\nVR-DEMO-1,Lead (synthetic),0.0123,0.005,1,{when}\n"
     page = client.post(url, {"step": "preview", "file": SimpleUploadedFile("r.csv", good.encode())})
     assert b'name="step" value="commit"' in page.content and not ResultRevision.objects.exists()
-    done = client.post(
-        url, {"step": "commit", "filename": "r.csv", "payload": encode_payload(good.encode())}
-    )
+    commit = page.context["commit_form"].initial
+    assert commit["payload"] == encode_payload(good.encode()) and commit["filename"] == "r.csv"
+    done = client.post(url, commit | {"step": "commit"})
     assert done.status_code == 302
     assert ResultRevision.objects.get().supplied_text == "0.0123"
 

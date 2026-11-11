@@ -39,12 +39,12 @@ so the surrounding form keeps its entries; no rows-per-page form (the picker has
     <form class="d-flex align-items-center gap-2" method="get" action="{{ request.path }}">
       {% for key, values in request.GET.lists %}{% if key != "page" and key != "per_page" %}{% for value in values %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endfor %}{% endif %}{% endfor %}
       <label class="vr-count text-nowrap" for="per-page-{{ noun|default:'records'|slugify }}">Rows per page</label>
-      <select class="form-select form-select-sm w-auto" id="per-page-{{ noun|default:'records'|slugify }}" name="per_page" data-vr-autosubmit>
+      <select class="form-select form-select-sm w-auto" id="per-page-{{ noun|default:'records'|slugify }}" name="per_page">
         <option value="25"{% if paginator.per_page == 25 %} selected{% endif %}>25</option>
         <option value="50"{% if paginator.per_page == 50 %} selected{% endif %}>50</option>
         <option value="100"{% if paginator.per_page == 100 %} selected{% endif %}>100</option>
       </select>
-      <button class="btn btn-sm btn-outline-secondary" type="submit" data-vr-autosubmit-fallback>Show</button>
+      <button class="btn btn-sm btn-outline-secondary" type="submit">Show</button>
     </form>
     {% if paginator.num_pages > 1 %}
     <nav aria-label="{{ noun|default:'Records'|capfirst }} pages">

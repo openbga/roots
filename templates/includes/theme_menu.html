@@ -7,7 +7,7 @@ and follows the system preference live when "System" is chosen.
   <button class="btn btn-sm vr-topbar-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Theme" data-vr-theme-button>
     {% include "includes/icon.html" with name="circle-half" %}<span class="d-none d-xl-inline">Theme</span>
   </button>
-  <div class="dropdown-menu dropdown-menu-end" aria-label="Theme">
+  <div class="dropdown-menu dropdown-menu-end" role="group" aria-label="Theme">
     <button type="button" class="dropdown-item vr-theme-option" data-vr-theme-value="light" aria-pressed="false">{% include "includes/icon.html" with name="sun" %}Light{% include "includes/icon.html" with name="check2" class="vr-theme-check" %}</button>
     <button type="button" class="dropdown-item vr-theme-option" data-vr-theme-value="dark" aria-pressed="false">{% include "includes/icon.html" with name="moon-stars" %}Dark{% include "includes/icon.html" with name="check2" class="vr-theme-check" %}</button>
     <button type="button" class="dropdown-item vr-theme-option" data-vr-theme-value="system" aria-pressed="false">{% include "includes/icon.html" with name="circle-half" %}System{% include "includes/icon.html" with name="check2" class="vr-theme-check" %}</button>

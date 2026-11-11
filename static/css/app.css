@@ -211,7 +211,7 @@
 
   /* Layout */
   --vr-topbar-height: 3.25rem;
-  --vr-sidenav-width: calc(var(--vr-paper-cell) * 9); /* the margin rule lands on a grid line */
+  --vr-sidenav-width: max(calc(var(--vr-paper-cell) * 9), 15.5rem);
   --vr-content-pad-x: 1rem;
   --vr-content-pad-y: 1rem;
   --vr-form-width: 48rem;
@@ -281,6 +281,7 @@
 
 html {
   scroll-padding-top: calc(var(--vr-topbar-height) + 0.75rem);
+  scroll-padding-bottom: 6rem; /* Clear page-level sticky form actions when tabbing. */
   scrollbar-color: var(--vr-scrollbar) transparent;
 }
 
@@ -629,6 +630,11 @@ s,
   justify-content: center;
 }
 
+.page-link:focus-visible {
+  outline: 2px solid var(--vr-focus);
+  outline-offset: 2px;
+}
+
 /* Bootstrap components that hard-code its default blue rather than --bs-primary. */
 .nav {
   --bs-nav-link-color: var(--vr-pen);
@@ -636,7 +642,9 @@ s,
 }
 
 .nav-link:focus-visible {
-  box-shadow: none; /* the global :focus-visible outline marks focus */
+  outline: 2px solid var(--vr-focus);
+  outline-offset: -2px;
+  box-shadow: none;
 }
 
 .list-group {
@@ -898,6 +906,7 @@ s,
 .vr-brand,
 .vr-brand:hover {
   display: flex;
+  min-width: 0;
   align-items: center;
   gap: 0.5rem;
   color: var(--vr-topbar-text);
@@ -913,6 +922,8 @@ s,
 }
 
 .vr-lab-name {
+  min-width: 0;
+  flex: 0 1 auto;
   color: var(--vr-topbar-text-muted);
   font-weight: 500;
   padding-left: 0.75rem;
@@ -925,6 +936,8 @@ s,
 .vr-topbar-end {
   margin-left: auto;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   align-items: center;
   gap: 0.375rem;
 }
@@ -1047,7 +1060,7 @@ s,
 
 /* Phones and tablets: the rail is an offcanvas sheet; the margin rule stays on the page. */
 @media (max-width: 991.98px) {
-  .vr-app:not(.vr-entrance-page) .vr-main {
+  .vr-app:not(.vr-entrance-page):not(.vr-portal) .vr-main {
     padding-left: calc(var(--vr-margin-x) + var(--vr-content-pad-x));
     background-image: linear-gradient(var(--vr-margin), var(--vr-margin));
     background-size: var(--vr-margin-width) 100%;
@@ -1170,16 +1183,14 @@ a.vr-navlink:hover {
   flex-basis: 100%;
 }
 
-/* Phones: one scrollable row of tabs rather than wrapping into two. */
+/* Keep every portal destination visible on phones. */
 @media (max-width: 767.98px) {
   .vr-portal-nav {
     min-width: 0; /* let the flex item shrink so its tab row scrolls instead of being clipped */
   }
 
   .vr-portal-nav .nav {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scrollbar-width: none;
+    flex-wrap: wrap;
   }
 
   .vr-portal-nav .nav-link {
@@ -1543,6 +1554,7 @@ a.vr-navlink:hover {
 
 .vr-table-wrap {
   overflow-x: auto;
+  scroll-padding-inline-start: 8rem; /* Clear the sticky row identifier on keyboard focus. */
 }
 
 .vr-table {
@@ -2286,7 +2298,7 @@ fieldset.vr-field > legend {
 
 .vr-form-dialog .vr-form-actions {
   position: sticky;
-  bottom: 0;
+  bottom: calc(-1 * var(--vr-dialog-pad));
   margin: 1.5rem calc(-1 * var(--vr-dialog-pad)) calc(-1 * var(--vr-dialog-pad));
   padding: 1rem var(--vr-dialog-pad);
   border-top: 1px solid var(--vr-border);

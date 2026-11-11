@@ -572,3 +572,190 @@ def test_external_source_facts_show_exact_reported_numbers_not_storage_scale(
         content = client.get(url).content.decode()
         assert "0.05 mg/L / 1</dd>" in content
         assert "0.0500000000" not in content
+
+
+def in_other_connection(job):
+    """Run `job` to completion on its own database connection, as a second user would."""
+
+    def run():
+        try:
+            return job()
+        finally:
+            connections.close_all()
+
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        return executor.submit(run).result()
+
+
+@pytest.mark.django_db(transaction=True)
+def test_dispatch_of_a_test_withdrawn_meanwhile_is_a_form_error_not_a_server_error(
+    client, intake, monkeypatch
+):
+    from catalog.models import Analyte, TestDefinition
+    from receipt import subcontract_views
+    from receipt.corrections import change_requested_tests
+
+    second = TestDefinition.objects.create(
+        method=intake["method"],
+        analyte=Analyte.objects.create(name="Second synthetic analyte"),
+        matrix="water",
+        unit="mg/L",
+    )
+    now = timezone.now()
+    sample = intake["sample"](
+        tests=[intake["definition"], second],
+        collected_at=now - timedelta(days=4),
+        received_at=now - timedelta(days=3),
+    )
+    requested = sample.requested_tests.get(definition=intake["definition"])
+    real = subcontract_views.dispatch_subcontract
+
+    def withdrawn_first(**kwargs):
+        # A correction commits after the page found the test, before dispatch locks it.
+        in_other_connection(
+            lambda: change_requested_tests(
+                actor=intake["actor"],
+                sample_id=sample.pk,
+                expected_revision=sample.revision,
+                reason="Client cancelled this test",
+                remove=[requested.pk],
+            )
+        )
+        return real(**kwargs)
+
+    monkeypatch.setattr(subcontract_views, "dispatch_subcontract", withdrawn_first)
+    client.force_login(intake["actor"])
+    response = client.post(
+        reverse("receipt:subcontract-create", args=[requested.pk]),
+        {
+            "expected_sample_revision": sample.revision,
+            "external_lab": "Synthetic External Laboratory",
+            "external_reference": "EXT-RACE",
+            "external_sample_id": "",
+            "dispatched_at": (now - timedelta(days=2)).isoformat(),
+            "handed_to": "Synthetic courier",
+            "reason": "External source requested",
+            "container_ids": [sample.containers.get().pk],
+        },
+    )
+    assert response.status_code == 200
+    assert "withdrawn" in " ".join(response.context["form"].non_field_errors())
+    assert response.context["form"]["external_reference"].value() == "EXT-RACE"
+    assert not Subcontract.objects.exists()
+    assert not AuditEvent.objects.filter(action="subcontract.dispatched").exists()
+
+
+def test_external_unit_is_kept_as_supplied_and_a_difference_is_flagged_where_decided(
+    client, intake, external
+):
+    """An external source is transcribed exactly: a unit other than the catalog unit (mg/L here)
+    is accepted, stored and shown as supplied, never converted, and flagged on the entry
+    confirmation, beside the review decision and on the subcontract page."""
+    obj = dispatch(intake, external)
+    client.force_login(external["analyst"])
+    entry = reverse("receipt:subcontract-result-create", args=[obj.pk])
+    assert "Catalog unit for this test: mg/L" in client.get(entry).context["form"]["unit"].help_text
+    payload = {
+        "expected_revision": obj.revision,
+        "observed_text": "12.5",
+        "reporting_limit": "1.0",
+        "dilution": "1",
+        "unit": "ug/L",
+        "external_method": "External method version 2",
+        "external_analyst": "External chemist",
+        "analyzed_at": (timezone.now() - timedelta(days=1)).isoformat(),
+        "qualifier_text": "",
+        "external_report_reference": "EXTERNAL-UNIT-1",
+        "source_pdf": SimpleUploadedFile("source.pdf", PDF, content_type="application/pdf"),
+    }
+    confirmation = client.post(entry, payload, follow=True)
+    assert confirmation.redirect_chain[-1][0] == reverse(
+        "receipt:subcontract-detail", args=[obj.pk]
+    )
+    flags = [str(m) for m in confirmation.context["messages"] if m.level_tag == "warning"]
+    assert flags == [
+        "Unit differs: the source reports ug/L but the catalog unit for this test is mg/L. "
+        "It is recorded and reported as supplied, never converted."
+    ]
+    source = obj.results.get()
+    assert (source.observed_text, source.unit, source.value) == ("12.5", "ug/L", Decimal("12.5"))
+    assert source.source_snapshot["catalog_unit"] == "mg/L" and source.unit_differs
+    detail = confirmation.content.decode()
+    assert "12.5 ug/L" in detail and "Unit differs: the source reports ug/L" in detail
+    assert "The source reports ug/L; it is recorded and reported as supplied" in detail
+
+    client.force_login(external["reviewer"])
+    review_url = reverse("receipt:subcontract-result-review", args=[source.pk])
+    review_page = client.get(review_url)
+    body = review_page.content.decode()
+    assert 'id="unit-difference"' in body and "Compare it with the source PDF" in body
+    # The flag sits in the review fieldset and describes the Decision control itself.
+    assert body.index('id="unit-difference"') < body.index('name="decision"')
+    decision = review_page.context["form"]["decision"]
+    assert 'aria-describedby="unit-difference"' in str(decision)
+    obj.refresh_from_db()
+    accepted = client.post(
+        review_url,
+        {
+            "expected_revision": obj.revision,
+            "decision": "accepted",
+            "note": "Units checked against source",
+        },
+    )
+    assert accepted.status_code == 302
+    source.refresh_from_db()
+    assert source.review_decision == "accepted" and source.unit == "ug/L"
+
+    # A correction in the catalog unit carries no flag; the earlier version keeps its own.
+    client.force_login(external["analyst"])
+    obj.refresh_from_db()
+    payload.update(
+        expected_revision=obj.revision,
+        unit="mg/L",
+        observed_text="0.0125",
+        reporting_limit="0.001",
+        reason="Source reissued in mg/L",
+        source_pdf=SimpleUploadedFile("source2.pdf", PDF, content_type="application/pdf"),
+    )
+    corrected = client.post(entry, payload, follow=True)
+    assert not [m for m in corrected.context["messages"] if m.level_tag == "warning"]
+    detail = corrected.content.decode()
+    assert "Unit differs: the source reports" not in detail  # the latest source matches
+    assert detail.count("The source reports ug/L; it is recorded") == 1  # source 1, historical
+    client.force_login(external["reviewer"])
+    latest = obj.results.get(number=2)
+    review_page = client.get(reverse("receipt:subcontract-result-review", args=[latest.pk]))
+    assert 'id="unit-difference"' not in review_page.content.decode()
+    assert "unit-difference" not in str(review_page.context["form"]["decision"])
+
+
+def test_review_page_explains_a_certain_refusal_instead_of_offering_the_form(
+    client, intake, external
+):
+    obj = dispatch(intake, external)
+    both = intake["user"]("analyst_reviewer", "analyst")
+    both.groups.add(external["reviewer"].groups.get())
+    first = enter(external, obj, actor=both)
+    url = reverse("receipt:subcontract-result-review", args=[first.pk])
+
+    def page(user):
+        client.force_login(user)
+        response = client.get(url)
+        assert response.status_code == 200
+        return response
+
+    own = page(both)
+    assert "independent reviewer" in own.content.decode() and b'name="decision"' not in own.content
+    # The server still refuses the POST the page no longer offers.
+    response = client.post(
+        url, {"expected_revision": obj.revision, "decision": "accepted", "note": "Self"}
+    )
+    assert not SubcontractResult.objects.get(pk=first.pk).review_decision
+    assert b'name="decision"' in page(external["reviewer"]).content
+    review(external, obj, first, decision="rejected", note="Unit transcription doubt")
+    assert "already has a review decision" in page(external["reviewer"]).content.decode()
+    enter(external, obj, reason="Corrected transcription")
+    stale = page(external["reviewer"])
+    assert "corrected source exists" in stale.content.decode()
+    assert b'name="decision"' not in stale.content
+    assert response.status_code == 200

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load laboratory_extras %}
 {% comment %}
 One client: account and primary contact, mailing address, invoicing, report instructions, portal
 accounts, additional contacts, projects, recent chains of
@@ -208,7 +209,7 @@ their own: the name links to the edit form for project managers and is plain tex
   <div class="card-body">
     {% if history %}
     <ol class="vr-timeline">
-      {% for event in history|dictsort:"occurred_at" %}{% include "includes/history_item.html" with title=event.action at=event.occurred_at actor=event.actor reason=event.reason %}{% endfor %}
+      {% for event in history|dictsort:"occurred_at" %}{% include "includes/history_item.html" with title=event.action|action_label at=event.occurred_at actor=event.actor reason=event.reason %}{% endfor %}
     </ol>
     {% else %}
     {% include "includes/empty_state.html" with title="No recorded changes" body="Changes to this client are listed here with their reasons." %}

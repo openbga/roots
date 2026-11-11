@@ -14,6 +14,10 @@
           "description": "Use the navigation or browser Back to reach an available page. Sign in if the session has ended. If access is denied, a laboratory administrator must review the account’s role or client assignment."
         },
         {
+          "label": "Form not submitted",
+          "description": "If the page says the form could not be verified, nothing was changed. Reload the form from an available application page and try again. The refusal does not show submitted values or diagnostic request details."
+        },
+        {
           "label": "Unexpected error",
           "description": "Retry from a known page. If the error persists, give the laboratory operator the request identifier when one is shown; do not send passwords, recovery codes or sample records in an error report."
         }
@@ -24,6 +28,9 @@
     "templates/400.html",
     "templates/403.html",
     "templates/404.html",
-    "templates/500.html"
+    "templates/500.html",
+    "core/views.py",
+    "core/context_processors.py",
+    "tests/test_core_error_pages.py"
   ]
 }

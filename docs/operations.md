@@ -157,9 +157,39 @@ your service receives. A count that is too high lets a visitor forge the address
 limit; if the header has fewer entries than the count, the request fails. The Blueprint does not
 set a value because the platform's proxy chain must be confirmed on the running service.
 
+Some platforms instead put the visitor's address in a header of their own and replace whatever a
+client sends in it. If yours documents such a header, set `ALLAUTH_TRUSTED_CLIENT_IP_HEADER` to
+its name; it is then used instead of the proxy count. Use it only for a header the platform
+guarantees: a header that a client can set lets anyone choose the address they are counted under.
+
 Limit counters are kept in each worker process's memory. With several Gunicorn workers or
 instances the effective limit is multiplied accordingly; configure a shared Django cache if you
 need exact limits.
+
+## Browser security headers
+
+Every response carries a Content Security Policy that allows scripts, styles, images, fonts and
+connections from the deployment's own origin only, with no inline scripts or styles, and a
+Permissions-Policy that turns off camera, microphone, geolocation, payment and USB access. The
+application's own pages need nothing more. If a deployment adds approved sources of its own, set
+`CONTENT_SECURITY_POLICY` to the complete replacement policy; it is sent as given, so keep
+`frame-ancestors 'none'` and avoid `'unsafe-inline'` and `'unsafe-eval'`.
+
+## Request size
+
+The application refuses a request that declares a body larger than `MAX_REQUEST_BODY_BYTES`
+(12 MiB by default; the largest upload a form accepts is 10 MiB) before reading it. This checks
+the declared length only. Keep a body limit on the proxy or load balancer in front of the
+application as well, because a request without a declared length is not covered here.
+
+## HTTPS policy
+
+With `DEBUG=false` the application redirects HTTP to HTTPS, marks its cookies secure and sends
+`Strict-Transport-Security` for one hour. The short default limits the damage of a mistake.
+Once every host that serves the deployment works over HTTPS only, raise
+`SECURE_HSTS_SECONDS` (one year is `31536000`). Set `SECURE_HSTS_INCLUDE_SUBDOMAINS=true` only if
+every subdomain of the host is served over HTTPS as well; browsers remember the policy for the
+whole period and it cannot be withdrawn early.
 
 ## Logs
 

@@ -57,7 +57,7 @@
         },
         {
           "label": "History",
-          "description": "Existing contact events appear in chronological order with action, actor, timestamp and reason."
+          "description": "Existing contact events appear oldest first, each with a readable title such as Client contact added or Client contact updated, and with the actor, timestamp and reason."
         }
       ]
     }

@@ -15,6 +15,10 @@
           "description": "Original reported text and unit; ND is preserved as non-detect rather than numeric zero."
         },
         {
+          "label": "Catalog unit",
+          "description": "The unit of the requested catalog test, frozen with the source. An external source is transcribed exactly, so its reported unit can differ. When it does, this row shows Unit differs with the reported unit. The source is still recorded, reviewed and reported in the unit as supplied, and nothing is converted."
+        },
+        {
           "label": "Reporting limit / dilution",
           "description": "Exact applied reporting limit in the reported unit and the external dilution; these are source facts, not catalog defaults."
         },
@@ -62,7 +66,7 @@
       "items": [
         {
           "label": "Decision",
-          "description": "Required Accepted source or Rejected source. Acceptance is external source acceptance and does not claim internal batch/QC approval or issue a report."
+          "description": "Required Accepted source or Rejected source. Acceptance is external source acceptance and does not claim internal batch/QC approval or issue a report. When the reported unit differs from the catalog unit, a Unit differs warning naming both units appears directly above this field and is announced with it. Compare the unit with the source PDF before deciding; accepting does not convert it."
         },
         {
           "label": "Note",
@@ -70,7 +74,7 @@
         },
         {
           "label": "Review external source",
-          "description": "Reviewers and administrators record actor/time/decision/note and audit, then return to the subcontract. The source must still be the latest, have no decision and belong to an active dispatch. The entry author cannot review it, even with reviewer/admin role. A decision cannot be edited; a corrected source creates another version for review."
+          "description": "Reviewers and administrators record actor/time/decision/note and audit, then return to the subcontract. The source must still be the latest, have no decision and belong to an active dispatch. The entry author cannot review it, even with reviewer/admin role. A decision cannot be edited; a corrected source creates another version for review. When one of these conditions already fails as the page opens, the page shows the reason and a link back to the subcontract instead of the form. The server checks the same conditions again when the review is saved."
         }
       ]
     },

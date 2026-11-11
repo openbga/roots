@@ -391,7 +391,9 @@ class ResultRowForm(BasisForm):
     prepared_aliquot_id = forms.IntegerField(
         required=False, label="Prepared aliquot", widget=forms.Select
     )
-    supplied_text = raw_text("Result", small=True, help_text="Number or ND")
+    # No per-row help text: the grid renders only the widgets and its note says "number or ND"
+    # and laboratory local time, so a reference to unrendered help would point at nothing.
+    supplied_text = raw_text("Result", small=True)
     reporting_limit_applied = raw_text("Reporting limit", small=True)
     dilution_factor = raw_text("Dilution", small=True)
     qualifiers = forms.CharField(
@@ -399,7 +401,7 @@ class ResultRowForm(BasisForm):
         required=False,
         widget=forms.TextInput(attrs={"class": SMALL, "autocomplete": "off", "size": 6}),
     )
-    analysis_started_at = local_datetime("Analysis start", required=False, small=True)
+    analysis_started_at = local_datetime("Analysis start", required=False, small=True, help_text="")
     reason = forms.CharField(
         label="Reason",
         required=False,
@@ -466,7 +468,7 @@ class CorrectionForm(BasisForm):
 
 class QCRowForm(forms.Form):
     definition_id = forms.IntegerField(widget=forms.HiddenInput)
-    observed_text = raw_text("Observed", small=True, help_text="Number or ND")
+    observed_text = raw_text("Observed", small=True)  # the grid note says "number or ND"
     reporting_limit_applied = raw_text("Reporting limit", small=True)
     spike_value = raw_text("Spike / true value", small=True)
     native_value = raw_text("Unspiked result", small=True)
@@ -540,6 +542,7 @@ class UploadPayloadField(forms.CharField):
 class ImportCommitForm(forms.Form):
     filename = forms.CharField(widget=forms.HiddenInput, max_length=200)
     payload = UploadPayloadField()
+    state_token = forms.CharField(widget=forms.HiddenInput, max_length=64)
 
 
 # ------------------------------------------------------------------- mapped import profiles

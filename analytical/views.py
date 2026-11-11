@@ -746,6 +746,7 @@ def _save_qc_rows(request, qc_sample, formset, common, by_id):
 def qc_action(request, pk):
     """Record a disposition for one QC failure or shortfall in batch `pk`."""
     _staff(request)
+    services.require_role(request.user, services.ANALYST, services.REVIEWER)
     batch = _batch(pk)
     key = request.POST.get("target_key") or request.GET.get("target", "")
     issue = next((i for i in BatchQC.load(batch).all_issues() if i.key == key), None)
@@ -989,14 +990,17 @@ def batch_import(request, pk):
                         batch_id=batch.pk,
                         data=commit_form.cleaned_data["payload"],
                         filename=commit_form.cleaned_data["filename"],
+                        state_token=commit_form.cleaned_data["state_token"],
                     )
                 except ValidationError as exc:
                     _report_errors(request, exc)
+                    data = commit_form.cleaned_data["payload"]
                     try:
                         preview = importing.parse_import(
                             batch,
-                            importing.decode_upload(commit_form.cleaned_data["payload"]),
+                            importing.decode_upload(data),
                             filename=commit_form.cleaned_data["filename"],
+                            file_hash=importing.file_digest(data),
                         )
                     except ValidationError:
                         preview = None
@@ -1021,11 +1025,17 @@ def batch_import(request, pk):
                 except ValidationError as exc:
                     upload.add_error("file", exc)
                 else:
-                    preview = importing.parse_import(batch, text, filename=file.name[:200])
+                    preview = importing.parse_import(
+                        batch,
+                        text,
+                        filename=file.name[:200],
+                        file_hash=importing.file_digest(data),
+                    )
                     commit_form = f.ImportCommitForm(
                         initial={
                             "filename": file.name[:200],
                             "payload": importing.encode_payload(data),
+                            "state_token": preview.state_token,
                         }
                     )
     shown = None
@@ -1443,24 +1453,23 @@ def config_edit(request, kind, pk=None):
     if kind not in f.CONFIG_KINDS:
         raise Http404
     model, form_class, title = f.CONFIG_KINDS[kind]
+    services.require_role(request.user, *services.CONFIG_ROLES)
     instance = get_object_or_404(model, pk=pk) if pk else None
     form = form_class(request.POST or None, instance=instance)
     protect_form(form, instance)
-    if request.method == "POST":
-        services.require_role(request.user, *services.CONFIG_ROLES)
-        if form.is_valid():
-            try:
-                services.save_config(
-                    actor=request.user,
-                    instance=form.save(commit=False),
-                    reason=form.cleaned_data.get("reason", ""),
-                    expected_state=form.cleaned_data.get("original_state"),
-                )
-            except ValidationError as exc:
-                f.add_service_errors(form, exc)
-            else:
-                messages.success(request, f"{title} saved.")
-                return redirect("analytical:qc-config")
+    if request.method == "POST" and form.is_valid():
+        try:
+            services.save_config(
+                actor=request.user,
+                instance=form.save(commit=False),
+                reason=form.cleaned_data.get("reason", ""),
+                expected_state=form.cleaned_data.get("original_state"),
+            )
+        except ValidationError as exc:
+            f.add_service_errors(form, exc)
+        else:
+            messages.success(request, f"{title} saved.")
+            return redirect("analytical:qc-config")
     history = []
     if instance:
         # The 20 latest events, shown oldest first.

@@ -18,6 +18,7 @@ from reporting.services import create_report
 
 DEMO_LAB = "Example Environmental Lab"
 DEMO_PROJECT = "Test Creek Outfall 001"
+DEMO_COC = "DEMO-COC-001"
 
 
 class Command(BaseCommand):
@@ -40,8 +41,11 @@ class Command(BaseCommand):
         except (User.DoesNotExist, Project.DoesNotExist) as exc:
             raise CommandError("Run seed_demo first.") from exc
         seed_analytical_config()
+        # Only the sample seed_demo received: never invent results for samples a user added.
         tests = RequestedTest.objects.filter(
-            sample__order__project=project, result__isnull=True
+            sample__order__project=project,
+            sample__order__coc_reference=DEMO_COC,
+            result__isnull=True,
         ).exclude(sample__disposition__in=["hold", "reject"])
         approved = sum(self._analyse(rt, analyst, reviewer) for rt in tests.order_by("pk"))
         samples = Sample.objects.filter(

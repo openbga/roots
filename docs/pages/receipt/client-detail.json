@@ -90,7 +90,7 @@
         },
         {
           "label": "History",
-          "description": "The newest eight client audit events displayed chronologically, with action, actor, timestamp and reason. Contact changes have their own edit-form history."
+          "description": "The newest eight client audit events, shown oldest first. Each has a readable title, such as Client created or Client updated, with the actor, timestamp and reason. Contact changes have their own history on the contact edit form."
         }
       ]
     }

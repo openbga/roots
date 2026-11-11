@@ -92,8 +92,14 @@ class ExternalResultForm(StyledForm, forms.Form):
         widget=forms.Textarea(attrs={"rows": 3}),
     )
 
-    def __init__(self, *args, is_correction=False, known_external_sample_id="", **kwargs):
+    def __init__(
+        self, *args, is_correction=False, known_external_sample_id="", catalog_unit="", **kwargs
+    ):
         super().__init__(*args, **kwargs)
+        self.fields["unit"].help_text = (
+            f"Catalog unit for this test: {catalog_unit}. Enter the unit exactly as the source "
+            "reports it; it is never converted. A different unit is flagged for the reviewer."
+        )
         self.fields["reason"].required = is_correction
         self.fields["external_sample_id"].required = not bool(known_external_sample_id)
 

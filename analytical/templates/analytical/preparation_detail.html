@@ -30,7 +30,7 @@
   <div><p class="mb-1">These findings hold analytical results that use this preparation until an independent reviewer records an accepted disposition.</p>
   <ul class="mb-0 ps-3">{% for issue in issues %}<li>{{ issue.message }}
     {% if issue.conflict %}<span class="vr-muted">An independent reviewer must decide.</span>{% elif issue.action %}<span class="vr-muted">Latest disposition: {{ issue.action.get_disposition_display }}.</span>{% endif %}
-    <a href="{% url 'analytical:qc-action' batch.pk %}?target={{ issue.key|urlencode }}">Record disposition<span class="visually-hidden"> for {{ issue.link_label }}</span></a>
+    {% if can_enter or can_review %}<a href="{% url 'analytical:qc-action' batch.pk %}?target={{ issue.key|urlencode }}">Record disposition<span class="visually-hidden"> for {{ issue.link_label }}</span></a>{% endif %}
   </li>{% endfor %}</ul></div>
 </div>
 {% endif %}

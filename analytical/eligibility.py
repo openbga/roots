@@ -98,17 +98,24 @@ def release_blockers(revision, qc=None, preservation=None):
     return held
 
 
-def _pending_blockers(results, preservation):
+def _batch_qc(states, batch):
+    """The batch's QC state, loaded on first use and then reused for its other results."""
+    if batch.pk not in states:
+        states[batch.pk] = BatchQC.load(batch)
+    return states[batch.pk]
+
+
+def _pending_blockers(results, preservation, states):
     """QC and holding-time reasons for results whose latest revision is entered or submitted."""
     from .services import approval_blockers
 
     revisions = ResultRevision.objects.filter(
         result__in=[r for r in results if r.status in ("draft", "submitted")],
         number=F("result__latest_number"),
-    ).select_related("batch__method", "definition__analyte")
-    states, out = {}, {}
+    ).select_related("batch__method", "definition__analyte", "result__requested_test__sample")
+    out = {}
     for rev in revisions:
-        qc = states.setdefault(rev.batch_id, BatchQC.load(rev.batch))
+        qc = _batch_qc(states, rev.batch)
         reasons = []
         reasons.extend(
             _held(m) for m in approval_blockers(rev, qc, preservation[rev.result.requested_test_id])
@@ -146,15 +153,15 @@ def reportable_results(*, samples=None, requested_tests=None):
             "reviewed_by",
             "entered_by",
             "submitted_by",
-            "result",
+            "result__requested_test__sample",
             "batch__method",
             "definition__analyte",
         )
         .order_by("number")
     ):
         approved[rev.result.requested_test_id] = rev  # ascending: last wins = latest approved
-    blockers = _pending_blockers(list(results.values()), preservation)
-    states = {}
+    states = {}  # batch id -> BatchQC, shared by pending and approved results
+    blockers = _pending_blockers(list(results.values()), preservation, states)
     out = []
     for test in tests:
         result, revision = results.get(test.pk), approved.get(test.pk)
@@ -162,11 +169,7 @@ def reportable_results(*, samples=None, requested_tests=None):
             held = (_reason(NO_RESULT),)
         elif result.status == Result.Status.APPROVED:
             held = tuple(
-                release_blockers(
-                    revision,
-                    states.setdefault(revision.batch_id, BatchQC.load(revision.batch)),
-                    preservation[test.pk],
-                )
+                release_blockers(revision, _batch_qc(states, revision.batch), preservation[test.pk])
             )
         else:
             reasons = [_reason(_BY_STATUS[result.status])]

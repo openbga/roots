@@ -46,6 +46,8 @@ updates. Two documented design limits matter when assessing risk:
 - Authenticator-app secrets and recovery codes are stored unencrypted in the database, so
   database dumps must be encrypted and access to them restricted.
 - History tables reject updates and deletes through database triggers, but a database owner or
-  superuser can disable them. This is not tamper evidence against database administrators.
+  superuser can disable them. In the packaged deployment the application's own database role
+  owns its tables, so this includes anyone who holds the application's database credentials.
+  This is not tamper evidence against database administrators.
 
 See [Operations](docs/operations.md) for both.

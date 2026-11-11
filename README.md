@@ -56,7 +56,8 @@ cd roots
 docker compose --profile app up --build -d
 # Choose a private password (at least 12 characters) for the synthetic demo accounts.
 read -s DEMO_PASSWORD; export DEMO_PASSWORD
-docker compose --profile app exec -e DEMO_PASSWORD web python manage.py seed_demo
+# --full loads a synthetic working week; without it you get the accounts and one sample.
+docker compose --profile app exec -e DEMO_PASSWORD web python manage.py seed_demo --full
 ```
 
 Open <http://127.0.0.1:8000> and sign in as `demo_custodian`, `demo_project_manager`,
@@ -84,6 +85,10 @@ Open <http://127.0.0.1:8000>. Seed accounts are `demo_custodian`, `demo_project_
 `demo_analyst`, `demo_reviewer`, `demo_approver`, `demo_admin`, and `demo_client`, using the supplied
 password. The seed is explicit and idempotent: it never resets existing passwords or deletes
 records. It refuses an existing non-demo lab. No seed/reset runs during normal deployment.
+Add `--full` for a synthetic working week: two clients, about 50 samples from receipt to report,
+a batch awaiting review, a QC failure that needs a disposition, control-chart history, an MDL
+study, and draft, released and amended reports, with the quotes, submissions, inventory,
+equipment and training records. It takes about 20 seconds and adds nothing when run again.
 Release requires `accounts.authorize_release`, which may be granted to a reviewer; nobody may
 review their own results. Administrator/superuser status alone does not grant release. A newly created
 `demo_approver` receives this permission directly; the demo seed does not grant it to groups or

@@ -70,6 +70,21 @@ def _bounded_timeouts(page: Page):
     page.console_errors = errors = []
     page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
     page.on("pageerror", lambda e: errors.append(str(e)))
+    violations = []
+
+    def record_policy_violation(message):
+        text = str(message)
+        if "content security policy" in text.lower() or "content-security-policy" in text.lower():
+            violations.append(text)
+
+    def watch_policy(target):
+        target.on("console", lambda message: record_policy_violation(message.text))
+        target.on("pageerror", record_policy_violation)
+
+    watch_policy(page)
+    page.context.on("page", watch_policy)
+    yield
+    assert not violations, "Content Security Policy violations:\n" + "\n".join(violations)
 
 
 @pytest.fixture(autouse=True)

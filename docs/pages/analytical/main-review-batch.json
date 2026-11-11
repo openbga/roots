@@ -38,7 +38,7 @@
       "items": [
         {
           "label": "Open QC findings",
-          "description": "Each current unresolved analytical QC issue is listed once with its disposition/conflict state. It holds the affected definitions; Record disposition opens its separate assessment."
+          "description": "Each current unresolved analytical QC issue is listed once with its disposition/conflict state. It holds the affected definitions; Record disposition, shown to analysts and reviewers, opens its separate assessment."
         },
         {
           "label": "QC sample",

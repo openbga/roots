@@ -296,9 +296,13 @@ def _create(request, form_class, service, thing, list_name, destination):
         request.POST or None, initial=initial if "client" in form_class.base_fields else {}
     )
     if request.method == "POST" and form.is_valid():
-        obj = service(actor=request.user, **form.cleaned_data)
-        messages.success(request, f"Create {thing} completed.")
-        return destination(obj)
+        try:
+            obj = service(actor=request.user, **form.cleaned_data)
+        except ValidationError as exc:  # e.g. the client was deactivated after validation
+            _errors(form, exc)
+        else:
+            messages.success(request, f"Create {thing} completed.")
+            return destination(obj)
     list_url = reverse(list_name)
     return render(
         request,

@@ -97,3 +97,19 @@ def test_empty_posts_to_the_entry_grids_render_the_page(config, client, analyst,
     ):
         assert client.post(url, {}).status_code == 200
     assert not ResultRevision.objects.exists()
+
+
+def test_grid_inputs_reference_only_descriptions_on_the_page(config, client, analyst, batch):
+    """Every aria-describedby id on the entry grids names an element that is rendered."""
+    import re
+
+    client.force_login(analyst)
+    sample = svc.add_qc_sample(actor=analyst, batch_id=batch.pk, qc_type="method_blank", label="MB")
+    for url in (
+        reverse("analytical:batch-entry", args=[batch.pk]),
+        reverse("analytical:qc-measure", args=[sample.pk]),
+    ):
+        html = client.get(url).content.decode()
+        ids = set(re.findall(r'\bid="([^"]+)"', html))
+        refs = {r for attr in re.findall(r'aria-describedby="([^"]+)"', html) for r in attr.split()}
+        assert refs and refs <= ids, (url, sorted(refs - ids))

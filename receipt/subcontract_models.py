@@ -149,3 +149,13 @@ class SubcontractResult(models.Model):
     @property
     def label(self):
         return f"{self.subcontract.number} · source {self.number}"
+
+    @property
+    def catalog_unit(self):
+        return self.source_snapshot.get("catalog_unit", "")
+
+    @property
+    def unit_differs(self):
+        """The source reports a unit other than the catalog test's. Both stay as recorded; the
+        difference is shown wherever the source is entered, reviewed or read."""
+        return bool(self.catalog_unit) and self.unit != self.catalog_unit

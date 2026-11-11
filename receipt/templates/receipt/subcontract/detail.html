@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% comment %}
 One external handoff and its source versions. Context: subcontract, sample, requested_test, sources
-(newest first), latest, events (oldest first, each with display_title), can_dispatch,
+(newest first), latest, unit_difference (latest source's unit is not the catalog unit), events
+(oldest first, each with display_title), can_dispatch,
 can_enter_external, can_review_source. Header actions: cancel (destructive, first), correct
 (secondary), then the one primary, which is review when offered, else entering the first result.
 {% endcomment %}
@@ -23,6 +24,7 @@ can_enter_external, can_review_source. Header actions: cancel (destructive, firs
 {% elif can_enter_external and not subcontract.cancelled_at and not latest %}<a class="btn btn-primary" href="{% url 'receipt:subcontract-result-create' subcontract.pk %}">Enter external source result</a>{% endif %}
 {% endblock %}
 {% block content %}
+{% if unit_difference %}<div class="alert alert-warning">{% include "includes/status.html" with label="Unit differs" tone="warning" plain=True %} {{ unit_difference }}</div>{% endif %}
 <section class="card mb-3" aria-labelledby="dispatch-heading">
   <div class="card-header"><h2 class="card-title" id="dispatch-heading">External handoff</h2></div>
   <div class="card-body">

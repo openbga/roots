@@ -1,5 +1,7 @@
 """The identity library's admin pages: no factor secrets, audited removal, superusers only."""
 
+import re
+
 import pytest
 from allauth.account.models import EmailAddress
 from allauth.mfa.models import Authenticator
@@ -205,3 +207,63 @@ def test_email_addresses_are_read_only_for_superusers(owner, make_user, client):
         False,
     )
     assert EmailAddress.objects.count() == 1
+
+
+CSRF = re.compile(r"(?<=X-CSRFToken\": \")[^\"]+|(?<=csrfmiddlewaretoken\" value=\")[^\"]+")
+
+
+def _refused_alike(client, url, params, right, wrong):
+    """A lookup on a secret is refused, and the reply is the same for a right or wrong prefix."""
+    replies = [client.get(url, {**params, name: value}) for name, value in (right, wrong)]
+    assert [r.status_code for r in replies] == [400, 400], (url, right[0])
+    # Only Django's per-response masked CSRF token may differ.
+    bodies = [CSRF.sub("CSRF", r.content.decode()) for r in replies]
+    assert bodies[0] == bodies[1], (url, right[0])
+
+
+def test_changelist_lookups_cannot_probe_factor_secrets_or_passwords(owner, enrolled, client):
+    """`?data__secret__startswith=<prefix>` would otherwise recover a secret by prefix search,
+    one request per character, with no audit event. The same holds for the recovery seed, for
+    relations that reach the authenticator or a password hash, and for `_to_field`."""
+    client.force_login(owner)
+    secret = enrolled["totp"].data["secret"]
+    seed = enrolled["recovery"].data["seed"]
+    authenticators = reverse("admin:mfa_authenticator_changelist")
+    users = reverse("admin:accounts_user_changelist")
+    emails = reverse("admin:account_emailaddress_changelist")
+    password = enrolled["user"].password
+
+    def other(text):
+        return ("B" if text[0] != "B" else "C") + text[1:]
+
+    probes = [
+        (authenticators, "data__secret__startswith", secret[:4]),
+        (authenticators, "data__seed__startswith", seed[:6]),
+        (authenticators, "data__icontains", secret[:4]),
+        (authenticators, "data__secret", secret),
+        (authenticators, "data__has_key", "secret"),
+        (authenticators, "user__password__startswith", password[:12]),
+        (users, "authenticator__data__secret__startswith", secret[:4]),
+        (users, "password__startswith", password[:12]),
+        (emails, "user__password__startswith", password[:12]),
+        (emails, "user__authenticator__data__seed__startswith", seed[:6]),
+    ]
+    base = {"user__id__exact": enrolled["user"].pk}
+    for url, name, value in probes:
+        _refused_alike(client, url, base, (name, value), (name, other(value)))
+    # A changelist cannot be re-keyed on the secret column either.
+    assert client.get(authenticators, {"_to_field": "data"}).status_code == 400
+    # Ordinary filters still work.
+    listed = client.get(authenticators, {**base, "type__exact": "totp"})
+    assert listed.status_code == 200
+    assert reverse("admin:mfa_authenticator_change", args=[enrolled["totp"].pk]) in (
+        listed.content.decode()
+    )
+    # The autocomplete endpoint has nothing to search on authenticators.
+    assert (
+        client.get(
+            reverse("admin:autocomplete"),
+            {"app_label": "mfa", "model_name": "authenticator", "field_name": "data", "term": "A"},
+        ).status_code
+        == 403
+    )

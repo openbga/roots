@@ -80,7 +80,7 @@
         },
         {
           "label": "Record disposition",
-          "description": "Opens the current blocking finding. An independent reviewer must accept a qualification to clear its approval hold; a stale finding or conflicted decision cannot clear it."
+          "description": "Shown to analysts and reviewers. Opens the current blocking finding. An independent reviewer must accept a qualification to clear its approval hold; a stale finding or conflicted decision cannot clear it."
         },
         {
           "label": "QC configuration",

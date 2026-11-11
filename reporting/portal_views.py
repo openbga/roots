@@ -88,7 +88,9 @@ class PortalFilterForm(forms.Form):
 
     def __init__(self, *args, user, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["project"].queryset = client_projects(user).order_by("name")
+        self.fields["project"].queryset = (
+            client_projects(user).select_related("client").order_by("name")
+        )
 
 
 class PortalSampleFilterForm(PortalFilterForm):

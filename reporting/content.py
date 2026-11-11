@@ -331,7 +331,9 @@ def assemble(report, *, actor=None):
                     },
                 )
                 if analyte not in prep_batch["qc"]:
-                    prep_qc = qc_states.setdefault(prep.pk, BatchQC.load(prep))
+                    if prep.pk not in qc_states:
+                        qc_states[prep.pk] = BatchQC.load(prep)
+                    prep_qc = qc_states[prep.pk]
                     evidence = prep_qc.evidence(revision.definition)
                     evidence.pop("evaluated_at", None)
                     prep_batch["qc"][analyte] = _scoped_qc(evidence, prep_qc, client.pk)

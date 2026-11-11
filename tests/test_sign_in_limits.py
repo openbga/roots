@@ -58,3 +58,26 @@ def test_default_trusts_no_forwarded_address(custodian, settings):
 
     assert response.status_code == 302
     assert visitor.session["_auth_user_id"] == str(custodian.pk)
+
+
+def test_trusted_client_header_counts_each_visitor_and_ignores_forwarded_for(custodian, settings):
+    settings.ALLAUTH_TRUSTED_CLIENT_IP_HEADER = "X-Real-IP"
+    # The platform sets the header; whatever the client put in X-Forwarded-For is not consulted.
+    for n in range(12):
+        HttpClient(
+            REMOTE_ADDR=PROXY, HTTP_X_REAL_IP="203.0.113.9", HTTP_X_FORWARDED_FOR=f"192.0.2.{n}"
+        ).post("/accounts/login/", {"login": f"nobody{n}", "password": "wrong-guess-729"})
+
+    blocked = HttpClient(REMOTE_ADDR=PROXY, HTTP_X_REAL_IP="203.0.113.9")
+    response = blocked.post("/accounts/login/", {"login": "custodian", "password": PASSWORD})
+    assert "_auth_user_id" not in blocked.session
+    assert b"Too many failed login attempts" in response.content
+
+    visitor = HttpClient(REMOTE_ADDR=PROXY, HTTP_X_REAL_IP="198.51.100.20")
+    response = visitor.post("/accounts/login/", {"login": "custodian", "password": PASSWORD})
+    assert response.status_code == 302
+    assert visitor.session["_auth_user_id"] == str(custodian.pk)
+
+
+def test_no_client_header_is_trusted_by_default(settings):
+    assert settings.ALLAUTH_TRUSTED_CLIENT_IP_HEADER is None

@@ -36,6 +36,15 @@ def test_public_presentation_and_assets_are_served_by_whitenoise(client, setting
         asset.close()
 
 
+def test_static_files_are_same_origin_only_and_cannot_be_framed(client):
+    for path in ("/about/", "/about/assets/site.css"):
+        response = client.get(path)
+        assert response["X-Frame-Options"] == "DENY"
+        assert response["X-Content-Type-Options"] == "nosniff"
+        assert "Access-Control-Allow-Origin" not in response
+        response.close()
+
+
 def test_presentation_references_exactly_the_assets_it_ships():
     """The page is also published as a static site, where a missing file fails silently."""
     html = (PRESENTATION / "index.html").read_text()

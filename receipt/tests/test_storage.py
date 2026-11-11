@@ -363,3 +363,144 @@ def test_concurrent_disposal_records_once_and_rejects_stale_writer(intake):
     assert (
         AuditEvent.objects.filter(action="sample.disposed", object_id=str(sample.pk)).count() == 1
     )
+
+
+def _sql(statement, *params):
+    from django.db import connection
+
+    with transaction.atomic(), connection.cursor() as cursor:
+        cursor.execute(statement, params)
+
+
+def test_database_keeps_a_disposal_record_final_but_allows_the_audited_path(intake):
+    """The trigger stops direct SQL; retention, holds and disposal still go through services."""
+    open_sample = stored_sample(intake, client_sample_id="OPEN-1")
+    retention(intake, open_sample)
+    set_disposal_hold(
+        actor=intake["actor"],
+        sample_id=open_sample.pk,
+        expected_revision=open_sample.revision,
+        disposal_hold=True,
+        reason="Client asked to keep it",
+    )
+    open_record = SampleStorage.objects.get(sample=open_sample)
+    # Before disposal the retention columns stay editable, but never move to another sample.
+    _sql("UPDATE receipt_samplestorage SET disposal_hold = false WHERE id = %s", open_record.pk)
+    sample = stored_sample(intake, disposition="reject", disposition_note="Client cancelled")
+    retention(intake, sample)
+    storage = disposal(intake, sample)
+    spare = stored_sample(intake, client_sample_id="SPARE-1")  # no storage record of its own
+    with pytest.raises(DatabaseError, match="another sample"):
+        _sql(
+            "UPDATE receipt_samplestorage SET sample_id = %s WHERE id = %s",
+            spare.pk,
+            open_record.pk,
+        )
+    before = snapshot(SampleStorage.objects.get(pk=storage.pk))
+    for statement in (
+        "UPDATE receipt_samplestorage SET disposal_reason = 'Rewritten' WHERE id = %s",
+        "UPDATE receipt_samplestorage SET disposed_at = disposed_at - interval '1 day' "
+        "WHERE id = %s",
+        "UPDATE receipt_samplestorage SET retention_until = retention_until + 30 WHERE id = %s",
+        "UPDATE receipt_samplestorage SET disposed_at = NULL, disposed_by_id = NULL, "
+        "disposal_reason = '', disposal_method = '', disposal_destination = '' WHERE id = %s",
+        "DELETE FROM receipt_samplestorage WHERE id = %s",
+    ):
+        with pytest.raises(DatabaseError, match="disposal records cannot"):
+            _sql(statement, storage.pk)
+    assert snapshot(SampleStorage.objects.get(pk=storage.pk)) == before
+    # A no-op write of an unchanged disposed row is harmless and allowed.
+    _sql("UPDATE receipt_samplestorage SET disposal_hold = disposal_hold WHERE id = %s", storage.pk)
+
+
+def test_disposal_guard_applies_to_a_database_that_already_holds_disposals(intake):
+    from django.db import connection
+    from django.db.migrations.executor import MigrationExecutor
+
+    sample = stored_sample(intake, disposition="reject", disposition_note="Client cancelled")
+    retention(intake, sample)
+    storage = disposal(intake, sample)
+    previous = [("receipt", "0011_entity_master_data")]
+    guarded = [("receipt", "0012_sample_disposal_immutable")]
+    MigrationExecutor(connection).migrate(previous)
+    try:
+        # Without the guard a direct write would succeed; prove the old schema, then reapply.
+        _sql(
+            "UPDATE receipt_samplestorage SET disposal_reason = 'Old schema' WHERE id = %s",
+            storage.pk,
+        )
+        _sql(
+            "UPDATE receipt_samplestorage SET disposal_reason = %s WHERE id = %s",
+            storage.disposal_reason,
+            storage.pk,
+        )
+    finally:
+        MigrationExecutor(connection).migrate(guarded)
+    with pytest.raises(DatabaseError, match="cannot be changed"):
+        _sql(
+            "UPDATE receipt_samplestorage SET disposal_reason = 'New schema' WHERE id = %s",
+            storage.pk,
+        )
+    assert SampleStorage.objects.get(pk=storage.pk).disposal_reason == storage.disposal_reason
+
+
+def test_disposal_page_states_a_certain_refusal_above_the_form(client, intake):
+    """The reason is shown when the page opens; the form stays, as the acceptance journey uses
+    it, and a refused save shows the reason once, as the form error."""
+    sample = stored_sample(intake, disposition="reject", disposition_note="Client cancelled")
+    url = reverse("receipt:sample-dispose", args=[sample.pk])
+    client.force_login(intake["actor"])
+
+    def opened():
+        response = client.get(url)
+        assert response.status_code == 200
+        body = response.content.decode()
+        assert 'name="method"' in body  # the form is still offered
+        if 'id="disposal-blocker"' not in body:
+            return ""
+        start = body.index('id="disposal-blocker"')
+        return body[start : body.index("</div>", start)]
+
+    assert "explicit physical retention date" in opened()
+    retention(intake, sample, retention_until=timezone.localdate())
+    assert "through the selected retention date" in opened()
+    retention(intake, sample)
+    set_disposal_hold(
+        actor=intake["actor"],
+        sample_id=sample.pk,
+        expected_revision=sample.revision,
+        disposal_hold=True,
+        reason="Client investigation",
+    )
+    sample.refresh_from_db()
+    assert "hold blocks physical disposal" in opened()
+    # The server check still stands behind the page, and the reason is not repeated.
+    refused = client.post(
+        url,
+        {
+            "expected_revision": sample.revision,
+            "occurred_at": timezone.localtime().strftime("%Y-%m-%dT%H:%M"),
+            "method": "Solid waste (non-hazardous)",
+            "destination": "Synthetic disposal facility",
+            "relinquished_by": "Synthetic custodian",
+            "received_by": "Synthetic operator",
+            "reason": "Authorized disposal",
+            "confirm": "on",
+        },
+    )
+    body = refused.content.decode()
+    assert 'id="disposal-blocker"' not in body
+    assert body.count("A disposal hold or sample disposition hold blocks physical disposal.") == 1
+    assert not SampleStorage.objects.filter(disposed_at__isnull=False).exists()
+    set_disposal_hold(
+        actor=intake["actor"],
+        sample_id=sample.pk,
+        expected_revision=sample.revision,
+        disposal_hold=False,
+        reason="Investigation closed",
+    )
+    assert opened() == ""
+    pending = stored_sample(intake, client_sample_id="PENDING-1")
+    retention(intake, pending)
+    url = reverse("receipt:sample-dispose", args=[pending.pk])
+    assert "Outstanding requested tests" in opened()

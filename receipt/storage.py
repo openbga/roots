@@ -85,6 +85,44 @@ def set_disposal_hold(*, actor, sample_id, expected_revision, disposal_hold, rea
     return _record_change(actor, sample, storage, before, "sample.disposal_hold_changed", reason)
 
 
+NO_RETENTION = "Set an explicit physical retention date before disposal."
+HELD = "A disposal hold or sample disposition hold blocks physical disposal."
+RETAINED = "Retain the physical sample through the selected retention date."
+
+
+def _open_preparation(sample):
+    if active := [d for d in preparation_dependencies(sample) if d["blocks_disposal"]]:
+        return (
+            "Preparation work is still open for this sample ("
+            + ", ".join(f"{d['aliquot_label']} in {d['batch_number']}" for d in active)
+            + "). Close or cancel it before physical disposal; its records are kept."
+        )
+    return ""
+
+
+def disposal_blocker(sample, storage):
+    """Why `dispose_sample` will refuse whatever is entered, or "". For the page only: the
+    service repeats every check under its locks."""
+    if not storage or storage.retention_until is None:
+        return NO_RETENTION
+    if storage.disposal_hold or sample.disposition == Sample.Disposition.HOLD:
+        return HELD
+    # A disposal time cannot be in the future, so its date cannot pass the retention date yet.
+    if timezone.localdate() <= storage.retention_until:
+        return RETAINED
+    if blocker := _open_preparation(sample):
+        return blocker
+    results = Result.objects.filter(requested_test__sample=sample)
+    subcontracts = Subcontract.objects.filter(
+        requested_test__sample=sample, cancelled_at__isnull=True
+    )
+    try:
+        _require_issued_tests(sample, results, subcontracts)
+    except ValidationError as exc:
+        return " ".join(exc.messages)
+    return ""
+
+
 def _require_issued_tests(sample, results, subcontracts):
     if sample.disposition == Sample.Disposition.REJECT:
         return
@@ -137,11 +175,9 @@ def dispose_sample(
     )
     sample, storage = _locked_sample(sample_id, expected_revision)
     if not storage or storage.retention_until is None:
-        raise ValidationError("Set an explicit physical retention date before disposal.")
+        raise ValidationError(NO_RETENTION)
     if storage.disposal_hold or sample.disposition == Sample.Disposition.HOLD:
-        raise ValidationError(
-            "A disposal hold or sample disposition hold blocks physical disposal."
-        )
+        raise ValidationError(HELD)
     if not isinstance(occurred_at, datetime) or timezone.is_naive(occurred_at):
         raise ValidationError({"occurred_at": "Use a time with the laboratory time zone."})
     latest = sample.custody_events.order_by("-occurred_at").first()
@@ -149,7 +185,7 @@ def dispose_sample(
     if occurred_at > timezone.now() or occurred_at < latest_at:
         raise ValidationError({"occurred_at": "Disposal must follow custody and cannot be future."})
     if timezone.localdate(occurred_at) <= storage.retention_until:
-        raise ValidationError("Retain the physical sample through the selected retention date.")
+        raise ValidationError(RETAINED)
     values = {
         "method": method,
         "destination": destination,
@@ -162,12 +198,8 @@ def dispose_sample(
         raise ValidationError(
             "Disposal method, destination and custodians must fit 160 characters."
         )
-    if active := [d for d in preparation_dependencies(sample) if d["blocks_disposal"]]:
-        raise ValidationError(
-            "Preparation work is still open for this sample ("
-            + ", ".join(f"{d['aliquot_label']} in {d['batch_number']}" for d in active)
-            + "). Close or cancel it before physical disposal; its records are kept."
-        )
+    if blocker := _open_preparation(sample):
+        raise ValidationError(blocker)
     _require_issued_tests(sample, results, subcontracts)
     before = {**snapshot(storage), "revision": sample.revision, "location": sample.current_location}
     event = CustodyEvent(

@@ -102,8 +102,13 @@ def dispatch_subcontract(
     requested = (
         RequestedTest.objects.select_for_update(of=("self",))
         .select_related("definition__method", "definition__analyte")
-        .get(pk=requested_test_id)
+        .filter(pk=requested_test_id)
+        .first()
     )
+    if requested is None:
+        raise ValidationError(
+            "This test was withdrawn from the sample. Reload the sample and review its tests."
+        )
     sample = Sample.objects.select_for_update().get(pk=requested.sample_id)
     if sample.revision != expected_sample_revision:
         raise ValidationError("Sample changed. Reload and review its custody before dispatch.")
@@ -255,6 +260,9 @@ def enter_external_result(
         "sample", "definition__method", "definition__analyte"
     ).get(pk=obj.requested_test_id)
     definition = requested.definition
+    # Transcribed exactly: an external unit may differ from the catalog unit. It is never
+    # converted; the difference is shown to whoever reviews the source.
+    unit = _text(unit, "Reported unit", max_length=40)
     revision = SubcontractResult(
         subcontract=obj,
         number=obj.latest_number + 1,
@@ -263,7 +271,7 @@ def enter_external_result(
         value=value,
         reporting_limit=_decimal(reporting_limit, "reporting_limit", "Reporting limit"),
         dilution=_decimal(dilution, "dilution", "Dilution"),
-        unit=_text(unit, "Reported unit", max_length=40),
+        unit=unit,
         external_method=_text(external_method, "External method and version", max_length=200),
         external_analyst=_text(external_analyst, "External analyst", max_length=160),
         analyzed_at=analyzed_at,
@@ -313,6 +321,20 @@ def enter_external_result(
     return revision
 
 
+def review_blocker(source, subcontract, actor):
+    """Why `actor` cannot review this source version now, or "". The review page shows it in
+    place of the form; the service applies it again to the locked rows."""
+    if subcontract.cancelled_at:
+        return "This subcontract is cancelled; its dispatch history remains available."
+    if source.number != subcontract.latest_number:
+        return "A corrected source exists. Review the latest external source result."
+    if source.review_decision:
+        return "This source already has a review decision; corrections add a version."
+    if source.entered_by_id == actor.pk:
+        return "An independent reviewer must review this external source entry."
+    return ""
+
+
 @transaction.atomic
 def review_external_result(*, actor, result_id, expected_revision, decision, note):
     require_role(actor, "reviewer")
@@ -320,16 +342,8 @@ def review_external_result(*, actor, result_id, expected_revision, decision, not
     source = SubcontractResult.objects.get(pk=result_id)
     obj = _active_locked(source.subcontract_id, expected_revision)
     source = SubcontractResult.objects.get(pk=result_id)
-    if source.number != obj.latest_number:
-        raise ValidationError(
-            "A corrected source exists. Review the latest external source result."
-        )
-    if source.review_decision:
-        raise ValidationError(
-            "This source already has a review decision; corrections add a version."
-        )
-    if source.entered_by_id == actor.pk:
-        raise ValidationError("An independent reviewer must review this external source entry.")
+    if blocker := review_blocker(source, obj, actor):
+        raise ValidationError(blocker)
     if decision not in SubcontractResult.Decision.values:
         raise ValidationError("Choose acceptance or rejection of the external source.")
     before = {"revision": obj.revision, "source_result": snapshot(source)}

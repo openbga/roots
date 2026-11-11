@@ -35,7 +35,7 @@
     <tbody>
       {% for m in movements %}
       <tr>
-        <th scope="row" class="vr-nowrap"><time datetime="{{ m.occurred_at|date:'c' }}">{{ m.occurred_at|date:"Y-m-d H:i:s" }}</time></th>
+        <th scope="row" class="vr-nowrap"><time datetime="{{ m.occurred_at|date:'c' }}">{{ m.occurred_at|date:"Y-m-d H:i:s T" }}</time></th>
         <td>{{ m.get_kind_display }}{% if m.reversed_by %} {% include "includes/status.html" with label="Reversed" tone="neutral" plain=True %}{% endif %}{% if m.expired_at_use %} {% include "includes/status.html" with label="Used after expiry" tone="warning" plain=True %}{% endif %}</td>
         <td class="text-end vr-nowrap">{% if m.delta > 0 %}+{% endif %}{{ m.delta|qty }} {{ m.unit }}</td>
         <td class="text-end vr-nowrap">{{ m.balance_after|qty }}</td>

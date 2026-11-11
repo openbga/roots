@@ -168,7 +168,7 @@
       "items": [
         {
           "label": "Import … result(s) as entered",
-          "description": "Available only for a wholly valid preview and analyst access. Rechecks the file and current records, then commits all revisions together or none. Does not submit for review. Membership closure does not by itself stop result entry/import."
+          "description": "Available only for a wholly valid preview and analyst access. Rechecks the file and current records, refuses a stale preview or a file already imported into this batch, then commits all revisions together or none. Does not submit for review. Membership closure does not by itself stop result entry/import."
         },
         {
           "label": "Start over",
@@ -185,9 +185,11 @@
       ]
     },
     {
-      "title": "Provenance and changed work",
+      "title": "Provenance, stale and repeated imports",
       "paragraphs": [
-        "The standard importer retains each result’s import source, filename and source row, plus an attributed import event, which records the SHA-256 digest and size of the uploaded bytes, and all prior revisions. It does not retain the uploaded file itself; keep your source file, whose digest identifies it. Reimporting a file is not a duplicate-file guard: it can create a new revision when its current state and reason permit. Preview is not a reservation; if data changes, confirmation validates the current state and reports any failure. Receipt Hold or Reject blocks new entry. After success, inspect entered results and submit from the batch page."
+        "The standard importer retains each result’s import source, filename and source row, plus an attributed import event, which records the SHA-256 digest and size of the uploaded bytes, and all prior revisions. It does not retain the uploaded file itself; keep your source file, whose digest identifies it. Receipt Hold or Reject blocks new entry. After success, inspect entered results and submit from the batch page.",
+        "Preview is not a reservation. Confirmation validates the file again against current records and refuses it if the latest revision or preparation dependency of any targeted result changed after the preview, for example a draft someone else saved. Upload the file again so the preview reflects current records. A failed confirmation may display a re-parsed preview but does not commit it. Hidden confirmation data is validated; damaged, oversized or incomplete confirmation data imports nothing.",
+        "The same uploaded bytes cannot be imported twice into the same batch through this page, even under another filename; the preview names who imported them and when. A changed file is a new import and can create new revisions when the current state and reason permit. Imports through a mapping profile are checked separately, on the file and mapping digests together. To change results already imported, correct the source file or enter the correction by hand."
       ]
     }
   ],

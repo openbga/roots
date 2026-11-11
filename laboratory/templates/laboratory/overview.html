@@ -5,8 +5,8 @@
 {% block content %}
 <form class="d-flex flex-wrap align-items-end gap-2 mb-3" method="get" action="{% url 'laboratory:overview' %}" aria-label="Look-ahead window">
   <div class="vr-field"><label class="form-label" for="ov-days">Look ahead</label>
-    <select class="form-select" id="ov-days" name="days" data-vr-autosubmit>{% for value, label in day_choices %}<option value="{{ value }}"{% if value == days %} selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
-  <button class="btn btn-outline-secondary" type="submit" data-vr-autosubmit-fallback>Apply</button>
+    <select class="form-select" id="ov-days" name="days">{% for value, label in day_choices %}<option value="{{ value }}"{% if value == days %} selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+  <button class="btn btn-outline-secondary" type="submit">Apply</button>
 </form>
 <div class="row g-3">
   <div class="col-lg-6">

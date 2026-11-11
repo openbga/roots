@@ -571,16 +571,24 @@
       var crumbs = Array.from(dedicated.querySelectorAll(".breadcrumb a[href]"));
       directDestination = cancel ? cancel.href : (crumbs.length ? crumbs[crumbs.length - 1].href : "/");
       begin();
-      // Keep one main landmark in the shell while moving already-rendered fields and listeners.
+      // The dedicated dialog is the page's main content; the empty shell stays hidden.
       var page = document.createElement("section");
       Array.from(dedicated.attributes).forEach(function (attribute) {
-        if (attribute.name !== "id") {
+        if (attribute.name !== "id" && attribute.name !== "class" && attribute.name !== "tabindex") {
           page.setAttribute(attribute.name, attribute.value);
         }
       });
       while (dedicated.firstChild) {
         page.append(dedicated.firstChild);
       }
+      dedicated.hidden = true;
+      page.setAttribute("role", "main");
+      var pageTitle = document.createElement("h1");
+      Array.from(title.attributes).forEach(function (attribute) {
+        pageTitle.setAttribute(attribute.name, attribute.value);
+      });
+      title.replaceWith(pageTitle);
+      title = pageTitle;
       content.replaceChildren(page);
       enhancePage();
       needsFocus = true;

@@ -234,3 +234,39 @@ def test_nc_timeline_shows_names_not_record_numbers(people, lab_records, asset):
     for expected in ("analyst2", "BAL-01", lab_records["batch"].number, "Equipment", "blank"):
         assert expected in text, text
     assert not re.search(r"Owner:\s+\d", text), text
+
+
+def test_movement_times_show_the_laboratory_time_zone(people, lot, lab_records):
+    """Stock movement times carry the zone label, as other displayed times do."""
+    from decimal import Decimal
+
+    from django.utils import dateformat, timezone
+
+    from laboratory import inventory
+
+    movement = inventory.use_stock(
+        actor=people["analyst"],
+        lot_id=lot.pk,
+        expected_revision=lot.revision,
+        quantity=Decimal("1"),
+        batch=lab_records["batch"],
+    )
+    shown = dateformat.format(timezone.localtime(movement.occurred_at), "Y-m-d H:i:s T")
+    assert shown.rsplit(" ", 1)[1]  # a zone abbreviation is rendered
+    client = login(people["analyst"])
+    assert shown in client.get(reverse("laboratory:lot-detail", args=[lot.pk])).content.decode()
+    batch_page = client.get(reverse("analytical:batch-detail", args=[lab_records["batch"].pk]))
+    assert shown in batch_page.content.decode()
+    use_form = client.get(reverse("laboratory:lot-use", args=[lot.pk])).content.decode()
+    assert "Times are laboratory local time." in use_form
+
+
+def test_overview_window_changes_only_when_applied(people):
+    """WCAG 3.2.2: choosing a look-ahead window does not reload the page; Apply does."""
+    page = login(people["reviewer"]).get(reverse("laboratory:overview"), {"days": "60"})
+    html = page.content.decode()
+    select = re.search(r'<select[^>]*id="ov-days"[^>]*>', html).group(0)
+    assert "autosubmit" not in select
+    apply = re.search(r'<button[^>]*type="submit"[^>]*>Apply</button>', html).group(0)
+    assert "autosubmit" not in apply  # nothing hides the button
+    assert re.search(r'<option value="60" selected', html)

@@ -334,7 +334,7 @@ def test_every_page_renders_and_shows_locks_history_and_filters(
     locked = client.get(reverse("catalog:method-edit", args=[method.pk]))
     assert not {"code", "title"} & set(locked.context["form"].fields)  # shown as facts, not inputs
     history = client.get(reverse("catalog:analyte-edit", args=[catalog_rows["copper"].pk]))
-    assert b"catalog.analyte.updated" in history.content
+    assert b"Catalog analyte updated" in history.content  # readable title, not the code
     empty = client.get(reverse("catalog:analyte-list") + "?q=zzz").content
     assert b"No analytes match" in empty
 

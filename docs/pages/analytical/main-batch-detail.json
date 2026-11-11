@@ -198,7 +198,7 @@
       "items": [
         {
           "label": "QC holds approval",
-          "description": "Current blocking findings are listed once, with latest disposition or an independence conflict where applicable. Record disposition opens the decision for that specific finding."
+          "description": "Current blocking findings are listed once, with latest disposition or an independence conflict where applicable. Record disposition, shown to analysts and reviewers, opens the decision for that specific finding."
         },
         {
           "label": "Preparation time needed",
@@ -286,7 +286,7 @@
       "items": [
         {
           "label": "Standards and reagents used",
-          "description": "Material name, linked Lot, signed quantity Used with unit, When, By and Notes show stock-use movements recorded against this batch. Use later reversed and Used after expiry flags preserve context."
+          "description": "Material name, linked Lot, signed quantity Used with unit, When (effective time to the second, in laboratory local time with its zone abbreviation), By and Notes show stock-use movements recorded against this batch. Use later reversed and Used after expiry flags preserve context."
         },
         {
           "label": "Open nonconformances",

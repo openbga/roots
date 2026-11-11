@@ -13,7 +13,7 @@
     {
       "title": "Create, edit and access",
       "paragraphs": [
-        "Staff can read this form, but only administrators may save it. Add creates a new configuration record; Edit prepopulates the existing record and requires a Reason for change. Unknown configuration kinds are unavailable. These are lab policy values, and synthetic seed data is not a validated set."
+        "Only administrators can open and save this form; other staff read these values on the QC configuration page, where the rows are not links for them. Add creates a new configuration record; Edit prepopulates the existing record and requires a Reason for change. Unknown configuration kinds are unavailable. These are lab policy values, and synthetic seed data is not a validated set."
       ]
     },
     {

@@ -1,8 +1,12 @@
 {% extends "layouts/error.html" %}
-{% block title %}Access denied · OpenBGA Roots{% endblock %}
-{% block page_heading %}You do not have access to this page{% endblock %}
+{% block title %}{% if csrf_failure %}Form not submitted{% else %}Access denied{% endif %} · OpenBGA Roots{% endblock %}
+{% block page_heading %}{% if csrf_failure %}The form could not be submitted{% else %}You do not have access to this page{% endif %}{% endblock %}
 {% block content %}
+{% if csrf_failure %}
+<p>This form could not be verified. Reload the page and try again. Nothing was changed.</p>
+{% else %}
 <p>Your account does not include the role or client access this page needs. Nothing was changed.</p>
 <p class="vr-muted">If you need access, ask a laboratory administrator.</p>
+{% endif %}
 <a class="btn btn-primary" href="/">Go to your home page</a>
 {% endblock %}

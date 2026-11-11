@@ -84,6 +84,10 @@ def form_page(
             "meta": meta,
             "destructive": destructive,
             "multipart": any(f.widget.needs_multipart_form for f in form.fields.values()),
+            "has_times": any(
+                getattr(f.widget, "input_type", "") == "datetime-local"
+                for f in form.fields.values()
+            ),
         },
         status=status,
     )

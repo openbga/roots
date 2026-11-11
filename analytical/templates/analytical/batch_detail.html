@@ -30,7 +30,7 @@
       <li>{{ issue.message }}
         {% if issue.conflict %}<span class="vr-muted">Accepted by {{ issue.conflict }}; that does not count. An independent reviewer must decide.</span>
         {% elif issue.action %}<span class="vr-muted">Latest disposition: {{ issue.action.get_disposition_display }}.</span>{% endif %}
-        <a href="{% url 'analytical:qc-action' batch.pk %}?target={{ issue.key|urlencode }}">Record disposition<span class="visually-hidden"> for {{ issue.link_label }}</span></a>
+        {% if can_enter or can_review %}<a href="{% url 'analytical:qc-action' batch.pk %}?target={{ issue.key|urlencode }}">Record disposition<span class="visually-hidden"> for {{ issue.link_label }}</span></a>{% endif %}
       </li>
       {% endfor %}
     </ul>

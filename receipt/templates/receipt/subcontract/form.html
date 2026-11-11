@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% comment %}
 Subcontract forms, one template for four kinds (form_kind): dispatch, result, review, cancel.
-Context: sample, requested_test, subcontract (absent for dispatch), source (review), form, page_title.
+Context: sample, requested_test, subcontract (absent for dispatch), source (review), form, page_title,
+blocker (review: why this user cannot review this source now; shown instead of the form),
+unit_difference (review: the source unit differs from the catalog unit; shown beside Decision).
 The title, the breadcrumb and the submit button use the same words. Cancelling is destructive: its
 button is the outlined danger style and starts the action row.
 {% endcomment %}
@@ -13,6 +15,9 @@ button is the outlined danger style and starts the action row.
 {% block page_meta %}<ul class="vr-page-meta"><li><span class="vr-id">{{ sample.lab_id }}</span> / {{ requested_test.definition.analyte }}</li><li>{{ sample.order.project.client }}</li>{% if subcontract %}<li>{{ subcontract.external_lab }}</li>{% endif %}</ul>{% endblock %}
 {% block content %}
 {% if source %}<section class="card mb-3" aria-labelledby="review-source-heading"><div class="card-header"><h2 class="card-title" id="review-source-heading">Source {{ source.number }} for independent review</h2></div><div class="card-body">{% include "receipt/subcontract/source_summary.html" %}</div></section>{% endif %}
+{% if blocker %}
+<div class="alert alert-warning" role="alert"><p class="mb-1"><strong>This source cannot be reviewed here.</strong> {{ blocker }}</p><p class="mb-0">Return to the <a href="{% url 'receipt:subcontract-detail' subcontract.pk %}">subcontract record</a>.</p></div>
+{% else %}
 <form class="vr-form" method="post"{% if form_kind == "result" %} enctype="multipart/form-data"{% endif %} novalidate>
   {% csrf_token %}
   {% include "includes/form_errors.html" with form=form %}
@@ -34,7 +39,7 @@ button is the outlined danger style and starts the action row.
     <fieldset class="vr-form-section"><legend>External analysis provenance</legend>{{ form.external_sample_id.as_field_group }}{{ form.external_method.as_field_group }}{{ form.external_analyst.as_field_group }}{{ form.analyzed_at.as_field_group }}{{ form.external_report_reference.as_field_group }}</fieldset>
     <fieldset class="vr-form-section"><legend>Source document and reason</legend>{{ form.source_pdf.as_field_group }}{{ form.reason.as_field_group }}</fieldset>
   {% elif form_kind == "review" %}
-    <fieldset class="vr-form-section"><legend>Source review</legend>{{ form.decision.as_field_group }}{{ form.note.as_field_group }}</fieldset>
+    <fieldset class="vr-form-section"><legend>Source review</legend>{% if unit_difference %}<div class="alert alert-warning" id="unit-difference">{% include "includes/status.html" with label="Unit differs" tone="warning" plain=True %} {{ unit_difference }} Compare it with the source PDF before deciding.</div>{% endif %}{{ form.decision.as_field_group }}{{ form.note.as_field_group }}</fieldset>
   {% else %}
     <fieldset class="vr-form-section">{{ form.reason.as_field_group }}</fieldset>
   {% endif %}
@@ -49,4 +54,5 @@ button is the outlined danger style and starts the action row.
     {% endif %}
   </div>
 </form>
+{% endif %}
 {% endblock %}

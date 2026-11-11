@@ -39,7 +39,8 @@
     {
       "title": "Submission gates",
       "paragraphs": [
-        "An explicit retention date must exist and have elapsed before the disposal date. Both the separate disposal hold and receipt disposition Hold must be clear. Every requested test’s latest internal or active external result must belong to an issued report, unless the receipt disposition is Reject. Rejection bypasses the outstanding-test gate only; it does not bypass retention, holds, custody chronology or open preparation. Preparation work that still blocks disposal must be closed or cancelled first; its records remain. A corrected latest result reopens the issued-result requirement even when an older version was reported."
+        "An explicit retention date must exist and have elapsed before the disposal date. Both the separate disposal hold and receipt disposition Hold must be clear. Every requested test’s latest internal or active external result must belong to an issued report, unless the receipt disposition is Reject. Rejection bypasses the outstanding-test gate only; it does not bypass retention, holds, custody chronology or open preparation. Preparation work that still blocks disposal must be closed or cancelled first; its records remain. A corrected latest result reopens the issued-result requirement even when an older version was reported.",
+        "When disposal is certain to be refused whatever is entered, a warning above the form gives the reason when the page opens. These cases are: no retention date, a disposal or disposition hold, a retention date that is today or later, open preparation work, and outstanding requested tests. The form stays available. Saving is still checked by the server, and a refused save shows the reason once, as the form error."
       ],
       "items": []
     },

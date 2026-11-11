@@ -15,7 +15,7 @@ Laboratory records beside batch/sample work. Use {% load laboratory_extras %}{% 
         <th scope="row">{{ m.lot.material.name }}</th>
         <td><a class="vr-id" href="{% url 'laboratory:lot-detail' m.lot_id %}">{{ m.lot.lot_number }}</a></td>
         <td class="text-end vr-nowrap">{{ m.delta|qty }} {{ m.unit }}</td>
-        <td class="vr-nowrap">{{ m.occurred_at|date:"Y-m-d H:i:s" }}</td>
+        <td class="vr-nowrap"><time datetime="{{ m.occurred_at|date:'c' }}">{{ m.occurred_at|date:"Y-m-d H:i:s T" }}</time></td>
         <td>{{ m.actor.get_full_name|default:m.actor.get_username }}</td>
         <td>{% if m.reversed_by %}{% include "includes/status.html" with label="Use later reversed" tone="neutral" plain=True %} {% endif %}{% if m.expired_at_use %}{% include "includes/status.html" with label="Used after expiry" tone="warning" plain=True %}{% endif %}{% if m.purpose %} {{ m.purpose }}{% endif %}</td>
       </tr>

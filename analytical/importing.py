@@ -71,7 +71,7 @@ class ImportPreview:
     # Only set by the mapped import.
     profile: object = None
     mapping_hash: str = ""
-    file_hash: str = ""
+    file_hash: str = ""  # of the uploaded bytes; both imports
     state_token: str = ""  # fingerprint of the results this would follow, to detect stale previews
     blanks: list = field(default_factory=list)
     unused_columns: list = field(default_factory=list)
@@ -130,9 +130,11 @@ def _lookup(batch):
     return lookup
 
 
-def parse_import(batch, text, *, filename="upload.csv"):
-    """Validate CSV text against a batch. Reads the database; writes nothing."""
-    preview = ImportPreview(filename=filename)
+def parse_import(batch, text, *, filename="upload.csv", file_hash=""):
+    """Validate CSV text against a batch. Reads the database; writes nothing.
+
+    With the uploaded bytes' `file_hash`, a file already imported into the batch is refused."""
+    preview = ImportPreview(filename=filename, file_hash=file_hash)
     if "\x00" in text:
         preview.file_errors.append("The file contains NUL characters; it is not a text CSV.")
         return preview
@@ -159,6 +161,9 @@ def parse_import(batch, text, *, filename="upload.csv"):
         preview.file_errors.append(f"Duplicate column(s): {', '.join(dupes)}.")
     if preview.file_errors:
         return preview
+    earlier = _earlier_import(batch, file_hash) if file_hash else None
+    if earlier is not None:
+        preview.file_errors.append(_already_imported(earlier, "This file"))
 
     lookup = _lookup(batch)
     tz, now, seen = services.lab_timezone(), timezone.now(), {}
@@ -181,6 +186,7 @@ def parse_import(batch, text, *, filename="upload.csv"):
         preview.file_errors.append(f"Malformed CSV near row {reader.line_num}: {exc}")
     if not preview.rows and not preview.file_errors:
         preview.file_errors.append("The file has a header but no data rows.")
+    preview.state_token = _state_token(preview.rows)
     return preview
 
 
@@ -295,18 +301,25 @@ def _write_rows(*, actor, batch, preview, filename, audit_extra=None):
     return revisions
 
 
-def commit_import(*, actor, batch_id, text=None, filename="upload.csv", data=None):
+def commit_import(
+    *, actor, batch_id, text=None, filename="upload.csv", data=None, state_token=None
+):
     """Revalidate the file and write every row, or nothing. Returns the revisions.
 
     Pass the uploaded bytes as `data` so the audit event records their SHA-256 (`text` is then
-    read from them); `text` alone is for callers without an original file."""
+    read from them) and the same bytes cannot be imported into the batch twice; `text` alone is
+    for callers without an original file. `state_token` comes from the preview: if any targeted
+    result changed since, the import is refused, as for the mapped import."""
     require_role(actor, services.ANALYST)
     source = {}
     if data is not None:
         text = decode_upload(data)
         source = {"file_sha256": file_digest(data), "file_bytes": len(data)}
+    file_hash = source.get("file_sha256", "")
     with transaction.atomic():
-        initial = parse_import(Batch.objects.get(pk=batch_id), text, filename=filename)
+        initial = parse_import(
+            Batch.objects.get(pk=batch_id), text, filename=filename, file_hash=file_hash
+        )
         if not initial.ok:
             raise ValidationError(
                 f"The file has {initial.error_count} error(s). Nothing was imported."
@@ -319,10 +332,14 @@ def commit_import(*, actor, batch_id, text=None, filename="upload.csv", data=Non
                 if r.entry.get("prepared_aliquot_id")
             },
         )[batch_id]
-        preview = parse_import(batch, text, filename=filename)
+        preview = parse_import(batch, text, filename=filename, file_hash=file_hash)
         if not preview.ok:
             raise ValidationError(
                 f"The file has {preview.error_count} error(s). Nothing was imported."
+            )
+        if state_token is not None and preview.state_token != state_token:
+            raise ValidationError(
+                "A result in this batch changed after the preview. Preview the file again."
             )
         return _write_rows(
             actor=actor, batch=batch, preview=preview, filename=filename, audit_extra=source
@@ -359,12 +376,7 @@ def parse_profile_import(batch, profile, data, *, filename="upload.txt"):
         return preview
     earlier = _earlier_import(batch, preview.file_hash, preview.mapping_hash)
     if earlier is not None:
-        preview.file_errors.append(
-            "This file, with this mapping, was already imported into this batch by "
-            f"{earlier.actor.get_username()} on "
-            f"{timezone.localtime(earlier.occurred_at):%Y-%m-%d %H:%M}. Importing it again would "
-            "only add identical revisions. Change the file, or correct results by hand."
-        )
+        preview.file_errors.append(_already_imported(earlier, "This file, with this mapping,"))
     lookup = _lookup(batch)
     tz, now, seen = services.lab_timezone(), timezone.now(), {}
     for item in extracted.rows:
@@ -378,6 +390,47 @@ def parse_profile_import(batch, profile, data, *, filename="upload.txt"):
         if not row.errors:
             _validate_row(row, lookup, seen, batch, tz, now)
         preview.rows.append(row)
+    preview.state_token = _state_token(preview.rows)
+    if not preview.rows and not preview.file_errors:
+        preview.file_errors.append(
+            "The file has a header but no values to import."
+            + (" Every mapped cell was blank." if preview.blanks else "")
+        )
+    return preview
+
+
+def _earlier_import(batch, file_hash, mapping_hash=None):
+    """The latest import of these exact bytes into the batch: through this mapping, or through the
+    strict import when `mapping_hash` is None."""
+    mapping = (
+        {"after__mapping_sha256__isnull": True}
+        if mapping_hash is None
+        else {"after__mapping_sha256": mapping_hash}
+    )
+    return (
+        AuditEvent.objects.filter(
+            action="batch.results_imported",
+            object_type=batch._meta.label_lower,
+            object_id=str(batch.pk),
+            after__file_sha256=file_hash,
+            **mapping,
+        )
+        .select_related("actor")
+        .order_by("-occurred_at")
+        .first()
+    )
+
+
+def _already_imported(earlier, what):
+    return (
+        f"{what} was already imported into this batch by {earlier.actor.get_username()} on "
+        f"{timezone.localtime(earlier.occurred_at):%Y-%m-%d %H:%M}. Importing it again would "
+        "only add identical revisions. Change the file, or correct results by hand."
+    )
+
+
+def _state_token(rows):
+    """Fingerprint of the results the rows would follow, so a commit can refuse a stale preview."""
     state = sorted(
         f"{row.result.pk}:{row.previous.pk if row.previous else 0}:"
         + json.dumps(
@@ -387,31 +440,10 @@ def parse_profile_import(batch, profile, data, *, filename="upload.txt"):
             sort_keys=True,
             default=str,
         )
-        for row in preview.rows
+        for row in rows
         if row.result is not None
     )
-    preview.state_token = hashlib.sha256("|".join(state).encode()).hexdigest()
-    if not preview.rows and not preview.file_errors:
-        preview.file_errors.append(
-            "The file has a header but no values to import."
-            + (" Every mapped cell was blank." if preview.blanks else "")
-        )
-    return preview
-
-
-def _earlier_import(batch, file_hash, mapping_hash):
-    return (
-        AuditEvent.objects.filter(
-            action="batch.results_imported",
-            object_type=batch._meta.label_lower,
-            object_id=str(batch.pk),
-            after__file_sha256=file_hash,
-            after__mapping_sha256=mapping_hash,
-        )
-        .select_related("actor")
-        .order_by("-occurred_at")
-        .first()
-    )
+    return hashlib.sha256("|".join(state).encode()).hexdigest()
 
 
 def commit_profile_import(

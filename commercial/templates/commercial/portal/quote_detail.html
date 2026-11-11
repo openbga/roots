@@ -7,7 +7,7 @@ accept_form, decline_form. Accepting or declining applies to the version shown a
 {% block breadcrumbs %}{% url 'client_commercial:quote-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Quotes" section_url=list_url current=quote.number %}{% endblock %}
 {% block page_heading %}<span class="vr-id">{{ quote.number }}</span>{% endblock %}
 {% block page_meta %}<ul class="vr-page-meta"><li>{% include "commercial/_quote_status.html" with plain=True %}</li><li>{{ version.presented_title }}</li>{% if version.presented_project %}<li>{{ version.presented_project }}</li>{% endif %}<li>{{ versions|length }} version{{ versions|length|pluralize }}</li></ul>{% endblock %}
-{% block page_actions %}<button class="btn btn-outline-secondary" type="button" onclick="window.print()">{% include "includes/icon.html" with name="printer" %}Print</button>{% endblock %}
+{% block page_actions %}<button class="btn btn-outline-secondary" type="button" data-vr-print>{% include "includes/icon.html" with name="printer" %}Print</button>{% endblock %}
 {% block content %}
 {% if quote.status == "accepted" %}
 <div class="alert alert-success" role="status">{% include "includes/status.html" with label="Accepted" tone="success" plain=True %}<div>Version {{ quote.decision_version }} accepted on {{ quote.decided_at|date:"Y-m-d H:i" }}.{% if quote.client_reference %} Your reference: <strong>{{ quote.client_reference }}</strong>.{% endif %} You can now link your sample submissions to this quote.</div></div>

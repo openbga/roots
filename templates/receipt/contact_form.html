@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load laboratory_extras %}
 {% comment %}
 Add or edit an additional client contact. Context: client, form, contact (edit only), history
 (AuditEvent, newest first; shown oldest first). A contact has no page of its own, so saving returns
@@ -24,7 +25,7 @@ to the client.
   <div class="card-header"><h2 class="card-title" id="contact-history-heading">History</h2></div>
   <div class="card-body">
     <ol class="vr-timeline">
-      {% for event in history|dictsort:"occurred_at" %}{% include "includes/history_item.html" with title=event.action at=event.occurred_at actor=event.actor reason=event.reason %}{% endfor %}
+      {% for event in history|dictsort:"occurred_at" %}{% include "includes/history_item.html" with title=event.action|action_label at=event.occurred_at actor=event.actor reason=event.reason %}{% endfor %}
     </ol>
   </div>
 </section>

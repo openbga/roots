@@ -24,7 +24,7 @@
         },
         {
           "label": "Reported unit",
-          "description": "Required exact source unit, up to 40 characters; no conversion or catalog-unit matching is performed."
+          "description": "Required, up to 40 characters. Enter the unit exactly as the source reports it. The help text under the field names this test's catalog unit. A different unit is accepted, stored and reported as supplied, and never converted. After saving, a Unit differs message names both units, and the reviewer sees the same flag beside the decision."
         },
         {
           "label": "External qualifiers and meanings",
@@ -72,7 +72,7 @@
         },
         {
           "label": "Enter external source result / Correct external source",
-          "description": "Analysts, project managers and administrators append the version, update latest pointer and audit together, then return to the subcontract. No internal batch or QC record is manufactured. Acceptance of an earlier source does not accept the new one; reporting must wait for its independent review."
+          "description": "Analysts, project managers and administrators append the version, update latest pointer and audit together, then return to the subcontract. No internal batch or QC record is manufactured. Acceptance of an earlier source does not accept the new one; reporting must wait for its independent review. If the reported unit is not the catalog unit, the confirmation also shows a Unit differs warning that names both units."
         }
       ]
     },
@@ -85,17 +85,17 @@
     }
   ],
   "sources": [
-    "receipt/urls.py",
-    "receipt/subcontract_views.py",
+    "accounts/roles.py",
+    "analytical/models.py",
+    "analytical/parsing.py",
+    "receipt/models.py",
     "receipt/subcontract_forms.py",
     "receipt/subcontract_models.py",
+    "receipt/subcontract_views.py",
     "receipt/subcontracts.py",
-    "receipt/models.py",
-    "accounts/roles.py",
-    "receipt/tests/test_subcontracts.py",
     "receipt/templates/receipt/subcontract/form.html",
-    "analytical/parsing.py",
-    "analytical/models.py",
-    "receipt/tests/test_external_delivery.py"
+    "receipt/tests/test_external_delivery.py",
+    "receipt/tests/test_subcontracts.py",
+    "receipt/urls.py"
   ]
 }

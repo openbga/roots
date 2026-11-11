@@ -2,26 +2,36 @@
 
 Idempotent: does nothing when the synthetic materials already exist. Uses existing staff accounts
 (one with the admin or reviewer role as the acting user); it creates no users, so run it after the
-demo roles exist. Never run against a database holding real records.
+demo roles exist. Like the other demo seeds it refuses any laboratory but the demo one created by
+seed_demo, and writes everything in one transaction or nothing.
 """
 
 from datetime import timedelta
 from decimal import Decimal
 
 from django.core.management.base import BaseCommand, CommandError
+from django.db import transaction
 from django.utils import timezone
 
 from accounts.models import User
 from catalog.models import Method
+from core.models import Lab
 from laboratory import equipment, inventory, training
 from laboratory import nonconformance as nc
 from laboratory.models import Material
+
+DEMO_LAB = "Example Environmental Lab"  # the name seed_demo creates and requires
 
 
 class Command(BaseCommand):
     help = "Create synthetic inventory, equipment, training and nonconformance demo records."
 
+    @transaction.atomic
     def handle(self, *args, **options):
+        # Same guard as seed_demo: synthetic records only ever go into the demo laboratory.
+        lab = Lab.objects.filter(pk=1).first()
+        if lab is None or lab.name != DEMO_LAB:
+            raise CommandError("Refusing to seed a non-demo laboratory; run seed_demo first.")
         if Material.objects.filter(name__startswith="Demo ").exists():
             self.stdout.write("Laboratory demo records already exist; nothing to do.")
             return

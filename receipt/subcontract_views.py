@@ -27,6 +27,7 @@ from .subcontracts import (
     dispatch_subcontract,
     enter_external_result,
     filter_subcontracts_by_state,
+    review_blocker,
     review_external_result,
     subcontracts_with_decision,
 )
@@ -49,6 +50,13 @@ def _errors(form, exc):
             form.add_error(name if name in form.fields else None, errors)
     else:
         form.add_error(None, exc)
+
+
+def unit_difference(source):
+    return (
+        f"Unit differs: the source reports {source.unit} but the catalog unit for this test is "
+        f"{source.catalog_unit}. It is recorded and reported as supplied, never converted."
+    )
 
 
 def _subcontract(pk):
@@ -184,6 +192,7 @@ def subcontract_detail(request, pk):
             "requested_test": obj.requested_test,
             "sources": sources,
             "latest": latest,
+            "unit_difference": unit_difference(latest) if latest and latest.unit_differs else "",
             "can_dispatch": has_role(request.user, *RECEIPT_ROLES),
             "can_enter_external": has_role(request.user, "analyst", "project_manager"),
             "can_review_source": has_role(request.user, "reviewer")
@@ -225,16 +234,21 @@ def subcontract_result_create(request, pk):
         initial=initial,
         is_correction=bool(latest),
         known_external_sample_id=obj.external_sample_id,
+        catalog_unit=obj.requested_test.definition.unit,
     )
     if request.method == "POST" and form.is_valid():
         try:
-            enter_external_result(actor=request.user, subcontract_id=pk, **form.cleaned_data)
+            source = enter_external_result(
+                actor=request.user, subcontract_id=pk, **form.cleaned_data
+            )
         except ValidationError as exc:
             _errors(form, exc)
         else:
             messages.success(
                 request, "External source version recorded; independent source review is required."
             )
+            if source.unit_differs:
+                messages.warning(request, unit_difference(source))
             return redirect("receipt:subcontract-detail", pk=pk)
     return render(
         request,
@@ -259,6 +273,8 @@ def subcontract_result_review(request, pk):
         request.POST if request.method == "POST" else None,
         initial={"expected_revision": obj.revision},
     )
+    if source.unit_differs:
+        form.fields["decision"].widget.attrs["aria-describedby"] = "unit-difference"
     if request.method == "POST" and form.is_valid():
         try:
             review_external_result(actor=request.user, result_id=pk, **form.cleaned_data)
@@ -281,6 +297,8 @@ def subcontract_result_review(request, pk):
             "requested_test": obj.requested_test,
             "form": form,
             "form_kind": "review",
+            "blocker": review_blocker(source, obj, request.user),
+            "unit_difference": unit_difference(source) if source.unit_differs else "",
         },
     )
 
