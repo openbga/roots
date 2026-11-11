@@ -1,8 +1,14 @@
 """The public brochure is served without intercepting the protected workspace."""
 
+import re
+from pathlib import Path
 from urllib.parse import urljoin
 
 import pytest
+from django.conf import settings as django_settings
+
+PRESENTATION = Path(django_settings.WHITENOISE_ROOT) / "about"
+PUBLISHED_URL = "https://openbga.github.io/roots/"
 
 
 # Closing a streamed file runs Django's connection clean-up, which may touch a connection left
@@ -21,11 +27,32 @@ def test_public_presentation_and_assets_are_served_by_whitenoise(client, setting
     for path, content_type in (
         ("/about/assets/site.css", "text/css"),
         ("/about/assets/mark.svg", "image/svg+xml"),
+        ("/about/assets/samples-1280.webp", "image/webp"),
+        ("/about/assets/og.png", "image/png"),
     ):
         asset = client.get(path)
         assert asset.status_code == 200
         assert asset["Content-Type"].startswith(content_type)
         asset.close()
+
+
+def test_presentation_references_exactly_the_assets_it_ships():
+    """The page is also published as a static site, where a missing file fails silently."""
+    html = (PRESENTATION / "index.html").read_text()
+    referenced = set(re.findall(r'(?:src|href)="(assets/[^"]+)"', html))
+    for srcset in re.findall(r'srcset="([^"]+)"', html):
+        referenced.update(candidate.split()[0] for candidate in srcset.split(","))
+    # The link-preview image must be an absolute URL, so it points at the published copy.
+    referenced.update(
+        url.removeprefix(PUBLISHED_URL)
+        for url in re.findall(r'property="og:image" content="([^"]+)"', html)
+    )
+    shipped = {
+        path.relative_to(PRESENTATION).as_posix()
+        for path in (PRESENTATION / "assets").iterdir()
+        if path.is_file()
+    }
+    assert referenced == shipped
 
 
 @pytest.mark.parametrize("path", ["/about", "/about/index.html"])
