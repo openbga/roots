@@ -1,5 +1,5 @@
 FROM ghcr.io/astral-sh/uv:0.13.7 AS uv
-FROM python:3.14.10-slim-bookworm
+FROM python:3.15.0-slim-bookworm
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 UV_COMPILE_BYTECODE=1
 WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
