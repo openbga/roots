@@ -119,7 +119,8 @@ shape. Docker pins Python, PDF system libraries and fonts; Gunicorn serves the a
 serves collected static assets. No Redis, worker, separate frontend host or persistent disk.
 The public presentation at `/about/` ships with the same service. Only its static HTML and
 assets live under the [dedicated WhiteNoise root](https://whitenoise.readthedocs.io/en/stable/django.html#whitenoise-root);
-the workspace stays at `/` behind sign-in.
+the workspace stays at `/` behind sign-in. The project also publishes those files, unchanged, to
+GitHub Pages at <https://openbga.github.io/roots/>; its links are relative so both addresses work.
 Build assets and collectstatic during image build; migrate once in a serialized pre-deploy step.
 Use backward-compatible migrations while old/new instances overlap; destructive changes need
 a staged migration and verified restore path. Rollback of code does not undo a database migration.

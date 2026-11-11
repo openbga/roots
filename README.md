@@ -29,7 +29,8 @@ reports are never overwritten. The NYSDEC EDD export is exploratory and requires
 validation; it is not an accepted regulatory submission.
 
 [Workflow rules and limits](docs/workflows.md) describes each of these in more detail. The
-[product presentation](website/about/index.html) is published at `/about/` on each deployment.
+[product presentation](https://openbga.github.io/roots/) is also served at `/about/` on each
+deployment.
 
 ![Sample list with search, filters and receipt dispositions](docs/images/samples.png)
 

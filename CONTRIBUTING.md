@@ -112,7 +112,9 @@ installation command. On Apple Silicon run the last command as
 
 Every pull request runs the checks above, the browser journeys, and a container smoke test that
 builds the Docker image, migrates a disposable PostgreSQL database, renders a PDF and starts
-Gunicorn for health, readiness, sign-in and static checks. CI never publishes or deploys.
+Gunicorn for health, readiness, sign-in and static checks. These checks never publish or deploy.
+A separate workflow publishes the static presentation in `website/about` to GitHub Pages when it
+changes on `main`.
 
 ## Pull requests
 
