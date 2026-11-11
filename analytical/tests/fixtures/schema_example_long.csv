@@ -1,0 +1,4 @@
+# SCHEMA EXAMPLE: synthetic text written for these tests. It is NOT captured instrument output and does not represent any vendor's export. Header names are invented.
+Sample Name,Element,Conc,Units,RL,DF,Run Time,Flag
+VR-DEMO-1,Pb 220.353,0.0120,mg/L,0.0050,1,{ANALYSED},
+VR-DEMO-1,Cu,ND,mg/L,0.0100,2,{ANALYSED},

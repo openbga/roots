@@ -1,0 +1,15 @@
+{% comment %}One container form of the containers formset. Parameters: cform, number (1-based; "__num__" in the empty template).{% endcomment %}
+<fieldset class="vr-container" data-formset-row>
+  <legend>Container {{ number }}</legend>
+  {% if cform.non_field_errors %}<ul class="vr-field-errors">{% for error in cform.non_field_errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+  <div class="row g-3">
+    {% for field in cform.visible_fields %}
+    {% if field.name == "DELETE" %}
+    <div class="col-12"><div class="form-check">{{ field }}<label class="form-check-label" for="{{ field.id_for_label }}">Remove this container</label></div></div>
+    {% else %}
+    <div class="col-md-4">{{ field.as_field_group }}</div>{# type, preservative, condition: receipt.forms.ContainerForm #}
+    {% endif %}
+    {% endfor %}
+  </div>
+  {% for hidden in cform.hidden_fields %}{{ hidden }}{% endfor %}
+</fieldset>

@@ -1,0 +1,2 @@
+{% comment %}Active or Inactive configuration row. Parameter: active (boolean).{% endcomment %}
+{% if active %}{% include "includes/status.html" with label="Active" tone="success" plain=True %}{% else %}{% include "includes/status.html" with label="Inactive" tone="neutral" plain=True %}{% endif %}

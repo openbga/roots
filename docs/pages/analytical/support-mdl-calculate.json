@@ -1,0 +1,57 @@
+{
+  "id": "analytical-support-mdl-calculate",
+  "routes": [
+    "analytical:mdl-calculate"
+  ],
+  "title": "Calculate MDL",
+  "purpose": "Keep a new numbered snapshot of current study observations, intermediate statistics and the calculation outcome for independent review.",
+  "sections": [
+    {
+      "title": "Context and choice",
+      "paragraphs": [
+        "Active internal staff with a laboratory role can read MDL records. Analysts enter observations, import routine blanks and calculate. Analysts or reviewers can exclude observations and close studies; the page buttons for these two actions are shown to analysts. Only an independent reviewer can decide a calculation. Admin includes operational roles but never bypasses independence; client accounts and superuser status alone do not grant access.",
+        "The header identifies Study and exact test definition. Open studies show current readiness; closed studies show Closed and no calculation form."
+      ],
+      "items": [
+        {
+          "label": "Method blanks used",
+          "description": "Required. Default All from the last 24 months selects non-excluded blanks within 24 calendar months up to calculation time. Optional: last 6 months or 50 most recent, whichever is more selects the larger set within the same 24-month pool. Blank observations outside the chosen window remain in the snapshot marked unused."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Calculate and keep the snapshot",
+          "description": "Analysts create the next study-local calculation number under a study lock, with all original input snapshots, used/excluded flags, contributor identities, selected window and intermediate values. A not-ready study still creates a Not evaluated snapshot with reasons and no verified MDL. Successful calculation opens the snapshot; it is not adoption."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the study without calculating."
+        }
+      ]
+    },
+    {
+      "title": "Readiness and exactness",
+      "paragraphs": [
+        "Readiness requires at least seven distinct spike preparations and seven distinct blank preparations, with at least three preparation batches, three actual preparation dates and three analysis dates separately for spikes and blanks. Batch and extract labels identify preparations case-insensitively after trimming; repeated analyses of one extract increase analyses but not preparations. Assumed preparation dates cannot prove date spread. Calendar dates follow the laboratory time zone. Every included spike must have the study’s one positive spiking level, a positive numerical result and successful qualitative identification. Spikes older than 24 months make the calculation not evaluated, rather than being silently dropped. When multiple instrument names occur, every observation needs an instrument and each instrument needs at least two spikes and two blanks prepared and analysed on different dates.",
+        "Spikes are not silently windowed out: an included spike older than 24 months blocks calculation. Future blank observations are outside the selection as of calculation time. Every failed spike prevents an evaluated result under this application’s conservative reading. The stored statistics use exact decimal inputs and ten decimal places with half-up rounding for stored calculated quantities; this does not define laboratory reporting precision. Student t uses published table constants for listed counts, otherwise the recorded SciPy source rounded to three decimals; unavailable or unusable t produces Not evaluated."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/mdl_views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/mdl_services.py",
+    "analytical/mdl.py",
+    "analytical/selectors.py",
+    "analytical/templates/analytical/mdl_calculate.html",
+    "analytical/templates/analytical/_mdl_ready.html",
+    "analytical/templates/analytical/_mdl_interpretations.html",
+    "analytical/tests/test_mdl_views.py",
+    "analytical/tests/test_mdl_workflow.py",
+    "analytical/tests/test_mdl_pure.py"
+  ]
+}

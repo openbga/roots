@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block breadcrumbs %}{% url 'analytical:batch-list' as list_url %}{% url 'analytical:batch-detail' batch.pk as batch_url %}{% include "includes/breadcrumbs.html" with section="Batches & QC" section_url=list_url record=batch.number record_url=batch_url %}{% endblock %}
+{% block page_meta %}<ul class="vr-page-meta"><li>Batch <span class="vr-id">{{ batch.number }}</span></li><li>{{ batch.method }}</li><li>{{ batch.get_matrix_display }}</li>
+  <li>Preparation start: {% if batch.prepared_at %}{{ batch.prepared_at|date:"Y-m-d H:i T" }}{% else %}not recorded{% endif %}</li></ul>{% endblock %}
+{% block content %}
+{% if not can_enter %}<div class="alert alert-info" role="status">{% include "includes/status.html" with label="Read only" tone="neutral" plain=True %}<div>Only analysts can enter results.</div></div>{% endif %}
+{% if preparation_rules %}
+<div class="alert alert-warning" role="status">
+  {% include "includes/status.html" with label="Preparation time needed" tone="warning" plain=True %}
+  <div>Holding rule{{ preparation_rules|length|pluralize }} {% for r in preparation_rules %}<strong>{{ r.name }}</strong>{% if not forloop.last %}, {% endif %}{% endfor %} depend{{ preparation_rules|length|pluralize:"s," }} on preparation, and none is recorded. Results entered now cannot be submitted. <a href="{% url 'analytical:batch-detail' batch.pk %}#preparation">Set the preparation time on the batch page</a> first.</div>
+</div>
+{% endif %}
+{% if orphan_errors %}
+<div class="alert alert-danger" role="alert" id="grid-stale">
+  {% include "includes/status.html" with label="Error" tone="danger" plain=True %}
+  <div><p class="mb-1">Nothing was saved: a row on this page changed since you opened it.</p>
+    <ul class="mb-0 ps-3">{% for message in orphan_errors %}<li>{{ message }}</li>{% endfor %}</ul>
+    <p class="mb-0">Reload the page, check the current rows, and enter again.</p></div>
+</div>
+{% endif %}
+<section class="card vr-table-card mb-3" aria-label="Rows to enter">
+  {% include "includes/grid_toolbar.html" with label="Filter rows to enter" %}
+</section>
+{% if rows %}
+<form class="vr-form" method="post" novalidate action="{{ request.get_full_path }}">
+  {% csrf_token %}
+  {% include "includes/form_errors.html" with form=defaults %}
+  {{ formset.management_form }}
+  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required for every row where you enter a result; a row with no result is skipped.</p>
+  <p class="vr-form-note">Type the result exactly as read: a number, or <strong>ND</strong> for a non-detect. Values are stored exactly; entries needing rounding are rejected. The reporting limit applied defaults to the method limit times the dilution; check it. Units come from the test and are not converted.</p>
+  <fieldset{% if not can_enter %} disabled{% endif %}>
+  <legend class="visually-hidden">Result entry{% if not can_enter %} (read only: only analysts can enter results){% endif %}</legend>
+  <div class="row g-3 mb-3"><div class="col-md-5">{{ defaults.default_analysis_started_at.as_field_group }}</div></div>
+  <p class="vr-form-note" role="note"><strong>Saving covers the {{ rows|length }} row{{ rows|length|pluralize }} shown on this page{% if page_obj.paginator.num_pages > 1 %} (page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}){% endif %}.</strong> Rows on other pages are not changed. If any row here has an error, nothing on this page is saved and what you typed is kept. Reason is required only when a result already exists.</p>
+  {% if batch.matrix == "soil" %}<p class="vr-form-note">Choose wet or dry weight for every soil result entered. Enter the final result and reporting limit on that basis; no conversion is performed. Percent solids and its source are optional and must come from an actual supplied measurement.</p>{% endif %}
+  {% if qualifiers %}
+  <details class="mb-3"><summary class="small">Qualifier codes you can use ({{ qualifiers|length }})</summary>
+    <ul class="small mb-0 mt-1">{% for q in qualifiers %}<li><strong class="vr-id">{{ q.code }}</strong> {{ q.description }}{% if q.indicates_holding_time %} <span class="vr-muted">(marks a holding-time exceedance)</span>{% endif %}</li>{% endfor %}</ul>
+    <datalist id="qualifier-codes">{% for q in qualifiers %}<option value="{{ q.code }}">{{ q.description }}</option>{% endfor %}</datalist>
+  </details>
+  {% endif %}
+  {% if error_rows %}
+  <div class="alert alert-danger" role="alert" id="grid-errors" tabindex="-1">
+    {% include "includes/status.html" with label="Error" tone="danger" plain=True %}
+    <div>
+      <p class="mb-1">{{ error_rows|length }} row{{ error_rows|length|pluralize }} need{{ error_rows|length|pluralize:"s," }} attention. Nothing was saved; your entries were kept.</p>
+      <ul class="mb-0 ps-3">{% for form, item in error_rows %}<li><a href="#row-{{ form.prefix }}">{{ item.requested_test.sample.lab_id }} {{ item.requested_test.definition.analyte }}</a></li>{% endfor %}</ul>
+    </div>
+  </div>
+  {% endif %}
+  {% if formset.non_form_errors %}<div class="alert alert-danger" role="alert">{{ formset.non_form_errors }}</div>{% endif %}
+  <section class="card vr-table-card" aria-labelledby="grid-heading">
+    <h2 class="visually-hidden" id="grid-heading">Result entry grid</h2>
+    <div class="vr-table-wrap">
+      <table class="table vr-table" id="entry-grid">
+        <thead><tr>
+          <th scope="col">Sample</th><th scope="col">Analyte</th><th scope="col">Prepared aliquot</th><th scope="col">Unit</th>
+          <th scope="col">Current</th>
+          {% if batch.matrix == "soil" %}<th scope="col">Soil basis</th>{% endif %}
+          <th scope="col">Result<span class="vr-req" aria-hidden="true">*</span></th><th scope="col">Reporting limit<span class="vr-req" aria-hidden="true">*</span></th><th scope="col">Dilution<span class="vr-req" aria-hidden="true">*</span></th>
+          <th scope="col">Qualifiers</th><th scope="col">Analysis start<span class="vr-req" aria-hidden="true">*</span></th><th scope="col">Reason</th>
+        </tr></thead>
+        <tbody>
+          {% for form, result, d in rows %}
+          <tr id="row-{{ form.prefix }}"{% if form.errors %} class="table-danger"{% endif %}>
+            <th scope="row" class="vr-id">{{ form.result_id }}{{ result.requested_test.sample.lab_id }}</th>
+            <td>{{ d.analyte }}</td>
+            <td><label class="visually-hidden" for="{{ form.prepared_aliquot_id.id_for_label }}">Prepared aliquot</label>{{ form.prepared_aliquot_id }}</td>
+            <td>{{ d.unit }}</td>
+            <td>{% if result.latest %}<span class="vr-muted small">{% with rev=result.latest %}{% include "analytical/_revision_value.html" %}{% endwith %} · {{ result.get_status_display }}</span>{% else %}<span class="vr-muted">—</span>{% endif %}</td>
+            {% if batch.matrix == "soil" %}<td>
+              <label class="visually-hidden" for="{{ form.result_basis.id_for_label }}">Result basis</label>{{ form.result_basis }}
+              <details class="mt-2"{% if form.percent_solids.errors or form.solids_reference.errors %} open{% endif %}><summary class="small">Supplied percent solids (optional)</summary>
+                {{ form.percent_solids.as_field_group }}{{ form.solids_reference.as_field_group }}
+              </details>
+            </td>{% endif %}
+            <td>{{ form.supplied_text }}</td>
+            <td>{{ form.reporting_limit_applied }}</td>
+            <td>{{ form.dilution_factor }}</td>
+            <td>{{ form.qualifiers }}</td>
+            <td>{{ form.analysis_started_at }}</td>
+            <td>{% if result.latest %}{{ form.reason }}{% else %}<span class="vr-muted">—</span>{% endif %}</td>
+          </tr>
+          {% if form.errors %}
+          <tr class="table-danger"><td colspan="{% if batch.matrix == 'soil' %}12{% else %}11{% endif %}"><ul class="vr-field-errors mb-0" id="{{ form.prefix }}-errors">
+            {% for field in form %}{% for error in field.errors %}<li>{{ field.label }}: {{ error }}</li>{% endfor %}{% endfor %}
+            {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+          </ul></td></tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  </fieldset>
+  {% if can_enter %}
+  <div class="vr-form-actions">
+    <span class="vr-form-note me-auto">Save before changing page: what you typed on an unsaved page is lost. Saving keeps every earlier entry.</span>
+    <a class="btn btn-link" href="{% url 'analytical:batch-detail' batch.pk %}">Cancel</a>
+    <button class="btn btn-primary" type="submit">Save {{ rows|length }} row{{ rows|length|pluralize }} on this page as entered</button>
+  </div>
+  {% endif %}
+</form>
+{% include "includes/pagination.html" with noun="rows needing entry" filtered=filtered %}
+{% elif filtered %}
+{% include "includes/empty_state.html" with kind="no-results" title="No rows match these filters" body="Clear the filters to see every row that still needs an entry." clear_url=request.path %}
+{% else %}
+{% url 'analytical:batch-add-tests' batch.pk as add_url %}
+{% include "includes/empty_state.html" with title="Nothing to enter" body="Every test in this batch is submitted or approved, or the batch has no tests. Returned results and corrections are entered from the result page." action_url=add_url action_label="Add tests" %}
+{% endif %}
+{% endblock %}
+{% block extra_js %}
+<script>
+/* Reporting limit = method limit x dilution, only for whole-number dilutions and only until the
+   analyst edits the limit. Exact integer arithmetic; the server validates every value again. */
+(function () {
+  var grid = document.getElementById("entry-grid");
+  if (!grid) return;
+  grid.addEventListener("input", function (event) {
+    var input = event.target, name = input.name || "";
+    var row = input.closest("tr");
+    if (!row) return;
+    var limit = row.querySelector('[name$="-reporting_limit_applied"]');
+    if (name.endsWith("-reporting_limit_applied")) { input.dataset.edited = "1"; return; }
+    if (!name.endsWith("-dilution_factor") || !limit || limit.dataset.edited) return;
+    var base = limit.dataset.baseLimit, factor = input.value.trim();
+    if (!base || !/^[0-9]+$/.test(factor) || factor === "0") return;
+    var parts = base.split("."), scale = (parts[1] || "").length;
+    var scaled = (BigInt(parts[0] + (parts[1] || "")) * BigInt(factor)).toString();
+    while (scaled.length <= scale) scaled = "0" + scaled;
+    limit.value = scale ? scaled.slice(0, -scale) + "." + scaled.slice(-scale) : scaled;
+  });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% load laboratory_extras %}{% comment %}Record history, newest last (docs/ui-standards.md section 6, rule 4). Parameters: history (AuditEvent list, newest first), heading_id.{% endcomment %}
+<section class="card mt-3" aria-labelledby="{{ heading_id|default:'history-heading' }}">
+  <div class="card-header"><h2 class="card-title" id="{{ heading_id|default:'history-heading' }}">History</h2></div>
+  <div class="card-body">
+    {% if history %}
+    <ol class="vr-timeline">
+      {% for event in history reversed %}{% include "includes/history_item.html" with title=event.action|action_label at=event.occurred_at actor=event.actor reason=event.reason %}{% endfor %}
+    </ol>
+    {% else %}{% include "includes/empty_state.html" with title="No recorded changes yet" %}{% endif %}
+  </div>
+</section>

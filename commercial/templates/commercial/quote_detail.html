@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load commercial_extras %}
+{% comment %}
+Staff quote page. Context: quote (annotated), versions, version (shown), lines, is_latest, can_edit, is_draft,
+history, action_form (hidden revision + version), withdraw_form.
+The document section (_quote_document.html) must stay one <section> without nested sections: tests and print
+styles read it as the quote.
+{% endcomment %}
+{% block breadcrumbs %}{% url 'commercial:quote-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Quotes" section_url=list_url current=quote.number %}{% endblock %}
+{% block page_heading %}<span class="vr-id">{{ quote.number }}</span>{% endblock %}
+{% block page_meta %}
+<ul class="vr-page-meta">
+  <li>{% include "commercial/_quote_status.html" with plain=True %}</li>
+  <li>{{ quote.title }}</li>
+  <li>{{ quote.client.name }}{% if quote.project %} / {{ quote.project.name }}{% endif %}</li>
+  <li>{{ versions|length }} version{{ versions|length|pluralize }}</li>
+</ul>
+{% endblock %}
+{% block page_actions %}
+<button class="btn btn-outline-secondary" type="button" onclick="window.print()">{% include "includes/icon.html" with name="printer" %}Print</button>
+{% if can_edit and is_latest %}
+{% if is_draft %}
+<a class="btn btn-outline-secondary" href="{% url 'commercial:quote-edit' quote.pk %}">Edit</a>
+<form method="post" action="{% url 'commercial:quote-issue' quote.pk %}" class="d-inline">{% csrf_token %}{{ action_form.expected_revision }}{{ action_form.version_number }}<button class="btn btn-primary" type="submit">Issue version {{ version.number }}</button></form>
+{% elif quote.status == "issued" or quote.status == "declined" %}
+<form method="post" action="{% url 'commercial:quote-revise' quote.pk %}" class="d-inline">{% csrf_token %}{{ action_form.expected_revision }}{{ action_form.version_number }}<button class="btn btn-primary" type="submit">Revise</button></form>
+{% endif %}
+{% endif %}
+{% endblock %}
+{% block content %}
+{% if quote.status == "accepted" %}
+<div class="alert alert-success" role="status">{% include "includes/status.html" with label="Accepted" tone="success" plain=True %}<div>Version {{ quote.decision_version }} accepted by {{ quote.decided_by.get_full_name|default:quote.decided_by.get_username }} on {{ quote.decided_at|date:"Y-m-d H:i" }}.{% if quote.client_reference %} Client reference: <strong>{{ quote.client_reference }}</strong>.{% endif %}</div></div>
+{% elif quote.status == "declined" %}
+<div class="alert alert-warning" role="status">{% include "includes/status.html" with label="Declined" tone="warning" plain=True %}<div>Version {{ quote.decision_version }} declined by {{ quote.decided_by.get_full_name|default:quote.decided_by.get_username }} on {{ quote.decided_at|date:"Y-m-d H:i" }}: {{ quote.decision_note }}</div></div>
+{% elif quote.is_expired %}
+<div class="alert alert-warning" role="status">{% include "includes/status.html" with label="Expired" tone="warning" plain=True %}<div>The valid-until date has passed. The client can no longer accept this version; revise to reissue.</div></div>
+{% endif %}
+{% if not is_latest %}
+<div class="alert alert-info" role="status">{% include "includes/status.html" with label="Superseded" tone="info" plain=True %}<div>You are viewing version {{ version.number }}, which was superseded. <a href="{% url 'commercial:quote-detail' quote.pk %}">Show the current version</a>.</div></div>
+{% endif %}
+{% include "commercial/_quote_document.html" %}
+<section class="card vr-table-card mt-3" aria-labelledby="versions-heading">
+  <div class="card-header"><h2 class="card-title" id="versions-heading">Versions</h2><span class="vr-count">{{ versions|length }}</span></div>
+  <div class="vr-table-wrap">
+    <table class="table table-hover vr-table">
+      <caption class="visually-hidden">Versions of {{ quote.number }}</caption>
+      <thead><tr><th scope="col">Version</th><th scope="col">Issued</th><th scope="col" class="text-end">Total (USD)</th></tr></thead>
+      <tbody>
+        {% for v in versions %}
+        <tr>
+          <th scope="row"><a class="vr-row-link" href="?v={{ v.number }}"{% if v.number == version.number %} aria-current="true"{% endif %}>Version {{ v.number }}</a></th>
+          <td class="vr-nowrap">{% if v.issued_at %}<time datetime="{{ v.issued_at|date:'c' }}">{{ v.issued_at|date:"Y-m-d H:i" }}</time>{% else %}Draft{% endif %}</td>
+          <td class="text-end vr-nowrap">{{ v.total|usd }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% if can_edit and quote.status != "accepted" and quote.status != "withdrawn" and is_latest %}
+<section class="card mt-3" aria-labelledby="withdraw-heading">
+  <div class="card-header"><h2 class="card-title" id="withdraw-heading">Withdraw quote</h2></div>
+  <div class="card-body">
+    <form method="post" action="{% url 'commercial:quote-withdraw' quote.pk %}" data-vr-local-form="Withdraw quote" data-vr-local-title="Withdraw quote" class="vr-form">
+      {% csrf_token %}{{ withdraw_form.expected_revision }}
+      <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+      {{ withdraw_form.reason.as_field_group }}
+      <div class="vr-form-actions">
+        <button class="btn btn-outline-danger" type="submit">Withdraw quote</button>
+      </div>
+    </form>
+  </div>
+</section>
+{% endif %}
+{% include "commercial/_history.html" with history=history %}
+{% endblock %}
+{% block record_foot %}{% include "includes/record_foot.html" with identifier=quote.number %}{% endblock %}

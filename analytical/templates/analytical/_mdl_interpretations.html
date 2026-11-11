@@ -1,0 +1,12 @@
+<details class="vr-form-note mb-3">
+  <summary>How this system reads Appendix B (conservative interpretations, not stated requirements)</summary>
+  <p class="mt-2 mb-1">The calculation follows 40 CFR 136 Appendix B, Revision 2. Where the text leaves a choice open, the system takes the stricter reading and reports "not evaluated" instead of guessing. These readings are this system's assumptions, not requirements quoted from the rule, and they do not mean the laboratory complies with or is accredited under any program. The laboratory's quality system decides anything beyond them.</p>
+  <ul class="mb-2 ps-3">
+    <li><strong>Batch and date spread.</strong> Appendix B asks that the samples span at least three batches and three preparation and analysis dates. Here that is checked for the spiked samples and for the method blanks separately, so a study can be "not evaluated" even if both sets together would pass.</li>
+    <li><strong>Distinct preparations.</strong> The seven-sample minimums count distinct preparations. Extra instruments analysing one preparation add analyses to the statistics but not to the preparation count.</li>
+    <li><strong>Failed spiked results in an ongoing verification.</strong> The system calculates only when every included spike is a positive numerical result that meets qualitative identification. Appendix B does not say how a routine non-detect or zero-or-negative spike enters the spiked-sample standard deviation, so no value is computed. Only a documented gross failure may be excluded.</li>
+    <li><strong>Blank percentile.</strong> The 99th-percentile blank rule is used only with more than 100 blanks, with the rank rounded half up. Otherwise the highest numerical blank is used. A non-detect is not numerical.</li>
+    <li><strong>Dates and times.</strong> Calendar dates are taken in the laboratory time zone. An imported blank with no preparation time uses its analysis time, marked "assumed", and never counts toward the preparation-date spread.</li>
+    <li><strong>Student t.</strong> Counts listed in Appendix B Table 1 use the published constant. Other counts use SciPy, rounded half up to three decimals, and the source is recorded on the calculation.</li>
+  </ul>
+</details>

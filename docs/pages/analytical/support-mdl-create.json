@@ -1,0 +1,71 @@
+{
+  "id": "analytical-support-mdl-create",
+  "routes": [
+    "analytical:mdl-create"
+  ],
+  "title": "New MDL study",
+  "purpose": "Start an open initial determination or ongoing verification for one exact catalog test.",
+  "sections": [
+    {
+      "title": "Access and fields",
+      "paragraphs": [
+        "Active internal staff with a laboratory role can read MDL records. Analysts enter observations, import routine blanks and calculate. Analysts or reviewers can exclude observations and close studies; the page buttons for these two actions are shown to analysts. Only an independent reviewer can decide a calculation. Admin includes operational roles but never bypasses independence; client accounts and superuser status alone do not grant access.",
+        "This records the laboratory’s MDL work; it does not establish method acceptability, accreditation or compliance. It never changes configured reporting limits or QC limits. Quarterly spiked runs can be recorded, but the application does not check coverage of every quarter of method use."
+      ],
+      "items": [
+        {
+          "label": "Test (method, analyte, matrix)",
+          "description": "Required active test whose method is active. Choices include method, analyte and matrix and are ordered by method code, analyte and matrix. Unit comes from the test."
+        },
+        {
+          "label": "Kind",
+          "description": "Required Initial determination or Ongoing verification. Only ongoing verification can later retain an existing MDL when eligible."
+        },
+        {
+          "label": "Spiking level",
+          "description": "Required positive exact number in the test unit. All spikes used must match it. The field suggests the procedure’s typical estimated-MDL range; saving does not enforce a 2-to-10 ratio."
+        },
+        {
+          "label": "Instruments covered",
+          "description": "Optional note, at most 200 characters, naming instruments intended to share the MDL. The note does not itself prove per-instrument data requirements."
+        },
+        {
+          "label": "Notes",
+          "description": "Optional laboratory study notes."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Create study",
+          "description": "Creates an open MDL-number and attributed creation event, then opens the study to add spikes and blanks. Invalid exact quantities or choices display errors for correction."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to MDL studies without creating a study."
+        }
+      ]
+    },
+    {
+      "title": "Exact quantities",
+      "paragraphs": [
+        "Use plain numeric text, with optional decimal point, sign or exponent. Units, thousands separators and comparison signs are not numeric input. Values requiring rounding beyond ten decimal places or exceeding fourteen integer digits are refused. Study settings have no edit form here."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/mdl_views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/mdl_services.py",
+    "analytical/mdl.py",
+    "analytical/selectors.py",
+    "analytical/templates/analytical/form.html",
+    "analytical/tests/test_mdl_views.py",
+    "analytical/tests/test_mdl_workflow.py",
+    "analytical/tests/test_mdl_pure.py",
+    "analytical/parsing.py"
+  ]
+}

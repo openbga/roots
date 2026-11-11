@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block breadcrumbs %}{% url 'analytical:import-profile-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Import mappings" section_url=list_url %}{% endblock %}
+{% block page_intro %}<p class="vr-page-intro">A mapping describes <em>your</em> file: which column holds the sample, analyte, result and so on.</p>{% endblock %}
+{% block content %}
+<form class="vr-form" method="post" novalidate>
+  {% csrf_token %}
+  {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+  {% include "includes/form_errors.html" with form=form %}
+  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+  <p class="vr-form-note">A mapping is not a validated instrument adapter, and no instrument vendor is claimed. Nothing is guessed from a header: an unmapped item is an error in the preview. Names are matched exactly. Result text is kept as exported, units are never converted, and a non-detect must be written ND.</p>
+
+  <fieldset class="vr-form-section">
+    <legend>File layout</legend>
+    <div class="row g-3">
+      <div class="col-md-6">{{ form.name.as_field_group }}</div>
+      <div class="col-md-4">{{ form.layout.as_field_group }}</div>
+      <div class="col-md-2">{{ form.delimiter.as_field_group }}</div>
+      <div class="col-md-3">{{ form.header_row.as_field_group }}</div>
+      <div class="col-md-6">{{ form.date_format.as_field_group }}</div>
+      {% if form.is_active %}<div class="col-md-3">{{ form.is_active.as_field_group }}</div>{% endif %}
+    </div>
+    <p class="vr-form-note mt-3 mb-0"><strong>Long:</strong> one result per row (sample, analyte, result). <strong>Wide:</strong> one sample per row and one column for each analyte you list below. Comma or tab delimited UTF-8 text only; Excel files are not supported. Imports keep the parsed results, the mapping and the file's digest, not the uploaded file: keep your source file.</p>
+  </fieldset>
+
+  <fieldset class="vr-form-section">
+    <legend>Columns for every row</legend>
+    <div class="row g-3">
+      <div class="col-md-6">{{ form.sample_column.as_field_group }}</div>
+      <div class="col-md-6">{{ form.analysis_column.as_field_group }}</div>
+      <div class="col-md-6">{{ form.reporting_limit_column.as_field_group }}</div>
+      <div class="col-md-6">{{ form.reporting_limit_fixed.as_field_group }}</div>
+      <div class="col-md-6">{{ form.dilution_column.as_field_group }}</div>
+      <div class="col-md-6">{{ form.dilution_fixed.as_field_group }}</div>
+      <div class="col-md-4">{{ form.qualifiers_column.as_field_group }}</div>
+      <div class="col-md-4">{{ form.comments_column.as_field_group }}</div>
+      <div class="col-md-4">{{ form.reason_column.as_field_group }}</div>
+      <div class="col-md-6">{{ form.prepared_aliquot_column.as_field_group }}</div>
+    </div>
+  </fieldset>
+
+  <fieldset class="vr-form-section">
+    <legend>Soil basis and supplied solids (when applicable)</legend>
+    <p class="vr-form-note">Soil observations require wet or dry weight. Give a column or an explicit fixed value for each item. Percent solids is optional; if present, its source reference is required. No concentration or reporting-limit conversion is performed.</p>
+    <div class="row g-3">
+      <div class="col-md-6">{{ form.result_basis_column.as_field_group }}</div><div class="col-md-6">{{ form.result_basis_fixed.as_field_group }}</div>
+      <div class="col-md-6">{{ form.percent_solids_column.as_field_group }}</div><div class="col-md-6">{{ form.percent_solids_fixed.as_field_group }}</div>
+      <div class="col-md-6">{{ form.solids_reference_column.as_field_group }}</div><div class="col-md-6">{{ form.solids_reference_fixed.as_field_group }}</div>
+    </div>
+  </fieldset>
+
+  <fieldset class="vr-form-section">
+    <legend>Long layout: analyte, result and unit</legend>
+    <div class="row g-3">
+      <div class="col-md-6">{{ form.analyte_column.as_field_group }}</div>
+      <div class="col-md-6">{{ form.result_column.as_field_group }}</div>
+      <div class="col-md-6">{{ form.unit_column.as_field_group }}</div>
+      <div class="col-md-6">{{ form.unit_fixed.as_field_group }}</div>
+      <div class="col-12">{{ form.analyte_aliases.as_field_group }}</div>
+    </div>
+  </fieldset>
+
+  <fieldset class="vr-form-section">
+    <legend>Wide layout: analyte columns</legend>
+    {{ form.analyte_columns.as_field_group }}
+  </fieldset>
+
+  <fieldset class="vr-form-section">
+    <legend>Notes</legend>
+    {{ form.notes.as_field_group }}
+  </fieldset>
+
+  <div class="vr-form-actions">
+    <a class="btn btn-link" href="{% url 'analytical:import-profile-list' %}">Cancel</a>
+    <button class="btn btn-primary" type="submit">{{ submit_label }}</button>
+  </div>
+</form>
+{% endblock %}

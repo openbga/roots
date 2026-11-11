@@ -1,0 +1,52 @@
+{
+  "id": "analytical-support-prep-complete",
+  "routes": [
+    "analytical:prep-complete"
+  ],
+  "title": "Record actual preparation completion",
+  "purpose": "Record or correct actual completion separately from membership closure.",
+  "sections": [
+    {
+      "title": "Context and field",
+      "paragraphs": [
+        "Active internal staff with a laboratory role can read this workspace. Analysts can create and change preparation work. An admin has operational analyst access; a client account or superuser status alone does not grant it.",
+        "The Preparation panel displays Batch, Preparation method, Matrix and Actual start. Existing completion is prefilled."
+      ],
+      "items": [
+        {
+          "label": "Actual preparation completion",
+          "description": "Required actual time in the laboratory time zone. Record the start first. Completion must be at or after the start, no more than two minutes ahead of the server clock, and no later than any existing linked result or preparation QC analysis."
+        }
+      ]
+    },
+    {
+      "title": "Actions and rules",
+      "items": [
+        {
+          "label": "Save preparation completion",
+          "description": "Saves completion and an attributed before/after audit event. Any submitted or approved result revision relying on the preparation blocks the change; record new preparation instead. The current batch is checked against the form version; reload and reconcile stale evidence. Membership may be closed."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the batch without saving."
+        }
+      ]
+    },
+    {
+      "title": "Meaning of completion",
+      "paragraphs": [
+        "Closing membership does not populate completion, and saving completion does not close membership. Result analysis must not precede completion when one is recorded, otherwise it must not precede start. No existing analytical revision is silently rewritten."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/preparation_views.py",
+    "analytical/templates/analytical/preparation_form.html",
+    "analytical/preparation.py",
+    "analytical/services.py",
+    "analytical/models.py",
+    "analytical/tests/test_preparation_views.py",
+    "analytical/tests/test_preparation.py",
+    "core/concurrency.py"
+  ]
+}

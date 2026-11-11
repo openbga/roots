@@ -1,0 +1,108 @@
+{
+  "id": "reporting-edd-context",
+  "routes": [
+    "reporting:edd-context"
+  ],
+  "title": "Export context",
+  "purpose": "Record export-only sample depths/locations, QC facts and corrected-result test types for one released report version.",
+  "sections": [
+    {
+      "title": "Access and data boundaries",
+      "paragraphs": [
+        "Project managers, approvers, users with explicit release authority and operational admins can configure and generate EDDs. Other internal roles can read EDD checks but cannot save settings or generate files. Client accounts cannot open these staff pages.",
+        "Rows are built from this version’s frozen reported samples/results and supported lab QC. The subject identifies client/project and issue number. Values are audited with your identity and saved separately; they never change the PDF/snapshot or existing exports. All fields are optional to save; leave unknown facts blank and let export validation identify required values. New amendments have their own context.",
+        "EDD preview blocks text values beginning with =, +, -, @, a tab or a carriage return because a spreadsheet may interpret them as formulas. Saving settings does not bypass that check. The export never rewrites values; use accurate source values and recipient codes. Negative numbers in numeric columns remain allowed."
+      ]
+    },
+    {
+      "title": "Sample depth and location",
+      "items": [
+        {
+          "label": "Sample",
+          "description": "Read-only lab ID, client sample ID and matrix from this issue. Samples without reported results do not get rows."
+        },
+        {
+          "label": "Start depth",
+          "description": "Optional nonnegative exact depth, maximum 12 digits including 4 decimal places."
+        },
+        {
+          "label": "End depth",
+          "description": "Same numeric bounds; exporter requires end greater than start when both supplied. SO, SS, SE and WG mapped normal samples need both depths and unit."
+        },
+        {
+          "label": "Unit",
+          "description": "Blank, in or ft. Required for any supplied depth; no conversion is performed."
+        },
+        {
+          "label": "NYSDEC location code",
+          "description": "Optional on save, maximum 20 characters. Export requires a site location code for every normal sample, different from its sample code. It must already exist in the site’s NYSDEC Location data; the application does not verify that reference."
+        }
+      ]
+    },
+    {
+      "title": "Laboratory QC samples (method blank, LCS)",
+      "paragraphs": [
+        "This section appears only when eligible method-blank/LCS rows exist."
+      ],
+      "items": [
+        {
+          "label": "QC sample",
+          "description": "Read-only generated batch/QC identity and Method blank (LB) or Laboratory control sample (BS). Only supported, non-withheld frozen QC appears."
+        },
+        {
+          "label": "Analytes",
+          "description": "Frozen analytes sharing this QC sample identity."
+        },
+        {
+          "label": "Batch prepared (reference)",
+          "description": "Frozen preparation timestamp shown as reference only. It is not filled into sample date or dilution for you."
+        },
+        {
+          "label": "Sample date",
+          "description": "Optional date/time on save, interpreted using deployment local timezone. Export requires an explicit date for each supported lab QC sample; unknown values stay blank."
+        },
+        {
+          "label": "Dilution factor",
+          "description": "Optional exact number, at least 0.0001, maximum 14 digits including 4 decimals. Export requires it for each supported lab QC sample; not defaulted to one."
+        }
+      ]
+    },
+    {
+      "title": "Test type of corrected results",
+      "paragraphs": [
+        "Appears for internal reported revisions after revision 1 whose analysis start or independent prepared aliquot differs from the first entry. Each field names lab ID, analyte and revision. Enter the appropriate recipient rt_test_type code, such as REANALYSIS or REEXTRACT, up to 10 characters. Values are trimmed and uppercased. EDP checks reference membership. Corrections with unchanged analysis start/aliquot export as INITIAL without this field."
+      ]
+    },
+    {
+      "title": "Actions and errors",
+      "paragraphs": [
+        "Field errors retain supplied input. Blanks remove previously entered facts for the submitted rows. There is no stale-edit token; coordinate concurrent context edits and reload before overwriting another person’s changes. Existing exports retain their old context."
+      ],
+      "items": [
+        {
+          "label": "Save changes",
+          "description": "Validate field types/limits, save context with audit and return to this version’s EDD preview. Depth ordering/location requirements are checked in the export preview, so a saved form is not an export-ready decision."
+        },
+        {
+          "label": "Cancel",
+          "description": "Return to the same EDD preview without saving."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "reporting/edd/views.py",
+    "reporting/edd/forms.py",
+    "reporting/edd/services.py",
+    "reporting/edd/nysdec.py",
+    "reporting/edd/nysdec_format.py",
+    "reporting/edd/fixes.py",
+    "reporting/edd/sources.py",
+    "reporting/models.py",
+    "reporting/services.py",
+    "accounts/roles.py",
+    "reporting/templates/reporting/edd/context_form.html",
+    "reporting/tests/test_edd_views.py",
+    "reporting/tests/test_preparation_release.py"
+  ]
+}

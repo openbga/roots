@@ -1,0 +1,31 @@
+{
+  "id": "accounts-mfa-deactivate",
+  "routes": [
+    "mfa_deactivate_totp"
+  ],
+  "title": "Deactivate authenticator app",
+  "purpose": "Remove the app-based second factor from your account.",
+  "sections": [
+    {
+      "title": "Action and effect",
+      "items": [
+        {
+          "label": "Deactivate",
+          "description": "POSTs removal of the signed-in account’s TOTP authenticator after recent reauthentication. If no other non-recovery authenticator remains, recovery codes are deleted as well. Returns to the MFA overview."
+        }
+      ]
+    },
+    {
+      "title": "Eligibility and navigation",
+      "paragraphs": [
+        "Requires an existing TOTP record, sign-in and recent reauthentication, normally within five minutes. This form has no editable fields, Back button or Cancel button. Leave via normal account navigation without submitting to keep the app active. Removing TOTP here does not remove laboratory roles or change the password. The normal flow performs recovery-code cleanup; direct maintenance deletion has different behavior."
+      ]
+    }
+  ],
+  "sources": [
+    "config/settings.py",
+    "templates/allauth/layouts/base.html",
+    "templates/allauth/layouts/manage.html",
+    "uv.lock"
+  ]
+}

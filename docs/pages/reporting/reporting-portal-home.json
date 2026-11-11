@@ -1,0 +1,169 @@
+{
+  "id": "reporting-portal-home",
+  "routes": [
+    "portal:home"
+  ],
+  "title": "Client home",
+  "purpose": "See your newest issued reports and where your received samples currently stand.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Only an active signed-in account linked to a client can use these pages. Every project, sample, report and download is limited to that client. Other clients’ records are treated as missing. Internal staff and unrelated accounts cannot use the portal. These reporting views are read-only; drafts never appear here.",
+        "When Demonstration appears, all clients, samples and results are synthetic and must not be used as laboratory results or for regulatory or compliance purposes.",
+        "The portal’s top navigation marks the current area. No staff work queue or result-edit controls are available here."
+      ],
+      "items": [
+        {
+          "label": "Home",
+          "description": "Client overview, recent reports and live sample-status counts."
+        },
+        {
+          "label": "Projects",
+          "description": "Client projects with sample/report counts."
+        },
+        {
+          "label": "Quotes",
+          "description": "Open the separate client quote workflow."
+        },
+        {
+          "label": "Submissions",
+          "description": "Open the separate client pre-login/submission workflow."
+        },
+        {
+          "label": "Samples",
+          "description": "Live status of the client’s received samples."
+        },
+        {
+          "label": "Reports",
+          "description": "Issued reports and stored downloads."
+        }
+      ]
+    },
+    {
+      "title": "Overview and latest reports",
+      "paragraphs": [
+        "No reports issued yet means the laboratory has not released a report for this client."
+      ],
+      "items": [
+        {
+          "label": "Client name",
+          "description": "The client linked to this account; not a client selector."
+        },
+        {
+          "label": "Projects",
+          "description": "Total client projects, including ones with no received samples."
+        },
+        {
+          "label": "Samples in progress",
+          "description": "Sum of Received, In analysis and Report in preparation. Held, rejected and fully reported samples are excluded."
+        },
+        {
+          "label": "Latest reports",
+          "description": "Up to five issued report scopes ordered by most recent release; amendments bring a report back to the top. Drafts are excluded."
+        },
+        {
+          "label": "Report",
+          "description": "RPT number links to current issued detail; current editable report title appears beneath and can differ from the frozen PDF if staff are preparing an amendment."
+        },
+        {
+          "label": "Project",
+          "description": "Current project name owning the report."
+        },
+        {
+          "label": "Version",
+          "description": "Issued v1 for first issue; Amended vN for latest amendment."
+        },
+        {
+          "label": "Released",
+          "description": "Latest issue date, not original creation or first-issue date."
+        },
+        {
+          "label": "Download PDF",
+          "description": "Download latest stored PDF for the row, preserving its original snapshot; does not regenerate from today’s data."
+        },
+        {
+          "label": "All reports",
+          "description": "Open the full searchable/paged issued-report list."
+        }
+      ]
+    },
+    {
+      "title": "Samples by status",
+      "items": [
+        {
+          "label": "Status / Samples",
+          "description": "Count all of this client’s samples in each computed live status. A nonzero label links to Samples with that status filter; zero labels do not link."
+        },
+        {
+          "label": "All samples",
+          "description": "Open the complete sample list."
+        }
+      ]
+    },
+    {
+      "title": "How live sample status is determined",
+      "paragraphs": [
+        "Status reflects current data. New requested tests, corrections or replacement external sources can move a sample out of Reported while older issued PDFs remain unchanged and downloadable. The count/status does not guarantee a delivery date or recipient acceptance."
+      ],
+      "items": [
+        {
+          "label": "Rejected at receipt",
+          "description": "Receipt disposition is Reject; this takes precedence over all analytical/report states."
+        },
+        {
+          "label": "On hold",
+          "description": "Receipt disposition is Hold, unless rejected. Contact the laboratory about the hold."
+        },
+        {
+          "label": "Reported",
+          "description": "At least one requested test and every current approved internal revision or latest accepted active external source appears in an issued report owned by this client. Merely having an older issued result is insufficient."
+        },
+        {
+          "label": "Report in preparation",
+          "description": "At least one test and all tests currently approved internally or accepted from active external sources, but not all current revisions appear in issued reports. This is computed from test progress, not proof that a report draft exists or passes release checks."
+        },
+        {
+          "label": "In analysis",
+          "description": "At least one internal result revision has been entered or an active subcontract exists, and the higher-priority states do not apply. An assigned internal batch without an entered result can still be Received."
+        },
+        {
+          "label": "Received",
+          "description": "Default when the earlier conditions do not apply, including no requested tests or no entered work."
+        }
+      ]
+    },
+    {
+      "title": "Needs your attention",
+      "items": [
+        {
+          "label": "Held or rejected samples",
+          "description": "Shown only when present; up to five most recently received held/rejected samples, with status, client sample ID, lab ID and disposition note when entered. This is a capped summary, not the full attention list."
+        },
+        {
+          "label": "Contact the laboratory",
+          "description": "The page does not let clients resolve receipt dispositions; use Samples to find the full set and contact the lab about next steps."
+        }
+      ]
+    },
+    {
+      "title": "Download integrity",
+      "paragraphs": [
+        "Stored PDF downloads verify the recorded SHA-256. An integrity failure refuses the file and asks you to contact the laboratory."
+      ]
+    }
+  ],
+  "sources": [
+    "reporting/portal_urls.py",
+    "reporting/portal_views.py",
+    "reporting/queries.py",
+    "reporting/models.py",
+    "reporting/content.py",
+    "reporting/templates/reporting/portal/notice.html",
+    "templates/layouts/portal.html",
+    "reporting/tests/test_portal.py",
+    "reporting/tests/test_grids.py",
+    "reporting/templates/reporting/portal/home.html",
+    "reporting/views.py"
+  ]
+}

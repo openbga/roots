@@ -1,0 +1,122 @@
+{
+  "id": "analytical-main-config-preservation-rule",
+  "routes": [
+    "analytical:config-new",
+    "analytical:config-edit"
+  ],
+  "match": {
+    "kind": "preservation-rule"
+  },
+  "title": "Preservation rule",
+  "purpose": "Configure recorded cooler-temperature screening and manual preservation requirements for one exact method version, analyte and matrix.",
+  "sections": [
+    {
+      "title": "Create, edit and access",
+      "paragraphs": [
+        "Staff can read this form, but only administrators may save it. Add creates a new configuration record; Edit prepopulates the existing record and requires a Reason for change. Unknown configuration kinds are unavailable. These are lab policy values, and synthetic seed data is not a validated set."
+      ]
+    },
+    {
+      "title": "Fields",
+      "items": [
+        {
+          "label": "Definition",
+          "description": "Required exact test definition; no rule is inferred from a related method or analyte. Choices are ordered by method, analyte and matrix, and include inactive definitions."
+        },
+        {
+          "label": "Temperature mode",
+          "description": "Required Configured temperature range, No temperature requirement or Manual temperature assessment. This addresses only recorded cooler receipt temperature."
+        },
+        {
+          "label": "Minimum cooler receipt temperature",
+          "description": "Optional inclusive lower °C bound, up to eight decimal places, available only with Configured temperature range."
+        },
+        {
+          "label": "Maximum cooler receipt temperature",
+          "description": "Optional inclusive upper °C bound, up to eight decimal places, available only with Configured temperature range. At least one bound is required for range mode and minimum cannot exceed maximum."
+        },
+        {
+          "label": "Unit",
+          "description": "Required °C; no other unit conversion is supplied."
+        },
+        {
+          "label": "Container requirements",
+          "description": "Optional manual checks. Narrative is never parsed into an automatic pass."
+        },
+        {
+          "label": "Chemical requirements",
+          "description": "Optional manual chemical/pH preservation checks. pH is never inferred from text."
+        },
+        {
+          "label": "Other requirements",
+          "description": "Optional further checks requiring human assessment."
+        },
+        {
+          "label": "Basis",
+          "description": "Required nonblank applicable method/SOP, scope and source revision. Appears on issued PDFs/client copies. Editing source text invalidates matching prior assessments, even if numeric bounds stay the same."
+        },
+        {
+          "label": "Is active",
+          "description": "Initially checked. Inactive rules remain visible but are not used for screening; they are treated as no applicable active rule rather than acceptance."
+        }
+      ]
+    },
+    {
+      "title": "Constraints and effects",
+      "paragraphs": [
+        "Only one rule can exist per exact definition, including inactive rules. Non-range modes must have both numeric bounds blank. Range comparisons use the exact unrounded recorded cooler observation and inclusive bounds; no rounding down, text parsing or unit conversion occurs.",
+        "Within range or No temperature requirement is not a conclusion about container suitability, chemical preservation, continuous cooling or freezing. Any configured manual requirements require a current reasoned laboratory assessment even when temperature screens within range.",
+        "No active rule, missing/unsupported reading, manual mode or an outside-range finding requires a current laboratory disposition for new approval/release. A matching Proceed/Qualify does not change the screening result. Hold/Reject remains blocking until a newer attributed assessment lifts it, including after evidence changes.",
+        "Rule/source changes invalidate prior evidence matching; assessments and issued report evidence are retained as history. Use the sample/test’s Preservation assessment page for a fresh attributed decision."
+      ]
+    },
+    {
+      "title": "Creation action",
+      "items": [
+        {
+          "label": "Add preservation rule",
+          "description": "Validate exact-test uniqueness, mode/bounds and source, create the audit event and return to QC configuration."
+        }
+      ]
+    },
+    {
+      "title": "Save, cancel and history",
+      "paragraphs": [
+        "Validation errors preserve entered form values. A stale record is refused rather than overwriting another person’s edit; input stays visible, but reload and compare current values before saving again. A reload is a new form, so retain any needed unsaved notes before leaving."
+      ],
+      "items": [
+        {
+          "label": "Reason for change",
+          "description": "Optional on creation; required nonblank for every existing-row save. Recorded with actor, time and before/after values."
+        },
+        {
+          "label": "Save changes",
+          "description": "For an edit, validate fields and uniqueness, recheck that the record still matches the version opened, and save with its audit event. The Add form’s named submit button creates instead. Success returns to QC configuration."
+        },
+        {
+          "label": "Cancel",
+          "description": "Return to QC configuration without saving typed changes."
+        },
+        {
+          "label": "History",
+          "description": "Existing records show their latest 20 audit events, displayed oldest to newest, with action, actor, time and reason. No history section appears before any events exist."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/templates/analytical/form.html",
+    "core/concurrency.py",
+    "analytical/tests/test_config_concurrency.py",
+    "analytical/preservation.py",
+    "analytical/preservation_services.py",
+    "analytical/tests/test_preservation_workflow.py",
+    "analytical/tests/test_preservation_pure.py"
+  ]
+}

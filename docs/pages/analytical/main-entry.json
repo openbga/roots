@@ -1,0 +1,171 @@
+{
+  "id": "analytical-main-entry",
+  "routes": [
+    "analytical:batch-entry"
+  ],
+  "title": "Enter results",
+  "purpose": "Enter awaiting results or new revisions of entered/returned work in a page-sized grid, then submit saved entries from the batch page.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "These are staff pages. Active users with an application staff role can read them; client accounts cannot. Analysts perform result entry and batch work, reviewers decide results, and administrators maintain configuration. Administrators also have operational analyst and reviewer access, but independence rules still apply. Superuser status alone does not grant an application role."
+      ]
+    },
+    {
+      "title": "Filters and scope",
+      "items": [
+        {
+          "label": "Search",
+          "description": "Partial, case-insensitive lab ID, client sample ID or analyte, across eligible current results in this batch."
+        },
+        {
+          "label": "Status",
+          "description": "Defaults to All that need entry: awaiting, entered and returned. Choose Awaiting entry, Entered, not submitted or Returned. Submitted/approved results do not appear; use the result page or import for approved corrections."
+        },
+        {
+          "label": "Apply",
+          "description": "Filter and return to page 1. Invalid filters produce errors and no rows."
+        },
+        {
+          "label": "Clear all",
+          "description": "Restore the default enterable set."
+        },
+        {
+          "label": "Rows per page",
+          "description": "25 by default; choose 50 or 100. Paging preserves filters. Save before changing filters or page: unsaved entries are lost."
+        }
+      ]
+    },
+    {
+      "title": "Fields and columns",
+      "items": [
+        {
+          "label": "Default analysis start",
+          "description": "Optional common laboratory-local start used only by rows without their own Analysis start."
+        },
+        {
+          "label": "Sample",
+          "description": "Read-only laboratory sample ID."
+        },
+        {
+          "label": "Analyte",
+          "description": "Read-only requested analyte."
+        },
+        {
+          "label": "Prepared aliquot",
+          "description": "Explicit preparation choice; required where configured. Available choices are noncancelled aliquots linked to this requested test; the server validates their method and chronology."
+        },
+        {
+          "label": "Unit",
+          "description": "Read-only test unit; no conversion."
+        },
+        {
+          "label": "Current",
+          "description": "Latest supplied numeric value, or ND with its applied reporting-limit threshold, and current status. New fields are not populated from it."
+        },
+        {
+          "label": "Soil basis",
+          "description": "For soil only, choose Wet weight or Dry weight. Not applicable is shown among choices but is rejected for a new soil observation."
+        },
+        {
+          "label": "Supplied percent solids (optional)",
+          "description": "Expand Percent solids (%) and Solids source reference for soil."
+        },
+        {
+          "label": "Percent solids (%)",
+          "description": "Optional supplied exact percentage; requires a source."
+        },
+        {
+          "label": "Solids source reference",
+          "description": "Required with supplied solids, at most 240 characters; identifies the actual measurement/source."
+        },
+        {
+          "label": "Result",
+          "description": "Number or ND as observed. To skip a row, leave Result, Reporting limit and its row Analysis start all blank; a prefilled limit makes the row an attempted entry."
+        },
+        {
+          "label": "Reporting limit",
+          "description": "Applied limit for this observation. Initially the current method limit if configured; check and edit as needed. With browser scripting, entering a positive whole-number dilution multiplies that base limit until you manually edit the limit. Fractional dilution does not auto-calculate it."
+        },
+        {
+          "label": "Dilution",
+          "description": "Initially 1. Record the actual positive factor."
+        },
+        {
+          "label": "Qualifiers",
+          "description": "Optional active, case-sensitive codes separated by commas, semicolons or whitespace. Duplicates are removed; unknown/inactive codes are errors."
+        },
+        {
+          "label": "Analysis start",
+          "description": "Required per entered row unless Default analysis start is supplied. Row value overrides the default."
+        },
+        {
+          "label": "Reason",
+          "description": "Shown for a result that already has a revision. Required for correction of returned/approved work; a draft revision without a reason receives the recorded reason Entry revised before submission."
+        },
+        {
+          "label": "Qualifier codes you can use",
+          "description": "Expand active code descriptions; codes marked for holding-time exceedance can satisfy the exceeded-time submission requirement."
+        }
+      ]
+    },
+    {
+      "title": "Exact results and chronology",
+      "paragraphs": [
+        "Use a plain decimal number, optionally signed or in scientific notation, or ND (case-insensitive) for a non-detect. Zero is a detected numeric observation, never an inferred non-detect. Comparison symbols, units, thousands separators and values needing rounding are rejected. Result text is limited to 60 characters; numeric observations support 14 integer digits and 10 decimal places.",
+        "Reporting limit must be positive. Dilution must be positive with at most four decimal places and at most ten integer digits. A detected value below its applied reporting limit needs at least one active qualifier or must be entered as ND where appropriate; the application does not choose that interpretation for you. Units come from the test; nothing is converted.",
+        "Analysis cannot precede sample receipt or applicable preparation, and cannot be more than two minutes ahead of the current time. Preparation cannot precede collection, including composite end. Local form times use the deployment’s laboratory time zone; ambiguous/nonexistent daylight-saving local times are rejected.",
+        "For soil, choose Wet weight or Dry weight for every new observation. Enter the final result and reporting limit on that same basis; no conversion is performed. Percent solids is optional exact supplied data between 0 and 100 inclusive, and requires its source reference. A reference without percent solids is invalid. Nonsoil results use Not applicable and reject supplied solids metadata.",
+        "An active independent preparation requirement needs an explicit available aliquot for this sample/test, matrix and required preparation method/version. It must have a recorded start, and analysis cannot precede completion when recorded, otherwise start. Choosing the same aliquot means repeat analysis; choosing a new physical aliquot means re-preparation. No identity is inferred from a legacy batch timestamp."
+      ]
+    },
+    {
+      "title": "Saving and errors",
+      "items": [
+        {
+          "label": "Save … rows on this page as entered",
+          "description": "Analysts save attempted rows on this page only. Every saved observation becomes a new entered revision and retains previous entries; it does not submit for review. A save with no attempted entries produces an error."
+        },
+        {
+          "label": "Cancel",
+          "description": "Return to the batch without saving typed values."
+        },
+        {
+          "label": "Row errors",
+          "description": "If any submitted row is invalid, nothing in this save is committed. Errors link to affected rows and preserve typed values. A row is skipped only when its Result, Reporting limit and row Analysis start are all blank. Clear an initial method limit as well as the result to skip that row."
+        },
+        {
+          "label": "Changed rows",
+          "description": "If a submitted result is no longer an eligible current result of this batch, nothing is saved. Reload, check current rows and enter again; do not assume unsaved values survive reload."
+        },
+        {
+          "label": "Preparation time needed",
+          "description": "Resolve the linked missing preparation start before entry; a result entered without a required clock event cannot be submitted until re-entered with the correct event."
+        }
+      ]
+    },
+    {
+      "title": "Empty states",
+      "paragraphs": [
+        "Clear filters if no rows match. Nothing to enter can mean no tests or all tests are submitted/approved. Add tests from the batch where appropriate. Returned rows are supported by this grid and the result page. Other staff can inspect the disabled entry form but cannot save it."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/templates/analytical/batch_entry.html",
+    "analytical/parsing.py",
+    "analytical/preparation.py",
+    "analytical/holding.py",
+    "analytical/tests/test_lists.py",
+    "analytical/tests/test_observation_metadata.py",
+    "analytical/tests/test_timezone.py",
+    "analytical/tests/test_views.py"
+  ]
+}

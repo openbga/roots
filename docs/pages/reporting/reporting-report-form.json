@@ -1,0 +1,153 @@
+{
+  "id": "reporting-report-form",
+  "routes": [
+    "reporting:report-create",
+    "reporting:report-edit"
+  ],
+  "title": "Prepare or edit a report",
+  "purpose": "Choose the project, samples, title and narrative for the next issued version.",
+  "sections": [
+    {
+      "title": "Access and record scope",
+      "paragraphs": [
+        "Active internal staff with an application role can read this page. Client accounts cannot use staff reporting pages. Project managers, approvers and users with explicit release authority can prepare and edit reports. Admin includes project-manager operational access, but release separately requires the explicit report release permission; admin or superuser status alone does not grant it.",
+        "Create first asks for a project. Edit fixes the existing project and starts with saved title, narrative and selections. Editing an issued report changes next-version scope only; existing PDFs remain unchanged and the next release needs an amendment reason."
+      ]
+    },
+    {
+      "title": "Project step",
+      "paragraphs": [
+        "No projects yet asks for client/project setup first."
+      ],
+      "items": [
+        {
+          "label": "Project",
+          "description": "Required for creation; client projects ordered by client then project. A report cannot combine projects or clients."
+        },
+        {
+          "label": "Choose samples",
+          "description": "Continue to scope/sample form without creating a report."
+        },
+        {
+          "label": "Choose another project",
+          "description": "Return to creation chooser; current unsaved entries and selections are not saved."
+        },
+        {
+          "label": "Cancel",
+          "description": "Return to Reports during create or report detail during edit without saving."
+        }
+      ]
+    },
+    {
+      "title": "Report fields",
+      "items": [
+        {
+          "label": "Title",
+          "description": "Required, nonblank, maximum 160 characters. New scopes default to project name followed by analytical report. Printed as report title; outer whitespace is trimmed."
+        },
+        {
+          "label": "Case narrative",
+          "description": "Optional, maximum 4,000 characters. Printed explanation of interpretation or limitations; outer whitespace is trimmed."
+        },
+        {
+          "label": "Samples",
+          "description": "Select 1 to 100 from this project. Draft saving does not require approval. Every requested test of selected samples is checked at release, not just tests whose results are already entered."
+        }
+      ]
+    },
+    {
+      "title": "Finding and selecting samples",
+      "items": [
+        {
+          "label": "Search",
+          "description": "Case-insensitive search of this project’s lab/client sample IDs only."
+        },
+        {
+          "label": "Show",
+          "description": "Default All samples (selected first). Selected only limits visible rows. All tests approved requires at least one test and every current internal result approved or active external source accepted. Not in any issued report means no result/source from that sample appears in any issued version; inclusion in only draft reports does not exclude it."
+        },
+        {
+          "label": "Rows",
+          "description": "25, 50 or 100; default 25. Invalid picker row sizes fall back to 25."
+        },
+        {
+          "label": "Apply",
+          "description": "Re-render at page 1 without saving or validating report fields. Typed title/narrative and selection are carried forward."
+        },
+        {
+          "label": "Select all samples on this page",
+          "description": "Select or clear visible rows only. Samples hidden by filtering or paging remain selected and appear in the summary."
+        },
+        {
+          "label": "First page / Previous page / Next page / Last page",
+          "description": "Submit surrounding form to navigate without saving or validating; typed entries and off-page selections survive. Rows sort selected first, then newest receipt and lab ID."
+        },
+        {
+          "label": "Selection summary",
+          "description": "Total selected, 100-sample maximum and project sample count. More than 100 may be temporarily checked but cannot be saved."
+        }
+      ]
+    },
+    {
+      "title": "Sample columns",
+      "items": [
+        {
+          "label": "Lab ID",
+          "description": "Lab sample identity and checkbox label."
+        },
+        {
+          "label": "Client sample ID",
+          "description": "Client source identity of the same received sample."
+        },
+        {
+          "label": "Collected",
+          "description": "Collection time, or composite collection end."
+        },
+        {
+          "label": "Received",
+          "description": "Laboratory receipt time; controls default sample order."
+        },
+        {
+          "label": "Disposition",
+          "description": "Current receipt outcome. Selecting a held/rejected sample does not clear it."
+        },
+        {
+          "label": "Tests approved",
+          "description": "All approved or approved/accepted count of requested tests. Preview still checks QC, preservation and independence."
+        },
+        {
+          "label": "In reports",
+          "description": "Links to other scopes containing the sample with draft/issued/amended labels. Current edited report is omitted; one sample may be in multiple reports."
+        }
+      ]
+    },
+    {
+      "title": "Saving and errors",
+      "paragraphs": [
+        "Field errors retain submitted form/selection for correction. An edit uses the original scope revision; if another person saved changes, reload and reapply your intended edits. Retrying the stale form cannot override their change. Empty picker states distinguish no received samples from no matching rows."
+      ],
+      "items": [
+        {
+          "label": "Prepare report",
+          "description": "Validate and create an editable scope, record creator and audit, then open detail. Does not issue a PDF or expose a draft to clients."
+        },
+        {
+          "label": "Save changes",
+          "description": "Validate and save next-version scope with audit; issued versions remain unchanged. Enter in a text field submits save, not picker Apply."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "reporting/views.py",
+    "reporting/forms.py",
+    "reporting/queries.py",
+    "reporting/models.py",
+    "reporting/services.py",
+    "reporting/content.py",
+    "accounts/roles.py",
+    "reporting/templates/reporting/report_form.html",
+    "reporting/tests/test_grids.py",
+    "reporting/tests/test_release.py"
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "id": "laboratory-material-detail",
+  "routes": [
+    "laboratory:material-detail"
+  ],
+  "title": "Material details",
+  "purpose": "Inspect a material specification and related lots.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Available to active signed-in lab staff with an admin, custodian, analyst, reviewer, approver or project manager role. Client accounts and accounts without a lab role cannot open laboratory pages. Sidebar links open Lab overview, Inventory, Equipment, Training and Nonconformances. Breadcrumbs return to the list or parent record."
+      ]
+    },
+    {
+      "title": "Facts",
+      "items": [
+        {
+          "label": "Name, status, kind and Counted in",
+          "description": "Header shows identity, whether new lots are allowed, category and counting unit."
+        },
+        {
+          "label": "CAS number",
+          "description": "Optional identifier."
+        },
+        {
+          "label": "Storage requirements",
+          "description": "Entered material-level handling text."
+        },
+        {
+          "label": "Specification",
+          "description": "Purchase grade, purity or certified concentration specification; distinct from lot label concentration."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Edit",
+          "description": "Admin and reviewer roles can revise with a reason; unit locks once any lot exists."
+        },
+        {
+          "label": "Add lot",
+          "description": "Admin, analyst and reviewer roles see this only for active materials; preselects this material."
+        },
+        {
+          "label": "Lot",
+          "description": "Open the individual ledger."
+        }
+      ]
+    },
+    {
+      "title": "Lots",
+      "items": [
+        {
+          "label": "Rows and count",
+          "description": "At most 100 lots, expiry descending, including retired/depleted lots. Count is shown rows, not an uncapped total; use Lots with the Material filter for the full list."
+        },
+        {
+          "label": "Lot, Vendor, Expires",
+          "description": "Number link, supplier and entered expiry."
+        },
+        {
+          "label": "On hand, Unit, Location",
+          "description": "Exact current balance, stored unit and physical location."
+        },
+        {
+          "label": "Status",
+          "description": "Display state takes precedence in this order: Retired; Expired after the expiry date; Depleted at zero balance; Expiring through 30 days from today; otherwise In stock. The expiry date itself is still unexpired. The status highlight always uses 30 days even when a filter uses another window."
+        },
+        {
+          "label": "No lots yet",
+          "description": "Use Add lot when available."
+        }
+      ]
+    },
+    {
+      "title": "History",
+      "paragraphs": [
+        "History shows up to the latest 30 audit events, oldest of those first and the newest last. Each shows action, recorded time, actor and reason when supplied. If the record has more than 30 audit events, older events beyond this cap are not shown in this panel. They remain stored. This panel is separate from the operational ledger or timeline."
+      ]
+    },
+    {
+      "title": "Record footer",
+      "paragraphs": [
+        "The footer repeats the record identifier and shows Viewed with the time this page was produced in the deployment time zone and the signed-in viewer. This is a viewing timestamp, distinct from creation, event, review or closure time. Numbered section headings identify panels on the record page."
+      ]
+    }
+  ],
+  "sources": [
+    "laboratory/urls.py",
+    "laboratory/forms.py",
+    "laboratory/models.py",
+    "laboratory/permissions.py",
+    "laboratory/inventory_views.py",
+    "laboratory/inventory.py",
+    "laboratory/selectors.py",
+    "laboratory/templates/laboratory/material_detail.html",
+    "templates/includes/record_foot.html",
+    "laboratory/common.py",
+    "core/models.py",
+    "laboratory/templates/laboratory/_history.html"
+  ]
+}

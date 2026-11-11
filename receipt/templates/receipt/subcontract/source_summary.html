@@ -1,0 +1,15 @@
+{% comment %}Facts of one external source version. Parameter: source (SubcontractResult).{% endcomment %}
+{% load catalog_extras %}
+<dl class="vr-facts">
+  <div><dt>Exact reported result</dt><dd>{{ source.observed_text }} {{ source.unit }}</dd></div>
+  <div><dt>Reporting limit / dilution</dt><dd>{{ source.reporting_limit|plain_decimal }} {{ source.unit }} / {{ source.dilution|plain_decimal }}</dd></div>
+  <div><dt>External method and version</dt><dd>{{ source.external_method }}</dd></div>
+  <div><dt>External analyst / analysis time</dt><dd>{{ source.external_analyst }} / {{ source.analyzed_at|date:"Y-m-d H:i T" }}</dd></div>
+  <div><dt>External laboratory / sample ID</dt><dd>{{ source.source_snapshot.external_lab }} / {{ source.source_snapshot.external_sample_id }}</dd></div>
+  <div><dt>External report reference</dt><dd>{{ source.external_report_reference }}</dd></div>
+  <div><dt>External qualifiers and meanings</dt><dd>{{ source.qualifier_text|default:"None recorded"|linebreaksbr }}</dd></div>
+  <div><dt>Entered by</dt><dd>{{ source.entered_by.get_full_name|default:source.entered_by.get_username }} at {{ source.entered_at|date:"Y-m-d H:i T" }}</dd></div>
+  <div><dt>Correction reason / source note</dt><dd>{{ source.reason|default:"Initial external source entry" }}</dd></div>
+  <div><dt>Source PDF</dt><dd><a href="{% url 'receipt:subcontract-source-download' source.pk %}">Download staff-only source {{ source.number }}</a> ({{ source.source_size|filesizeformat }})<div class="small text-break">SHA-256: {{ source.source_sha256 }}</div></dd></div>
+  <div><dt>Source review</dt><dd>{% if source.review_decision %}{{ source.get_review_decision_display }} by {{ source.reviewed_by.get_full_name|default:source.reviewed_by.get_username }} at {{ source.reviewed_at|date:"Y-m-d H:i T" }}<div>{{ source.review_note }}</div>{% else %}Awaiting independent source review{% endif %}</dd></div>
+</dl>

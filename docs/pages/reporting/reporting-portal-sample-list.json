@@ -1,0 +1,202 @@
+{
+  "id": "reporting-portal-sample-list",
+  "routes": [
+    "portal:sample-list"
+  ],
+  "title": "Client samples",
+  "purpose": "Track your received samples and open issued reports containing their results.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Only an active signed-in account linked to a client can use these pages. Every project, sample, report and download is limited to that client. Other clients’ records are treated as missing. Internal staff and unrelated accounts cannot use the portal. These reporting views are read-only; drafts never appear here.",
+        "When Demonstration appears, all clients, samples and results are synthetic and must not be used as laboratory results or for regulatory or compliance purposes.",
+        "The portal’s top navigation marks the current area. No staff work queue or result-edit controls are available here."
+      ],
+      "items": [
+        {
+          "label": "Home",
+          "description": "Client overview, recent reports and live sample-status counts."
+        },
+        {
+          "label": "Projects",
+          "description": "Client projects with sample/report counts."
+        },
+        {
+          "label": "Quotes",
+          "description": "Open the separate client quote workflow."
+        },
+        {
+          "label": "Submissions",
+          "description": "Open the separate client pre-login/submission workflow."
+        },
+        {
+          "label": "Samples",
+          "description": "Live status of the client’s received samples."
+        },
+        {
+          "label": "Reports",
+          "description": "Issued reports and stored downloads."
+        }
+      ]
+    },
+    {
+      "title": "Filters and defaults",
+      "paragraphs": [
+        "Default order is most recently collected first."
+      ],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Case-insensitive client sample ID or lab ID search only; it does not search location, analyte or result values."
+        },
+        {
+          "label": "Project",
+          "description": "All projects by default; choices contain only this client’s projects."
+        },
+        {
+          "label": "Status",
+          "description": "Any status by default, or one of the six computed live states below. A status link from Home arrives with this filter set."
+        },
+        {
+          "label": "More filters",
+          "description": "Reveal Collected from and Collected to; opens when a value or filter error is present."
+        },
+        {
+          "label": "Collected from / Collected to",
+          "description": "Inclusive local collection-date bounds; collection end is used for composite samples. Invalid dates/status/project choices show errors and no rows, never a wider client search."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Your sample ID",
+          "description": "Client’s sample identifier; fixed visible. This is not a link to a separate sample-detail page."
+        },
+        {
+          "label": "Lab ID",
+          "description": "Unique laboratory sample identity for communication with staff."
+        },
+        {
+          "label": "Project",
+          "description": "Owning client project."
+        },
+        {
+          "label": "Matrix",
+          "description": "Water, Wastewater or Soil sample matrix; hidden initially."
+        },
+        {
+          "label": "Location",
+          "description": "Recorded collection location or Not recorded; hidden initially. This is descriptive collection text, not an EDD site-location mapping."
+        },
+        {
+          "label": "Collected",
+          "description": "Collection instant or composite end, displayed in laboratory local time. Hover shows timezone."
+        },
+        {
+          "label": "Received",
+          "description": "Laboratory receipt time; hidden initially. Hover shows timezone."
+        },
+        {
+          "label": "Tests",
+          "description": "Number of requested tests on this sample, not number approved/reported; hidden initially."
+        },
+        {
+          "label": "Status",
+          "description": "Current computed progress or receipt restriction; see the rules below. Sorting follows the underlying status-code order rather than workflow-progress order."
+        },
+        {
+          "label": "Report",
+          "description": "Link to the report with the most recently released version containing any internal or external result revision of this sample. A link can remain even when current work is no longer fully reported. Open the report’s current version/history to see what it covers; a dash means no owned issued version links to a result yet."
+        }
+      ]
+    },
+    {
+      "title": "How live sample status is determined",
+      "paragraphs": [
+        "Status reflects current data. New requested tests, corrections or replacement external sources can move a sample out of Reported while older issued PDFs remain unchanged and downloadable. The count/status does not guarantee a delivery date or recipient acceptance."
+      ],
+      "items": [
+        {
+          "label": "Rejected at receipt",
+          "description": "Receipt disposition is Reject; this takes precedence over all analytical/report states."
+        },
+        {
+          "label": "On hold",
+          "description": "Receipt disposition is Hold, unless rejected. Contact the laboratory about the hold."
+        },
+        {
+          "label": "Reported",
+          "description": "At least one requested test and every current approved internal revision or latest accepted active external source appears in an issued report owned by this client. Merely having an older issued result is insufficient."
+        },
+        {
+          "label": "Report in preparation",
+          "description": "At least one test and all tests currently approved internally or accepted from active external sources, but not all current revisions appear in issued reports. This is computed from test progress, not proof that a report draft exists or passes release checks."
+        },
+        {
+          "label": "In analysis",
+          "description": "At least one internal result revision has been entered or an active subcontract exists, and the higher-priority states do not apply. An assigned internal batch without an entered result can still be Received."
+        },
+        {
+          "label": "Received",
+          "description": "Default when the earlier conditions do not apply, including no requested tests or no entered work."
+        }
+      ]
+    },
+    {
+      "title": "Using the table",
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Apply combined search and filters to all matching records and return to page 1."
+        },
+        {
+          "label": "Clear all",
+          "description": "Remove search, filters and query-based sorting/page settings. An active-filter chip removes only that filter and returns to page 1."
+        },
+        {
+          "label": "Column headings",
+          "description": "Linked headings sort ascending or descending across the full filtered set. Unlinked headings cannot sort. Equal values use record ID as a tie-breaker; unsupported sorts fall back to the page default."
+        },
+        {
+          "label": "Rows per page",
+          "description": "Choose 25, 50 or 100, default 25. Changing this returns to page 1 and preserves other filters. Show applies the choice when automatic submission is unavailable. Other sizes are refused."
+        },
+        {
+          "label": "First page / Previous page / Next page / Last page",
+          "description": "Move through matching records while preserving filters and sort. The footer shows visible range, total, current page and page count. Invalid page text selects page 1; out-of-range pages select the last page."
+        },
+        {
+          "label": "Columns",
+          "description": "With browser enhancement, change optional column visibility and order using the dialog’s move controls or by dragging headings. Changes apply immediately and are saved in this browser only. Locked identity/action columns stay visible and fixed. Reset columns restores defaults; Done or Close closes the dialog. Presentation settings do not change records, filters or exports."
+        }
+      ]
+    },
+    {
+      "title": "Empty and error states",
+      "paragraphs": [
+        "No samples received yet means no lab receipt records exist for your client, including planned-only submissions. No matches suggests checking the ID or clearing filters. Invalid filters retain errors for correction and never expose another client’s data."
+      ]
+    }
+  ],
+  "sources": [
+    "reporting/portal_urls.py",
+    "reporting/portal_views.py",
+    "reporting/queries.py",
+    "reporting/models.py",
+    "reporting/content.py",
+    "reporting/templates/reporting/portal/notice.html",
+    "templates/layouts/portal.html",
+    "reporting/tests/test_portal.py",
+    "reporting/tests/test_grids.py",
+    "reporting/templates/reporting/portal/sample_list.html",
+    "reporting/templates/reporting/portal/sample_status.html",
+    "core/grids.py",
+    "templates/includes/grid_toolbar.html",
+    "templates/includes/pagination.html",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js"
+  ]
+}

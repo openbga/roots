@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load laboratory_extras %}
+{% block breadcrumbs %}{% url 'laboratory:lot-list' as lots_url %}{% include "includes/breadcrumbs.html" with section="Inventory" tab="Lots" tab_url=lots_url current=lot.lot_number %}{% endblock %}
+{% block page_heading %}<span class="vr-id">{{ lot.lot_number }}</span>{% endblock %}
+{% block page_meta %}<ul class="vr-page-meta"><li>{% include "includes/status.html" with label=state_label tone=state_tone %}</li><li>{{ lot.material.name }}</li><li>{{ lot.quantity_on_hand|qty }} {{ lot.unit }} on hand</li><li>Expires <time datetime="{{ lot.expires_on|date:'Y-m-d' }}">{{ lot.expires_on|date:"Y-m-d" }}</time></li></ul>{% endblock %}
+{% block page_actions %}
+{% if not retired %}
+{% if can_manage_stock %}<a class="btn btn-outline-danger" href="{% url 'laboratory:lot-retire' lot.pk %}">Retire lot</a>{% endif %}
+{% if can_use_stock %}<a class="btn btn-outline-secondary" href="{% url 'laboratory:lot-edit' lot.pk %}">Edit</a>
+<a class="btn btn-outline-secondary" href="{% url 'laboratory:lot-receive' lot.pk %}">Record receipt</a>{% endif %}
+{% if can_manage_stock %}<a class="btn btn-outline-secondary" href="{% url 'laboratory:lot-adjust' lot.pk %}">Record adjustment</a>{% endif %}
+{% if can_use_stock %}<a class="btn btn-primary" href="{% url 'laboratory:lot-use' lot.pk %}">Record use</a>{% endif %}
+{% endif %}
+{% endblock %}
+{% block content %}
+{% if lot.is_expired and not retired %}<div class="alert alert-danger" role="status">{% include "includes/status.html" with label="Expired" tone="danger" plain=True %}<div>This lot expired on {{ lot.expires_on|date:"Y-m-d" }}. Using it requires an explicit confirmation that is kept on the movement.</div></div>{% endif %}
+<section class="card mb-3" aria-labelledby="lot-heading"><div class="card-header"><h2 class="card-title" id="lot-heading">Lot details</h2></div>
+  <div class="card-body"><dl class="vr-facts">
+    <div><dt>Material</dt><dd><a href="{% url 'laboratory:material-detail' lot.material_id %}">{{ lot.material.name }}</a></dd></div>
+    <div><dt>Source</dt><dd>{{ lot.get_source_display }}</dd></div>
+    <div><dt>Vendor</dt><dd>{{ lot.vendor|default:"—" }}</dd></div>
+    <div><dt>Catalog / certificate reference</dt><dd class="vr-id">{{ lot.vendor_reference|default:"—" }}</dd></div>
+    <div><dt>Stated concentration</dt><dd>{{ lot.stated_concentration|default:"—" }}</dd></div>
+    {% if lot.received_on %}<div><dt>Received</dt><dd>{{ lot.received_on|date:"Y-m-d" }}</dd></div>{% endif %}
+    {% if lot.prepared_on %}<div><dt>Prepared</dt><dd>{{ lot.prepared_on|date:"Y-m-d" }}</dd></div>{% endif %}
+    {% if lot.prepared_from %}<div><dt>Prepared from</dt><dd><a class="vr-id" href="{% url 'laboratory:lot-detail' lot.prepared_from_id %}">{{ lot.prepared_from.lot_number }}</a> {{ lot.prepared_from.material.name }}</dd></div>{% endif %}
+    <div><dt>Expires</dt><dd>{{ lot.expires_on|date:"Y-m-d" }}</dd></div>
+    <div><dt>Storage</dt><dd>{{ lot.storage_location }}{% if lot.storage_conditions %}<div class="vr-muted small">{{ lot.storage_conditions }}</div>{% endif %}</dd></div>
+    <div><dt>Opening quantity</dt><dd>{{ lot.quantity_initial|qty }} {{ lot.unit }}</dd></div>
+    <div><dt>Material specification</dt><dd>{{ lot.material.specification|default:"—"|linebreaksbr }}</dd></div>
+  </dl></div></section>
+<section class="card vr-table-card mb-3" aria-labelledby="ledger-heading"><div class="card-header"><h2 class="card-title" id="ledger-heading">Stock movements</h2><span class="vr-count">{{ movements|length }}{% if movements|length >= 200 %}, newest 200 shown{% endif %}, newest first</span></div>
+  <div class="vr-table-wrap"><table class="table vr-table">
+    <thead><tr><th scope="col">When</th><th scope="col">Movement</th><th scope="col" class="text-end">Change</th><th scope="col" class="text-end">Balance</th><th scope="col">Batch / purpose</th><th scope="col">By</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
+    <tbody>
+      {% for m in movements %}
+      <tr>
+        <th scope="row" class="vr-nowrap"><time datetime="{{ m.occurred_at|date:'c' }}">{{ m.occurred_at|date:"Y-m-d H:i:s" }}</time></th>
+        <td>{{ m.get_kind_display }}{% if m.reversed_by %} {% include "includes/status.html" with label="Reversed" tone="neutral" plain=True %}{% endif %}{% if m.expired_at_use %} {% include "includes/status.html" with label="Used after expiry" tone="warning" plain=True %}{% endif %}</td>
+        <td class="text-end vr-nowrap">{% if m.delta > 0 %}+{% endif %}{{ m.delta|qty }} {{ m.unit }}</td>
+        <td class="text-end vr-nowrap">{{ m.balance_after|qty }}</td>
+        <td>{% if m.batch %}<a class="vr-id" href="{% url 'analytical:batch-detail' m.batch_id %}">{{ m.batch.number }}</a>{% endif %}{% if m.purpose %} {{ m.purpose }}{% endif %}{% if m.reason %}<div class="vr-muted small">{{ m.reason }}</div>{% endif %}</td>
+        <td>{{ m.actor.get_full_name|default:m.actor.get_username }}</td>
+        <td class="text-end">{% if can_manage_stock and not retired and not m.reversed_by and m.kind != "reversal" %}<a class="btn btn-sm btn-outline-secondary" href="{% url 'laboratory:movement-reverse' m.pk %}">Reverse<span class="visually-hidden"> this movement</span></a>{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody></table></div></section>
+{% if preparations %}<section class="card vr-table-card mb-3" aria-labelledby="prep-heading"><div class="card-header"><h2 class="card-title" id="prep-heading">Prepared from this lot</h2><span class="vr-count">{{ preparations|length }}</span></div>
+  <div class="vr-table-wrap"><table class="table vr-table">
+    <thead><tr><th scope="col">Lot</th><th scope="col">Material</th><th scope="col">Prepared</th></tr></thead>
+    <tbody>{% for child in preparations %}<tr><th scope="row"><a class="vr-row-link vr-id" href="{% url 'laboratory:lot-detail' child.pk %}">{{ child.lot_number }}</a></th><td>{{ child.material.name }}</td><td class="vr-nowrap">{{ child.prepared_on|date:"Y-m-d" }}</td></tr>{% endfor %}</tbody>
+  </table></div></section>{% endif %}
+{% include "laboratory/_linked_nc.html" with heading_id="lotnc-heading" link_param="lot" link_pk=lot.pk %}
+{% include "laboratory/_history.html" %}
+{% endblock %}
+{% block record_foot %}{% include "includes/record_foot.html" with identifier=lot.lot_number %}{% endblock %}

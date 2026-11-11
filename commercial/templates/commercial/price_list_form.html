@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% comment %}Create/edit a price list with one price per catalog test. Context: form (PriceListForm: grouped(), test_fields), price_list, history.{% endcomment %}
+{% block breadcrumbs %}{% url 'commercial:price-list-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Price lists" section_url=list_url %}{% endblock %}
+{% block page_intro %}<p class="vr-page-intro">Prices are US dollars per sample; leave a price blank to not offer that test, and changes are audited with before and after prices.</p>{% endblock %}
+{% block content %}
+<form class="vr-form vr-form-wide" method="post" novalidate>
+  {% csrf_token %}
+  {% include "includes/form_errors.html" with form=form %}
+  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+  {% for legend, fields in form.grouped %}
+  <fieldset class="vr-form-section">
+    <legend>{{ legend }}</legend>
+    {% for field in fields %}{{ field.as_field_group }}{% endfor %}
+  </fieldset>
+  {% endfor %}
+  <fieldset class="vr-form-section">
+    <legend>Prices</legend>
+    {% if form.test_fields %}
+    <div class="vr-table-wrap">
+      <table class="table table-hover vr-table">
+        <caption class="visually-hidden">Price per catalog test in US dollars</caption>
+        <thead><tr>
+          <th scope="col">Analyte</th><th scope="col">Method version</th><th scope="col">Matrix</th><th scope="col">Unit</th>
+          <th scope="col" class="text-end">Price (USD)</th>
+        </tr></thead>
+        <tbody>
+          {% for test, field in form.test_fields %}
+          <tr>
+            <th scope="row">{{ test.analyte.name }}</th>
+            <td>{{ test.method }}</td>
+            <td>{{ test.get_matrix_display }}</td>
+            <td class="vr-nowrap">{{ test.unit }}</td>
+            <td>
+              <label class="visually-hidden" for="{{ field.id_for_label }}">Price in US dollars for {{ test.analyte.name }}, {{ test.method }}, {{ test.get_matrix_display }}</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>{{ field }}
+              </div>
+              {% if field.errors %}<ul class="vr-field-errors" id="{{ field.auto_id }}_error">{% for error in field.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    {% url 'catalog:test-list' as catalog_url %}
+    {% include "includes/empty_state.html" with title="No catalog tests to price" body="Define tests in the catalog first." action_url=catalog_url action_label="Open catalog" %}
+    {% endif %}
+  </fieldset>
+  {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+  <div class="vr-form-actions">
+    <a class="btn btn-link" href="{% url 'commercial:price-list-list' %}">Cancel</a>
+    <button class="btn btn-primary" type="submit">{% if price_list %}Save changes{% else %}Create price list{% endif %}</button>
+  </div>
+</form>
+{% if history %}{% include "commercial/_history.html" with history=history %}{% endif %}
+{% endblock %}

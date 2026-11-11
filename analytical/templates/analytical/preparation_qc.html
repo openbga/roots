@@ -1,0 +1,62 @@
+{% load catalog_extras %}
+<section class="card vr-table-card mb-3" aria-labelledby="qc-heading">
+  <div class="card-header"><h2 class="card-title" id="qc-heading">Quality control</h2>
+    {% if can_enter and open %}<a class="btn btn-outline-secondary btn-sm ms-auto" href="{% url 'analytical:qc-sample-add' batch.pk %}">{% include "includes/icon.html" with name="plus-lg" %}Add QC sample</a>{% endif %}</div>
+  <div class="card-body">
+    <h3 class="vr-section-title">Required for this method</h3>
+    {% if requirements %}
+    <div class="vr-table-wrap">
+      <table class="table vr-table">
+        <thead><tr><th scope="col">Analyte</th><th scope="col">QC type</th><th scope="col" class="text-end">Physical aliquots</th><th scope="col" class="text-end">Required QC samples</th><th scope="col" class="text-end">QC samples in batch</th><th scope="col">Frequency status</th></tr></thead>
+        <tbody>
+          {% for row in requirements %}
+          <tr>
+            <th scope="row">{{ row.definition.analyte }}</th>
+            <td>{{ row.requirement.get_qc_type_display }}</td>
+            <td class="text-end">{{ row.aliquot_count }}{% if row.cancelled_count %}<div class="vr-form-note">includes {{ row.cancelled_count }} cancelled aliquot{{ row.cancelled_count|pluralize }}</div>{% endif %}</td>
+            <td class="text-end">{{ row.need }}</td><td class="text-end">{{ row.have }}</td>
+            <td>{% if row.met %}{% include "includes/status.html" with label="Met" tone="success" plain=True %}{% else %}{% include "includes/status.html" with label="Short" tone="warning" plain=True %}{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p class="vr-form-note">Frequencies use the configured requirements and physical aliquots covering each analyte. QC sample counts show frequency only; each QC sample also needs a measurement for that analyte.</p>
+    {% elif has_qc_requirements %}
+    {% include "includes/empty_state.html" with title="No required frequencies to show yet" body="Add aliquots and their tests to show the required QC frequency for each analyte." %}
+    {% else %}
+    {% url 'analytical:qc-config' as config_url %}
+    {% include "includes/empty_state.html" with title="No QC requirements configured" body="No QC requirements are configured for this method, so none are enforced. Review them under QC configuration." action_url=config_url action_label="QC configuration" %}
+    {% endif %}
+  </div>
+  {% for sample, measurements in qc_rows %}
+  <div class="card-body border-top">
+    <div class="d-flex justify-content-between align-items-baseline">
+      <h3 class="vr-section-title mb-0"><span class="vr-id">{{ sample.label }}</span> · {{ sample.get_qc_type_display }}{% if sample.parent_sample %} · parent <a class="vr-id" href="{% url 'receipt:sample-detail' sample.parent_sample.pk %}">{{ sample.parent_sample.lab_id }}</a>{% endif %}</h3>
+      {% if can_enter %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:qc-measure' sample.pk %}">Record measurements<span class="visually-hidden"> for {{ sample.label }}</span></a>{% endif %}
+    </div>
+    {% if measurements %}
+    <div class="vr-table-wrap mt-2">
+      <table class="table vr-table">
+        <thead><tr><th scope="col">Analyte</th><th scope="col">Actual analytical run</th><th scope="col" class="text-end">Observed</th><th scope="col">Unit</th><th scope="col" class="text-end">Spike</th><th scope="col">Evaluation</th><th scope="col">Detail</th><th scope="col">Entered by</th></tr></thead>
+        <tbody>
+          {% for m in measurements %}
+          <tr>
+            <th scope="row">{{ m.analyte_name }}</th>
+            <td>{% if m.analysis_batch_id %}<a class="vr-id" href="{% url 'analytical:batch-detail' m.analysis_batch_id %}">{{ m.analysis_batch.number }}</a>{% else %}<span class="vr-muted">Not recorded</span>{% endif %}</td>
+            <td class="text-end vr-id">{{ m.observed_text }}</td><td>{{ m.unit }}</td>
+            <td class="text-end">{{ m.spike_value|plain_decimal }}</td>
+            <td>{% include "analytical/_qc_status.html" with status=m.evaluation.status %}</td>
+            <td class="small">{{ m.evaluation.summary }}</td>
+            <td>{{ m.entered_by.get_full_name|default:m.entered_by.get_username }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}{% include "includes/empty_state.html" with title="No measurements recorded yet" %}{% endif %}
+  </div>
+  {% empty %}
+  <div class="card-body border-top">{% include "includes/empty_state.html" with title="No QC samples in this batch yet" %}</div>
+  {% endfor %}
+</section>

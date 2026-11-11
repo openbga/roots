@@ -1,0 +1,66 @@
+{
+  "id": "analytical-support-prep-create",
+  "routes": [
+    "analytical:prep-create"
+  ],
+  "title": "New preparation batch",
+  "purpose": "Create a separate preparation record for physical aliquots; it does not create analytical results or assign tests.",
+  "sections": [
+    {
+      "title": "Access and fields",
+      "paragraphs": [
+        "Active internal staff with a laboratory role can read this workspace. Analysts can create and change preparation work. An admin has operational analyst access; a client account or superuser status alone does not grant it.",
+        "Required fields are marked with an asterisk. Record actual events in the laboratory time zone. A new batch begins with open membership."
+      ],
+      "items": [
+        {
+          "label": "Preparation method",
+          "description": "Required exact active method/version with an active preparation requirement. This determines which tests can later be covered by its aliquots."
+        },
+        {
+          "label": "Matrix",
+          "description": "Required Water, Wastewater or Soil; every aliquot and covered test must match."
+        },
+        {
+          "label": "Actual preparation start",
+          "description": "Optional actual event time; leave blank until preparation starts. It cannot be more than two minutes ahead of the server clock."
+        },
+        {
+          "label": "Actual preparation completion",
+          "description": "Optional. Requires an actual start, must be at or after it and cannot be more than two minutes ahead of the server clock. It does not close membership."
+        },
+        {
+          "label": "Instrument or equipment",
+          "description": "Optional non-retired equipment, ordered by asset ID. Not recorded is allowed. It is primary equipment attribution for information, not an approval or release condition."
+        },
+        {
+          "label": "Notes",
+          "description": "Optional batch notes retained on the batch record."
+        }
+      ]
+    },
+    {
+      "title": "Actions and outcome",
+      "items": [
+        {
+          "label": "Create preparation batch",
+          "description": "Validates the fields, records an attributed creation event, and opens the new P-number. Add aliquots and their covered tests next. Errors keep the bound form available for correction."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to Preparation batches without creating a record."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/preparation_views.py",
+    "analytical/templates/analytical/preparation_form.html",
+    "analytical/preparation.py",
+    "analytical/services.py",
+    "analytical/models.py",
+    "analytical/tests/test_preparation_views.py",
+    "analytical/tests/test_preparation.py",
+    "analytical/forms.py"
+  ]
+}

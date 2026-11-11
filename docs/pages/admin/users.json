@@ -1,0 +1,99 @@
+{
+  "id": "admin-users",
+  "routes": [
+    "admin:accounts_user_changelist"
+  ],
+  "title": "Users",
+  "purpose": "Find staff and client accounts and review their assigned access.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "The administration site requires an active account with Staff status. User and group pages additionally require Superuser status; a laboratory admin role alone or individual model permissions do not open them. These technical flags do not themselves confer operational roles or report-release authority."
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Username",
+          "description": "Sign-in identifier and link to the user change form; sortable."
+        },
+        {
+          "label": "Name",
+          "description": "Full first/last name or dash. Sorts by last name, not the displayed combined string."
+        },
+        {
+          "label": "Email address",
+          "description": "Account authentication/recovery email, sortable; distinct from reporting contacts."
+        },
+        {
+          "label": "Roles",
+          "description": "Assigned group names alphabetically, including custom groups; Client portal for a client-linked account, or None with no group. It is not an expanded list of admin’s effective operational roles and is not sortable."
+        },
+        {
+          "label": "Can release",
+          "description": "Boolean for active internal accounts holding explicit authorize_release directly or through a group. Not sortable."
+        },
+        {
+          "label": "Client",
+          "description": "Portal ownership client, or empty for internal staff; sortable."
+        },
+        {
+          "label": "Active / Superuser status",
+          "description": "Enabled-account and technical superuser flags, both sortable. Staff status is not a column on this list."
+        },
+        {
+          "label": "Last login",
+          "description": "Latest successful login time, or dash; sortable."
+        }
+      ]
+    },
+    {
+      "title": "Search, filters and paging",
+      "paragraphs": [
+        "Search matches case-insensitive substrings. Space-separated terms must each match at least one configured field; quote a phrase to match it as one term. The result query includes all matches, not just visible rows. Clearing the search restores the unsearched set while preserving applicable filters.",
+        "These are Django administration tables, not operational grids. The server uses 100 records per page, with numbered page links and a total count. Show all appears when the filtered result count is at most 200 and exceeds one page. There is no Rows per page selector or Columns dialog. Linked sortable headings change order; repeated heading clicks change direction or remove that ordering. The sidebar navigation filter only filters module links, not table records.",
+        "Initial order is Username ascending. No row-selection checkboxes or bulk actions are shown because account actions are disabled."
+      ],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Username, first name, last name or email."
+        },
+        {
+          "label": "account type",
+          "description": "Laboratory staff means no client link; it does not require Staff status. Client portal user means a client link."
+        },
+        {
+          "label": "release authority",
+          "description": "Can release reports selects active internal users with the actual accounts authorize_release permission; Cannot release includes everyone else."
+        },
+        {
+          "label": "active / superuser status / groups / client",
+          "description": "Standard boolean/group/client filters. Groups includes custom groups. All removes an individual restriction. Sidebar filters use links, with All restoring that filter. Show counts or Hide counts toggles per-option counts, and Clear all filters clears active sidebar restrictions. Filtering applies to all records and resets paging."
+        },
+        {
+          "label": "Add user",
+          "description": "Opens account creation. No invitation is sent automatically. Existing users are deactivated rather than deleted."
+        }
+      ]
+    },
+    {
+      "title": "Role, preservation and edit rules",
+      "paragraphs": [
+        "Client-linked users cannot have Staff status, Superuser status, any groups or direct permissions in the supported account forms. An active internal admin group grants custodian, analyst, reviewer and project-manager operations; approver is not implied. Release needs explicit accounts authorize_release; nobody reviews their own result work. User deletion is disabled. Forms prevent demoting/deactivating the last active superuser. User/group and administrator password changes have attributed audit events without password values."
+      ]
+    }
+  ],
+  "sources": [
+    "accounts/admin.py",
+    "accounts/models.py",
+    "accounts/roles.py",
+    "core/admin.py",
+    "config/settings.py",
+    "uv.lock",
+    "accounts/tests/test_admin.py",
+    "templates/admin/base_site.html"
+  ]
+}

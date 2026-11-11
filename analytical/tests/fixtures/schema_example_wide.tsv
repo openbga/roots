@@ -1,0 +1,4 @@
+# SCHEMA EXAMPLE: synthetic text written for these tests. It is NOT captured instrument output and does not represent any vendor's export. Header names are invented.
+ID	Run Time	Pb	Cu	Dilution
+VR-DEMO-1	{ANALYSED}	0.0120	ND	1
+VR-DEMO-2	{ANALYSED}	0.0075		1

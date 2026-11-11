@@ -1,0 +1,35 @@
+{% comment %}
+Breadcrumb trail for record, form, action, entry and document pages; never on lists or overviews
+(docs/ui-standards.md section 3, rule 5). The trail is Sidebar item › Record › Action; the last crumb
+is the current page and is never a link. Under a tabbed section it is Section › Tab › …, where the
+section is text and the tab links to its list. Use inside {% block breadcrumbs %}.
+Parameters, either a trail built by the view:
+  crumbs        iterable of (label, url) pairs in order; the last pair is the current page and
+                renders as text whatever its url; an earlier pair without a url renders as text
+or the parts written in the template (each optional except current):
+  section, section_url   the sidebar item and its list; without section_url the section is text
+  tab, tab_url           the section tab's list, under a tabbed section (Catalog › Methods)
+  record, record_url     the record the page belongs to (a batch number, a report number)
+  child, child_url       a record inside that record (Reports › RPT-1 › EDD v1 › Export context)
+  current                the current page; defaults to page_title
+Examples:
+  record page  {% url 'receipt:sample-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Samples" section_url=list_url current=sample.lab_id %}
+  action page  {% include "includes/breadcrumbs.html" with section="Batches & QC" section_url=list_url record=batch.number record_url=batch_url %}
+  tabbed form  {% include "includes/breadcrumbs.html" with section="Catalog" tab="Methods" tab_url=methods_url %}
+  view trail   {% include "includes/breadcrumbs.html" with crumbs=crumbs %}
+{% endcomment %}
+<nav aria-label="Breadcrumb">
+  <ol class="breadcrumb">
+    {% if crumbs %}
+    {% for label, url in crumbs %}
+    {% if forloop.last %}<li class="breadcrumb-item active" aria-current="page">{{ label }}</li>{% elif url %}<li class="breadcrumb-item"><a href="{{ url }}">{{ label }}</a></li>{% else %}<li class="breadcrumb-item">{{ label }}</li>{% endif %}
+    {% endfor %}
+    {% else %}
+    {% if section %}<li class="breadcrumb-item">{% if section_url %}<a href="{{ section_url }}">{{ section }}</a>{% else %}{{ section }}{% endif %}</li>{% endif %}
+    {% if tab %}<li class="breadcrumb-item"><a href="{{ tab_url }}">{{ tab }}</a></li>{% endif %}
+    {% if record %}<li class="breadcrumb-item">{% if record_url %}<a href="{{ record_url }}">{{ record }}</a>{% else %}{{ record }}{% endif %}</li>{% endif %}
+    {% if child %}<li class="breadcrumb-item">{% if child_url %}<a href="{{ child_url }}">{{ child }}</a>{% else %}{{ child }}{% endif %}</li>{% endif %}
+    <li class="breadcrumb-item active" aria-current="page">{% if current %}{{ current }}{% else %}{{ page_title }}{% endif %}</li>
+    {% endif %}
+  </ol>
+</nav>

@@ -1,0 +1,10 @@
+{% load static %}{% comment %}
+Brand mark and name. Parameters:
+  href     link target; without it the brand is plain text (the 500 page, which has no request)
+  name     text beside the mark; default "OpenBGA Roots" (the portal passes the lab's name)
+  variant  "entrance" for the larger lock-up above entrance and error panels; default is the top bar
+Usage: {% include "includes/brand.html" with href=dashboard_url|default:"/" %}
+{% endcomment %}{% with size=variant|yesno:"32,24" css=variant|yesno:"vr-entrance-brand,vr-brand" %}{% if href %}<a class="{{ css }}" href="{{ href }}">{% else %}<p class="{{ css }}">{% endif %}
+  <img src="{% static 'img/mark.svg' %}" alt="" width="{{ size }}" height="{{ size }}">
+  <span>{{ name|default:"OpenBGA Roots" }}</span>
+{% if href %}</a>{% else %}</p>{% endif %}{% endwith %}

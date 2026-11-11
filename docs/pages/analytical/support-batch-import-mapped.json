@@ -1,0 +1,201 @@
+{
+  "id": "analytical-support-batch-import-mapped",
+  "routes": [
+    "analytical:batch-import-mapped"
+  ],
+  "title": "Import with a mapping",
+  "purpose": "Validate an exported results file against one analytical batch and save all valid rows as entered revisions only after confirming the preview.",
+  "sections": [
+    {
+      "title": "Access, context and tabs",
+      "paragraphs": [
+        "Active internal staff with a laboratory role can read this workspace; clients cannot. Analysts manage mappings and import results. Admin includes analyst operational access; superuser status alone does not grant a laboratory role.",
+        "The page identifies Batch, exact method/version and Matrix. Staff without analyst access see Read only. An open or closed analytical batch can accept results; membership closure alone does not block entry."
+      ],
+      "items": [
+        {
+          "label": "Import results",
+          "description": "Tab opens the standard fixed-column results-file workflow for this same batch."
+        },
+        {
+          "label": "Import with a mapping",
+          "description": "Current tab uses an active saved mapping for long or wide comma/tab-delimited text."
+        },
+        {
+          "label": "New mapping",
+          "description": "Shown when there are no active mappings; opens mapping creation. Existing inactive profiles cannot be selected for upload."
+        }
+      ]
+    },
+    {
+      "title": "Upload and validation",
+      "items": [
+        {
+          "label": "Mapping profile",
+          "description": "Required active saved mapping. A profile selected through the link/query can be preselected; upload validation still requires an active available choice."
+        },
+        {
+          "label": "Results file (UTF-8 text)",
+          "description": "Required file, at most 1024 KiB (1 MiB), in the mapping’s delimiter/layout. The page advertises 2000 results; the parser checks accumulated result/blank-cell count before each source record, so a final wide row can expand beyond that count. Split large files rather than relying on that edge case. A leading UTF-8 byte order mark is ignored for parsing but included in the file digest. Binary/NUL, non-UTF-8 and malformed delimited text fail."
+        },
+        {
+          "label": "Validate and preview",
+          "description": "Reads and validates without writing results. Mapped headers must occur exactly once; missing required or duplicate mapped headers fail. Every populated row must have the same column count as the header. Wholly blank records are ignored; pre-header records and unused columns are reported."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the analytical batch without importing."
+        }
+      ]
+    },
+    {
+      "title": "Result eligibility and quantities",
+      "paragraphs": [
+        "Every imported sample/analyte must already be assigned to this batch, matched case-insensitively after trimming. No test or sample is created by import. A file cannot contain two populated results for the same sample/analyte. Unit is required explicitly and must exactly equal the test unit. Numeric results and reporting limits use exact decimals; result text up to 60 characters is preserved. ND is a non-detect, never zero. Comparison text, units within numeric values, thousands separators and lossy precision are rejected. Reporting limit and dilution must be positive; dilution allows at most four effective decimal places. Values below the applied reporting limit need at least one active qualifier or must be entered as ND. Qualifier codes must be active and exact.",
+        "Analysis start is required and must be no more than two minutes ahead of the server clock, not before receipt or the relevant preparation event. Local times without offsets use the laboratory zone; ambiguous/nonexistent daylight-saving times require an explicit ISO offset. Independent preparation requires an explicit eligible aliquot ID covering this sample and test, the configured preparation method, actual start, and analysis not before completion when recorded. Soil requires explicit wet/dry basis; optional 0–100% solids requires its reference, and neither result nor limit is converted. Non-soil rows reject wet/dry and solids metadata. Hold/reject samples cannot be saved as analytical results.",
+        "A submitted revision must be returned by a reviewer before replacement. Approved or returned results require a nonblank mapped reason; a draft replacement can use the standard recorded draft-revision reason. Every new entry is a new revision retaining prior evidence, not an overwrite. Preview does not approve results or validate QC/release."
+      ]
+    },
+    {
+      "title": "Preview status and What will be recorded",
+      "items": [
+        {
+          "label": "Valid / Errors",
+          "description": "Valid shows total results that passed and states nothing is saved yet. Any file or row error blocks the entire file. Fix the source or mapping and preview again; errors do not import the otherwise-valid rows."
+        },
+        {
+          "label": "Mapping",
+          "description": "Profile name, layout and delimiter used for this preview."
+        },
+        {
+          "label": "Mapping SHA-256",
+          "description": "Digest of layout, delimiter and full mapping meaning, not name/notes. Display is shortened with full digest in its detail."
+        },
+        {
+          "label": "File SHA-256 (uploaded bytes)",
+          "description": "Digest of bytes exactly uploaded, including any BOM and line-ending differences, displayed shortened with full detail."
+        },
+        {
+          "label": "Results",
+          "description": "Counts of valid new results versus new revisions of existing results."
+        },
+        {
+          "label": "Original file",
+          "description": "Not stored. Keep the source file in laboratory records; the application retains parsed revisions, mapping snapshot, file digest and provenance."
+        },
+        {
+          "label": "How the file is read",
+          "description": "UTF-8 with leading BOM ignored for parsing; source line endings and raw bytes define the digest."
+        },
+        {
+          "label": "Rows above the header",
+          "description": "Count of ignored preamble records, shown when nonzero."
+        },
+        {
+          "label": "Columns not mapped",
+          "description": "Listed source headers that are present but not read; otherwise none."
+        },
+        {
+          "label": "Blank cells",
+          "description": "Count of skipped wide-layout analyte cells. Empty cells are not ND and do not clear or change an existing result."
+        }
+      ]
+    },
+    {
+      "title": "Preview table",
+      "paragraphs": [
+        "All error rows are shown first, followed by at most 100 valid rows; a message counts additional valid rows not displayed. The eventual import still includes all validated result rows."
+      ],
+      "items": [
+        {
+          "label": "Source",
+          "description": "Source record number; wide layout includes the source column. Retained as result revision provenance with filename."
+        },
+        {
+          "label": "Sample",
+          "description": "Laboratory sample ID read from the mapping."
+        },
+        {
+          "label": "Analyte",
+          "description": "Resolved catalog analyte with the original file name/header when different."
+        },
+        {
+          "label": "Result as supplied",
+          "description": "Original result text. Soil additionally shows Wet weight/Dry weight, optional solids percentage and its reference."
+        },
+        {
+          "label": "Unit",
+          "description": "Explicit imported unit; never converted."
+        },
+        {
+          "label": "Reporting limit / Dilution",
+          "description": "Applied limit in the test unit and explicit factor for this row."
+        },
+        {
+          "label": "Analysis start",
+          "description": "Parsed local timestamp including zone when valid; otherwise original source text."
+        },
+        {
+          "label": "What will change",
+          "description": "Row errors, New result, or next revision number with prior value/status retained. It does not delete the earlier revision."
+        }
+      ]
+    },
+    {
+      "title": "Blank cells (nothing imported)",
+      "paragraphs": [
+        "Shows at most 50 skipped wide-layout cells and a count of further blanks. A file with no nonblank mapped results cannot be committed."
+      ],
+      "items": [
+        {
+          "label": "Row / Sample / Column",
+          "description": "Source record, laboratory sample ID and mapped analyte column of each skipped cell."
+        }
+      ]
+    },
+    {
+      "title": "Confirmation and concurrency",
+      "items": [
+        {
+          "label": "Import result(s) as entered",
+          "description": "Available to analysts only for an error-free preview. Revalidates file, active profile, current target revisions, preparation evidence and assignments under locks. All rows, their revision history and audit metadata commit together, or none do. Success returns to the batch; review and submit there."
+        },
+        {
+          "label": "Start over",
+          "description": "Leaves the valid preview and opens a new upload form for the same batch."
+        },
+        {
+          "label": "Preview again",
+          "description": "Shown after an invalid preview or failed confirmation; opens a fresh upload form. Fix the original file or mapping first."
+        },
+        {
+          "label": "Cancel",
+          "description": "Leaves the preview and returns to the batch without writing results."
+        }
+      ]
+    },
+    {
+      "title": "Stale and repeated import rules",
+      "paragraphs": [
+        "Confirmation refuses an inactive or removed profile, changed mapping meaning, changed targeted latest revision or preparation dependency, and no longer valid result evidence. Refresh and preview again so the displayed plan reflects current records. A failed confirmation may display a re-parsed preview but does not silently commit it. Hidden confirmation data is validated; damaged or oversized payloads do not import anything.",
+        "The same raw file digest with the same mapping digest cannot be imported twice into the same batch, even with a different filename; the previous actor/time are reported. Change the source meaningfully or correct results by hand. A mapping rename alone does not bypass repeated-file detection. Results are saved as entered with current user attribution, filename/source row or column, mapping snapshot, file and mapping digests and audit metadata. This page does not retain an uploaded source file or release reports."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/import_views.py",
+    "analytical/forms.py",
+    "analytical/import_profiles.py",
+    "analytical/models.py",
+    "analytical/selectors.py",
+    "analytical/tests/test_import_profiles.py",
+    "analytical/importing.py",
+    "analytical/services.py",
+    "analytical/preparation.py",
+    "analytical/parsing.py",
+    "analytical/templates/analytical/batch_import_mapped.html",
+    "analytical/templates/analytical/_import_basis.html",
+    "analytical/tests/test_preparation.py",
+    "analytical/views.py"
+  ]
+}

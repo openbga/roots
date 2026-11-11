@@ -1,0 +1,101 @@
+{
+  "id": "analytical-support-import-profile-list",
+  "routes": [
+    "analytical:import-profile-list"
+  ],
+  "title": "Import mappings",
+  "purpose": "Find reusable descriptions of long or wide comma/tab-delimited result files before previewing them against an analytical batch.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Active internal staff with a laboratory role can read this workspace; clients cannot. Analysts manage mappings and import results. Admin includes analyst operational access; superuser status alone does not grant a laboratory role.",
+        "A mapping is an operator-maintained file description, not a validated instrument adapter or vendor claim. Imports retain the mapping snapshot used, so later edits cannot change old imports."
+      ],
+      "items": [
+        {
+          "label": "New mapping",
+          "description": "Analysts open mapping creation. The empty-state link also leads there; access is enforced when the form opens."
+        },
+        {
+          "label": "Name",
+          "description": "Analysts open the existing mapping for editing; other staff see its name without an edit link."
+        }
+      ]
+    },
+    {
+      "title": "Search, filters and sorting",
+      "paragraphs": [
+        "Apply searches and filters the complete server query and returns to page 1. Active chips remove individual filters, and Clear all resets the query. Invalid filters show errors and no rows. Rows per page is 25, 50 or 100, initially 25; other sizes are refused. First, Previous, Next and Last preserve the query. Sortable headings reverse direction. Columns changes local visibility/order with reset and keyboard controls, without changing which records qualify.",
+        "Default order is Name. Name, Layout, Last changed and Created support sorting. Both active and inactive mappings appear unless State restricts them."
+      ],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Case-insensitive profile name or notes."
+        },
+        {
+          "label": "Layout",
+          "description": "Any layout, Long: one result per row, or Wide: one sample per row, one column per analyte."
+        },
+        {
+          "label": "State",
+          "description": "Under More filters: Any state, Active or Inactive. Only active mappings can be chosen for an import."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Name",
+          "description": "Unique mapping name; opens editing for analysts."
+        },
+        {
+          "label": "Layout",
+          "description": "Long or wide file structure."
+        },
+        {
+          "label": "Delimiter",
+          "description": "Comma or Tab."
+        },
+        {
+          "label": "State",
+          "description": "Active or Inactive; inactivation prevents new use without deleting historical provenance."
+        },
+        {
+          "label": "Last changed",
+          "description": "Most recent save time in laboratory local time."
+        },
+        {
+          "label": "Notes",
+          "description": "Initially hidden; preview of the notes, truncated to 80 characters."
+        },
+        {
+          "label": "Created",
+          "description": "Initially hidden creation timestamp."
+        },
+        {
+          "label": "Created by",
+          "description": "Initially hidden creator name or username; this table does not show the last editor."
+        }
+      ]
+    },
+    {
+      "title": "Empty states",
+      "paragraphs": [
+        "No import mappings yet offers New mapping. No mappings match these filters offers clearing them. Create or reactivate a suitable mapping, then preview a file from its analytical batch before committing."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/import_views.py",
+    "analytical/forms.py",
+    "analytical/import_profiles.py",
+    "analytical/models.py",
+    "analytical/selectors.py",
+    "analytical/tests/test_import_profiles.py",
+    "analytical/templates/analytical/import_profile_list.html",
+    "core/grids.py"
+  ]
+}

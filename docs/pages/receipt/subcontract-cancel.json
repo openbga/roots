@@ -1,0 +1,53 @@
+{
+  "id": "receipt-subcontract-cancel",
+  "routes": [
+    "receipt:subcontract-cancel"
+  ],
+  "title": "Cancel external dispatch",
+  "purpose": "Stop an external routing request before any source result has been entered while preserving the completed handoff record.",
+  "sections": [
+    {
+      "title": "Fields and actions",
+      "paragraphs": [
+        "Cancellation does not assert the containers were physically returned, alter the sample’s current custody location, or delete source/dispatch history. Cancelled dispatch history still prevents collection/matrix rewriting and test withdrawal."
+      ],
+      "items": [
+        {
+          "label": "Sample / Analyte / Client / External laboratory",
+          "description": "Identifies the selected requested-test route being cancelled."
+        },
+        {
+          "label": "Reason",
+          "description": "Required cancellation explanation, at most 4000 characters."
+        },
+        {
+          "label": "Cancel external dispatch",
+          "description": "Custodians, project managers and administrators record cancellation actor/time/reason and audit, then return to subcontract history. Any source-result history blocks cancellation. A later handoff must create a new subcontract record."
+        },
+        {
+          "label": "Cancel",
+          "description": "Leaves the form and returns to the subcontract without cancellation."
+        }
+      ]
+    },
+    {
+      "title": "Saving and concurrency",
+      "paragraphs": [
+        "Validation errors keep submitted text on the form. A concurrent subcontract change refuses saving; reload and review its current source history before resubmitting. Cancel returns to the subcontract without changing it. Cancelled dispatches cannot receive source entry/review or further cancellation."
+      ],
+      "items": []
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/subcontract_views.py",
+    "receipt/subcontract_forms.py",
+    "receipt/subcontract_models.py",
+    "receipt/subcontracts.py",
+    "receipt/models.py",
+    "accounts/roles.py",
+    "receipt/tests/test_subcontracts.py",
+    "receipt/templates/receipt/subcontract/form.html",
+    "receipt/corrections.py"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "admin-labs",
+  "routes": [
+    "admin:core_lab_changelist"
+  ],
+  "title": "Laboratory setup record",
+  "purpose": "Open the deployment’s laboratory retention statement.",
+  "sections": [
+    {
+      "title": "Access and columns",
+      "paragraphs": [
+        "Requires an active staff superuser who also holds the laboratory admin role. This deployment has at most one laboratory setup record. These are Django administration tables, not operational grids. The server uses 100 records per page, with numbered page links and a total count. Show all appears when the filtered result count is at most 200 and exceeds one page. There is no Rows per page selector or Columns dialog. Linked sortable headings change order; repeated heading clicks change direction or remove that ordering. The sidebar navigation filter only filters module links, not table records."
+      ],
+      "items": [
+        {
+          "label": "Name",
+          "description": "Configured organization name; opens the retention maintenance form and supports sorting."
+        },
+        {
+          "label": "Record retention revision",
+          "description": "Incrementing stored statement revision; supports sorting."
+        }
+      ]
+    },
+    {
+      "title": "Available controls",
+      "paragraphs": [
+        "The list has no record search, sidebar filters, row checkboxes, bulk actions, creation or deletion controls. A missing record must be created by the supported laboratory setup command. Breadcrumbs and the navigation sidebar move between permitted maintenance modules."
+      ]
+    }
+  ],
+  "sources": [
+    "accounts/admin.py",
+    "accounts/models.py",
+    "accounts/roles.py",
+    "core/admin.py",
+    "config/settings.py",
+    "uv.lock"
+  ]
+}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% comment %}
+Staff start page: what needs doing now, then the newest receipts. No vanity counts.
+Context: held_count, recent_samples; queues = [{label, count, url, oldest_at, note, tone}] built in
+core.views for the signed-in user's roles (each count is the count of the linked list), queues_clear
+when every count is zero. Queues with count 0 still show, so an empty queue reads as "nothing
+waiting" rather than missing. A queue's label links to the list it counts (only while the count is
+above zero).
+{% endcomment %}
+{% block page_dateline %}{% include "includes/dateline.html" %}{% endblock %}
+{% block page_actions %}{% if can_receive %}<a class="btn btn-primary" href="{% url 'receipt:order-create' %}">{% include "includes/icon.html" with name="plus-lg" %}Receive samples</a>{% endif %}{% endblock %}
+{% block content %}
+{% url 'receipt:sample-list' as samples_url %}
+{% if queues %}
+<section class="card vr-table-card mb-3" aria-labelledby="queues-heading">
+  <div class="card-header"><h2 class="card-title" id="queues-heading">Your work queues</h2></div>
+  <div class="card-body">
+    <div class="vr-table-wrap">
+      <table class="table table-hover vr-table vr-queue-table">
+        <thead><tr><th scope="col">Queue</th><th scope="col" class="text-end">Waiting</th><th scope="col">Oldest item</th></tr></thead>
+        <tbody>
+          {% for queue in queues %}
+          <tr>
+            <th scope="row" class="vr-wrap">{% if queue.count %}<a class="vr-row-link" href="{{ queue.url }}">{{ queue.label }}</a>{% else %}{{ queue.label }}{% endif %}{% if queue.note %}<div class="vr-muted small fw-normal">{{ queue.note }}</div>{% endif %}</th>
+            <td class="text-end">{% if queue.count %}{% include "includes/status.html" with label=queue.count|floatformat:"0g" tone=queue.tone|default:"info" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td>
+            <td class="vr-nowrap">{% if queue.oldest_at %}<time datetime="{{ queue.oldest_at|date:'c' }}" title="{{ queue.oldest_at|date:'Y-m-d H:i T' }}">{{ queue.oldest_at|timesince }} ago</time>{% else %}<span class="vr-muted">—</span>{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if queues_clear %}<p class="vr-muted small mb-0 mt-2" role="status">Nothing is waiting for you right now.</p>{% endif %}
+  </div>
+</section>
+{% elif held_count %}
+<div class="alert alert-warning" role="status">
+  {% include "includes/status.html" with label="On hold" tone="hold" plain=True %}
+  <div>{{ held_count|floatformat:"0g" }} sample{{ held_count|pluralize }} on hold at receipt need{{ held_count|pluralize:"s," }} a disposition decision. <a href="{{ samples_url }}?disposition=hold">Review held samples</a></div>
+</div>
+{% endif %}
+
+<section class="card vr-table-card" aria-labelledby="recent-heading">
+  <div class="card-header">
+    <h2 class="card-title" id="recent-heading">Recently received</h2>
+    {% if recent_samples %}<a class="ms-auto small" href="{{ samples_url }}">All samples</a>{% endif %}
+  </div>
+  <div class="card-body">
+    {% if recent_samples %}
+    <div class="vr-table-wrap">
+      <table class="table table-hover vr-table">
+        <thead>
+          <tr><th scope="col">Lab ID</th><th scope="col">Client sample ID</th><th scope="col">Client / project</th><th scope="col">Matrix</th><th scope="col">Received</th><th scope="col">Disposition</th><th scope="col">Location</th></tr>
+        </thead>
+        <tbody>
+          {% for sample in recent_samples %}
+          <tr>
+            <th scope="row"><a class="vr-row-link vr-id" href="{% url 'receipt:sample-detail' sample.pk %}">{{ sample.lab_id }}</a></th>
+            <td class="vr-id">{{ sample.client_sample_id }}</td>
+            <td>{{ sample.order.project.client }}<div class="vr-muted small">{{ sample.order.project.name }}</div></td>
+            <td>{{ sample.get_matrix_display }}</td>
+            <td class="vr-nowrap"><time datetime="{{ sample.received_at|date:'c' }}" title="{{ sample.received_at|date:'Y-m-d H:i T' }}">{{ sample.received_at|date:"Y-m-d H:i" }}</time></td>
+            <td>{% include "receipt/disposition.html" with plain=True %}</td>
+            <td>{{ sample.current_location }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    {% if can_receive %}{% url 'receipt:order-create' as create_url %}{% endif %}
+    {% include "includes/empty_state.html" with title="No samples received yet" body="Samples appear here once they are received against a chain of custody." action_url=create_url action_label="Receive samples" %}
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

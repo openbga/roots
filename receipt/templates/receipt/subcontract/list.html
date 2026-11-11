@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% comment %}
+Subcontracted tests: external handoffs and source acceptance. Context
+(receipt.subcontract_views.subcontract_list): page_obj (Subcontract with latest_decision),
+filter_form (SubcontractFilter), q, sort, per_page, active_filters and the toolbar context.
+Tests are sent out from the sample page, so this list has no New button.
+{% endcomment %}
+{% block page_intro %}<p class="vr-page-intro">Follow external handoffs and source acceptance; send a test out from its sample page.</p>{% endblock %}
+{% block content %}
+<section class="card vr-table-card" aria-labelledby="subcontracts-heading">
+  <h2 class="visually-hidden" id="subcontracts-heading">Subcontracted requested tests</h2>
+  {% include "includes/grid_toolbar.html" with label="Filter subcontracted tests" grid="receipt.subcontracts" %}
+  {% if page_obj.paginator.count %}
+  <div class="vr-table-wrap">
+    <table class="table table-hover vr-table" data-vr-grid="receipt.subcontracts" data-vr-grid-version="2" aria-labelledby="subcontracts-heading">
+      <thead>
+        <tr>
+          {% include "includes/sort_header.html" with label="Subcontract" asc="number" desc="-number" col="number" locked=True %}
+          <th scope="col" data-vr-col="source_status" data-vr-col-label="Source status">Source status</th>
+          {% include "includes/sort_header.html" with label="Lab ID" asc="lab_id" desc="-lab_id" col="lab_id" %}
+          {% include "includes/sort_header.html" with label="Analyte" asc="analyte" desc="-analyte" col="analyte" %}
+          {% include "includes/sort_header.html" with label="External laboratory" asc="external_lab" desc="-external_lab" col="external_lab" %}
+          {% include "includes/sort_header.html" with label="External reference" asc="external_reference" desc="-external_reference" col="external_reference" %}
+          {% include "includes/sort_header.html" with label="Handed over" asc="dispatched_at" desc="-dispatched_at" first="desc" col="dispatched_at" %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for subcontract in page_obj %}
+        <tr>
+          <th scope="row"><a class="vr-row-link vr-id" href="{% url 'receipt:subcontract-detail' subcontract.pk %}">{{ subcontract.number }}</a></th>
+          <td>{% include "receipt/subcontract/status.html" with decision=subcontract.latest_decision plain=True %}</td>
+          <td><a class="vr-id" href="{% url 'receipt:sample-detail' subcontract.requested_test.sample_id %}">{{ subcontract.requested_test.sample.lab_id }}</a><div class="small vr-muted">{{ subcontract.requested_test.sample.order.project.client }}</div></td>
+          <td>{{ subcontract.requested_test.definition.analyte }}</td>
+          <td>{{ subcontract.external_lab }}</td>
+          <td>{{ subcontract.external_reference }}</td>
+          <td class="vr-nowrap"><time datetime="{{ subcontract.dispatched_at|date:'c' }}" title="{{ subcontract.dispatched_at|date:'Y-m-d H:i T' }}">{{ subcontract.dispatched_at|date:"Y-m-d H:i" }}</time></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "includes/pagination.html" with noun="subcontracted tests" filtered=active_filters|default:q %}
+  {% elif filter_form.errors %}
+  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above. No subcontracted tests are hidden by an invalid filter." clear_url=request.path %}
+  {% elif active_filters or q %}
+  {% include "includes/empty_state.html" with kind="no-results" title="No subcontracted tests match these filters" body="Change the search or clear the filters to see all handoffs." clear_url=request.path %}
+  {% else %}
+  {% url 'receipt:sample-list' as samples_url %}
+  {% include "includes/empty_state.html" with title="No external handoffs recorded" body="Open a received sample and select a requested test to record its external handoff." action_url=samples_url action_label="Find a sample" %}
+  {% endif %}
+</section>
+{% endblock %}

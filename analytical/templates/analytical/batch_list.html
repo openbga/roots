@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block page_intro %}<p class="vr-page-intro">Analytical batches with their results and QC; preparation batches have their own list.</p>{% endblock %}
+{% block page_actions %}
+{% if can_enter %}<a class="btn btn-primary" href="{% url 'analytical:batch-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New batch</a>{% endif %}
+{% endblock %}
+{% block content %}
+<section class="card vr-table-card" aria-labelledby="batches-heading">
+  <h2 class="visually-hidden" id="batches-heading">Analytical batches</h2>
+  {% include "includes/grid_toolbar.html" with label="Filter batches" grid=grid_key %}
+  {% if page_obj.paginator.count %}
+  <div class="vr-table-wrap">
+    <table class="table table-hover vr-table" data-vr-grid="analytical.batches" data-vr-grid-version="1" aria-labelledby="batches-heading">
+      <caption class="visually-hidden">Analytical batches. Open QC findings and holding issues are computed for the rows shown and cannot be sorted.</caption>
+      <thead>
+        <tr>
+          {% include "includes/sort_header.html" with label="Batch" asc="number" desc="-number" col="batch" locked=True %}
+          <th scope="col" data-vr-col="status">Status</th>
+          <th scope="col" data-vr-col="method">Method</th>
+          <th scope="col" data-vr-col="matrix">Matrix</th>
+          <th scope="col" class="text-end" data-vr-col="samples">Samples</th>
+          <th scope="col" class="text-end" data-vr-col="approved" data-vr-col-label="Approved / tests">Approved / tests</th>
+          {% include "includes/sort_header.html" with label="Awaiting review" asc="awaiting" desc="-awaiting" class="text-end" col="awaiting" %}
+          <th scope="col" class="text-end" data-vr-col="open_qc">Open QC findings</th>
+          <th scope="col" class="text-end" data-vr-col="holding">Holding issues</th>
+          {% include "includes/sort_header.html" with label="Created" asc="created" desc="-created" first="desc" col="created" %}
+          <th scope="col" data-vr-col="created_by" data-vr-col-hidden>Created by</th>
+          <th scope="col" data-vr-col="prepared" data-vr-col-hidden>Preparation start</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in page_obj %}
+        <tr>
+          <th scope="row"><a class="vr-row-link vr-id" href="{% url 'analytical:batch-detail' b.pk %}">{{ b.number }}</a></th>
+          <td>{% if b.status == "open" %}{% include "includes/status.html" with label=b.get_status_display tone="info" plain=True %}{% else %}{% include "includes/status.html" with label=b.get_status_display tone="neutral" plain=True %}{% endif %}</td>
+          <td>{{ b.method }}</td>
+          <td>{{ b.get_matrix_display }}</td>
+          <td class="text-end">{{ b.sample_count }}</td>
+          <td class="text-end" title="{{ b.approved_count }} of {{ b.test_count }} test{{ b.test_count|pluralize }} approved">{{ b.approved_count }} / {{ b.test_count }}</td>
+          <td class="text-end">{{ b.review_count }}</td>
+          <td class="text-end">{% if b.open_qc %}{% include "includes/status.html" with label=b.open_qc tone="warning" plain=True title="QC findings that hold approval" %}{% else %}<span class="vr-muted">0</span>{% endif %}</td>
+          <td class="text-end">{% if b.holding_issues %}{% include "includes/status.html" with label=b.holding_issues tone="warning" plain=True title="Entered or submitted results with holding time exceeded or not evaluable" %}{% else %}<span class="vr-muted">0</span>{% endif %}</td>
+          <td class="vr-nowrap"><time datetime="{{ b.created_at|date:'c' }}" title="{{ b.created_at|date:'Y-m-d H:i T' }}">{{ b.created_at|date:"Y-m-d H:i" }}</time></td>
+          <td>{{ b.created_by.get_full_name|default:b.created_by.get_username }}</td>
+          <td class="vr-nowrap">{% if b.prepared_at %}<time datetime="{{ b.prepared_at|date:'c' }}" title="{{ b.prepared_at|date:'Y-m-d H:i T' }}">{{ b.prepared_at|date:"Y-m-d H:i" }}</time>{% else %}<span class="vr-muted">—</span>{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "includes/pagination.html" with noun="batches" filtered=filtered %}
+  {% elif filtered %}
+  {% include "includes/empty_state.html" with kind="no-results" title="No batches match these filters" body="Search covers batch number, method code, sample IDs and analytes. Clear the filters to see every batch." clear_url=request.path %}
+  {% else %}
+  {% url 'analytical:batch-create' as create_url %}
+  {% include "includes/empty_state.html" with title="No batches yet" body="Create a batch for one method, then add received tests from the worklist." action_url=create_url action_label="New batch" %}
+  {% endif %}
+</section>
+{% endblock %}

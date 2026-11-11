@@ -1,0 +1,161 @@
+{
+  "id": "receipt-order-list",
+  "routes": [
+    "receipt:order-list"
+  ],
+  "title": "Chains of custody",
+  "purpose": "Find the laboratory order representing one chain of custody and the samples received against it. Orders can exist before physical receipt.",
+  "sections": [
+    {
+      "title": "Search, filters and actions",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Matches chain-of-custody reference, purchase order, carrier / tracking number, project name or client name."
+        },
+        {
+          "label": "Client",
+          "description": "Exact owning client, including inactive clients for history."
+        },
+        {
+          "label": "Turnaround",
+          "description": "Any turnaround, Standard or Rush."
+        },
+        {
+          "label": "Project",
+          "description": "More filters: exact project. When Client is selected, Project must belong to it."
+        },
+        {
+          "label": "Created from / Created to",
+          "description": "More filters: inclusive creation dates in laboratory local time; end cannot precede start."
+        },
+        {
+          "label": "New chain of custody",
+          "description": "Custodians, project managers and administrators create an order before receiving its samples."
+        },
+        {
+          "label": "Chain of custody row link",
+          "description": "Opens the order, including any cancelled record; cancellation is marked alongside the reference."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Chain of custody",
+          "description": "Entered reference for the order."
+        },
+        {
+          "label": "Client / Project",
+          "description": "Project and its owning client."
+        },
+        {
+          "label": "Samples",
+          "description": "Number of received samples, not planned submission samples."
+        },
+        {
+          "label": "Turnaround",
+          "description": "Rush (marked) or Standard. Sortable."
+        },
+        {
+          "label": "Delivery target",
+          "description": "Explicit client commitment or Not set; separate from analytical holding times."
+        },
+        {
+          "label": "Purchase order",
+          "description": "Initially hidden. The order’s purchase order, or a dash. Sortable."
+        },
+        {
+          "label": "Delivery",
+          "description": "Initially hidden. Delivery method followed by any carrier / tracking number, or a dash. Not sortable."
+        },
+        {
+          "label": "Created",
+          "description": "Order creation time; default sort is newest creation first."
+        },
+        {
+          "label": "Created by",
+          "description": "Initially hidden staff member who created the order."
+        }
+      ]
+    },
+    {
+      "title": "Table controls",
+      "paragraphs": [
+        "Staff with a laboratory role can read the list; client portal users cannot. Invalid criteria show errors and no rows, rather than silently widening the search. Invalid page sizes are refused. Clear filters or correct errors to continue."
+      ],
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Search is case-insensitive contained text; Apply combines search and filters over the full dataset and returns to page 1."
+        },
+        {
+          "label": "More filters",
+          "description": "Opens advanced criteria and remains open when they are active or invalid."
+        },
+        {
+          "label": "Clear all / filter chips",
+          "description": "Clear all restores the unfiltered URL and default sort. Removing a chip clears just that criterion and starts at page 1."
+        },
+        {
+          "label": "Column headings and Columns",
+          "description": "Linked headings sort the complete matching set, with record ID breaking ties. Columns controls optional visibility and order, saved locally in this browser; reset restores default presentation. Identifying columns stay visible."
+        },
+        {
+          "label": "Rows per page / Show",
+          "description": "Choose 25, 50 or 100 rows, default 25. Size changes return to page 1. Show is the fallback when automatic submission is unavailable."
+        },
+        {
+          "label": "Pagination",
+          "description": "First, Previous, Next and Last retain search, filters and sort; counts describe matching records."
+        }
+      ]
+    },
+    {
+      "title": "Empty states",
+      "paragraphs": [
+        "No chains of custody yet offers New chain of custody when your role permits. A no-match state suggests checking the reference, widening dates or clearing filters. Cancelled and inactive-client history remains searchable; the list has no cancellation-status filter."
+      ],
+      "items": []
+    },
+    {
+      "title": "Column layout dialog",
+      "items": [
+        {
+          "label": "Column checkboxes",
+          "description": "Changes apply immediately. Check to show an optional column or uncheck to hide it. Always shown columns are fixed."
+        },
+        {
+          "label": "Move column up / down",
+          "description": "Moves an optional column within the displayed order; the first/last position disables the unavailable move. You can also drag movable table headers."
+        },
+        {
+          "label": "Reset columns",
+          "description": "Restores this table’s default order and visibility in this browser."
+        },
+        {
+          "label": "Done / Close",
+          "description": "Closes the dialog; layout changes have already been applied and saved locally. No laboratory record is changed."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/views.py",
+    "receipt/forms.py",
+    "receipt/models.py",
+    "receipt/services.py",
+    "accounts/roles.py",
+    "receipt/filters.py",
+    "receipt/lists.py",
+    "templates/receipt/order_list.html",
+    "tests/test_receipt_grids.py",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js",
+    "receipt/tests/test_master_data.py"
+  ]
+}

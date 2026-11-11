@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block page_heading %}Catalog{% endblock %}
+{% block page_intro %}<p class="vr-page-intro">Each row is one version of a method as the lab runs it; a version that work depends on cannot be rewritten, so create a new version instead.</p>{% endblock %}
+{% block page_actions %}{% if can_edit %}<a class="btn btn-primary" href="{% url 'catalog:method-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New method</a>{% endif %}{% endblock %}
+{% block content %}
+{% include "catalog/_tabs.html" %}
+<section class="card vr-table-card" aria-labelledby="methods-heading">
+  <h2 class="visually-hidden" id="methods-heading">Methods</h2>
+  {% include "includes/grid_toolbar.html" with label="Filter methods" q=filter_form.q.value placeholder=filter_form.q.field.widget.attrs.placeholder inline=inline more=more more_open=more_open grid=grid_key %}
+  {% if page_obj.paginator.count %}
+  <div class="vr-table-wrap">
+    <table class="table table-hover vr-table" data-vr-grid="catalog.methods" data-vr-grid-version="2" aria-labelledby="methods-heading">
+      <thead><tr>
+        {% include "includes/sort_header.html" with label="Method version" asc="method" desc="-method" col="method" locked=True %}
+        {% include "includes/sort_header.html" with label="Title" asc="title" col="title" %}
+        {% include "includes/sort_header.html" with label="Technique" asc="technique" desc="-technique" col="technique" %}
+        {% include "includes/sort_header.html" with label="Active tests" asc="active_tests" desc="-active_tests" class="text-end" col="active_tests" %}
+        {% include "includes/sort_header.html" with label="Status" asc="status" desc="-status" col="status" %}
+        {% include "includes/sort_header.html" with label="Reference source" asc="reference" desc="-reference" col="reference" hidden=True %}
+        <th scope="col" data-vr-col="source" data-vr-col-label="Source" data-vr-col-hidden>Source</th>
+        {% include "includes/sort_header.html" with label="Used by work" asc="used" desc="-used" class="text-end" col="used" hidden=True %}
+        {% include "includes/sort_header.html" with label="Last changed" asc="changed_at" desc="-changed_at" col="changed_at" hidden=True %}
+        {% if can_edit %}<th scope="col" data-vr-col="actions" data-vr-col-locked><span class="visually-hidden">Actions</span></th>{% endif %}
+      </tr></thead>
+      <tbody>
+        {% for m in page_obj %}
+        <tr>
+          <th scope="row">{% if can_edit %}<a class="vr-row-link" href="{% url 'catalog:method-edit' m.pk %}">{{ m }}</a>{% else %}{{ m }}{% endif %}</th>
+          <td>{{ m.title }}</td>
+          <td>{{ m.get_technique_display|default:"—" }}</td>
+          <td class="text-end">{{ m.active_tests }}<span class="text-body-secondary"> of {{ m.test_total }}</span></td>
+          <td>{% if m.is_active %}{% include "includes/status.html" with label="Active" tone="success" plain=True %}{% else %}{% include "includes/status.html" with label="Inactive" tone="neutral" plain=True %}{% endif %}</td>
+          <td>{{ m.get_reference_display|default:"—" }}</td>
+          <td class="text-body-secondary">{% if m.source|length > 70 %}<details><summary>{{ m.source|truncatechars:70 }}</summary><div class="small">{{ m.source|linebreaksbr }}</div></details>{% else %}{{ m.source|default:"—" }}{% endif %}</td>
+          <td class="text-end">{% if m.used_total %}<span title="{{ m.batches }} batch{{ m.batches|pluralize:'es' }}, {{ m.requested }} requested test{{ m.requested|pluralize }}">{{ m.used_total }}</span>{% else %}0{% endif %}</td>
+          <td class="vr-nowrap text-body-secondary">{% if m.changed_at %}{{ m.changed_at|date:"Y-m-d H:i" }}{% else %}—{% endif %}</td>
+          {% if can_edit %}<td class="text-end vr-nowrap"><a class="btn btn-sm btn-outline-secondary" href="{% url 'catalog:method-new-version' m.pk %}">New version<span class="visually-hidden"> of {{ m }}</span></a></td>{% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "includes/pagination.html" with noun="method versions" filtered=filtered %}
+  {% elif filter_form.errors %}
+  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above." clear_url=request.path %}
+  {% elif filtered %}
+  {% include "includes/empty_state.html" with kind="no-results" title="No methods match these filters" body="Change or clear the filters." clear_url=request.path %}
+  {% else %}
+  {% if can_edit %}{% url 'catalog:method-create' as create_url %}{% endif %}
+  {% include "includes/empty_state.html" with title="No methods defined yet" body="Add the first method version the lab runs." action_url=create_url action_label="New method" %}
+  {% endif %}
+</section>
+{% endblock %}

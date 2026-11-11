@@ -1,0 +1,73 @@
+{
+  "id": "admin-email-form",
+  "routes": [
+    "admin:account_emailaddress_change"
+  ],
+  "title": "Authentication email address",
+  "purpose": "Review one account email address and its verification state.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "Requires an active account with both Staff and Superuser status. A laboratory admin role, Staff status alone or individual authenticator or email-address model permissions granted to a user or group do not open this page.",
+        "The record is read only."
+      ]
+    },
+    {
+      "title": "Fields",
+      "items": [
+        {
+          "label": "User",
+          "description": "Account the address belongs to."
+        },
+        {
+          "label": "Email",
+          "description": "The address, stored in lowercase."
+        },
+        {
+          "label": "Verified",
+          "description": "Whether the account holder confirmed they receive mail at this address."
+        },
+        {
+          "label": "Primary",
+          "description": "Whether this is the account’s preferred address."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Close",
+          "description": "Returns to the email address list without changing anything."
+        },
+        {
+          "label": "History",
+          "description": "Opens Django administration history for this record."
+        },
+        {
+          "label": "Home / app / model breadcrumbs",
+          "description": "Return to administration home, the application module or the email address list."
+        },
+        {
+          "label": "View site",
+          "description": "Header link to the operational application. Log out submits immediate sign-out."
+        }
+      ]
+    },
+    {
+      "title": "Related records",
+      "paragraphs": [
+        "These sign-in addresses are separate from client contacts and report recipients. Account holders change and verify them from their own Email addresses page."
+      ]
+    }
+  ],
+  "sources": [
+    "accounts/admin.py",
+    "accounts/models.py",
+    "accounts/roles.py",
+    "core/admin.py",
+    "config/settings.py",
+    "uv.lock"
+  ]
+}

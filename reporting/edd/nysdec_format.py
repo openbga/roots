@@ -1,0 +1,177 @@
+"""NYSDEC EDD Format v5 column specification (chemistry group only).
+
+Generated from the official EDD Description File `NYSDEC_v5_20260429_EDD_Description_File.xlsx`
+(Format Name NYSDEC, Format Version 5.0.0.079; EarthSoft download posted 2026-05-01;
+https://earthsoft.com/products/edp/edp-format-for-nysdec/). Column order is significant
+(NYSDEC EDD Manual, May 2024, Appendix A). Reference-table lookups (`ref`) are listed for display;
+their values are not bundled and are checked only by EQuIS EDP. Only these factual interoperability
+details are embedded; no EarthSoft software, reference-value tables or workbooks are vendored.
+"""
+
+from typing import NamedTuple
+
+FORMAT_NAME = "NYSDEC"
+FORMAT_VERSION = "5.0.0.079"
+REFERENCE_VALUES = "20260429"
+
+
+class Column(NamedTuple):
+    name: str
+    kind: str  # text | numeric | datetime
+    length: int | None
+    required: bool
+    enum: str | None
+    ref: str | None
+
+
+SECTIONS = {
+    "Sample_v5": (
+        Column("data_provider", "text", 20, True, None, "rt_company.company_code"),
+        Column("sys_sample_code", "text", 40, True, None, None),
+        Column("sample_name", "text", 50, True, None, None),
+        Column("sample_matrix_code", "text", 10, True, None, "rt_matrix.matrix_code"),
+        Column("sample_type_code", "text", 20, True, None, "rt_sample_type.sample_type_code"),
+        Column("sample_source", "text", 10, True, "sample_source", None),
+        Column("parent_sample_code", "text", 40, False, None, None),
+        Column("sample_delivery_group", "text", 20, False, None, None),
+        Column("sample_date", "datetime", None, True, None, None),
+        Column("sys_loc_code", "text", 20, False, None, None),
+        Column("start_depth", "numeric", None, False, None, None),
+        Column("end_depth", "numeric", None, False, None, None),
+        Column("depth_unit", "text", 15, False, "in_ft_unit", None),
+        Column("chain_of_custody", "text", 15, False, None, None),
+        Column("sent_to_lab_date", "datetime", None, False, None, None),
+        Column("sample_receipt_date", "datetime", None, False, None, None),
+        Column("sampler", "text", 50, False, None, None),
+        Column("sampling_company_code", "text", 40, True, None, "rt_company.company_code"),
+        Column("sampling_reason", "text", 30, False, None, None),
+        Column("sample_method", "text", 40, False, None, "rt_sample_method.method_code"),
+        Column("task_code", "text", 40, True, "task_code", None),
+        Column("collection_quarter", "text", 6, False, None, None),
+        Column("composite_yn", "text", 1, True, "yes_no_values", None),
+        Column("composite_desc", "text", 255, False, None, None),
+        Column("sample_class", "text", 10, False, None, None),
+        Column("custom_field_1", "text", 255, False, None, None),
+        Column("custom_field_2", "text", 255, False, None, None),
+        Column("custom_field_3", "text", 255, False, None, None),
+        Column("comment", "text", 2000, False, None, None),
+    ),
+    "TestResultQC_v5": (
+        Column("sys_sample_code", "text", 40, True, None, None),
+        Column("lab_anl_method_name", "text", 20, True, None, "rt_analytic_method.analytic_method"),
+        Column("analysis_date", "datetime", None, True, None, None),
+        Column("fraction", "text", 10, True, None, "rt_fraction.fraction"),
+        Column("column_number", "text", 2, True, "column_number", None),
+        Column("test_type", "text", 10, True, None, "rt_test_type.test_type"),
+        Column("lab_matrix_code", "text", 10, True, None, "rt_matrix.matrix_code"),
+        Column("analysis_location", "text", 2, True, "analysis_location", None),
+        Column("basis", "text", 10, True, "basis", None),
+        Column("container_id", "text", 30, False, None, None),
+        Column("dilution_factor", "numeric", None, True, None, None),
+        Column("prep_method", "text", 20, False, None, "rt_prep_method.prep_method"),
+        Column("prep_date", "datetime", None, False, None, None),
+        Column("leachate_method", "text", 15, False, None, None),
+        Column("leachate_date", "datetime", None, False, None, None),
+        Column("lab_name_code", "text", 20, True, None, "rt_company.company_code"),
+        Column("qc_level", "text", 10, True, "qc_level", None),
+        Column("lab_sample_id", "text", 40, True, None, None),
+        Column("percent_moisture", "text", 5, False, None, None),
+        Column("subsample_amount", "text", 14, False, None, None),
+        Column("subsample_amount_unit", "text", 15, False, None, "rt_unit.unit_code"),
+        Column("analyst_name", "text", 30, False, None, None),
+        Column("instrument_id", "text", 50, False, None, None),
+        Column("comment", "text", 2000, False, None, None),
+        Column("preservative", "text", 20, True, None, "rt_preservative.preservative"),
+        Column("final_volume", "numeric", None, False, None, None),
+        Column("final_volume_unit", "text", 15, False, None, "rt_unit.unit_code"),
+        Column("cas_rn", "text", 15, True, None, "rt_analyte.cas_rn"),
+        Column("chemical_name", "text", 75, True, None, "rt_analyte.chemical_name"),
+        Column("result_value", "numeric", None, False, None, None),
+        Column("result_unit", "text", 15, False, None, "rt_unit.unit_code"),
+        Column("result_error_delta", "text", 20, False, None, None),
+        Column("result_type_code", "text", 10, True, None, "rt_result_type.result_type_code"),
+        Column("reportable_result", "text", 10, True, "reportable_result", None),
+        Column("detect_flag", "text", 2, True, "detect_flag", None),
+        Column("lab_qualifiers", "text", 10, False, None, None),
+        Column("validator_qualifiers", "text", 10, False, None, "rt_qualifier.qualifier"),
+        Column("interpreted_qualifiers", "text", 10, False, None, "rt_qualifier.qualifier"),
+        Column("validated_yn", "text", 1, True, "yes_no_values", None),
+        Column("method_detection_limit", "numeric", None, False, None, None),
+        Column("reporting_detection_limit", "numeric", None, False, None, None),
+        Column("quantitation_limit", "numeric", None, False, None, None),
+        Column("detection_limit_unit", "text", 15, False, None, "rt_unit.unit_code"),
+        Column("tic_retention_time", "text", 8, False, None, None),
+        Column("minimum_detectable_conc", "numeric", None, False, None, None),
+        Column("counting_error", "numeric", None, False, None, None),
+        Column("uncertainty", "text", 10, False, "uncertainty", None),
+        Column("critical_value", "numeric", None, False, None, None),
+        Column("validation_level", "text", 20, False, "validation_level", None),
+        Column("result_comment", "text", 255, False, None, None),
+        Column("qc_original_conc", "numeric", None, False, None, None),
+        Column("qc_spike_added", "numeric", None, False, None, None),
+        Column("qc_spike_measured", "numeric", None, False, None, None),
+        Column("qc_spike_recovery", "numeric", None, False, None, None),
+        Column("qc_dup_original_conc", "numeric", None, False, None, None),
+        Column("qc_dup_spike_added", "numeric", None, False, None, None),
+        Column("qc_dup_spike_measured", "numeric", None, False, None, None),
+        Column("qc_dup_spike_recovery", "numeric", None, False, None, None),
+        Column("qc_rpd", "text", 8, False, None, None),
+        Column("qc_spike_lcl", "text", 8, False, None, None),
+        Column("qc_spike_ucl", "text", 8, False, None, None),
+        Column("qc_rpd_cl", "text", 8, False, None, None),
+        Column("qc_spike_status", "text", 10, False, "spike_status", None),
+        Column("qc_dup_spike_status", "text", 10, False, "spike_status", None),
+        Column("qc_rpd_status", "text", 10, False, "spike_status", None),
+        Column("lab_sdg", "text", 20, True, None, None),
+    ),
+    "Batch_v5": (
+        Column("sys_sample_code", "text", 40, True, None, None),
+        Column("lab_anl_method_name", "text", 20, True, None, "rt_analytic_method.analytic_method"),
+        Column("analysis_date", "datetime", None, True, None, None),
+        Column("fraction", "text", 10, True, None, "rt_fraction.fraction"),
+        Column("column_number", "text", 2, True, None, None),
+        Column("test_type", "text", 10, True, None, "rt_test_type.test_type"),
+        Column("test_batch_type", "text", 10, True, "test_batch_type", None),
+        Column("test_batch_id", "text", 20, True, None, None),
+    ),
+}
+ENUMERATIONS = {
+    "analysis_location": ("FI", "FL", "LB"),
+    "basis": ("WET", "DRY", "NA"),
+    "column_number": ("1C", "2C", "NA"),
+    "detect_flag": ("Y", "N", ">", "<"),
+    "in_ft_unit": ("in", "ft"),
+    "qc_level": ("SCREEN", "QUANT"),
+    "reportable_result": ("Yes", "No"),
+    "sample_source": ("FIELD", "LAB"),
+    "spike_status": ("*",),
+    "task_code": ("SC", "RD", "RIFS", "RC", "IRM", "SM", "RSO"),
+    "test_batch_type": ("PREP", "ANALYSIS", "LEACH"),
+    "uncertainty": ("1 sigma", "2 sigma"),
+    "validation_level": (
+        "DUSR",
+        "CATEGORY A",
+        "CATEGORY B",
+        "UNKNOWN",
+        "Tier1",
+        "Tier 1 Plus",
+        "Modified Tier 1",
+        "Tier2",
+        "S1VE",
+        "S1VM",
+        "S1VEM",
+        "S2AVE",
+        "S2AVM",
+        "S2AVEM",
+        "S2BVE",
+        "S2BVM",
+        "S2BVEM",
+        "S3VE",
+        "S3VM",
+        "S3VEM",
+        "S4VE",
+        "S4VM",
+        "S4VEM",
+    ),
+    "yes_no_values": ("Y", "N"),
+}

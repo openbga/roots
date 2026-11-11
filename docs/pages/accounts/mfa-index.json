@@ -1,0 +1,49 @@
+{
+  "id": "accounts-mfa-index",
+  "routes": [
+    "mfa_index"
+  ],
+  "title": "Two-factor authentication",
+  "purpose": "Manage the authenticator app and recovery codes used to protect your account.",
+  "sections": [
+    {
+      "title": "Enabled factors and account boundary",
+      "paragraphs": [
+        "Requires sign-in and shows only your own authenticators. This deployment enables Authenticator App and Recovery Codes, with optional enrollment. Security keys, passkeys and trusted-browser shortcuts are not enabled. MFA does not grant laboratory roles."
+      ]
+    },
+    {
+      "title": "Sections and actions",
+      "items": [
+        {
+          "label": "Authenticator App",
+          "description": "Displays whether an app is active. Activate opens QR/secret enrollment; Deactivate opens removal confirmation."
+        },
+        {
+          "label": "Recovery Codes",
+          "description": "Displays unused count out of ten when a set exists, or No recovery codes set up. Each is an eight-digit, single-use alternative to an app code."
+        },
+        {
+          "label": "View / Download",
+          "description": "Shown when MFA is enabled and unused recovery codes exist. View opens the current unused set; Download retrieves recovery-codes.txt as plain text. Codes may be viewed again in this deployment; show-once is not enabled."
+        },
+        {
+          "label": "Generate",
+          "description": "Shown when an authenticator is enabled. Opens confirmation to replace all recovery codes, including unused ones. No generation action appears with no enabled authenticator."
+        }
+      ]
+    },
+    {
+      "title": "Enrollment and sensitive actions",
+      "paragraphs": [
+        "Activation is blocked while any associated email address record is unverified. Ordinary email login may still succeed because its verification policy is optional. Successful first app activation automatically creates recovery codes if none exist and opens their page. Sensitive MFA actions and code viewing/downloading require recent reauthentication, normally within five minutes. The overview itself does not require a fresh check."
+      ]
+    }
+  ],
+  "sources": [
+    "config/settings.py",
+    "templates/allauth/layouts/base.html",
+    "templates/allauth/layouts/manage.html",
+    "uv.lock"
+  ]
+}

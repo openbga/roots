@@ -1,0 +1,51 @@
+{
+  "id": "analytical-support-prep-aliquot-cancel",
+  "routes": [
+    "analytical:prep-aliquot-cancel"
+  ],
+  "title": "Cancel unused aliquot",
+  "purpose": "Retain an unused aliquot and its test links as cancelled evidence rather than deleting them.",
+  "sections": [
+    {
+      "title": "Context and fields",
+      "paragraphs": [
+        "Active internal staff with a laboratory role can read this workspace. Analysts can create and change preparation work. An admin has operational analyst access; a client account or superuser status alone does not grant it.",
+        "The title identifies the aliquot label. The Preparation panel displays Batch, Preparation method, Matrix and Actual start."
+      ],
+      "items": [
+        {
+          "label": "Reason",
+          "description": "Required explanation of why this unused aliquot is being cancelled. Whitespace alone is not accepted; the reason stays with actor and cancellation time."
+        }
+      ]
+    },
+    {
+      "title": "Actions and restrictions",
+      "items": [
+        {
+          "label": "Cancel aliquot",
+          "description": "Cancels only an uncancelled aliquot that has never been used by any result revision. Checks run again under a lock. Closing batch membership does not by itself prevent this action. The identity, sample, covered tests and preparation history remain; the aliquot cannot be selected for new results."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the preparation batch without cancelling the aliquot."
+        }
+      ]
+    },
+    {
+      "title": "Used work",
+      "paragraphs": [
+        "If any revision uses the aliquot, cancellation is refused. Record a new preparation instead. Cancelled physical aliquots still count toward preparation QC frequency; cancellation does not erase work performed."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/preparation_views.py",
+    "analytical/templates/analytical/preparation_form.html",
+    "analytical/preparation.py",
+    "analytical/services.py",
+    "analytical/models.py",
+    "analytical/tests/test_preparation_views.py",
+    "analytical/tests/test_preparation.py"
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "id": "receipt-order-schedule",
+  "routes": [
+    "receipt:order-schedule"
+  ],
+  "title": "Change delivery target",
+  "purpose": "Change or remove the order’s agreed delivery target with an attributed reason, without altering analytical holding times.",
+  "sections": [
+    {
+      "title": "Current record",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Chain of custody / Client / Project",
+          "description": "Identifies the order; all its requested tests share this delivery target."
+        },
+        {
+          "label": "Current target",
+          "description": "Existing local timestamp or not set."
+        }
+      ]
+    },
+    {
+      "title": "Fields and actions",
+      "paragraphs": [
+        "If the order changed since opening, the form refuses a stale update and retains submitted input on the error page. Reload and compare its current target before trying again."
+      ],
+      "items": [
+        {
+          "label": "Delivery target",
+          "description": "Optional new date/time in the configured laboratory zone; blank marks unscheduled. It must differ from the current value. There is no automatic target calculation from project turnaround."
+        },
+        {
+          "label": "Reason",
+          "description": "Required explanation kept with old/new target, actor and timestamp."
+        },
+        {
+          "label": "Change delivery target",
+          "description": "Custodians, project managers and administrators update the order then return to its detail page. Cancelled orders must be reinstated first."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the order without saving."
+        },
+        {
+          "label": "History",
+          "description": "Chronological reschedule events show old/new targets and their reasons. No changes yet means no rescheduling event; the initial target was set at creation."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/views.py",
+    "receipt/forms.py",
+    "receipt/models.py",
+    "receipt/services.py",
+    "accounts/roles.py",
+    "receipt/scheduling.py",
+    "templates/receipt/order_schedule.html",
+    "receipt/tests/test_scheduling.py"
+  ]
+}

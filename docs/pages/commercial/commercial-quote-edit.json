@@ -1,0 +1,156 @@
+{
+  "id": "commercial-quote-edit",
+  "routes": [
+    "commercial:quote-edit"
+  ],
+  "title": "Edit quote",
+  "purpose": "Edit the latest unissued Draft or Being revised version, including exact USD tests, fees and discounts.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "Project managers can create and change quotes; admins inherit this operational role. Client accounts cannot use staff pages or make staff decisions."
+      ]
+    },
+    {
+      "title": "Eligibility and context",
+      "paragraphs": [
+        "The header identifies state, version and client. Only the latest unissued Draft or Being revised version can be edited. Use Revise on the quote page before changing an issued version. Accepted quotes are final in this workflow. Concurrent changes cause a stale-save refusal; reload and review the current version."
+      ]
+    },
+    {
+      "title": "Quote",
+      "items": [
+        {
+          "label": "Title",
+          "description": "Required description up to 160 characters. Updates the live title without changing earlier issued titles."
+        },
+        {
+          "label": "Project",
+          "description": "Optional active project for this quote’s client. Client ownership stays fixed."
+        },
+        {
+          "label": "Price list",
+          "description": "Optional default-price source for test lines with blank unit prices. Active lists and this draft’s existing list are available, even if that existing list became inactive."
+        }
+      ]
+    },
+    {
+      "title": "Validity and turnaround",
+      "items": [
+        {
+          "label": "Valid until",
+          "description": "Optional for drafting; required to issue and must then be today or later in laboratory local date. The previous version’s date is not copied into a new revision, so set a new one."
+        },
+        {
+          "label": "Turnaround (business days)",
+          "description": "Optional integer from 1 to 365, stated as business days from receipt. Does not automatically set an order delivery target."
+        }
+      ]
+    },
+    {
+      "title": "Scope and terms",
+      "items": [
+        {
+          "label": "Scope and assumptions",
+          "description": "Optional client-visible description of counts, matrices and agreed assumptions; frozen at issue."
+        },
+        {
+          "label": "Terms",
+          "description": "Optional client-visible terms, frozen at issue."
+        }
+      ]
+    },
+    {
+      "title": "Lines",
+      "paragraphs": [
+        "The amount equals quantity multiplied by price; the total is their exact USD sum and cannot be negative. After a list price is resolved and saved, the editor shows the stored amount. A later list edit does not replace it. Clear that line’s unit price to request the current selected list price on the next save."
+      ],
+      "items": [
+        {
+          "label": "#",
+          "description": "Row order; retained lines save in that order."
+        },
+        {
+          "label": "Type",
+          "description": "Test by default, Fee or Discount / adjustment. Fees and adjustments cannot retain a test choice."
+        },
+        {
+          "label": "Test",
+          "description": "Required on Test rows. Only active tests on active methods are offered; labels distinguish analyte, method/version, matrix and result unit."
+        },
+        {
+          "label": "Description",
+          "description": "Up to 240 characters. Blank on a Test row uses the test label; required for fees/adjustments."
+        },
+        {
+          "label": "Qty",
+          "description": "Required integer at least 1; defaults to 1."
+        },
+        {
+          "label": "Unit price (USD)",
+          "description": "Exact whole-cent amount with at most 12 digits including two decimal places. Blank on a Test row takes the selected list’s current price at save; if absent, enter a price or choose another list. Fees/adjustments require an amount. Only adjustments can be negative, and adjustments cannot be positive."
+        },
+        {
+          "label": "Remove",
+          "description": "Exclude this row on save. This editor refuses to save with no retained lines."
+        },
+        {
+          "label": "Add line",
+          "description": "Append a row when JavaScript is available; normally three spare rows are present. Completely unchanged blank rows are ignored. At most 100 form rows are accepted."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Save changes",
+          "description": "Validate and save the draft, then open quote detail. At least one complete retained line is required. Saving does not issue the version or expose draft changes to the client."
+        },
+        {
+          "label": "Cancel / quote number / Quotes",
+          "description": "Navigate to the quote or directory without saving."
+        }
+      ]
+    },
+    {
+      "title": "Form controls and errors",
+      "items": [
+        {
+          "label": "Required fields and errors",
+          "description": "Asterisks mark required fields. Errors appear beside fields or above the form; entered values stay available for correction after validation fails. A stale-record error requires reloading and reviewing the current record before retrying."
+        },
+        {
+          "label": "Maximize / Restore size",
+          "description": "When this form opens in a dialog, change its size without saving. Small screens already use the full screen."
+        },
+        {
+          "label": "Close form / Cancel",
+          "description": "Leave without saving. If the dialog detects edits, Keep editing returns to the form and Discard changes leaves without saving."
+        },
+        {
+          "label": "Try again",
+          "description": "Retry if loading the dialog failed. During saving, wait for the request to finish; the submit button indicates work is running."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "commercial/urls.py",
+    "commercial/views.py",
+    "commercial/models.py",
+    "commercial/forms.py",
+    "commercial/permissions.py",
+    "accounts/roles.py",
+    "commercial/quotes.py",
+    "commercial/pricing.py",
+    "commercial/templates/commercial/quote_form.html",
+    "commercial/templates/commercial/_line_row.html",
+    "commercial/tests/test_quotes.py",
+    "core/form_surfaces.py",
+    "templates/includes/form_dialog.html",
+    "static/js/form-dialog.js",
+    "static/js/app.js"
+  ]
+}

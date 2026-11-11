@@ -1,0 +1,55 @@
+{
+  "id": "core-retention",
+  "routes": [
+    "record-retention"
+  ],
+  "title": "Record retention",
+  "purpose": "Read the laboratory’s recorded statement about electronic record retention and the reasons for changes.",
+  "sections": [
+    {
+      "title": "Sections and fields",
+      "items": [
+        {
+          "label": "Retention statement",
+          "description": "Laboratory-written text, separate from physical sample retention. “Not recorded” means no statement has been entered; “No laboratory configured” means setup is incomplete."
+        },
+        {
+          "label": "Laboratory name",
+          "description": "The configured organization whose statement is displayed."
+        },
+        {
+          "label": "History",
+          "description": "The latest 20 statement-change audit events, presented in chronological order within that window."
+        },
+        {
+          "label": "Statement changed / Recorded by / time / reason",
+          "description": "Identifies each change, its actor, timestamp and reason. It is attributed history, not an editable policy record."
+        }
+      ]
+    },
+    {
+      "title": "Actions and rules",
+      "items": [
+        {
+          "label": "Edit in administration",
+          "description": "Available only to a staff superuser who also holds the admin laboratory role. Opens the lab retention form; changes and clearing the statement require a reason and a current revision."
+        },
+        {
+          "label": "Physical sample retention",
+          "description": "Managed separately under Sample storage. This statement neither calculates a sample retain-through date nor schedules deletion."
+        },
+        {
+          "label": "No automatic purge",
+          "description": "Electronic records are not automatically deleted. A recorded statement is the laboratory’s policy text, not a compliance certification."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "core/views.py",
+    "core/admin.py",
+    "core/retention.py",
+    "templates/core/record_retention.html",
+    "tests/test_record_retention.py"
+  ]
+}

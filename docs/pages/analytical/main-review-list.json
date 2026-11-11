@@ -1,0 +1,120 @@
+{
+  "id": "analytical-main-review-list",
+  "routes": [
+    "analytical:review-list"
+  ],
+  "title": "Technical review",
+  "purpose": "Find batches containing submitted results and see which work is independent of your own entry/submission.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "These are staff pages. Active users with an application staff role can read them; client accounts cannot. Analysts perform result entry and batch work, reviewers decide results, and administrators maintain configuration. Administrators also have operational analyst and reviewer access, but independence rules still apply. Superuser status alone does not grant an application role."
+      ]
+    },
+    {
+      "title": "Filters",
+      "items": [
+        {
+          "label": "Method",
+          "description": "Filter by active exact method/version. There is no free-text search on this queue."
+        },
+        {
+          "label": "Matrix",
+          "description": "Any matrix, Water, Wastewater or Soil."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Batch",
+          "description": "Number linking to the batch’s technical review page."
+        },
+        {
+          "label": "Method",
+          "description": "Batch method/version."
+        },
+        {
+          "label": "Matrix",
+          "description": "Batch matrix."
+        },
+        {
+          "label": "Awaiting review",
+          "description": "Submitted revisions waiting in the batch."
+        },
+        {
+          "label": "You may review",
+          "description": "Submitted revisions you neither entered nor submitted. The adjacent yours count identifies excluded work. This count represents independence, not an assertion that your role or the result’s QC/holding/preservation is ready for approval."
+        },
+        {
+          "label": "Oldest submitted",
+          "description": "Oldest pending submission date/time in the batch."
+        },
+        {
+          "label": "Open QC findings",
+          "description": "Distinct current unresolved batch QC findings holding affected results. Computed for displayed batches; cannot be sorted."
+        },
+        {
+          "label": "Holding issues",
+          "description": "Latest submitted revisions with holding Exceeded or Not evaluable. Computed for displayed batches; cannot be sorted."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Batch",
+          "description": "Inspect current submitted results, their approval blockers and supporting evidence. Only reviewers may apply decisions; staff readers can inspect the queue."
+        }
+      ]
+    },
+    {
+      "title": "Filtering and table controls",
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Apply search and filters to the entire matching dataset and return to page 1. Invalid filters show errors and no rows; they never widen the query."
+        },
+        {
+          "label": "Clear all",
+          "description": "Remove search and filters and restore this page’s defaults. A filter chip removes only that filter."
+        },
+        {
+          "label": "Rows per page",
+          "description": "Choose 25 (default), 50 or 100. First, Previous, Next and Last page links retain filters. Counts describe all matching records."
+        },
+        {
+          "label": "Columns",
+          "description": "Show or hide optional columns and change their order using movement controls or header dragging. Changes apply immediately and are saved for this table in this browser. Locked columns stay available."
+        },
+        {
+          "label": "Reset columns",
+          "description": "Restore the original column visibility and order. Done or Close dismisses the Columns dialog."
+        }
+      ],
+      "paragraphs": [
+        "Oldest submission first by default. Batch, Awaiting review and Oldest submitted headings sort the whole filtered queue. There is no selection or cross-batch decision on this page."
+      ]
+    },
+    {
+      "title": "Empty states",
+      "paragraphs": [
+        "Nothing is awaiting review means no submitted revisions are pending. Analysts must first save entries, inspect them and submit. A filtered empty result offers Clear all. A batch can remain in the queue even if all its work is yours; another qualified reviewer must decide it."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/templates/analytical/review_list.html",
+    "analytical/tests/test_lists.py",
+    "analytical/tests/test_views.py"
+  ]
+}

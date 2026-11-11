@@ -1,0 +1,1 @@
+{% comment %}Widget attributes except "class", which each widget template sets with the Bootstrap base class.{% endcomment %}{% for name, value in widget.attrs.items %}{% if name != "class" and value is not False %} {{ name }}{% if value is not True %}="{{ value|stringformat:'s' }}"{% endif %}{% endif %}{% endfor %}

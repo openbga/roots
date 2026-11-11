@@ -1,0 +1,19 @@
+{% extends "receipt/order_sample_form.html" %}
+{% comment %}
+Receipt form for one expected sample. Same form and service as any receipt; only the client's declared
+collection details are prefilled. Context adds: submission, expected.
+{% endcomment %}
+{% block breadcrumbs %}{% url 'commercial:submission-list' as list_url %}{% url 'commercial:submission-detail' submission.pk as record_url %}{% include "includes/breadcrumbs.html" with section="Client submissions" section_url=list_url record=submission.number record_url=record_url current=page_title %}{% endblock %}
+{% block cancel_url %}{% url 'commercial:submission-detail' submission.pk %}{% endblock %}
+{% block content %}
+<div class="alert alert-info" role="status">
+  {% include "includes/status.html" with label="Note" tone="info" plain=True %}
+  <div>
+    <strong>Declared by the client, not verified:</strong> collection details, tests and containers are prefilled from submission {{ submission.number }}.
+    Check them against the labels and paperwork. Receipt time, cooler temperature, seals, container condition and preservation check are yours to record from the actual shipment.
+    {% if not expected.collected_at %}<br><strong>The client declared no collection time.</strong> Enter the actual collection time from the chain of custody paperwork; receipt cannot be recorded without it.{% endif %}
+    {% if expected.field_notes %}<br>Field notes: {{ expected.field_notes }}{% endif %}
+  </div>
+</div>
+{{ block.super }}
+{% endblock %}

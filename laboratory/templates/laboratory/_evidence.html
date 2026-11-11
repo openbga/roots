@@ -1,0 +1,2 @@
+{% load laboratory_extras %}{% comment %}Attachment link. Parameters: item (has_evidence, evidence_*), kind (equipment|training|nonconformance).{% endcomment %}
+{% if item.has_evidence %}<a href="{% url 'laboratory:evidence' kind item.pk %}">{{ item.evidence_name }}</a> <span class="vr-muted small">{{ item.evidence_size|filesizeformat }} · SHA-256 <span class="vr-id">{{ item.evidence_sha256|short_hash }}</span></span>{% else %}<span class="vr-muted">No file</span>{% endif %}

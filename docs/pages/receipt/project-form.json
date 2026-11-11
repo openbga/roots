@@ -1,0 +1,126 @@
+{
+  "id": "receipt-project-form",
+  "routes": [
+    "receipt:project-create",
+    "receipt:project-edit"
+  ],
+  "title": "Project",
+  "purpose": "Create a grouping for a client’s work or update its number, program, site, standing purchase order, manager, turnaround, instructions and intake availability. The owning client is chosen at creation and cannot later change.",
+  "sections": [
+    {
+      "title": "Project",
+      "paragraphs": [
+        "Project managers and administrators can save. The form is grouped into Project, Program and site, Intake, and, on edit only, Status and Change record. Client, Project name and Standard turnaround (days) are required; everything else is optional."
+      ],
+      "items": [
+        {
+          "label": "Client",
+          "description": "Create only and required; choices contain active clients. Add project on a client record prefills that client. Reactivate an inactive client before new intake."
+        },
+        {
+          "label": "Project name",
+          "description": "Required, up to 160 characters."
+        },
+        {
+          "label": "Project number",
+          "description": "Optional, up to 60 characters. The client’s or the laboratory’s reference for the project."
+        },
+        {
+          "label": "Laboratory project manager",
+          "description": "Optional list of active laboratory staff accounts shown by full name or username; Not assigned means none. Client portal accounts are never offered and are refused if submitted. When editing, the recorded manager stays selectable even if that account was later deactivated; a deactivated account cannot be newly assigned."
+        },
+        {
+          "label": "Standard turnaround (days)",
+          "description": "Required whole number of zero or more, initially 10. The agreed standard for the project. It is not an automatically calculated delivery or holding deadline and does not set a delivery target."
+        }
+      ]
+    },
+    {
+      "title": "Program and site",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Regulatory program",
+          "description": "Optional category: Not recorded, NPDES / Clean Water Act, Industrial pretreatment, Stormwater permit, Drinking water (SDWA), RCRA / waste characterization, Site investigation / remediation, State program, Not regulatory or Other. A label for grouping and filtering; it does not assert regulatory eligibility, method requirements or compliance."
+        },
+        {
+          "label": "Permit or program ID",
+          "description": "Optional permit number or program label, up to 160 characters, printed on reports. It does not assert regulatory eligibility."
+        },
+        {
+          "label": "State of sample origin",
+          "description": "Optional list: Not recorded, then a list of the 50 states, the District of Columbia and the territories (American Samoa, Guam, Northern Mariana Islands, Puerto Rico, U.S. Virgin Islands), shown by name."
+        },
+        {
+          "label": "Site or facility",
+          "description": "Optional facility name or address where samples are collected, up to 200 characters."
+        }
+      ]
+    },
+    {
+      "title": "Intake",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Purchase order",
+          "description": "Optional standing purchase order, up to 60 characters. A new chain of custody for this project that is saved without its own purchase order takes this one. Changing it later does not change chains of custody already created."
+        },
+        {
+          "label": "Standing instructions",
+          "description": "Optional multi-line text shown to the custodian above the form when receiving samples on this project’s chains of custody, and on each chain of custody record. Information only; it does not change any field or rule."
+        }
+      ]
+    },
+    {
+      "title": "Status and change record",
+      "paragraphs": [
+        "These sections appear on edit only."
+      ],
+      "items": [
+        {
+          "label": "Active (accepts new intake)",
+          "description": "New projects start active. Clearing it blocks new intake but retains existing work. An active project also needs an active client for new intake."
+        },
+        {
+          "label": "Reason for change",
+          "description": "Required on edit; retained with actor and before/after values."
+        }
+      ]
+    },
+    {
+      "title": "Actions and safeguards",
+      "paragraphs": [
+        "Concurrent edits are refused; reload and review the current project before submitting again. A different owning client requires a new project."
+      ],
+      "items": [
+        {
+          "label": "Create project",
+          "description": "Project managers and administrators create it, then return to Projects."
+        },
+        {
+          "label": "Save changes",
+          "description": "Updates this project without moving it to another client, then returns to Projects."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to Projects without saving."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/views.py",
+    "receipt/models.py",
+    "receipt/forms.py",
+    "receipt/services.py",
+    "accounts/roles.py",
+    "templates/receipt/form.html",
+    "receipt/tests/test_clients.py",
+    "tests/test_receipt_workflow.py",
+    "receipt/vocabulary.py",
+    "core/widgets.py",
+    "templates/receipt/_grouped_fields.html",
+    "receipt/tests/test_master_data.py"
+  ]
+}

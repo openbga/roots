@@ -1,0 +1,38 @@
+{% comment %}
+Bootstrap field group for one bound field. Every {{ form }} / {{ field.as_field_group }} renders
+through this (templates/django/forms/field.html), and pages can include it directly to add
+input-group text: {% include "includes/field.html" with field=form.cooler_temp suffix="°C" %}.
+Django 5.2 sets aria-invalid and aria-describedby (help + error ids) on the widget itself.
+{% endcomment %}
+{% with widget_type=field.widget_type required=field.field.required %}
+{% if widget_type == "checkbox" %}
+<div class="vr-field form-check">
+  {{ field }}
+  <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}{% if required %}<span class="vr-req" aria-hidden="true">*</span>{% endif %}</label>
+  {% if field.help_text %}<div class="form-text" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</div>{% endif %}
+  {% if field.errors %}<ul class="vr-field-errors" id="{{ field.auto_id }}_error">{% for error in field.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+</div>
+{% elif field.use_fieldset %}
+<fieldset class="vr-field"{% if field.aria_describedby %} aria-describedby="{{ field.aria_describedby }}"{% endif %}{% if field.errors %} aria-invalid="true"{% endif %}>
+  <legend class="form-label">{{ field.label }}{% if required %}<span class="vr-req" aria-hidden="true">*</span>{% endif %}</legend>
+  {{ field }}
+  {% if field.help_text %}<div class="form-text" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</div>{% endif %}
+  {% if field.errors %}<ul class="vr-field-errors" id="{{ field.auto_id }}_error">{% for error in field.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+</fieldset>
+{% else %}
+<div class="vr-field">
+  {% if field.label %}<label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}{% if required %}<span class="vr-req" aria-hidden="true">*</span>{% endif %}</label>{% endif %}
+  {% if prefix or suffix %}
+  <div class="input-group">
+    {% if prefix %}<span class="input-group-text">{{ prefix }}</span>{% endif %}
+    {{ field }}
+    {% if suffix %}<span class="input-group-text">{{ suffix }}</span>{% endif %}
+  </div>
+  {% else %}
+  {{ field }}
+  {% endif %}
+  {% if field.help_text %}<div class="form-text" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</div>{% endif %}
+  {% if field.errors %}<ul class="vr-field-errors" id="{{ field.auto_id }}_error">{% for error in field.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+</div>
+{% endif %}
+{% endwith %}

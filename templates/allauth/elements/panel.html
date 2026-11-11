@@ -1,0 +1,7 @@
+{% load allauth %}<section class="card mb-3">
+  <div class="card-header"><h2 class="card-title">{% slot title %}{% endslot %}</h2></div>
+  <div class="card-body">
+    {% slot body %}{% endslot %}
+    {% if slots.actions %}<div class="vr-form-actions">{% for action in slots.actions %}{{ action }}{% endfor %}</div>{% endif %}
+  </div>
+</section>

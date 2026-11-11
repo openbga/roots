@@ -1,0 +1,200 @@
+{
+  "id": "receipt-order-detail",
+  "routes": [
+    "receipt:order-detail"
+  ],
+  "title": "Chain of custody",
+  "purpose": "Review one order’s client, project, turnaround, purchase order, shipment details, delivery commitment and received samples; continue receipt, edit its details or record the reason an expected shipment will not arrive.",
+  "sections": [
+    {
+      "title": "Order summary",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Reference / Client / Project",
+          "description": "The order reference and project/client that all received samples share. The client name opens the client record."
+        },
+        {
+          "label": "Rush",
+          "description": "A Rush marker appears in the header when the order’s turnaround is Rush."
+        },
+        {
+          "label": "Delivery target",
+          "description": "Agreed local date/time or not set; distinct from holding-time deadlines."
+        },
+        {
+          "label": "Created / by",
+          "description": "When and by whom the order was created."
+        },
+        {
+          "label": "From client submission",
+          "description": "When present, shows the planned-work submission. Custodians/project managers/administrators can open it; other staff see its number."
+        },
+        {
+          "label": "Purchase order missing",
+          "description": "A warning shown while the order is not cancelled, has no purchase order and the client is marked Purchase order required. Staff who can receive are told to add it with Edit details. It is a reminder and does not block receipt."
+        }
+      ]
+    },
+    {
+      "title": "Order details",
+      "paragraphs": [
+        "A card on the order with the shipment and billing details that were entered on the order or carried over from an accepted client submission."
+      ],
+      "items": [
+        {
+          "label": "Turnaround",
+          "description": "Standard or Rush, with the project’s standard turnaround in days beside it."
+        },
+        {
+          "label": "Purchase order",
+          "description": "The order’s purchase order, or a dash."
+        },
+        {
+          "label": "Project number / Program",
+          "description": "From the project: its project number and its regulatory program with the permit or program ID. Dashes when unrecorded."
+        },
+        {
+          "label": "Delivery",
+          "description": "The delivery method (Client drop-off, Laboratory courier / pickup, Commercial carrier, Mail or Other) with any carrier or tracking number beneath it; a dash when not recorded."
+        },
+        {
+          "label": "Coolers / packages",
+          "description": "Declared number in the shipment, or a dash."
+        },
+        {
+          "label": "Special instructions",
+          "description": "Instructions entered for this chain of custody, or a dash."
+        },
+        {
+          "label": "Project standing instructions",
+          "description": "Shown only when the project has standing instructions."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Receive first sample / Receive next sample",
+          "description": "Custodians, project managers and administrators open receipt under this order. Shown only while the order is not cancelled; the active client/project checks also apply at receipt."
+        },
+        {
+          "label": "Edit details",
+          "description": "Custodians, project managers and administrators open the reasoned edit form for turnaround, purchase order, delivery method, carrier/tracking, coolers/packages and special instructions. Shown only while the order is not cancelled."
+        },
+        {
+          "label": "Change delivery target",
+          "description": "Opens the reasoned rescheduling form while not cancelled."
+        },
+        {
+          "label": "Correct reference",
+          "description": "Opens a reasoned correction for all samples under this order. An issued report containing a sample blocks reference correction."
+        },
+        {
+          "label": "Cancel chain of custody",
+          "description": "Available to receipt roles only when no samples have been received, the order is active and it was not opened by a client submission. Enter required Reason. Cancellation preserves the order and reason; it blocks further receipt and target changes. If samples exist, use their disposition workflow instead."
+        },
+        {
+          "label": "Reinstate chain of custody",
+          "description": "Available for a cancelled order not owned by a client submission. Required Reason records reinstatement; client and project must be active. Submission-owned orders must be cancelled/reinstated from the linked submission page."
+        },
+        {
+          "label": "Reason",
+          "description": "Required in cancellation/reinstatement forms. Both actions recheck the order revision; a stale or ineligible action returns an error message here without changing the order."
+        }
+      ]
+    },
+    {
+      "title": "Samples on this chain of custody",
+      "paragraphs": [
+        "The empty state invites receipt of the first sample; a cancelled banner records actor, time and reason instead."
+      ],
+      "items": [
+        {
+          "label": "Lab ID",
+          "description": "Opens the sample record. Rows are ordered by laboratory ID; this table is not paginated."
+        },
+        {
+          "label": "Client sample ID / Type",
+          "description": "Client identifier and sample type (Field sample, Field duplicate, Field blank, Trip blank or Equipment / rinsate blank)."
+        },
+        {
+          "label": "Matrix",
+          "description": "Recorded matrix, with the sample source beneath it when one is recorded."
+        },
+        {
+          "label": "Collected / Received",
+          "description": "Collection or composite-end time and actual receipt time, displayed in laboratory local time."
+        },
+        {
+          "label": "Containers",
+          "description": "Count of received containers for the sample."
+        },
+        {
+          "label": "Disposition / Location",
+          "description": "Current sample decision and custody location."
+        }
+      ]
+    },
+    {
+      "title": "Labels",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Labels",
+          "description": "Opens options for identity labels; printing does not change receipt, custody, preservation or sample state."
+        },
+        {
+          "label": "Print labels for",
+          "description": "Each container is selected initially; Each sample prints one sample identity instead. Container labels carry their stable container barcode, visible container label, client sample ID, laboratory ID, matrix and collection time; sample labels carry the sample barcode/ID, client ID, matrix and collection time."
+        },
+        {
+          "label": "Copies of each",
+          "description": "Whole number from 1 to 10, initially 1. The combined download cannot exceed 200 labels; use an individual sample when an order is too large."
+        },
+        {
+          "label": "Download PDF",
+          "description": "Opens a PDF in a new tab, one 4 × 2 inch label per page. Print at actual size. Only received samples/containers are printable; empty or invalid requests are refused. Reprint after correcting values shown on a label."
+        }
+      ]
+    },
+    {
+      "title": "Correction history",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Reference corrected",
+          "description": "Chronological history of reference corrections, showing actor, time, reason and old/new reference. Earlier references remain recorded."
+        }
+      ]
+    },
+    {
+      "title": "Detail changes",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Details updated",
+          "description": "Chronological list, shown only after a first change, of each Edit details save with its actor, time and reason. The previous and new values are kept in the audit record, not listed here."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/views.py",
+    "receipt/forms.py",
+    "receipt/models.py",
+    "receipt/services.py",
+    "accounts/roles.py",
+    "templates/receipt/order_detail.html",
+    "templates/receipt/labels_menu.html",
+    "receipt/labels.py",
+    "receipt/correction_views.py",
+    "receipt/tests/test_receipt_edits.py",
+    "receipt/tests/test_labels.py",
+    "templates/receipt/order_edit.html",
+    "receipt/tests/test_master_data.py"
+  ]
+}

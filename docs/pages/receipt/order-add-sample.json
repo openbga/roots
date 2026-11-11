@@ -1,0 +1,224 @@
+{
+  "id": "receipt-order-add-sample",
+  "routes": [
+    "receipt:order-add-sample"
+  ],
+  "title": "Receive sample on a chain of custody",
+  "purpose": "Record actual receipt of another physical sample under the displayed chain of custody. Project and reference carry over from the order; each sample gets its own accession, observations and custody.",
+  "sections": [
+    {
+      "title": "Order and defaults",
+      "paragraphs": [
+        "Client sample ID, sample type, remarks, collection place/times, receipt time, cooler temperature, thermometer, coolant, custody seal, container condition, preservation check, storage location and disposition must be entered for the new sample. Cancelled orders redirect to the order with an error; an inactive client/project blocks receipt."
+      ],
+      "items": [
+        {
+          "label": "Order summary",
+          "description": "Shows reference, client/project, a Rush marker when the order’s turnaround is Rush, and the number of samples already received."
+        },
+        {
+          "label": "Instructions",
+          "description": "When the project has standing instructions or the chain of custody has special instructions, they are shown above the form, labelled Project and This chain of custody. They are information for the receiver and change no field."
+        },
+        {
+          "label": "Defaults reused from",
+          "description": "When reached through a reuse link, shows the same-order source laboratory/client IDs and all prefilled shared values. It copies matrix, sample source, collector, original relinquishing custodian, active matching tests, and container types/preservatives; all remain editable."
+        },
+        {
+          "label": "Skipped tests",
+          "description": "Tests no longer active, under an inactive method or mismatching the source matrix are not copied; the page states their count."
+        },
+        {
+          "label": "Start with a blank form",
+          "description": "Removes reuse defaults. A missing, invalid or other-order source also starts blank with a warning."
+        }
+      ]
+    },
+    {
+      "title": "Sample and collection",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Client sample ID",
+          "description": "Required client identifier, up to 120 characters; it is separate from the generated laboratory ID."
+        },
+        {
+          "label": "Sample type",
+          "description": "List: Field sample (initially), Field duplicate, Field blank, Trip blank or Equipment / rinsate blank. The field designation written on the chain of custody. Laboratory QC samples prepared in the laboratory belong to analytical batches, not here."
+        },
+        {
+          "label": "Collection type",
+          "description": "Required Grab or Composite, initially Grab."
+        },
+        {
+          "label": "Matrix",
+          "description": "Required Water, Wastewater or Soil; chosen tests must match it."
+        },
+        {
+          "label": "Sample source",
+          "description": "Optional list grouped by matrix, with Not recorded first. Water: Drinking water, Groundwater, Surface water, Stormwater. Wastewater: Wastewater influent, Wastewater effluent, Industrial wastewater, Stormwater. Soil: Soil, Sediment, Sludge / biosolids, Solid waste. What was sampled, within the matrix. It must belong to the chosen matrix; otherwise the form refuses it with a message to choose another source or correct the matrix."
+        },
+        {
+          "label": "Collector name",
+          "description": "Required collector, up to 160 characters."
+        },
+        {
+          "label": "Composite started at",
+          "description": "Optional for grab receipt; required for a composite and must not follow its end."
+        },
+        {
+          "label": "Collected / composite ended at",
+          "description": "Required collection time or composite end. It cannot follow receipt. Holding clocks use collection or composite end rather than order creation."
+        },
+        {
+          "label": "Collection location",
+          "description": "Required specific collection place, up to 200 characters."
+        },
+        {
+          "label": "Sample remarks",
+          "description": "Optional multi-line text: appearance, odor, hazards or field readings noted on the chain of custody."
+        }
+      ]
+    },
+    {
+      "title": "Receipt inspection and disposition",
+      "paragraphs": [
+        "The pick-lists are starter vocabularies of common values, not requirements of any method or regulation; Other… accepts any text, and values recorded before a list existed still display. They do not check a container or preservative against any method’s requirements."
+      ],
+      "items": [
+        {
+          "label": "Received at",
+          "description": "Required actual receipt time in laboratory local time, no earlier than collection and no later than now. The signed-in operator is recorded as Received by."
+        },
+        {
+          "label": "Relinquished by",
+          "description": "Required name of the delivering custodian, up to 160 characters, as signed on the chain of custody."
+        },
+        {
+          "label": "Cooler temperature (°C)",
+          "description": "Required exact finite decimal reading, up to three decimal places in a seven-digit field; it is never rounded. Original entered reading text is also retained. Receipt applies no universal pass/fail temperature threshold; test-specific screening appears later."
+        },
+        {
+          "label": "Thermometer",
+          "description": "Optional thermometer or IR gun used for the reading, up to 160 characters. Free text with suggestions: in-service equipment whose type contains the word thermometer (shown as asset ID and name), then instruments typed on earlier receipts. You may type any value."
+        },
+        {
+          "label": "Coolant on arrival",
+          "description": "List: Select…, Wet ice, Ice packs, Dry ice or None. Required on every new receipt. Records how the shipment arrived cold; it is separate from the temperature reading and carries no pass/fail rule."
+        },
+        {
+          "label": "Custody seal",
+          "description": "Required list: Select…, Intact, Broken or damaged, No seal present or Other…. Other… reveals a text box (Describe); the text you type is stored as the value. Up to 160 characters. Older free-text values display as Other with their text."
+        },
+        {
+          "label": "Preservation check",
+          "description": "Required list: Select…, Preservation verified at receipt, Preserved per labels, not verified, No chemical preservation required, Preserved by the laboratory at receipt, Preservation incorrect or missing, Not checked or Other…. Other… reveals a text box (Describe); the text you type is stored as the value. Up to 200 characters. It is distinct from container-specific preservation and later method-specific assessment."
+        },
+        {
+          "label": "Storage location",
+          "description": "Required location at initial receipt, up to 160 characters; it becomes the destination of the initial custody event. Free text with suggestions from storage locations already recorded on samples, so one place is spelled one way."
+        },
+        {
+          "label": "Discrepancy",
+          "description": "Optional free text describing anything that differs from the chain of custody or labels. If entered, a disposition note is required."
+        },
+        {
+          "label": "Disposition",
+          "description": "Required Proceed, Qualify, Hold or Reject, initially Proceed. A decision other than Proceed requires a note. This is a receipt decision rather than an analysis result."
+        },
+        {
+          "label": "Disposition note",
+          "description": "Optional for Proceed without a discrepancy; otherwise required to explain the decision. Stored with receipt provenance."
+        }
+      ]
+    },
+    {
+      "title": "Requested tests",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Tests",
+          "description": "Select at least one active definition whose method version is active and matrix matches the sample. Labels show analyte, method code/version, unit and matrix. New receipt rechecks eligibility."
+        },
+        {
+          "label": "Search analyte, method or unit",
+          "description": "Enhanced picker searches analyte, method code, version and unit. Enter adds the highlighted option; Backspace removes the last selected option and Left arrow moves to earlier selections. A native multiple select remains available without enhancement."
+        },
+        {
+          "label": "Matrix changes / Remove this test",
+          "description": "Changing Matrix keeps selections for review instead of deleting them. Mismatched options are marked and listed; remove them individually or with the mismatch removal action, or correct Matrix. Submission refuses incompatible tests while preserving choices."
+        }
+      ]
+    },
+    {
+      "title": "Containers",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Container type",
+          "description": "Required for every nonblank included row. List: Select…, ten common vial, bottle and jar types (for example 40 mL VOA vial, 1 L plastic (HDPE), 1 L amber glass, 8 oz glass jar) or Other…. Up to 160 characters."
+        },
+        {
+          "label": "Preservative",
+          "description": "Optional list, Not recorded first: None, HNO3 (nitric acid), H2SO4 (sulfuric acid), HCl (hydrochloric acid), NaOH (sodium hydroxide), Zinc acetate + NaOH, Na2S2O3 (sodium thiosulfate), NaHSO4 (sodium bisulfate), Methanol, Ascorbic acid or Other…. Up to 200 characters. Container-specific; a recorded value is not a verification of preservation."
+        },
+        {
+          "label": "Condition at receipt",
+          "description": "Required for each included row. List: Select…, Intact, Leaking, Broken or cracked, Lid loose, Headspace or bubbles, Insufficient volume, Label missing or illegible or Other…. Up to 160 characters; never reused from a prior sample."
+        },
+        {
+          "label": "Add container",
+          "description": "Adds another row when JavaScript is available. Extra rows also work without JavaScript."
+        },
+        {
+          "label": "Remove this container",
+          "description": "Excludes that unsaved row; it does not delete a previously received container."
+        },
+        {
+          "label": "Container bounds",
+          "description": "At least one and at most twenty included containers. Blank rows are ignored. Each saved container receives a generated label under the new sample."
+        }
+      ]
+    },
+    {
+      "title": "Actions and safeguards",
+      "paragraphs": [
+        "The order revision and test availability are rechecked when submitting. If another receipt, correction or schedule change has changed the order, reload and review it before receiving again. Form errors preserve submitted values. No partial sample is saved when a container or another receipt requirement is invalid."
+      ],
+      "items": [
+        {
+          "label": "Receive sample",
+          "description": "Saves sample, containers, tests, initial custody and attributed audit together, updates order revision and returns to the order."
+        },
+        {
+          "label": "Receive and add another",
+          "description": "Saves this sample then opens another receipt form using only its allowed shared defaults (matrix, sample source, collector, relinquished by, tests and container types/preservatives). The standard success message also offers a link to receive another using these defaults."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the order without receipt."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/views.py",
+    "receipt/forms.py",
+    "receipt/models.py",
+    "receipt/services.py",
+    "accounts/roles.py",
+    "receipt/defaults.py",
+    "receipt/widgets.py",
+    "templates/receipt/order_sample_form.html",
+    "templates/receipt/_sample_fields.html",
+    "templates/receipt/_container_row.html",
+    "static/js/test-picker.js",
+    "tests/test_receipt_workflow.py",
+    "receipt/vocabulary.py",
+    "core/widgets.py",
+    "templates/django/forms/widgets/list_or_other.html",
+    "templates/django/forms/widgets/suggest_input.html",
+    "receipt/tests/test_master_data.py"
+  ]
+}

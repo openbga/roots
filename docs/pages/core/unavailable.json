@@ -1,0 +1,29 @@
+{
+  "id": "core-unavailable",
+  "routes": [
+    "documentation:unavailable"
+  ],
+  "title": "Page unavailable",
+  "purpose": "This address does not have an accessible application page.",
+  "sections": [
+    {
+      "title": "What to do",
+      "items": [
+        {
+          "label": "Return to the workspace",
+          "description": "Use the navigation or browser Back to reach an available page. Sign in if the session has ended. If access is denied, a laboratory administrator must review the account’s role or client assignment."
+        },
+        {
+          "label": "Unexpected error",
+          "description": "Retry from a known page. If the error persists, give the laboratory operator the request identifier when one is shown; do not send passwords, recovery codes or sample records in an error report."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "templates/400.html",
+    "templates/403.html",
+    "templates/404.html",
+    "templates/500.html"
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "id": "analytical-main-config-qualifier",
+  "routes": [
+    "analytical:config-new",
+    "analytical:config-edit"
+  ],
+  "match": {
+    "kind": "qualifier"
+  },
+  "title": "Qualifier",
+  "purpose": "Add or edit a laboratory result qualifier and whether it identifies a holding-time exceedance.",
+  "sections": [
+    {
+      "title": "Create, edit and access",
+      "paragraphs": [
+        "Staff can read this form, but only administrators may save it. Add creates a new configuration record; Edit prepopulates the existing record and requires a Reason for change. Unknown configuration kinds are unavailable. These are lab policy values, and synthetic seed data is not a validated set."
+      ]
+    },
+    {
+      "title": "Fields",
+      "items": [
+        {
+          "label": "Code",
+          "description": "Required unique code, up to 10 characters. New result entry matches active codes case-sensitively. Use a code suitable for the entry/import separators; the application does not uppercase it automatically."
+        },
+        {
+          "label": "Description",
+          "description": "Required meaning, up to 200 characters. Shown beside available codes and captured with each result revision."
+        },
+        {
+          "label": "Indicates holding time",
+          "description": "Initially unchecked. When checked, use of this code on a result identifies it as qualified for a holding-time exceedance. It does not repair missing or impossible chronology or establish regulatory validity."
+        },
+        {
+          "label": "Is active",
+          "description": "Initially checked. Only active codes may be supplied on new entries; inactive codes and their history remain available in configuration."
+        }
+      ]
+    },
+    {
+      "title": "Result effects",
+      "paragraphs": [
+        "Each result revision snapshots code, description and holding-time meaning. Later edits or deactivation do not silently reinterpret an older observation or issued report.",
+        "A detected observation below its applied reporting limit requires at least one active qualifier or a separately appropriate ND entry; the application does not choose a code for you. A holding-time exceedance specifically needs a captured qualifier marked Indicates holding time before submission. Codes are not method-filtered."
+      ]
+    },
+    {
+      "title": "Creation action",
+      "items": [
+        {
+          "label": "Add qualifier",
+          "description": "Create the code with an attributed audit event and return to QC configuration."
+        }
+      ]
+    },
+    {
+      "title": "Save, cancel and history",
+      "paragraphs": [
+        "Validation errors preserve entered form values. A stale record is refused rather than overwriting another person’s edit; input stays visible, but reload and compare current values before saving again. A reload is a new form, so retain any needed unsaved notes before leaving."
+      ],
+      "items": [
+        {
+          "label": "Reason for change",
+          "description": "Optional on creation; required nonblank for every existing-row save. Recorded with actor, time and before/after values."
+        },
+        {
+          "label": "Save changes",
+          "description": "For an edit, validate fields and uniqueness, recheck that the record still matches the version opened, and save with its audit event. The Add form’s named submit button creates instead. Success returns to QC configuration."
+        },
+        {
+          "label": "Cancel",
+          "description": "Return to QC configuration without saving typed changes."
+        },
+        {
+          "label": "History",
+          "description": "Existing records show their latest 20 audit events, displayed oldest to newest, with action, actor, time and reason. No history section appears before any events exist."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/templates/analytical/form.html",
+    "core/concurrency.py",
+    "analytical/tests/test_config_concurrency.py",
+    "analytical/parsing.py",
+    "analytical/tests/test_workflow.py",
+    "analytical/tests/test_views.py"
+  ]
+}

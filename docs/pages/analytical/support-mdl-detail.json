@@ -1,0 +1,192 @@
+{
+  "id": "analytical-support-mdl-detail",
+  "routes": [
+    "analytical:mdl-detail"
+  ],
+  "title": "MDL study record",
+  "purpose": "Inspect the study’s observations and immutable calculations, check readiness and follow the currently adopted MDL for the same test.",
+  "sections": [
+    {
+      "title": "Record, access and panels",
+      "paragraphs": [
+        "Active internal staff with a laboratory role can read MDL records. Analysts enter observations, import routine blanks and calculate. Analysts or reviewers can exclude observations and close studies; the page buttons for these two actions are shown to analysts. Only an independent reviewer can decide a calculation. Admin includes operational roles but never bypasses independence; client accounts and superuser status alone do not grant access.",
+        "This records the laboratory’s MDL work; it does not establish method acceptability, accreditation or compliance. It never changes configured reporting limits or QC limits. Quarterly spiked runs can be recorded, but the application does not check coverage of every quarter of method use."
+      ],
+      "items": [
+        {
+          "label": "Study heading",
+          "description": "Study number, latest calculation state, separate Closed indicator, analyte, method/version, matrix, study kind and spiking level with test unit."
+        },
+        {
+          "label": "Current MDL for this test",
+          "description": "Adopted/retained value across all studies of the exact test, source calculation, decision and review date. Recalculate by uses calculation performance time plus thirteen calendar months, not review time; a newer awaiting-review calculation leaves adoption unchanged. No adopted calculation shows No MDL has been adopted."
+        },
+        {
+          "label": "Readiness",
+          "description": "Read-only evaluation of current study observations with the default 24-month blank window. Ready means a calculation could be reviewed, not that an MDL was adopted. Not ready lists reasons; Closed replaces readiness for closed studies. Imported blanks with assumed preparation times are counted and flagged."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Add observation",
+          "description": "Analysts on an open study record a spike or blank; no existing observation is overwritten."
+        },
+        {
+          "label": "Import routine blanks",
+          "description": "Analysts on an open study copy current method-blank QC for this exact test from one selected source basis."
+        },
+        {
+          "label": "Calculate MDL",
+          "description": "Analysts on an open study choose a blank window and keep a new numbered calculation snapshot, including a not-evaluated outcome if requirements fail."
+        },
+        {
+          "label": "Exclude",
+          "description": "Displayed to analysts for non-excluded observations on an open study; opens the documented-gross-failure rationale form. Reviewers may also perform exclusions through that page. Exclusion does not rewrite results or old calculation snapshots."
+        },
+        {
+          "label": "Close study",
+          "description": "Confirmation posts irreversible closure. Analysts or reviewers can close; the button is displayed to analysts. Further observations, imports, exclusions and calculations are blocked, while existing calculations, review decisions and adopted MDL are retained. Closure is not adoption."
+        },
+        {
+          "label": "Calculation",
+          "description": "Opens the numbered snapshot and independent review."
+        }
+      ]
+    },
+    {
+      "title": "Spiked samples table",
+      "paragraphs": [
+        "Spikes are displayed in analysis-time order, oldest first, without pagination. Excluded rows remain visible. Columns can be arranged locally."
+      ],
+      "items": [
+        {
+          "label": "Result (test unit)",
+          "description": "Original supplied result text; numeric precision is preserved."
+        },
+        {
+          "label": "Spiking level",
+          "description": "Actual supplied spike level for this observation; calculation compares it with the study level."
+        },
+        {
+          "label": "Identification met",
+          "description": "Yes or No for the recorded qualitative-identification result."
+        },
+        {
+          "label": "Prepared / Analysed",
+          "description": "Actual local event times used for chronology and date spread."
+        },
+        {
+          "label": "Batch / preparation",
+          "description": "Recorded preparation batch and extract identity; these are labels, not automatic links to internal batches."
+        },
+        {
+          "label": "Instrument",
+          "description": "Recorded instrument name or a dash; multiple-instrument evaluation depends on these observations, not the study note."
+        },
+        {
+          "label": "Entered by",
+          "description": "User who added the observation."
+        },
+        {
+          "label": "Used",
+          "description": "Yes means currently not excluded; Excluded displays the retained reason. Yes here does not guarantee use by a particular historical calculation."
+        },
+        {
+          "label": "Actions",
+          "description": "Exclude appears for active observations when an analyst views an open study."
+        }
+      ]
+    },
+    {
+      "title": "Method blanks table",
+      "paragraphs": [
+        "Blanks are newest analysis first, paginated at 25/50/100, initially 25. Columns controls presentation."
+      ],
+      "items": [
+        {
+          "label": "Result (test unit)",
+          "description": "Original text; ND is labelled not detected and is never changed to zero."
+        },
+        {
+          "label": "Prepared / Analysed",
+          "description": "Preparation and analysis times. Assumed marks an imported preparation time substituted with analysis time; it cannot establish actual preparation-date spread."
+        },
+        {
+          "label": "Batch / preparation / Instrument",
+          "description": "Source batch and extract labels, plus recorded instrument or dash. Imported routine blanks do not fill an instrument name automatically."
+        },
+        {
+          "label": "Source",
+          "description": "Routine QC for a linked imported measurement; Study for manual observations."
+        },
+        {
+          "label": "Basis",
+          "description": "Recorded preparation/analytical source batch, actual analytical run when present and alternative full-procedure explanation. Basis not recorded remains explicit; the system does not infer missing history."
+        },
+        {
+          "label": "Entered by",
+          "description": "Contributor who entered/imported this study observation."
+        },
+        {
+          "label": "Used",
+          "description": "Yes if not excluded; Excluded with reason otherwise. The eventual calculation also applies its blank window."
+        },
+        {
+          "label": "Actions",
+          "description": "Exclude is offered for eligible non-excluded rows on open studies."
+        }
+      ]
+    },
+    {
+      "title": "Calculations table",
+      "items": [
+        {
+          "label": "Calculation",
+          "description": "Study-local sequence number, shown oldest first, opens the immutable snapshot."
+        },
+        {
+          "label": "Result",
+          "description": "Calculated or Not evaluated; the latter has no verified MDL."
+        },
+        {
+          "label": "Run / By",
+          "description": "Calculation timestamp and calculating user."
+        },
+        {
+          "label": "Verified MDL (test unit)",
+          "description": "Calculated greater-of-spikes-and-blanks value, not necessarily the adopted MDL."
+        },
+        {
+          "label": "Review",
+          "description": "Decision, reviewer and review date; Awaiting review for a calculated snapshot without a decision; dash for not evaluated."
+        }
+      ]
+    },
+    {
+      "title": "Readiness and interpretation",
+      "paragraphs": [
+        "Readiness requires at least seven distinct spike preparations and seven distinct blank preparations, with at least three preparation batches, three actual preparation dates and three analysis dates separately for spikes and blanks. Batch and extract labels identify preparations case-insensitively after trimming; repeated analyses of one extract increase analyses but not preparations. Assumed preparation dates cannot prove date spread. Calendar dates follow the laboratory time zone. Every included spike must have the study’s one positive spiking level, a positive numerical result and successful qualitative identification. Spikes older than 24 months make the calculation not evaluated, rather than being silently dropped. When multiple instrument names occur, every observation needs an instrument and each instrument needs at least two spikes and two blanks prepared and analysed on different dates.",
+        "Every failed spike makes the current calculation not evaluated. Initial studies explain repeating at higher level. Verification distinguishes failures above 5% from those at or below 5%, but still produces no value without an explicit supported treatment. Expand How this system reads Appendix B for the application’s conservative assumptions. Exclusions can reduce the data below the minimum; readiness and calculation then report the shortfall. No spikes, blanks or calculations each have a dedicated empty state."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/mdl_views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/mdl_services.py",
+    "analytical/mdl.py",
+    "analytical/selectors.py",
+    "analytical/templates/analytical/mdl_detail.html",
+    "analytical/templates/analytical/_mdl_ready.html",
+    "analytical/templates/analytical/_mdl_state.html",
+    "analytical/templates/analytical/_mdl_interpretations.html",
+    "analytical/tests/test_mdl_views.py",
+    "analytical/tests/test_mdl_workflow.py",
+    "analytical/tests/test_mdl_pure.py",
+    "analytical/tests/test_preparation_mdl.py"
+  ]
+}

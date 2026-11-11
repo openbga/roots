@@ -1,0 +1,54 @@
+{
+  "id": "analytical-support-prep-start",
+  "routes": [
+    "analytical:prep-start"
+  ],
+  "title": "Record actual preparation start",
+  "purpose": "Record or correct the actual start used as preparation evidence and for holding-time evaluation.",
+  "sections": [
+    {
+      "title": "Context and field",
+      "paragraphs": [
+        "Active internal staff with a laboratory role can read this workspace. Analysts can create and change preparation work. An admin has operational analyst access; a client account or superuser status alone does not grant it.",
+        "The Preparation panel displays Batch, Preparation method, Matrix and Actual start. Existing start is prefilled."
+      ],
+      "items": [
+        {
+          "label": "Preparation start",
+          "description": "Required actual date and time in the laboratory time zone. It cannot exceed the server clock by more than two minutes, precede a linked sample or QC parent collection (collection end for composites), follow an existing completion, or follow existing preparation QC analysis."
+        }
+      ]
+    },
+    {
+      "title": "Actions and dependency rules",
+      "items": [
+        {
+          "label": "Save preparation start",
+          "description": "Saves the event and an attributed before/after audit event. The page checks that the batch has not changed since the form opened; reload a stale form and reconcile the displayed record. Membership may be closed."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the preparation batch without saving."
+        }
+      ]
+    },
+    {
+      "title": "Submitted and historical work",
+      "paragraphs": [
+        "Any submitted or approved revision linked to this preparation blocks a start change. A reviewer can return submitted work first; approved work requires reanalysis with a new batch/preparation and reason. Draft revisions are not rewritten when the start changes and must be entered again before submission so their evidence agrees. Existing original revisions remain preserved."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/preparation_views.py",
+    "analytical/templates/analytical/preparation_form.html",
+    "analytical/preparation.py",
+    "analytical/services.py",
+    "analytical/models.py",
+    "analytical/tests/test_preparation_views.py",
+    "analytical/tests/test_preparation.py",
+    "analytical/forms.py",
+    "core/concurrency.py",
+    "analytical/holding.py"
+  ]
+}

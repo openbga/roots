@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+{% comment %}
+Bounded receipt correction. Context: sample, form, section (identity | collection | observations |
+tests | matrix), page_title, section_tabs [{label, url, current, note}], blocker (for this section),
+correction_events (AuditEvent, newest first, shown oldest first; event.changes = [(label, before,
+after), ...]).
+{% endcomment %}
+{% block breadcrumbs %}{% url 'receipt:sample-list' as list_url %}{% url 'receipt:sample-detail' sample.pk as sample_url %}{% include "includes/breadcrumbs.html" with section="Samples" section_url=list_url record=sample.lab_id record_url=sample_url %}{% endblock %}
+{% block page_meta %}
+<ul class="vr-page-meta">
+  <li>Client sample <span class="vr-id">{{ sample.client_sample_id }}</span></li>
+  <li>{{ sample.order.project.client }} / {{ sample.order.project.name }}</li>
+</ul>
+{% endblock %}
+{% block content %}
+{% include "includes/section_tabs.html" with tabs=section_tabs label="What to correct" %}
+
+{% if blocker %}
+<div class="alert alert-warning" role="alert">
+  {% include "includes/status.html" with label="Locked" tone="warning" plain=True %}
+  <div><p class="mb-0">{{ blocker }}</p></div>
+</div>
+{% else %}
+<form class="vr-form" method="post" novalidate>
+  {% csrf_token %}
+  {% include "includes/form_errors.html" with form=form %}
+  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+  {% if section == "identity" %}
+  <p class="vr-form-note">Corrects what was recorded at receipt. The earlier values stay in the history below and in issued records. If the client sample ID changes, reprint any labels that show it.</p>
+  {% elif section == "collection" %}
+  <p class="vr-form-note">Collection type and times can be corrected only before any analytical, QC or external work exists for this sample, because holding times are evaluated from them. The earlier values stay in the history below.</p>
+  {% elif section == "observations" %}
+  <p class="vr-form-note">Corrects a mistyped receipt observation. The reading as written, and every earlier value, stay in the history below. To change the decision about a discrepancy, use Change disposition.</p>
+  {% if dependent_results %}
+  <div class="alert alert-warning" role="status">{% include "includes/status.html" with label="Approved work depends on this" tone="warning" plain=True %}<div>{{ dependent_results }} approved result{{ dependent_results|pluralize }} for this sample {{ dependent_results|pluralize:"is,are" }} not yet in an issued report. A correction changes what the report will show, and any screening or review that relied on the earlier values must be repeated. Nothing already issued changes.</div></div>
+  {% endif %}
+  {% elif section == "tests" %}
+  <p class="vr-form-note">Add an analysis the client requested after receipt, or withdraw a test that has not started. Holding times keep running from collection, so a late test can already be at risk. Issued reports are never changed; a newly added test is reported on its own.</p>
+  {% else %}
+  <p class="vr-form-note">Correct a wrongly recorded matrix before any analytical, QC or external work exists. The requested tests are replaced by tests for the corrected matrix. The earlier matrix and tests stay in the history below.</p>
+  {% endif %}
+  <fieldset class="vr-form-section">
+    {% if section == "tests" %}
+    <div class="mb-3" role="group" aria-labelledby="current-tests-heading">
+      <p class="form-label mb-1" id="current-tests-heading">Requested now</p>
+      <ul class="list-unstyled mb-0">
+        {% for requested in form.requested %}
+        <li>{{ requested.definition.analyte.name }} · {{ requested.definition.method.code }} ({{ requested.definition.method.version }}) · {{ requested.definition.unit }}{% for pk, why in form.locked.items %}{% if pk == requested.pk %} <span class="vr-muted">({{ why }}; cannot be withdrawn)</span>{% endif %}{% endfor %}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+    {% for field in form.visible_fields %}{{ field.as_field_group }}{% endfor %}
+    {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+  </fieldset>
+  <div class="vr-form-actions">
+    <a class="btn btn-link" href="{% url 'receipt:sample-detail' sample.pk %}">Cancel</a>
+    <button class="btn btn-primary" type="submit">{{ page_title }}</button>
+  </div>
+</form>
+{% endif %}
+
+<div class="vr-narrow">{% include "receipt/correction_history.html" with events=correction_events %}</div>
+{% endblock %}
+{% block extra_js %}{% if section == "tests" or section == "matrix" %}
+<script src="{% static 'vendor/tom-select/tom-select.complete.js' %}" defer></script>
+<script src="{% static 'js/test-picker.js' %}" defer></script>
+{% endif %}{% endblock %}

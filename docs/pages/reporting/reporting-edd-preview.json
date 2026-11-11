@@ -1,0 +1,365 @@
+{
+  "id": "reporting-edd-preview",
+  "routes": [
+    "reporting:edd-preview"
+  ],
+  "title": "NYSDEC EDD preview",
+  "purpose": "Validate one released version with current recipient mappings and generate immutable exploratory export files.",
+  "sections": [
+    {
+      "title": "Access and data boundaries",
+      "paragraphs": [
+        "Project managers, approvers, users with explicit release authority and operational admins can configure and generate EDDs. Other internal roles can read EDD checks but cannot save settings or generate files. Client accounts cannot open these staff pages.",
+        "Exploratory NYSDEC chemistry EDD v5 input, format 5.0.0.079 with reference values 20260429. The application checks only its known required fields, lengths, numeric/date formats, enumerations and keys. It does not contain recipient reference tables or validate those codes. Load generated files into EQuIS EDP, resolve its errors, and use EDP’s signing/submission process. No recipient acceptance or compliance is claimed.",
+        "Report content and result/source revisions come from this exact frozen issue; later source edits or report amendments do not update it. Current project/test/qualifier mappings and saved context are used for the next export. Fixing released source data requires a new issued version, while settings/context fixes can produce a new export of this version.",
+        "Text values beginning with =, +, -, @, a tab or a carriage return block EDD generation because a spreadsheet may interpret them as formulas. Numeric columns, including negative results, are not subject to this text check. Values are never escaped, prefixed or rewritten in the deliverable. Correct inaccurate source text through its normal correction workflow; if it is already frozen in an issued report, an amended report version is needed. If the recorded value is accurate and cannot be changed, this export remains blocked."
+      ]
+    },
+    {
+      "title": "Checks and generation",
+      "items": [
+        {
+          "label": "Checks before export",
+          "description": "Every listed error blocks generation; no blocking issues found means only the application’s checks passed. Summary groups fix destinations and counts."
+        },
+        {
+          "label": "Blocking checks by cause",
+          "description": "Expand grouped records and follow Fix in to the responsible workflow."
+        },
+        {
+          "label": "Generate export",
+          "description": "Available to configuration-authorized users only when checks pass. Submission recalculates validation using current settings; it can fail even after an earlier clear preview. Stores ZIP bytes, SHA-256, exact mappings/context, counts, manifest and audit. Maximum file size is 10 MiB. Success returns here; no submission or email is sent."
+        },
+        {
+          "label": "No export was generated",
+          "description": "Generation validation failed; correct reported issues and reload. Existing exports remain available."
+        }
+      ]
+    },
+    {
+      "title": "Blocking-check columns",
+      "paragraphs": [
+        "The released-version page can show configuration links even to a staff reader whose role cannot save them; opening a restricted settings form is refused."
+      ],
+      "items": [
+        {
+          "label": "Problem / Finding",
+          "description": "Specific format or missing-data reason. Identical causes are grouped; grouping does not discard affected records."
+        },
+        {
+          "label": "Field",
+          "description": "Recipient column affected, or a dash if not tied to one column."
+        },
+        {
+          "label": "Affected",
+          "description": "Number of affected record entries for this cause. Counts are issues, not unique samples."
+        },
+        {
+          "label": "Records",
+          "description": "Every affected sample/result/QC/settings record. Expand the first-record-and-more disclosure to see the full list."
+        },
+        {
+          "label": "Fix in",
+          "description": "Destination that owns the correction: Project EDD codes, Test mapping, Qualifier mapping or Export context. A released-data problem needs corrected source work and a new issued version; changing live source data alone cannot fix the existing snapshot. Catalog corrections likewise need a new version. Not supported yet has no editable substitute."
+        }
+      ]
+    },
+    {
+      "title": "Export manifest",
+      "items": [
+        {
+          "label": "Not exported",
+          "description": "Records omissions such as matrix spikes/duplicates and lab duplicates with unsupported parent linkage, instrument QC, QC from out-of-report samples, unrecorded surrogates/internal standards/TICs, MDL/quantitation limits, older non-reportable corrected tests, validation fields and unsupported preparation/leach detail. Read this for each generated file."
+        },
+        {
+          "label": "Interpretations",
+          "description": "Records QC date/dilution as explicitly entered, LCS original concentration left blank, frozen recovery/control-limit use, lab QC sampler-company code, and authoritative per-result versus QC-mapping basis."
+        }
+      ]
+    },
+    {
+      "title": "Generated exports for version N",
+      "paragraphs": [
+        "No exports yet means nothing has been generated, even when candidate tables exist."
+      ],
+      "items": [
+        {
+          "label": "Export",
+          "description": "Unique stored export ID; every generation creates another record rather than overwriting."
+        },
+        {
+          "label": "Generated / By",
+          "description": "Generation date/time and responsible user."
+        },
+        {
+          "label": "Format",
+          "description": "Stored format name/version and reference-value version; not a claim of recipient acceptance."
+        },
+        {
+          "label": "Rows",
+          "description": "Saved row counts per section. Manifest disclosure shows that export’s frozen omissions and interpretations, which may differ from the current preview."
+        },
+        {
+          "label": "File",
+          "description": "Stored ZIP size and shortened SHA-256; full hash on hover."
+        },
+        {
+          "label": "Download ZIP",
+          "description": "Download that export’s original bytes with integrity check. Failed integrity refuses the file and asks you to contact the lab. Old exports remain unchanged after settings/context edits and are also available to the owning client through report history."
+        }
+      ]
+    },
+    {
+      "title": "Preview tables",
+      "paragraphs": [
+        "Sample_v5 opens initially; expand TestResultQC_v5 and Batch_v5 as needed. Each shows total rows but only the first 20, without paging or filtering. Required columns always appear; optional columns appear only when populated anywhere in the section. Hidden empty optional columns still exist in the generated files. ZIP contains these three UTF-8 tab-delimited .txt files with comment header/type rows and CRLF line endings."
+      ]
+    },
+    {
+      "title": "Sample_v5 columns",
+      "items": [
+        {
+          "label": "data_provider",
+          "description": "Entered registered submitting-company code."
+        },
+        {
+          "label": "sys_sample_code",
+          "description": "Trimmed client sample ID for normal samples; batch-number plus QC label for lab QC. Must be unique. QC identities allow letters, digits, dash, underscore and period."
+        },
+        {
+          "label": "sample_name",
+          "description": "Same normal/QC sample identity used for sys_sample_code."
+        },
+        {
+          "label": "sample_matrix_code",
+          "description": "Project’s explicit field-matrix mapping or LAB-class QC-matrix mapping."
+        },
+        {
+          "label": "sample_type_code",
+          "description": "N for normal samples, LB for method blanks, BS for laboratory control samples."
+        },
+        {
+          "label": "sample_source",
+          "description": "FIELD for normal samples; LAB for method blank/LCS."
+        },
+        {
+          "label": "sample_date",
+          "description": "Collection end for a normal sample; explicit export-context date for QC. Format is MM/DD/YYYY HH:MM in the frozen offset; not an invented QC preparation date."
+        },
+        {
+          "label": "sys_loc_code",
+          "description": "Entered site NYSDEC location code for normal samples; must differ from sample code."
+        },
+        {
+          "label": "start_depth / end_depth / depth_unit",
+          "description": "Entered depth range and in/ft unit. Required by this exporter for mapped SO, SS, SE or WG normal samples; end must exceed start. A supplied depth requires a unit."
+        },
+        {
+          "label": "chain_of_custody",
+          "description": "Frozen COC reference, maximum 15 characters; application does not truncate it to fit."
+        },
+        {
+          "label": "sample_receipt_date",
+          "description": "Frozen laboratory receipt time."
+        },
+        {
+          "label": "sampler",
+          "description": "Frozen collector name."
+        },
+        {
+          "label": "sampling_company_code",
+          "description": "Entered sampler-company code for field samples; laboratory code for lab-created QC."
+        },
+        {
+          "label": "task_code",
+          "description": "Explicit project-phase code."
+        },
+        {
+          "label": "composite_yn",
+          "description": "Y when composite start is recorded; otherwise N. QC is N."
+        },
+        {
+          "label": "composite_desc",
+          "description": "Recorded composite collection interval when present."
+        }
+      ]
+    },
+    {
+      "title": "TestResultQC_v5 columns",
+      "items": [
+        {
+          "label": "sys_sample_code",
+          "description": "Joins this test/result to Sample_v5."
+        },
+        {
+          "label": "lab_anl_method_name",
+          "description": "Exact explicit NYSDEC analytical-method mapping, not the LIMS method name."
+        },
+        {
+          "label": "analysis_date",
+          "description": "Frozen analysis start formatted to minute precision."
+        },
+        {
+          "label": "fraction",
+          "description": "Explicit recipient fraction code."
+        },
+        {
+          "label": "column_number",
+          "description": "NA for this exporter; no analytical column is inferred."
+        },
+        {
+          "label": "test_type",
+          "description": "INITIAL for first revisions and corrections with unchanged analysis start and aliquot. A changed analysis start or preparation aliquot requires explicit per-version test type. A changed-time QC correction with unknown test type blocks export."
+        },
+        {
+          "label": "lab_matrix_code",
+          "description": "Explicit project field-matrix or LAB-class QC mapping."
+        },
+        {
+          "label": "analysis_location",
+          "description": "LB, laboratory, for supported results."
+        },
+        {
+          "label": "basis",
+          "description": "Normal results use their own frozen wet/dry/NA basis. Unknown soil basis blocks and needs corrected result/new issue. Legacy aqueous results can use mapping NA only. Lab QC uses test mapping basis."
+        },
+        {
+          "label": "dilution_factor",
+          "description": "Frozen normal-result factor or explicitly entered QC context factor."
+        },
+        {
+          "label": "prep_method / prep_date",
+          "description": "Explicit recipient mapping of exact independent preparation method/version and actual start when linked. Legacy preparation timestamps are not inferred into independent groups. Preparation must be on/after collection and strictly before analysis at EDD minute precision."
+        },
+        {
+          "label": "lab_name_code",
+          "description": "Project’s explicit registered performing-laboratory code. External work is unsupported rather than assigned this code."
+        },
+        {
+          "label": "qc_level",
+          "description": "QUANT for supported rows."
+        },
+        {
+          "label": "lab_sample_id",
+          "description": "Lab sample ID for normal rows; generated batch/QC identity for lab QC."
+        },
+        {
+          "label": "analyst_name",
+          "description": "Frozen internal result-entry identity for normal rows, when present."
+        },
+        {
+          "label": "preservative",
+          "description": "Explicit recipient preservative mapping."
+        },
+        {
+          "label": "cas_rn",
+          "description": "CAS identity from frozen report; missing identity needs catalog/source correction and new issue."
+        },
+        {
+          "label": "chemical_name",
+          "description": "Explicit recipient chemical-name mapping."
+        },
+        {
+          "label": "result_value",
+          "description": "Reported exact numeric text for detects. Blank for ND, never zero. QC uses frozen observation text."
+        },
+        {
+          "label": "result_unit",
+          "description": "Explicit NYSDEC unit mapping; this exporter does not convert values between units."
+        },
+        {
+          "label": "result_type_code",
+          "description": "TRG for supported target results."
+        },
+        {
+          "label": "reportable_result",
+          "description": "Yes: only the released revision is exported."
+        },
+        {
+          "label": "detect_flag",
+          "description": "Y for detects; N for non-detects."
+        },
+        {
+          "label": "lab_qualifiers",
+          "description": "Concatenated frozen lab codes; U is added for ND when absent."
+        },
+        {
+          "label": "interpreted_qualifiers",
+          "description": "Concatenated explicit mapped codes for detected results; U for ND."
+        },
+        {
+          "label": "validated_yn",
+          "description": "N; this file is unvalidated."
+        },
+        {
+          "label": "reporting_detection_limit / detection_limit_unit",
+          "description": "Frozen applied reporting limit and mapped result unit, including for ND."
+        },
+        {
+          "label": "result_comment",
+          "description": "First 255 characters of normal-result comments; longer comments are truncated for this recipient field."
+        },
+        {
+          "label": "qc_spike_added / qc_spike_measured",
+          "description": "Frozen LCS spike/observation. Non-detect LCS measured concentration is represented as zero only in this QC spike field, not as normal result_value."
+        },
+        {
+          "label": "qc_spike_recovery",
+          "description": "Recovery computed by analytical evaluation and frozen with QC evidence. Missing computed LCS recovery blocks export."
+        },
+        {
+          "label": "qc_spike_lcl / qc_spike_ucl",
+          "description": "Frozen LCS lower/upper recovery control limits."
+        },
+        {
+          "label": "qc_spike_status",
+          "description": "Asterisk when frozen LCS recovery is outside limits; blank otherwise."
+        },
+        {
+          "label": "lab_sdg",
+          "description": "Report RPT number used as the laboratory delivery-group identity."
+        }
+      ]
+    },
+    {
+      "title": "Batch_v5 columns",
+      "items": [
+        {
+          "label": "sys_sample_code / lab_anl_method_name / analysis_date / fraction / column_number / test_type",
+          "description": "Same analytical-test identity used by TestResultQC_v5. PREP links retain actual analysis identity rather than replacing it with preparation time/method."
+        },
+        {
+          "label": "test_batch_type",
+          "description": "ANALYSIS for analytical-run membership, PREP only for actual independently linked preparation. LEACH is unsupported."
+        },
+        {
+          "label": "test_batch_id",
+          "description": "Actual analytical batch or independent preparation group. Preparation QC needs its actual analytical-run link; no run is fabricated from PREP. Identical rows shared by analytes are deduplicated; conflicting duplicate keys block export."
+        }
+      ]
+    },
+    {
+      "title": "Known limitations",
+      "paragraphs": [
+        "Subcontracted results fail closed: performing-lab registered identity and source batch linkage are not supported. Normal client sample IDs must be unique in an EDD and fit recipient bounds. Tabs/line breaks cannot be exported; numeric, length, date/enumeration and duplicate-key errors must be resolved without inventing facts. Method detection limits and quantitation limits are blank because they are not recorded per result. Independent aliquot label, completion/operator/equipment/method version have no dedicated output fields; sequential preparation groups and LEACH are unsupported. The frozen report PDF remains unchanged by all EDD actions."
+      ]
+    }
+  ],
+  "sources": [
+    "reporting/edd/views.py",
+    "reporting/edd/forms.py",
+    "reporting/edd/services.py",
+    "reporting/edd/nysdec.py",
+    "reporting/edd/nysdec_format.py",
+    "reporting/edd/fixes.py",
+    "reporting/edd/sources.py",
+    "reporting/models.py",
+    "reporting/services.py",
+    "accounts/roles.py",
+    "reporting/templates/reporting/edd/preview.html",
+    "reporting/tests/test_edd_views.py",
+    "reporting/tests/test_edd_nysdec.py",
+    "reporting/tests/test_preparation_release.py",
+    "reporting/tests/test_soil_basis.py"
+  ]
+}

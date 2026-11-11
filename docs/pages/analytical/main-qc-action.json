@@ -1,0 +1,88 @@
+{
+  "id": "analytical-main-qc-action",
+  "routes": [
+    "analytical:qc-action"
+  ],
+  "title": "Record disposition",
+  "purpose": "Record a reasoned disposition for one current QC failure, missing measurement or frequency shortfall in an analytical or preparation batch.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "These are staff pages. Active users with an application staff role can read them; client accounts cannot. Analysts perform result entry and batch work, reviewers decide results, and administrators maintain configuration. Administrators also have operational analyst and reviewer access, but independence rules still apply. Superuser status alone does not grant an application role."
+      ]
+    },
+    {
+      "title": "Finding and scope",
+      "paragraphs": [
+        "The warning identifies exactly which current finding this disposition concerns. Enter through Record disposition on the owning batch or review page. A changed or nonexistent target cannot be decided from this page; reload the batch and open the current finding. Breadcrumbs and Cancel follow the owning batch type."
+      ]
+    },
+    {
+      "title": "Fields",
+      "items": [
+        {
+          "label": "Disposition",
+          "description": "Required choice: Accept data with qualification, Reanalysis required or Reject affected data."
+        },
+        {
+          "label": "Corrective action or reason",
+          "description": "Required nonblank explanation of the corrective action/evidence and why this disposition is appropriate. Retained with the actor and time."
+        }
+      ]
+    },
+    {
+      "title": "Decisions and independence",
+      "items": [
+        {
+          "label": "Accept data with qualification",
+          "description": "Only a reviewer can accept. Acceptance resolves this finding’s hold only. You cannot accept QC you measured, or a finding affecting results you entered or submitted, including historical revisions. Having analyst and reviewer roles does not bypass this rule."
+        },
+        {
+          "label": "Reanalysis required",
+          "description": "An analyst or reviewer may record this decision. The finding continues to hold approval."
+        },
+        {
+          "label": "Reject affected data",
+          "description": "An analyst or reviewer may record this decision. The finding continues to hold approval."
+        },
+        {
+          "label": "Current context",
+          "description": "A disposition is tied to the current finding, including relevant measurement, evaluated limits and frequency/count context. Changes can require a fresh decision. An earlier acceptance can cease to count if the accepting person later enters or submits affected work."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Record disposition",
+          "description": "Write a new attributed disposition and audit event. Latest disposition for the same finding governs; previous decisions are preserved. The service rechecks the current finding and independence before saving."
+        },
+        {
+          "label": "Cancel",
+          "description": "Return to the batch without a new decision."
+        }
+      ]
+    },
+    {
+      "title": "History and errors",
+      "paragraphs": [
+        "History lists all recorded dispositions for this exact finding oldest first, with disposition, time, actor and reason. A later rejection or reanalysis supersedes an earlier acceptance. Invalid input remains on the page; if the QC or membership context changed, reopen the current finding rather than retrying an obsolete target."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/templates/analytical/qc_action.html",
+    "analytical/qc.py",
+    "analytical/tests/test_views.py",
+    "analytical/tests/test_integrity.py",
+    "analytical/tests/test_workflow.py"
+  ]
+}

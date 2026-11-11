@@ -1,0 +1,210 @@
+{
+  "id": "analytical-main-import",
+  "routes": [
+    "analytical:batch-import"
+  ],
+  "title": "Import results",
+  "purpose": "Validate one standard UTF-8 comma-separated results file against tests already assigned to this analytical batch, inspect the preview, and save all rows as entered revisions.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "These are staff pages. Active users with an application staff role can read them; client accounts cannot. Analysts perform result entry and batch work, reviewers decide results, and administrators maintain configuration. Administrators also have operational analyst and reviewer access, but independence rules still apply. Superuser status alone does not grant an application role."
+      ]
+    },
+    {
+      "title": "Tabs and navigation",
+      "items": [
+        {
+          "label": "Import results",
+          "description": "Current tab: the application’s standard fixed-column CSV."
+        },
+        {
+          "label": "Import with a mapping",
+          "description": "Switch to an explicitly configured long/wide CSV/TSV mapping profile."
+        },
+        {
+          "label": "Batch",
+          "description": "Breadcrumb returns to this batch’s results and QC."
+        }
+      ]
+    },
+    {
+      "title": "Upload and validation",
+      "items": [
+        {
+          "label": "Results file (CSV, UTF-8)",
+          "description": "Required file, up to 1024 KiB and 2000 nonblank data rows. UTF-8 with an optional byte-order mark; comma delimiter and CSV quoting. The first row is the header, with no preamble."
+        },
+        {
+          "label": "Validate and preview",
+          "description": "Analysts validate without saving results. Empty files, header-only files, NUL characters, malformed CSV, unknown/missing/duplicate columns, mismatched row lengths or excess rows block the file."
+        },
+        {
+          "label": "Header names",
+          "description": "Use the documented column names. The parser trims and lowercases header names before validation; no extra columns are accepted. Blank data rows are ignored."
+        }
+      ]
+    },
+    {
+      "title": "Required CSV columns",
+      "items": [
+        {
+          "label": "sample_id",
+          "description": "Lab sample ID, not client sample ID. Together with analyte, matches an already-assigned test in this batch; matching trims text and ignores case. Add tests first. The same sample/analyte cannot appear twice in one file."
+        },
+        {
+          "label": "analyte",
+          "description": "Catalog analyte name for the test already in this batch. No analytes or requested tests are created."
+        },
+        {
+          "label": "result",
+          "description": "Original observed number or ND. Zero remains a detected number; comparison text such as <5 is rejected."
+        },
+        {
+          "label": "reporting_limit",
+          "description": "Positive limit actually applied to this row, in the test unit. No default is inferred."
+        },
+        {
+          "label": "dilution_factor",
+          "description": "Actual positive dilution with at most four decimal places; no default is inferred."
+        },
+        {
+          "label": "analysis_started_at",
+          "description": "Required ISO 8601 date/time. Without an offset, uses laboratory local time and rejects ambiguous/nonexistent daylight-saving times. An explicit UTC offset is used as supplied. Must meet receipt/preparation chronology and future-time checks."
+        }
+      ]
+    },
+    {
+      "title": "Optional CSV columns",
+      "items": [
+        {
+          "label": "unit",
+          "description": "Blank/absent uses the test unit. A supplied nonblank unit must match exactly after trimming; no conversion."
+        },
+        {
+          "label": "qualifiers",
+          "description": "Active case-sensitive codes separated by commas or semicolons. Quote a CSV field containing commas. Unlike manual entry, spaces alone do not separate multiple codes."
+        },
+        {
+          "label": "comments",
+          "description": "Optional text retained on the new revision."
+        },
+        {
+          "label": "reason",
+          "description": "Required when replacing an approved or returned revision. A draft replacement without a reason receives Entry revised before submission. A submitted revision must be reviewed/returned first."
+        },
+        {
+          "label": "result_basis",
+          "description": "Required for soil: wet or dry. Nonsoil uses na/Not applicable when omitted and rejects wet/dry."
+        },
+        {
+          "label": "percent_solids",
+          "description": "Optional exact supplied soil percentage from 0 to 100 inclusive; no result or reporting-limit conversion."
+        },
+        {
+          "label": "solids_reference",
+          "description": "Required when percent_solids is supplied, up to 240 characters. Cannot be supplied by itself."
+        },
+        {
+          "label": "prepared_aliquot_id",
+          "description": "Exact integer identifier of the actual noncancelled prepared aliquot, required where configured. Labels, lab IDs and legacy timestamps are not inferred into an identity. The aliquot must belong to this sample/test and required method, with valid preparation chronology."
+        }
+      ]
+    },
+    {
+      "title": "Exact results and chronology",
+      "paragraphs": [
+        "Use a plain decimal number, optionally signed or in scientific notation, or ND (case-insensitive) for a non-detect. Zero is a detected numeric observation, never an inferred non-detect. Comparison symbols, units, thousands separators and values needing rounding are rejected. Result text is limited to 60 characters; numeric observations support 14 integer digits and 10 decimal places.",
+        "Reporting limit must be positive. Dilution must be positive with at most four decimal places and at most ten integer digits. A detected value below its applied reporting limit needs at least one active qualifier or must be entered as ND where appropriate; the application does not choose that interpretation for you. Units come from the test; nothing is converted.",
+        "Analysis cannot precede sample receipt or applicable preparation, and cannot be more than two minutes ahead of the current time. Preparation cannot precede collection, including composite end. Local form times use the deployment’s laboratory time zone; ambiguous/nonexistent daylight-saving local times are rejected.",
+        "For soil, choose Wet weight or Dry weight for every new observation. Enter the final result and reporting limit on that same basis; no conversion is performed. Percent solids is optional exact supplied data between 0 and 100 inclusive, and requires its source reference. A reference without percent solids is invalid. Nonsoil results use Not applicable and reject supplied solids metadata.",
+        "An active independent preparation requirement needs an explicit available aliquot for this sample/test, matrix and required preparation method/version. It must have a recorded start, and analysis cannot precede completion when recorded, otherwise start. Choosing the same aliquot means repeat analysis; choosing a new physical aliquot means re-preparation. No identity is inferred from a legacy batch timestamp."
+      ]
+    },
+    {
+      "title": "Preview columns",
+      "items": [
+        {
+          "label": "Row",
+          "description": "Data line number in the uploaded file."
+        },
+        {
+          "label": "Sample",
+          "description": "Supplied sample_id."
+        },
+        {
+          "label": "Analyte",
+          "description": "Supplied analyte."
+        },
+        {
+          "label": "Result as supplied",
+          "description": "Original result text; soil basis/solids metadata are shown when supplied."
+        },
+        {
+          "label": "Reporting limit",
+          "description": "Supplied row limit."
+        },
+        {
+          "label": "Dilution",
+          "description": "Supplied factor."
+        },
+        {
+          "label": "Qualifiers",
+          "description": "Supplied code text."
+        },
+        {
+          "label": "Analysis start",
+          "description": "Parsed local date/time and zone when valid; otherwise the supplied value."
+        },
+        {
+          "label": "Outcome",
+          "description": "Ready or a list of validation errors. Error rows appear first, followed by the first 100 valid rows; the page reports additional valid rows not shown. All file rows are validated even when hidden."
+        }
+      ]
+    },
+    {
+      "title": "Confirmation actions",
+      "items": [
+        {
+          "label": "Import … result(s) as entered",
+          "description": "Available only for a wholly valid preview and analyst access. Rechecks the file and current records, then commits all revisions together or none. Does not submit for review. Membership closure does not by itself stop result entry/import."
+        },
+        {
+          "label": "Start over",
+          "description": "Discard preview and return to an empty upload form."
+        },
+        {
+          "label": "Upload a corrected file",
+          "description": "Shown for invalid preview. Fix the source file and validate again; nothing was saved."
+        },
+        {
+          "label": "Cancel",
+          "description": "Return to the batch without importing."
+        }
+      ]
+    },
+    {
+      "title": "Provenance and changed work",
+      "paragraphs": [
+        "The standard importer retains each result’s import source, filename and source row, plus an attributed import event, which records the SHA-256 digest and size of the uploaded bytes, and all prior revisions. It does not retain the uploaded file itself; keep your source file, whose digest identifies it. Reimporting a file is not a duplicate-file guard: it can create a new revision when its current state and reason permit. Preview is not a reservation; if data changes, confirmation validates the current state and reports any failure. Receipt Hold or Reject blocks new entry. After success, inspect entered results and submit from the batch page."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/templates/analytical/batch_import.html",
+    "analytical/importing.py",
+    "analytical/parsing.py",
+    "analytical/preparation.py",
+    "analytical/tests/test_import.py",
+    "analytical/tests/test_views.py",
+    "analytical/tests/test_observation_metadata.py",
+    "analytical/tests/test_timezone.py"
+  ]
+}

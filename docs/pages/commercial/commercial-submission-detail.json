@@ -1,0 +1,199 @@
+{
+  "id": "commercial-submission-detail",
+  "routes": [
+    "commercial:submission-detail"
+  ],
+  "title": "Client submission",
+  "purpose": "Review what the client declared, accept or return the latest submitted version, and receive actual samples separately.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "Custodians and project managers can review submissions and receive samples. Admins inherit these operational roles. Client accounts cannot use staff intake pages."
+      ]
+    },
+    {
+      "title": "State and version selection",
+      "paragraphs": [
+        "Client drafts are unavailable to staff. The header uses the current status, client/project and COC reference. The initial declaration is the latest submitted snapshot. Select Submitted versions to inspect an older snapshot; unknown snapshot requests use latest. Superseded and Show the latest identify older selections. The declaration remains frozen even after correction and resubmission.",
+        "The shipment and Declared samples sections show the selected snapshot. Receive samples and planned labels use current expected-sample records, even if an older snapshot is selected. These tables have no filtering or pagination."
+      ]
+    },
+    {
+      "title": "Submitted version",
+      "items": [
+        {
+          "label": "Submitted version / by / timestamp",
+          "description": "Snapshot number, submitting client user and submission time with the laboratory time zone."
+        },
+        {
+          "label": "Expected arrival",
+          "description": "Client-declared arrival date or Not stated."
+        },
+        {
+          "label": "Carrier / tracking",
+          "description": "Declared transport/tracking details, or a dash."
+        },
+        {
+          "label": "Coolers / packages",
+          "description": "Declared package count; not a verified receipt count. A dash is shown when blank or zero."
+        },
+        {
+          "label": "Client contact",
+          "description": "Declared contact name and optional phone for this shipment."
+        },
+        {
+          "label": "Accepted quote",
+          "description": "Optional quote number linked by the client. Linking does not prove that every intended test or sample count is covered."
+        },
+        {
+          "label": "Chain of custody",
+          "description": "Appears after acceptance; opens the linked intake order. Acceptance opens an order with no samples received and records no physical receipt; the declared carrier, coolers / packages and special instructions, and the accepted quote’s purchase order or reference, are carried onto it (see Accept into intake)."
+        },
+        {
+          "label": "Instructions",
+          "description": "Client-declared special instructions; not an automatic rush approval or test limit. When the submission is accepted they are copied to the chain of custody’s Special instructions, where the receiver sees them above the receipt form."
+        }
+      ]
+    },
+    {
+      "title": "Declared samples",
+      "items": [
+        {
+          "label": "Client sample ID",
+          "description": "Client identifier in the selected frozen declaration."
+        },
+        {
+          "label": "Matrix",
+          "description": "Declared Water, Wastewater or Soil, followed by the sample source when declared. Beneath it: Grab or Composite, and the sample type when it is not an ordinary field sample (for example Field duplicate or Trip blank). Versions frozen before these were captured show neither."
+        },
+        {
+          "label": "Collected",
+          "description": "Declared collection time; composites also show start time. Not collected yet and an optional Planned date distinguish an uncollected sample from an observed collection."
+        },
+        {
+          "label": "Location · collector",
+          "description": "Declared collection place, collector and any field notes."
+        },
+        {
+          "label": "Intended tests",
+          "description": "Frozen test labels naming analyte, method/version, matrix and analytical unit. The receiver confirms actual requests later."
+        },
+        {
+          "label": "Containers",
+          "description": "Declared quantity × description and optional preservation; not a verified condition or preservation check."
+        }
+      ]
+    },
+    {
+      "title": "Receive samples",
+      "items": [
+        {
+          "label": "Client sample ID / Matrix",
+          "description": "Current expected sample identity and material, with the sample source and, when it is not an ordinary field sample, the sample type."
+        },
+        {
+          "label": "Receipt",
+          "description": "Not received yet, or Received as with a lab ID linking to the actual sample record."
+        },
+        {
+          "label": "Receive",
+          "description": "For each not-yet-received sample while Accepted, open receipt inspection. It can record different verified values without altering the original declaration."
+        }
+      ]
+    },
+    {
+      "title": "Submitted versions",
+      "items": [
+        {
+          "label": "Version",
+          "description": "Select the frozen snapshot to review; the selected row is marked."
+        },
+        {
+          "label": "Submitted",
+          "description": "Submission timestamp."
+        },
+        {
+          "label": "Outcome",
+          "description": "Awaiting review, Returned or Accepted for that snapshot. Cancellation does not rewrite the accepted snapshot outcome."
+        },
+        {
+          "label": "Note",
+          "description": "Laboratory return reason, if any."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "paragraphs": [
+        "Stale decisions and transitions are refused with a page message. Reload and review the latest record before retrying. Reason action failures redirect to this page; do not assume typed reasons are preserved."
+      ],
+      "items": [
+        {
+          "label": "Planned bottle labels",
+          "description": "Open an inline PDF with one label per currently declared container. Labels use PLN codes and say PLANNED, Not received, not a lab ID. They distinguish client-declared collection dates from planned dates. Printing changes no receipt, collection, custody or preservation record. No declared containers produces an error. The action remains available on sent, returned, accepted and cancelled declarations; it is not a receipt label."
+        },
+        {
+          "label": "Accept into intake",
+          "description": "Only on the latest Submitted snapshot. Opens a chain-of-custody order for the active project/client with no samples received, and records actor/time and acceptance. The order carries over the declared Carrier as its Carrier / tracking number, the declared coolers / packages count, the declared special instructions, and, when the submission’s quote has a client purchase order or reference, up to its first 60 characters as the order’s Purchase order; otherwise the project’s standing purchase order applies. Intake can edit these with Edit details. Samples remain expected. Repeated completed acceptance does not create another order. A newer resubmission makes a stale decision fail."
+        },
+        {
+          "label": "What the client should correct / Return to client",
+          "description": "Only on the latest Submitted snapshot. Required correction instructions are saved as the snapshot note; returns the submission so the client can edit and resubmit a new frozen version. No order or sample receipt is created."
+        },
+        {
+          "label": "Reason / Cancel expected shipment",
+          "description": "Shown under Shipment not arriving only while Accepted and no expected sample has been received. Requires a reason. Cancels the submission and its still-empty order together, preserving versions and history. The service also refuses cancellation if any sample was received directly on that order. Receipt is blocked until reinstated."
+        },
+        {
+          "label": "Reason / Reinstate",
+          "description": "Only while Cancelled. Required reason reinstates the linked order and submission to Accepted, keeping history. Active client/project and current revision are required."
+        },
+        {
+          "label": "Client submissions",
+          "description": "Return to the staff queue."
+        }
+      ]
+    },
+    {
+      "title": "Action form controls",
+      "items": [
+        {
+          "label": "Reason",
+          "description": "Required for cancellation or reinstatement when that action is available. Explain the actual reason; it is recorded with the change."
+        },
+        {
+          "label": "Maximize / Restore size / Close form / Cancel",
+          "description": "With enhanced controls, reason actions open in a dialog. Change its size without saving, or close/cancel without submitting. If prompted, Keep editing resumes and Discard changes leaves without saving. Wait for an in-progress action to complete."
+        }
+      ]
+    },
+    {
+      "title": "History",
+      "paragraphs": [
+        "Shows recorded events in oldest-first order. Each event identifies action, time, actor and any reason. Changes and their audit event save together. The timeline does not display every stored before-and-after value."
+      ]
+    }
+  ],
+  "sources": [
+    "commercial/urls.py",
+    "commercial/views.py",
+    "commercial/models.py",
+    "commercial/forms.py",
+    "commercial/permissions.py",
+    "accounts/roles.py",
+    "commercial/submissions.py",
+    "commercial/selectors.py",
+    "commercial/labels.py",
+    "receipt/services.py",
+    "commercial/templates/commercial/submission_detail.html",
+    "commercial/templates/commercial/_snapshot.html",
+    "commercial/templates/commercial/_history.html",
+    "commercial/tests/test_submissions.py",
+    "commercial/tests/test_cancellation.py",
+    "commercial/tests/test_workflow.py",
+    "templates/includes/form_dialog.html",
+    "static/js/form-dialog.js",
+    "receipt/models.py"
+  ]
+}

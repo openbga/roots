@@ -1,0 +1,56 @@
+{% comment %}
+Sample sections shared by the single-sample receive form (sample_form.html) and the order
+continuation form (order_sample_form.html). Each placed field is guarded, so either form may omit
+it; any visible field not listed in `placed` renders at the end of "Receipt inspection", so a new
+form field is never silently dropped. Parameter: form.
+{% endcomment %}
+{% with placed="|project|coc_reference|relinquished_by|client_sample_id|sample_type|matrix|source_type|collection_type|collection_started_at|collected_at|collection_location|collector_name|remarks|received_at|cooler_temperature|temperature_instrument|coolant|seal_condition|preservation_check|container_description|container_condition|current_location|tests|discrepancy|disposition|disposition_note|" %}
+<fieldset class="vr-form-section">
+  <legend>Sample and collection</legend>
+  <div class="row g-3">
+    {% if form.client_sample_id %}<div class="col-md-6">{{ form.client_sample_id.as_field_group }}</div>{% endif %}
+    {% if form.sample_type %}<div class="col-md-3 col-6">{{ form.sample_type.as_field_group }}</div>{% endif %}
+    {% if form.collection_type %}<div class="col-md-3 col-6">{{ form.collection_type.as_field_group }}</div>{% endif %}
+    {% if form.matrix %}<div class="col-md-3 col-6">{{ form.matrix.as_field_group }}</div>{% endif %}
+    {% if form.source_type %}<div class="col-md-3 col-6">{{ form.source_type.as_field_group }}</div>{% endif %}
+    {% if form.collector_name %}<div class="col-md-6">{{ form.collector_name.as_field_group }}</div>{% endif %}
+    {% if form.collection_started_at %}<div class="col-md-6">{{ form.collection_started_at.as_field_group }}</div>{% endif %}
+    {% if form.collected_at %}<div class="col-md-6">{{ form.collected_at.as_field_group }}</div>{% endif %}
+    {% if form.collection_location %}<div class="col-md-6">{{ form.collection_location.as_field_group }}</div>{% endif %}
+    {% if form.remarks %}<div class="col-md-6">{{ form.remarks.as_field_group }}</div>{% endif %}
+  </div>
+</fieldset>
+
+<fieldset class="vr-form-section">
+  <legend>Receipt inspection</legend>
+  <div class="row g-3">
+    {% if form.received_at %}<div class="col-md-6">{{ form.received_at.as_field_group }}</div>{% endif %}
+    {% if form.relinquished_by %}<div class="col-md-6">{{ form.relinquished_by.as_field_group }}</div>{% endif %}
+    {% if form.cooler_temperature %}<div class="col-md-4">{{ form.cooler_temperature.as_field_group }}</div>{% endif %}
+    {% if form.temperature_instrument %}<div class="col-md-4">{{ form.temperature_instrument.as_field_group }}</div>{% endif %}
+    {% if form.coolant %}<div class="col-md-4">{{ form.coolant.as_field_group }}</div>{% endif %}
+    {% if form.seal_condition %}<div class="col-md-6">{{ form.seal_condition.as_field_group }}</div>{% endif %}
+    {% if form.preservation_check %}<div class="col-md-6">{{ form.preservation_check.as_field_group }}</div>{% endif %}
+    {% if form.container_description %}<div class="col-md-6">{{ form.container_description.as_field_group }}</div>{% endif %}
+    {% if form.container_condition %}<div class="col-md-6">{{ form.container_condition.as_field_group }}</div>{% endif %}
+    {% if form.current_location %}<div class="col-md-6">{{ form.current_location.as_field_group }}</div>{% endif %}
+    {% for field in form.visible_fields %}{% with key="|"|add:field.name|add:"|" %}{% if key not in placed %}<div class="col-md-6">{{ field.as_field_group }}</div>{% endif %}{% endwith %}{% endfor %}
+  </div>
+</fieldset>
+
+{% if form.tests %}
+<fieldset class="vr-form-section">
+  <legend>Requested tests</legend>
+  {{ form.tests.as_field_group }}
+</fieldset>
+{% endif %}
+
+<fieldset class="vr-form-section">
+  <legend>Discrepancy and disposition</legend>
+  <div class="row g-3">
+    {% if form.discrepancy %}<div class="col-12">{{ form.discrepancy.as_field_group }}</div>{% endif %}
+    {% if form.disposition %}<div class="col-md-4">{{ form.disposition.as_field_group }}</div>{% endif %}
+    {% if form.disposition_note %}<div class="col-md-8">{{ form.disposition_note.as_field_group }}</div>{% endif %}
+  </div>
+</fieldset>
+{% endwith %}

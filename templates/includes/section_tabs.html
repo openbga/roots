@@ -1,0 +1,20 @@
+{% comment %}
+Section tabs: sibling lists under one sidebar item, or sibling sub-views of one action
+(docs/ui-standards.md section 3, rule 2). Plain links with their own URLs, directly under the page
+header; the current one carries aria-current="page". No tab roles, never on record or form pages.
+Parameters:
+  tabs   iterable of {label, url, current, note}; note is optional visually hidden text after the
+         label (e.g. "(locked)")
+  label  accessible name of the <nav>, e.g. "Catalog sections"
+Declared sets render through the tag, which fills both parameters:
+  {% load navigation %}{% section_tabs "catalog" %}
+A view-built set (the sections of a sample correction) passes them directly:
+  {% include "includes/section_tabs.html" with tabs=section_tabs label="What to correct" %}
+{% endcomment %}
+<nav class="vr-section-tabs" aria-label="{{ label }}">
+  <ul class="nav nav-tabs">
+    {% for tab in tabs %}
+    <li class="nav-item"><a class="nav-link{% if tab.current %} active{% endif %}" href="{{ tab.url }}"{% if tab.current %} aria-current="page"{% endif %}>{{ tab.label }}{% if tab.note %} <span class="visually-hidden">{{ tab.note }}</span>{% endif %}</a></li>
+    {% endfor %}
+  </ul>
+</nav>

@@ -1,0 +1,3 @@
+{% comment %}Reference and evidence of one nonconformance timeline entry; included by includes/history_item.html, so `e` is the event.{% endcomment %}
+{% if e.reference %}<p class="vr-timeline-meta">Reference: <span class="vr-id">{{ e.reference }}</span></p>{% endif %}
+{% if e.has_evidence %}<p class="vr-timeline-meta">{% include "laboratory/_evidence.html" with item=e kind="nonconformance" %}</p>{% endif %}

@@ -1,0 +1,147 @@
+{
+  "id": "analytical-support-mdl-calculation",
+  "routes": [
+    "analytical:mdl-calculation"
+  ],
+  "title": "MDL calculation and review",
+  "purpose": "Inspect a fixed calculation snapshot, its calculation basis and every original input, then record one independent review decision.",
+  "sections": [
+    {
+      "title": "Access and snapshot",
+      "paragraphs": [
+        "Active internal staff with a laboratory role can read MDL records. Analysts enter observations, import routine blanks and calculate. Analysts or reviewers can exclude observations and close studies; the page buttons for these two actions are shown to analysts. Only an independent reviewer can decide a calculation. Admin includes operational roles but never bypasses independence; client accounts and superuser status alone do not grant access.",
+        "This records the laboratory’s MDL work; it does not establish method acceptability, accreditation or compliance. It never changes configured reporting limits or QC limits. Quarterly spiked runs can be recorded, but the application does not check coverage of every quarter of method use.",
+        "The header identifies calculation status, test method/analyte/matrix, calculation run time and calculating user. Not evaluated lists all stored reasons and cannot receive any decision. New observations or exclusions do not rewrite this snapshot."
+      ],
+      "items": [
+        {
+          "label": "Blanks by basis",
+          "description": "Counts of used blank inputs by recorded preparation or analytical basis. Missing historical basis stays Not recorded; nothing is inferred."
+        },
+        {
+          "label": "Spiked samples used",
+          "description": "Distinct preparations and total analyses at the recorded common spike level, in the snapshot unit."
+        },
+        {
+          "label": "Mean spiked result / recovery",
+          "description": "Mean spike observation and mean divided by spike level as percent."
+        },
+        {
+          "label": "Standard deviation of spikes",
+          "description": "Sample standard deviation of included spike analyses."
+        },
+        {
+          "label": "Student t",
+          "description": "Constant for spike analysis count and recorded published-table or numerical-library source."
+        },
+        {
+          "label": "MDL from spiked samples",
+          "description": "Student t multiplied by spike sample standard deviation."
+        },
+        {
+          "label": "Method blanks used",
+          "description": "Distinct blank preparations, total analyses and selected time-window key/label."
+        },
+        {
+          "label": "MDL from method blanks",
+          "description": "No numerical blanks: does not apply. Some numerical blanks: highest numerical value, or 99th-percentile rank when more than 100 total blanks, with rank rounded half up and non-detects ranked lowest; if that rank is ND, highest numerical blank. All numerical blanks: mean, replaced by zero when negative, plus t times sample SD. The displayed note records the chosen case."
+        },
+        {
+          "label": "Blank mean / standard deviation / t",
+          "description": "Shown for the all-numerical blank case, with constant source."
+        },
+        {
+          "label": "Verified MDL (the greater of the two)",
+          "description": "Greater of spike MDL and applicable blank MDL; if blank MDL does not apply, spike MDL. This value is not adopted until review."
+        },
+        {
+          "label": "Existing MDL",
+          "description": "Previous adopted test MDL captured for ongoing verification, ratio of verified/existing values and count of numerical blanks above it."
+        },
+        {
+          "label": "May the existing MDL be kept",
+          "description": "Calculated eligibility: verified MDL is inclusively 0.5 to 2.0 times the existing positive MDL and strictly fewer than 3% of all included blanks exceed it. Reporting rounding does not change this eligibility."
+        }
+      ]
+    },
+    {
+      "title": "Independent review fields and action",
+      "items": [
+        {
+          "label": "Decision",
+          "description": "Required Adopt the verified MDL, Keep the existing MDL (II.4(f), when eligible), or Reject this calculation. Adoption records the verified value. Retention is allowed only for ongoing verification with a captured eligible existing MDL. Rejection leaves the test’s previous adopted MDL unchanged."
+        },
+        {
+          "label": "Reason or note",
+          "description": "Optional for adoption; required and nonblank for retaining or rejecting."
+        },
+        {
+          "label": "Record decision",
+          "description": "Reviewer-only form records reviewer, time, note and adopted value, if any, once. Later changes cannot overwrite the decision. The page may open the form in a local dialog; submit to save."
+        },
+        {
+          "label": "Recorded review",
+          "description": "Shows decision, reviewer, review time, adopted MDL if any and note; no second decision form is offered."
+        }
+      ]
+    },
+    {
+      "title": "Independent review and stale work",
+      "paragraphs": [
+        "The reviewer cannot have run this calculation, entered any used input or excluded any snapshot input. The page identifies Your work for visible contributor conflicts; the server additionally checks exclusions. Only this study’s latest numbered calculation is reviewable. Any observation added or excluded after its calculation time blocks review; calculate again and review the new snapshot. The study and calculation are locked and checks repeated before saving. Closing a study prevents new data/calculations but does not by itself prohibit review of an otherwise current snapshot. Only one decision can win a concurrent review."
+      ]
+    },
+    {
+      "title": "Inputs as calculated table",
+      "paragraphs": [
+        "All snapshotted spikes are followed by all blanks; there is no input pagination. Columns controls local presentation."
+      ],
+      "items": [
+        {
+          "label": "Type",
+          "description": "Spike or Blank."
+        },
+        {
+          "label": "Result as supplied (snapshot unit)",
+          "description": "Exact original observation text, including ND."
+        },
+        {
+          "label": "Prepared / Analysed",
+          "description": "Stored event timestamps; assumed preparation time is identified. The timestamp detail contains the full original offset."
+        },
+        {
+          "label": "Batch / preparation",
+          "description": "Recorded batch/extract labels. Blanks additionally show recorded source basis, actual analytical run or not recorded, and alternative-basis evidence."
+        },
+        {
+          "label": "Instrument / Entered by",
+          "description": "Snapshot instrument name or dash and contributor username."
+        },
+        {
+          "label": "Used",
+          "description": "Yes when included by this run; Excluded with retained rationale; otherwise No (outside window). Excluded and outside-window inputs remain part of the immutable record."
+        }
+      ]
+    },
+    {
+      "title": "Limitations and empty states",
+      "paragraphs": [
+        "Calculated results are stored to ten decimal places; laboratory reporting precision remains a laboratory choice. Expand How this system reads Appendix B for conservative batch/date/preparation, failed-spike, percentile, time-zone and t assumptions. No inputs recorded has a dedicated empty state. A newer pending calculation does not replace the current MDL until adoption/retention, and overdue date is based on when its accepted calculation was performed."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/mdl_views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/mdl_services.py",
+    "analytical/mdl.py",
+    "analytical/selectors.py",
+    "analytical/templates/analytical/mdl_calculation.html",
+    "analytical/templates/analytical/_mdl_input_row.html",
+    "analytical/templates/analytical/_mdl_interpretations.html",
+    "analytical/tests/test_mdl_views.py",
+    "analytical/tests/test_mdl_workflow.py",
+    "analytical/tests/test_mdl_pure.py"
+  ]
+}

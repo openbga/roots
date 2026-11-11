@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% comment %}NYSDEC recipient code form (project codes, test mapping or qualifier). Context: form, subject, back.{% endcomment %}
+{% block breadcrumbs %}{% url 'reporting:report-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Reports" section_url=list_url %}{% endblock %}
+{% block page_meta %}<ul class="vr-page-meta"><li>{% include "includes/status.html" with label="Exploratory export settings" tone="warning" %}</li><li>{{ subject }}</li></ul>{% endblock %}
+{% block page_intro %}<p class="vr-page-intro">Enter exact NYSDEC valid values (EDD Format v5, reference values 20260429); this application does not hold NYSDEC's reference tables, and changes apply to new exports only.</p>{% endblock %}
+{% block content %}
+<form class="vr-form" method="post" novalidate>
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ back }}">
+  {% include "includes/form_errors.html" with form=form %}
+  <fieldset class="vr-form-section">
+    <legend>NYSDEC codes</legend>
+    {% for field in form.visible_fields %}{{ field.as_field_group }}{% endfor %}
+  </fieldset>
+  {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+  <div class="vr-form-actions">
+    <a class="btn btn-link" href="{{ back }}">Cancel</a>
+    <button class="btn btn-primary" type="submit">Save changes</button>
+  </div>
+</form>
+{% endblock %}

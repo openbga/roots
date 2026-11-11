@@ -1,0 +1,11 @@
+{% comment %}
+Receipt disposition as a status label: the one place that maps a disposition to a tone.
+Parameters: sample; plain (compact table-cell variant).
+{% endcomment %}
+{% with label=sample.get_disposition_display %}
+{% if sample.disposition == "proceed" %}{% include "includes/status.html" with label=label tone="success" plain=plain %}
+{% elif sample.disposition == "qualify" %}{% include "includes/status.html" with label=label tone="warning" plain=plain %}
+{% elif sample.disposition == "hold" %}{% include "includes/status.html" with label=label tone="hold" plain=plain %}
+{% elif sample.disposition == "reject" %}{% include "includes/status.html" with label=label tone="danger" plain=plain %}
+{% else %}{% include "includes/status.html" with label=label tone="neutral" plain=plain %}{% endif %}
+{% endwith %}

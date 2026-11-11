@@ -1,0 +1,124 @@
+{
+  "id": "commercial-submission-list",
+  "routes": [
+    "commercial:submission-list"
+  ],
+  "title": "Client submissions",
+  "purpose": "Find client declarations sent for laboratory review and intake.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "Custodians and project managers can review submissions and receive samples. Admins inherit these operational roles. Client accounts cannot use staff intake pages."
+      ]
+    },
+    {
+      "title": "Find and arrange records",
+      "paragraphs": [
+        "There is no bulk action or selection across pages. Invalid filters show errors and no rows; correct or clear them. No matches means the filters found nothing. An unfiltered empty list means no eligible records exist."
+      ],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Search submission number, COC reference, client, project and declared client sample ID. Case-insensitive partial matching trims surrounding spaces and accepts at most 200 characters. Search and filters apply together to the full record set."
+        },
+        {
+          "label": "Status",
+          "description": "All sent submissions initially: Submitted, Returned for changes, Accepted and Cancelled. Draft is offered as a filter but client drafts are always excluded, so it gives no rows."
+        },
+        {
+          "label": "Client",
+          "description": "Any client initially; restrict to one. Inactive clients remain available for existing records."
+        },
+        {
+          "label": "Apply",
+          "description": "Apply search and filters and return to page 1. Current sorting and page size are kept."
+        },
+        {
+          "label": "Clear all",
+          "description": "Remove search, filters, sorting and page settings and return to this list’s defaults. Removing one active filter keeps the others and returns to page 1."
+        },
+        {
+          "label": "Sort",
+          "description": "Most recently submitted first. Select a sortable heading to change direction. Sortable columns: Submission, Status, Client, Project, COC reference, Samples, Awaiting receipt, Expected arrival and Submitted. Sorting applies to all matching records, with record identity as a stable tie-breaker."
+        },
+        {
+          "label": "Rows per page",
+          "description": "25 by default; choose 50 or 100. A change returns to page 1 and preserves other query settings. Show applies the choice without automatic submission."
+        },
+        {
+          "label": "First page / Previous page / Next page / Last page",
+          "description": "Move through matching records. The footer shows the visible range, count and page. Unavailable directions are disabled. Invalid page numbers resolve to an available page; unsupported page sizes are refused."
+        },
+        {
+          "label": "Columns",
+          "description": "With enhanced controls, show/hide columns and use Move up / Move down or drag headings to reorder. Submission is always shown and fixed. Changes apply immediately and are saved in this browser for this table; they do not filter or change records."
+        },
+        {
+          "label": "Reset columns / Done / Close",
+          "description": "Reset columns restores shipped visibility and order. Done or Close dismisses the Columns dialog; changes already apply."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Submission",
+          "description": "Assigned SUB number; open to review declarations and intake actions."
+        },
+        {
+          "label": "Status",
+          "description": "Submitted awaits review; Returned for changes allows client correction; Accepted opens intake; Cancelled marks a shipment not arriving."
+        },
+        {
+          "label": "Client / Project",
+          "description": "Current client and project."
+        },
+        {
+          "label": "COC reference",
+          "description": "Declared chain-of-custody reference for matching paperwork."
+        },
+        {
+          "label": "Samples",
+          "description": "Count of current declared samples."
+        },
+        {
+          "label": "Awaiting receipt",
+          "description": "For Accepted submissions, number without a linked received sample. Other states show a dash. Acceptance is not receipt."
+        },
+        {
+          "label": "Expected arrival",
+          "description": "Declared date or a dash if unstated; not an automatic overdue flag."
+        },
+        {
+          "label": "Submitted",
+          "description": "Most recent client submission timestamp."
+        }
+      ]
+    },
+    {
+      "title": "Next step",
+      "paragraphs": [
+        "An empty queue means no eligible declarations have been sent. Clients create and submit declarations through their portal; staff do not create them from this list."
+      ]
+    }
+  ],
+  "sources": [
+    "commercial/urls.py",
+    "commercial/views.py",
+    "commercial/models.py",
+    "commercial/forms.py",
+    "commercial/permissions.py",
+    "accounts/roles.py",
+    "commercial/lists.py",
+    "commercial/selectors.py",
+    "core/grids.py",
+    "templates/includes/grid_toolbar.html",
+    "templates/includes/pagination.html",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js",
+    "commercial/submissions.py",
+    "commercial/templates/commercial/submission_list.html"
+  ]
+}

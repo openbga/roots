@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load navigation %}
+{% comment %}
+Client portal shell: same page-header and content blocks as base.html, client-facing top
+navigation, no staff rail. Portal views extend this template, never base.html directly.
+The portal items and the routes that mark each one current are declared in
+core/templatetags/navigation.py (PORTAL_NAV); Home is current on the landing page.
+{% endcomment %}
+{% block body_class %}vr-app vr-portal{% endblock %}
+{% block topbar %}
+{% url 'portal:home' as portal_home_url %}
+<header class="vr-topbar vr-topbar-portal">
+  {% include "includes/brand.html" with href=portal_home_url|default:"/" name=lab.name %}
+  {% if user.client %}<span class="vr-lab-name d-none d-md-inline">{{ user.client }}</span>{% endif %}
+  {% if portal_home_url %}
+  <nav class="vr-portal-nav" aria-label="Portal">
+    <ul class="nav">
+      {% portal_nav_item "portal-home" %}
+      {% portal_nav_item "portal-projects" %}
+      {% portal_nav_item "portal-quotes" %}
+      {% portal_nav_item "portal-submissions" %}
+      {% portal_nav_item "portal-samples" %}
+      {% portal_nav_item "portal-reports" %}
+    </ul>
+  </nav>
+  {% endif %}
+  <div class="vr-topbar-end">
+    {% include "documentation/button.html" %}
+    {% include "includes/theme_menu.html" %}
+    {% if user.is_authenticated %}{% include "includes/user_menu.html" %}{% endif %}
+  </div>
+</header>
+{% endblock topbar %}
+{% block sidenav %}{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% comment %}
+Sample storage: physical samples, retention dates and disposal holds. Context
+(receipt.storage_views.storage_list): page_obj (Sample with storage_record), filter_form
+(StorageFilter), q, sort, per_page, active_filters, today and the toolbar context.
+{% endcomment %}
+{% block page_intro %}<p class="vr-page-intro">Physical samples with their retention dates and disposal holds; an elapsed retention date does not authorize disposal.</p>{% endblock %}
+{% block content %}
+<section class="card vr-table-card" aria-labelledby="storage-heading">
+  <h2 class="visually-hidden" id="storage-heading">Stored and disposed samples</h2>
+  {% include "includes/grid_toolbar.html" with label="Filter sample storage" grid="receipt.storage" %}
+  {% if page_obj.paginator.count %}
+  <div class="vr-table-wrap">
+    <table class="table table-hover vr-table" data-vr-grid="receipt.storage" data-vr-grid-version="2" aria-labelledby="storage-heading">
+      <thead>
+        <tr>
+          {% include "includes/sort_header.html" with label="Lab ID" asc="lab_id" desc="-lab_id" col="lab_id" locked=True %}
+          <th scope="col" data-vr-col="state" data-vr-col-label="Physical sample status">Physical sample status</th>
+          {% include "includes/sort_header.html" with label="Client" asc="client" desc="-client" col="client" %}
+          {% include "includes/sort_header.html" with label="Current location" asc="location" desc="-location" col="location" %}
+          {% include "includes/sort_header.html" with label="Retain through" asc="retention" desc="-retention" col="retention" %}
+          {% include "includes/sort_header.html" with label="Disposed at" asc="disposed_at" desc="-disposed_at" col="disposed_at" %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for sample in page_obj %}
+        <tr>
+          <th scope="row"><a class="vr-row-link vr-id" href="{% url 'receipt:sample-storage' sample.pk %}">{{ sample.lab_id }}</a><div class="small vr-muted">{{ sample.client_sample_id }}</div></th>
+          <td>{% include "receipt/storage/status.html" with storage=sample.storage_record plain=True %}</td>
+          <td>{{ sample.order.project.client }}</td>
+          <td>{{ sample.current_location }}</td>
+          <td class="vr-nowrap">{% if sample.storage_record.retention_until %}<time datetime="{{ sample.storage_record.retention_until|date:'Y-m-d' }}">{{ sample.storage_record.retention_until|date:"Y-m-d" }}</time>{% else %}<span class="vr-muted">Not set</span>{% endif %}</td>
+          <td class="vr-nowrap">{% if sample.storage_record.disposed_at %}<time datetime="{{ sample.storage_record.disposed_at|date:'c' }}" title="{{ sample.storage_record.disposed_at|date:'Y-m-d H:i T' }}">{{ sample.storage_record.disposed_at|date:"Y-m-d H:i" }}</time>{% else %}<span class="vr-muted">Not disposed</span>{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "includes/pagination.html" with noun="samples" filtered=active_filters|default:q %}
+  {% elif filter_form.errors %}
+  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above. No samples are hidden by an invalid filter." clear_url=request.path %}
+  {% elif active_filters or q %}
+  {% include "includes/empty_state.html" with kind="no-results" title="No samples match these filters" body="Change the search or clear the filters to see all samples." clear_url=request.path %}
+  {% else %}
+  {% include "includes/empty_state.html" with title="No received samples" body="Received samples appear here for storage and retention decisions." %}
+  {% endif %}
+</section>
+{% endblock %}

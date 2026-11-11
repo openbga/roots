@@ -1,0 +1,154 @@
+{
+  "id": "receipt-client-list",
+  "routes": [
+    "receipt:client-list"
+  ],
+  "title": "Clients",
+  "purpose": "Find the laboratory’s clients and open their account details, people, projects and recent work. Clients own projects; projects group chains of custody and received samples.",
+  "sections": [
+    {
+      "title": "Search and actions",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Matches client name, account code, primary contact name, primary email or city. It does not search phone, addresses, additional contacts, report instructions or notes."
+        },
+        {
+          "label": "Status",
+          "description": "All statuses/All includes active and inactive clients. Active or Inactive filters the client flag."
+        },
+        {
+          "label": "State",
+          "description": "More filters: Any state or one state of the client’s mailing address (a list of the 50 states, the District of Columbia and the territories, shown by name). Clients with no recorded state do not match a chosen state."
+        },
+        {
+          "label": "New client",
+          "description": "Project managers and administrators create a client before creating its projects."
+        },
+        {
+          "label": "Client row link",
+          "description": "Opens the client record for any authorized staff member."
+        },
+        {
+          "label": "Email link",
+          "description": "Opens your email application; this page does not send an email."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Client",
+          "description": "Client organization name; default sort is name ascending."
+        },
+        {
+          "label": "Account code",
+          "description": "The laboratory’s short code for the client, or a dash. Sortable."
+        },
+        {
+          "label": "Status",
+          "description": "Inactive blocks new intake, while existing records remain readable."
+        },
+        {
+          "label": "Contact",
+          "description": "Primary contact name; additional people are on the client record."
+        },
+        {
+          "label": "Email",
+          "description": "Primary contact email, or a dash when absent."
+        },
+        {
+          "label": "Phone",
+          "description": "Primary phone, or a dash. Not sortable."
+        },
+        {
+          "label": "City / State",
+          "description": "Mailing address city and state, or a dash. Each is sortable."
+        },
+        {
+          "label": "Payment terms",
+          "description": "Initially hidden. Chosen payment terms, or a dash, followed by PO required when the client requires a purchase order. Not sortable."
+        },
+        {
+          "label": "Report instructions",
+          "description": "Initially hidden text, shortened to 80 characters in the list. Open the client for the full text. Not sortable."
+        }
+      ]
+    },
+    {
+      "title": "Table controls",
+      "paragraphs": [
+        "Active laboratory staff can read this list; client portal accounts cannot. Invalid filters show errors and no rows until corrected or cleared. Invalid page sizes are refused. No-match and no-record empty states provide different next steps. Inactive records remain part of historical searches."
+      ],
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Combines a case-insensitive contains search and selected filters across the complete record set; returns to page 1."
+        },
+        {
+          "label": "More filters",
+          "description": "Opens the State filter and remains open when it is active or invalid."
+        },
+        {
+          "label": "Clear all / filter chips",
+          "description": "Clear all restores the unfiltered URL and default sort. Remove one chip to clear that criterion, preserving the others and returning to page 1."
+        },
+        {
+          "label": "Column headings",
+          "description": "Linked headings sort all matching records, not just this page. Record ID breaks ties. Unsupported sort values use the default."
+        },
+        {
+          "label": "Columns",
+          "description": "Show, hide or reorder optional columns. The identifying column remains visible. Browser-local preferences do not change data, search or sort; reset restores default columns."
+        },
+        {
+          "label": "Rows per page",
+          "description": "25 by default; choose 25, 50 or 100. Changing size returns to page 1. Use Show when automatic submission is unavailable."
+        },
+        {
+          "label": "Pagination",
+          "description": "First, Previous, Next and Last retain filters and sort. The footer gives the visible range and total matching count."
+        }
+      ]
+    },
+    {
+      "title": "Column layout dialog",
+      "items": [
+        {
+          "label": "Column checkboxes",
+          "description": "Changes apply immediately. Check to show an optional column or uncheck to hide it. Always shown columns are fixed."
+        },
+        {
+          "label": "Move column up / down",
+          "description": "Moves an optional column within the displayed order; the first/last position disables the unavailable move. You can also drag movable table headers."
+        },
+        {
+          "label": "Reset columns",
+          "description": "Restores this table’s default order and visibility in this browser."
+        },
+        {
+          "label": "Done / Close",
+          "description": "Closes the dialog; layout changes have already been applied and saved locally. No laboratory record is changed."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/views.py",
+    "receipt/models.py",
+    "receipt/forms.py",
+    "receipt/services.py",
+    "accounts/roles.py",
+    "receipt/filters.py",
+    "receipt/lists.py",
+    "templates/receipt/client_list.html",
+    "tests/test_receipt_grids.py",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js",
+    "receipt/tests/test_master_data.py"
+  ]
+}

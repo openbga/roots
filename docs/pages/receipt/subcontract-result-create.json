@@ -1,0 +1,101 @@
+{
+  "id": "receipt-subcontract-result-create",
+  "routes": [
+    "receipt:subcontract-result-create"
+  ],
+  "title": "Enter or correct external source result",
+  "purpose": "Transcribe the external observation exactly and attach its source PDF. The first entry creates source 1; later entries create a new immutable version and require a correction reason.",
+  "sections": [
+    {
+      "title": "Reported observation",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Exact reported result",
+          "description": "Required original numeric text or ND, up to 60 characters. ND is case-insensitive and stores no numeric value. Comparison symbols, thousands separators and units in the numeric field are refused. Numeric decimal/scientific notation is parsed exactly; values needing rounding beyond 10 decimal places or exceeding 14 integer digits are refused."
+        },
+        {
+          "label": "Reported reporting limit",
+          "description": "Required positive exact number in the reported unit; at most 10 decimal places and 14 integer digits. Enter the externally applied limit rather than assuming the catalog default."
+        },
+        {
+          "label": "Reported dilution",
+          "description": "Required positive exact number, with the same exactness limits."
+        },
+        {
+          "label": "Reported unit",
+          "description": "Required exact source unit, up to 40 characters; no conversion or catalog-unit matching is performed."
+        },
+        {
+          "label": "External qualifiers and meanings",
+          "description": "Optional explanation, up to 4000 characters; record meanings rather than inferring qualifiers."
+        }
+      ]
+    },
+    {
+      "title": "External analysis provenance",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "External sample ID",
+          "description": "Actual ID on the source, up to 160 characters. Initially filled from dispatch or latest source. Required when no dispatch ID is known; a blank entry otherwise falls back to dispatch ID. Each source freezes its own actual ID without rewriting the dispatch ID."
+        },
+        {
+          "label": "Reported method and version",
+          "description": "Required actual external method/version, up to 200 characters; can differ from the requested catalog version."
+        },
+        {
+          "label": "External analyst",
+          "description": "Required reported analyst, up to 160 characters; separate from the local entry author."
+        },
+        {
+          "label": "External analysis started at",
+          "description": "Required local timestamp, no earlier than handoff and no later than now."
+        },
+        {
+          "label": "External report reference",
+          "description": "Required report identifier, up to 160 characters."
+        }
+      ]
+    },
+    {
+      "title": "Source document and actions",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "External source report PDF",
+          "description": "Required nonempty PDF up to 10 MiB on every version. Header and end marker are checked; content is not validated. It is stored with size/hash for authorized staff downloads. Select the file again after any form error."
+        },
+        {
+          "label": "Correction reason / source note",
+          "description": "Optional for the first entry and required for every later source version, at most 4000 characters. Later entry fields start with the latest version’s values, but a new attachment is still required."
+        },
+        {
+          "label": "Enter external source result / Correct external source",
+          "description": "Analysts, project managers and administrators append the version, update latest pointer and audit together, then return to the subcontract. No internal batch or QC record is manufactured. Acceptance of an earlier source does not accept the new one; reporting must wait for its independent review."
+        }
+      ]
+    },
+    {
+      "title": "Saving and concurrency",
+      "paragraphs": [
+        "Validation errors keep submitted text on the form. A concurrent subcontract change refuses saving; reload and review its current source history before resubmitting. Cancel returns to the subcontract without changing it. Cancelled dispatches cannot receive source entry/review or further cancellation."
+      ],
+      "items": []
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/subcontract_views.py",
+    "receipt/subcontract_forms.py",
+    "receipt/subcontract_models.py",
+    "receipt/subcontracts.py",
+    "receipt/models.py",
+    "accounts/roles.py",
+    "receipt/tests/test_subcontracts.py",
+    "receipt/templates/receipt/subcontract/form.html",
+    "analytical/parsing.py",
+    "analytical/models.py",
+    "receipt/tests/test_external_delivery.py"
+  ]
+}

@@ -1,0 +1,29 @@
+{% comment %}
+Label download menu (GET, opens the PDF). Parameters: url (receipt:order-labels or receipt:sample-labels),
+id (optional suffix such as "-order" when a page has more than one menu). Server contract: kind=containers|samples,
+copies 1..10, at most 200 labels per download; 4 x 2 in, one label per page.
+{% endcomment %}
+{% firstof id "" as suffix %}{% with menu_id="vr-labels"|add:suffix %}
+<div class="dropdown">
+  <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" aria-controls="{{ menu_id }}">{% include "includes/icon.html" with name="printer" %}Labels</button>
+  <form class="dropdown-menu vr-labels-menu" id="{{ menu_id }}" method="get" action="{{ url }}" target="_blank" novalidate>
+    <fieldset>
+      <legend class="form-label">Print labels for</legend>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="kind" value="containers" id="{{ menu_id }}-containers" checked>
+        <label class="form-check-label" for="{{ menu_id }}-containers">Each container</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="kind" value="samples" id="{{ menu_id }}-samples">
+        <label class="form-check-label" for="{{ menu_id }}-samples">Each sample</label>
+      </div>
+    </fieldset>
+    <div class="vr-field">
+      <label class="form-label" for="{{ menu_id }}-copies">Copies of each</label>
+      <input class="form-control" type="number" name="copies" id="{{ menu_id }}-copies" value="1" min="1" max="10" step="1" inputmode="numeric" aria-describedby="{{ menu_id }}-help">
+    </div>
+    <p class="form-text" id="{{ menu_id }}-help">PDF of 4 × 2 in labels, one per page. Print at actual size. Up to 200 labels per download.</p>
+    <button class="btn btn-outline-secondary w-100" type="submit">{% include "includes/icon.html" with name="download" %}Download PDF</button>
+  </form>
+</div>
+{% endwith %}

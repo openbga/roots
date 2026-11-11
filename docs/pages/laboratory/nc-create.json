@@ -1,0 +1,159 @@
+{
+  "id": "laboratory-nc-create",
+  "routes": [
+    "laboratory:nc-create"
+  ],
+  "title": "New nonconformance",
+  "purpose": "Record an issue and optionally link the affected sample, batch, stock lot or asset.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Available to active signed-in lab staff with an admin, custodian, analyst, reviewer, approver or project manager role. Client accounts and accounts without a lab role cannot open laboratory pages. Sidebar links open Lab overview, Inventory, Equipment, Training and Nonconformances. Breadcrumbs return to the list or parent record."
+      ]
+    },
+    {
+      "title": "Who can change this record",
+      "paragraphs": [
+        "Any lab staff member can open a nonconformance, read it and add notes/evidence, including after closure. Only its assigned owner or an admin, reviewer, approver or project manager role can edit details or drive workflow. Opening a record does not by itself give the opener management rights. Staff selectors list active non-client accounts, ordered by username, with full name and username when available."
+      ]
+    },
+    {
+      "title": "Issue",
+      "items": [
+        {
+          "label": "Title",
+          "description": "Required summary, maximum 200 characters."
+        },
+        {
+          "label": "Description",
+          "description": "Required account of what happened and how it was found. Preserved as original description and first timeline entry."
+        },
+        {
+          "label": "Category",
+          "description": "Required deliberate choice; no preselected generic category unless arriving from a linked record. Choices: Sample, Batch / QC, Equipment, Standard / reagent, Personnel / training, Procedure / documentation or Other."
+        },
+        {
+          "label": "Severity",
+          "description": "Required deliberate choice; no preselected severity. Minor, Major or Critical; the application does not assign thresholds for these choices."
+        },
+        {
+          "label": "Discovered on",
+          "description": "Required date, defaults to today; cannot be future."
+        }
+      ]
+    },
+    {
+      "title": "Linked records",
+      "items": [
+        {
+          "label": "Sample",
+          "description": "Optional existing laboratory sample ID, maximum 32 characters; case-insensitive match."
+        },
+        {
+          "label": "Analytical batch",
+          "description": "Optional existing batch number, for example B-000123 or 123, maximum 20 characters."
+        },
+        {
+          "label": "Standard / reagent lot",
+          "description": "Optional lot, including retired/expired lots, ordered by material name then lot number and labelled with both."
+        },
+        {
+          "label": "Equipment",
+          "description": "Optional registered asset, including retired assets. Links are independent: there is no automatic category match or requirement to link at least one record. Multiple record types can be linked."
+        }
+      ]
+    },
+    {
+      "title": "Ownership",
+      "items": [
+        {
+          "label": "Owner",
+          "description": "Optional active non-client account when opening. An owner is required later to start investigation. Leaving it unassigned means only a lead can initially manage it."
+        },
+        {
+          "label": "Due",
+          "description": "Optional target date; on creation cannot precede discovery. It is a corrective action target, not an analytical holding time."
+        }
+      ]
+    },
+    {
+      "title": "Evidence",
+      "items": [
+        {
+          "label": "Reference",
+          "description": "Optional report, ticket or log reference, maximum 160 characters."
+        },
+        {
+          "label": "Evidence file",
+          "description": "Optional supporting file stored on the opening timeline event."
+        }
+      ]
+    },
+    {
+      "title": "Create nonconformance",
+      "paragraphs": [
+        "Creates an Open record with a generated NC- number, opened actor/time, timeline entry and audit event. It does not fabricate custody or alter linked records. Starting from a lot, asset, batch or sample can prefill that link and category; check these before saving. No record is deleted."
+      ]
+    },
+    {
+      "title": "Evidence files",
+      "paragraphs": [
+        "Attach a nonempty PDF, PNG, JPEG, TXT or CSV no larger than 10 MiB. TXT/CSV must be UTF-8; PDF and image bytes must match the extension. Evidence is optional unless a step requires a reference or file. Downloads are attachments, not inline previews. File links show name, size and the first 12 SHA-256 checksum characters. No file indicates no stored attachment. Staff can download equipment/nonconformance evidence; training evidence is limited to the person and lead roles. A correction is a new record: an earlier attachment is not copied automatically, so attach evidence again if it belongs on the new record."
+      ]
+    },
+    {
+      "title": "Saving and errors",
+      "paragraphs": [
+        "An asterisk marks required fields. Cancel returns to the parent record or list without saving. Success opens the saved record with a confirmation. Validation errors appear above the form and beside affected fields; correct them and submit again. Text input remains after validation errors; select an evidence file again if necessary. Dates use year-month-day; date and time fields use the deployment time zone."
+      ]
+    },
+    {
+      "title": "Workflow and limits",
+      "paragraphs": [
+        "The fixed flow is Open, Investigating, Corrective action, Verification, Closed. Steps cannot be skipped. Verification can return to Corrective action; Closed can reopen to Investigating, each with a reason. Severity and disposition are recorded choices; the system does not infer them. A linked issue or a disposition such as Hold or Qualify does not automatically hold a batch, qualify a result, retire equipment, alter stock or block report release. Apply any separate operational controls explicitly. There is no required independent verifier rule in this workflow; the owner or lead can verify and close."
+      ]
+    },
+    {
+      "title": "Form dialog controls",
+      "paragraphs": [
+        "With enhancement enabled, the form opens in a dialog, including when its URL is opened directly. Without enhancement it remains a normal page. While loading or saving, controls are disabled to avoid duplicate submissions; focus moves to the first invalid field or first editable field when ready. Saving successfully navigates to the resulting record."
+      ],
+      "items": [
+        {
+          "label": "Maximize / Restore size",
+          "description": "Expand the dialog to full screen or restore its normal size. Small screens use a full-screen layout."
+        },
+        {
+          "label": "Cancel / Close form / Escape",
+          "description": "Close an unchanged form. When opened over another page, return focus to its opening control; when opened directly, return to the Cancel destination. Clicking outside the dialog does not close it."
+        },
+        {
+          "label": "Keep editing / Discard changes",
+          "description": "After an input change, attempting to leave asks Discard your unsaved changes? Keep editing retains the form; Discard changes closes or follows the requested destination without saving. Escape during that prompt keeps editing."
+        },
+        {
+          "label": "Try again",
+          "description": "Shown after a failed initial load. Retry loading the form. Save/connection errors keep the current input and show an error so you can retry the submission. Validation errors replace the form with its submitted values and field messages; files may need selecting again."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "laboratory/urls.py",
+    "laboratory/forms.py",
+    "laboratory/models.py",
+    "laboratory/permissions.py",
+    "laboratory/nc_views.py",
+    "laboratory/nonconformance.py",
+    "laboratory/tests/test_nonconformance.py",
+    "laboratory/tests/test_views.py",
+    "laboratory/templates/laboratory/form.html",
+    "laboratory/evidence.py",
+    "core/form_surfaces.py",
+    "core/form_dialog.py",
+    "templates/includes/form_dialog.html",
+    "static/js/form-dialog.js",
+    "tests/test_form_dialog.py"
+  ]
+}

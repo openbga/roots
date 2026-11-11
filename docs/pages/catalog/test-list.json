@@ -1,0 +1,201 @@
+{
+  "id": "catalog-test-list",
+  "routes": [
+    "catalog:test-list"
+  ],
+  "title": "Catalog: tests",
+  "purpose": "Find the exact analyte, method version, matrix and unit combination used to request work. Receipt offers it only while both test and method version are active.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Active staff with a laboratory role can read the lists. Client portal accounts cannot. Only the admin role creates or edits catalog records."
+      ],
+      "items": [
+        {
+          "label": "Tests",
+          "description": "Combinations of analyte, method version and matrix available for requesting work."
+        },
+        {
+          "label": "Methods",
+          "description": "Laboratory method versions that tests and batches refer to."
+        },
+        {
+          "label": "Analytes",
+          "description": "Substances or properties measured by tests."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "New test",
+          "description": "Administrators open the creation form. Create its method version and analyte first."
+        },
+        {
+          "label": "Analyte row link",
+          "description": "Administrators open this test’s edit form; other staff see plain text."
+        }
+      ]
+    },
+    {
+      "title": "Filters",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Searches analyte name, method code, method title and unit; not method version or CAS number."
+        },
+        {
+          "label": "Method",
+          "description": "One exact version, including inactive versions for history."
+        },
+        {
+          "label": "Matrix",
+          "description": "Water, Wastewater or Soil."
+        },
+        {
+          "label": "Status",
+          "description": "Available at receipt requires active test and method. Test active and Test inactive consider only the test flag. Any status includes all records."
+        },
+        {
+          "label": "Method code",
+          "description": "More filters: exact code across versions."
+        },
+        {
+          "label": "Analyte",
+          "description": "More filters: one exact analyte."
+        },
+        {
+          "label": "Analyte group",
+          "description": "More filters: tests whose analyte belongs to one group from the fixed list. Analytes with Not recorded match only when the filter is blank."
+        },
+        {
+          "label": "Unit",
+          "description": "More filters: one exact existing unit spelling."
+        },
+        {
+          "label": "Default limit",
+          "description": "More filters: Has a default limit or No default limit."
+        },
+        {
+          "label": "Requested on samples",
+          "description": "More filters: Yes means at least one received requested test refers to this definition; No means none."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Analyte",
+          "description": "Measured substance/property. Default sort is analyte name ascending."
+        },
+        {
+          "label": "Method version",
+          "description": "Code and version with method title below."
+        },
+        {
+          "label": "Matrix",
+          "description": "Matrix this definition accepts."
+        },
+        {
+          "label": "Unit",
+          "description": "Exact unit text; the system does not convert units."
+        },
+        {
+          "label": "Reporting limit",
+          "description": "Configured default in this unit, shown without storage-padding zeros. Blank means no default, not zero. Each result records the limit actually used."
+        },
+        {
+          "label": "Status",
+          "description": "Active means both flags are active; Method inactive means the test is active but its method is not; Inactive means the test flag is off."
+        },
+        {
+          "label": "Technique",
+          "description": "Initially hidden measurement technique of the test’s method version, or a dash when not recorded."
+        },
+        {
+          "label": "Analyte group",
+          "description": "Initially hidden group of the test’s analyte, or a dash when not recorded."
+        },
+        {
+          "label": "Requested on samples",
+          "description": "Initially hidden count of received requests referring to the definition."
+        },
+        {
+          "label": "Last changed",
+          "description": "Initially hidden time of the newest audit event for this definition; a dash means none recorded."
+        }
+      ]
+    },
+    {
+      "title": "Using the table",
+      "paragraphs": [
+        "Invalid filters leave the table empty with errors until corrected or cleared. A no-match state differs from an empty catalog. Administrators see the relevant New action in an empty catalog."
+      ],
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Combines search and filters across all records and starts at page 1. Search is case-insensitive and matches contained text."
+        },
+        {
+          "label": "More filters",
+          "description": "Opens additional criteria and stays open when they are used or invalid."
+        },
+        {
+          "label": "Clear all and filter chips",
+          "description": "Clear all restores the unfiltered URL and default sort. Removing one chip clears that criterion and starts at page 1 while keeping the other criteria."
+        },
+        {
+          "label": "Column headings",
+          "description": "Linked headings sort the full filtered set; record ID breaks ties. Unsupported sort values fall back to the default."
+        },
+        {
+          "label": "Columns",
+          "description": "Show, hide or reorder optional columns; the identifying column stays visible. Preferences belong to this browser. Reset restores the default presentation without changing records or filters."
+        },
+        {
+          "label": "Rows per page and pagination",
+          "description": "Choose 25, 50 or 100 rows; use Show if automatic submission is unavailable. A size change starts at page 1. First, Previous, Next and Last preserve filters and sort; the result count describes the filtered set."
+        }
+      ]
+    },
+    {
+      "title": "Column layout dialog",
+      "items": [
+        {
+          "label": "Column checkboxes",
+          "description": "Changes apply immediately. Check to show an optional column or uncheck to hide it. Always shown columns are fixed."
+        },
+        {
+          "label": "Move column up / down",
+          "description": "Moves an optional column within the displayed order; the first/last position disables the unavailable move. You can also drag movable table headers."
+        },
+        {
+          "label": "Reset columns",
+          "description": "Restores this table’s default order and visibility in this browser."
+        },
+        {
+          "label": "Done / Close",
+          "description": "Closes the dialog; layout changes have already been applied and saved locally. No laboratory record is changed."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "catalog/urls.py",
+    "catalog/views.py",
+    "catalog/forms.py",
+    "catalog/models.py",
+    "catalog/services.py",
+    "catalog/tests/test_catalog.py",
+    "catalog/templates/catalog/test_list.html",
+    "core/grids.py",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js"
+  ]
+}

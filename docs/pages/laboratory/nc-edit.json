@@ -1,0 +1,163 @@
+{
+  "id": "laboratory-nc-edit",
+  "routes": [
+    "laboratory:nc-edit"
+  ],
+  "title": "Edit nonconformance",
+  "purpose": "Revise current issue details while retaining the earlier values and reason in the timeline.",
+  "sections": [
+    {
+      "title": "Who can change this record",
+      "paragraphs": [
+        "Any lab staff member can open a nonconformance, read it and add notes/evidence, including after closure. Only its assigned owner or an admin, reviewer, approver or project manager role can edit details or drive workflow. Opening a record does not by itself give the opener management rights. Staff selectors list active non-client accounts, ordered by username, with full name and username when available."
+      ]
+    },
+    {
+      "title": "Eligibility",
+      "paragraphs": [
+        "Record must not be Closed; reopen before editing a closed issue. Title, assignment, classifications, links and selected findings can change. Original description/discovery, opened identity, verification and closure are not fields on this form. A save with no actual changes is refused."
+      ]
+    },
+    {
+      "title": "Issue and ownership",
+      "items": [
+        {
+          "label": "Title",
+          "description": "Required, maximum 200 characters."
+        },
+        {
+          "label": "Category",
+          "description": "Required: Sample, Batch / QC, Equipment, Standard / reagent, Personnel / training, Procedure / documentation or Other."
+        },
+        {
+          "label": "Severity",
+          "description": "Required: Minor, Major or Critical; the application does not assign thresholds for these choices."
+        },
+        {
+          "label": "Owner",
+          "description": "Optional only while Open. Once investigation has started the owner cannot be cleared; replacement must be an active non-client account."
+        },
+        {
+          "label": "Due",
+          "description": "Optional entered target date; may be cleared. Unlike creation, this edit does not check due date against discovery."
+        }
+      ]
+    },
+    {
+      "title": "Linked records",
+      "items": [
+        {
+          "label": "Sample",
+          "description": "Optional existing laboratory sample ID, maximum 32 characters; case-insensitive match."
+        },
+        {
+          "label": "Analytical batch",
+          "description": "Optional existing batch number, for example B-000123 or 123, maximum 20 characters."
+        },
+        {
+          "label": "Standard / reagent lot",
+          "description": "Optional lot, including retired/expired lots, ordered by material name then lot number and labelled with both."
+        },
+        {
+          "label": "Equipment",
+          "description": "Optional registered asset, including retired assets. Links are independent: there is no automatic category match or requirement to link at least one record. Multiple record types can be linked."
+        }
+      ]
+    },
+    {
+      "title": "Link corrections",
+      "paragraphs": [
+        "An existing link can be replaced by another valid record but cannot be removed: leaving the field blank preserves the existing link. An unlinked field can remain blank or acquire a link. The form does not automatically align category or one link with another."
+      ]
+    },
+    {
+      "title": "Findings",
+      "items": [
+        {
+          "label": "Disposition",
+          "description": "Optional Not decided or Continue work, no effect on results; Continue work, qualify results; Repeat or re-prepare work; Hold work pending decision; Reject or discard affected work; Other (explain in the note)."
+        },
+        {
+          "label": "Disposition note",
+          "description": "Optional explanation, particularly for Other. The later root-cause step requires it for Other."
+        },
+        {
+          "label": "Root cause",
+          "description": "Optional current cause text; later workflow checks require it before Corrective action."
+        },
+        {
+          "label": "Corrective action",
+          "description": "Optional current action text; later checks require it before Verification."
+        },
+        {
+          "label": "Reason",
+          "description": "Required account of why the details changed; earlier/later values and this reason stay in the timeline."
+        }
+      ]
+    },
+    {
+      "title": "Save changes",
+      "paragraphs": [
+        "Updates current details and adds Details updated to the timeline without advancing status. Clearing findings is allowed here even in later nonclosed states; required content is checked by the corresponding forward step."
+      ]
+    },
+    {
+      "title": "Saving and errors",
+      "paragraphs": [
+        "An asterisk marks required fields. Cancel returns to the parent record or list without saving. Success opens the saved record with a confirmation. Validation errors appear above the form and beside affected fields; correct them and submit again. Text input remains after validation errors; select an evidence file again if necessary. Dates use year-month-day; date and time fields use the deployment time zone."
+      ]
+    },
+    {
+      "title": "Concurrent changes and history",
+      "paragraphs": [
+        "Saving locks and rechecks the revision you opened. If another user changed the record, reload it, review the latest values and enter your change again. Failed validation writes no partial change. Successful changes and attributed audit events commit together."
+      ]
+    },
+    {
+      "title": "Workflow and limits",
+      "paragraphs": [
+        "The fixed flow is Open, Investigating, Corrective action, Verification, Closed. Steps cannot be skipped. Verification can return to Corrective action; Closed can reopen to Investigating, each with a reason. Severity and disposition are recorded choices; the system does not infer them. A linked issue or a disposition such as Hold or Qualify does not automatically hold a batch, qualify a result, retire equipment, alter stock or block report release. Apply any separate operational controls explicitly. There is no required independent verifier rule in this workflow; the owner or lead can verify and close."
+      ]
+    },
+    {
+      "title": "Form dialog controls",
+      "paragraphs": [
+        "With enhancement enabled, the form opens in a dialog, including when its URL is opened directly. Without enhancement it remains a normal page. While loading or saving, controls are disabled to avoid duplicate submissions; focus moves to the first invalid field or first editable field when ready. Saving successfully navigates to the resulting record."
+      ],
+      "items": [
+        {
+          "label": "Maximize / Restore size",
+          "description": "Expand the dialog to full screen or restore its normal size. Small screens use a full-screen layout."
+        },
+        {
+          "label": "Cancel / Close form / Escape",
+          "description": "Close an unchanged form. When opened over another page, return focus to its opening control; when opened directly, return to the Cancel destination. Clicking outside the dialog does not close it."
+        },
+        {
+          "label": "Keep editing / Discard changes",
+          "description": "After an input change, attempting to leave asks Discard your unsaved changes? Keep editing retains the form; Discard changes closes or follows the requested destination without saving. Escape during that prompt keeps editing."
+        },
+        {
+          "label": "Try again",
+          "description": "Shown after a failed initial load. Retry loading the form. Save/connection errors keep the current input and show an error so you can retry the submission. Validation errors replace the form with its submitted values and field messages; files may need selecting again."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "laboratory/urls.py",
+    "laboratory/forms.py",
+    "laboratory/models.py",
+    "laboratory/permissions.py",
+    "laboratory/nc_views.py",
+    "laboratory/nonconformance.py",
+    "laboratory/tests/test_nonconformance.py",
+    "laboratory/tests/test_views.py",
+    "laboratory/templates/laboratory/form.html",
+    "core/form_surfaces.py",
+    "core/form_dialog.py",
+    "templates/includes/form_dialog.html",
+    "static/js/form-dialog.js",
+    "tests/test_form_dialog.py"
+  ]
+}

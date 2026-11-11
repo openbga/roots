@@ -1,0 +1,129 @@
+{
+  "id": "admin-user-form",
+  "routes": [
+    "admin:accounts_user_add",
+    "admin:accounts_user_change"
+  ],
+  "title": "User account",
+  "purpose": "Create or maintain a staff or client account while preserving attributed laboratory history.",
+  "sections": [
+    {
+      "title": "Access and page variants",
+      "paragraphs": [
+        "The administration site requires an active account with Staff status. User and group pages additionally require Superuser status; a laboratory admin role alone or individual model permissions do not open them. These technical flags do not themselves confer operational roles or report-release authority.",
+        "Add user includes Username, Email address, Password-based authentication, Password, Password confirmation, Client, Groups, Staff status and Superuser status. New users default to Active even though Active is not on this add form. After creation the change form exposes the remaining account options. Change user groups fields into Personal info, Client access, Laboratory roles, Account status and technical access, and Important dates."
+      ]
+    },
+    {
+      "title": "Identity fields",
+      "items": [
+        {
+          "label": "Username",
+          "description": "Required unique identifier, at most 150 characters; Unicode letters and digits plus @/./+/-/_ are accepted. Saving creation rejects case-insensitive duplicates; ordinary edit uses the model’s exact username uniqueness constraint."
+        },
+        {
+          "label": "Email address",
+          "description": "Required syntactically valid unique account email in both add and change forms. This field is not an EmailAddress verification record or a project reporting contact. Creation does not send an invitation or verification email."
+        },
+        {
+          "label": "Password-based authentication",
+          "description": "Creation only: Enabled by default or Disabled. Enabled requires both password fields; Disabled sets an unusable password and ignores them. No alternative login provider is configured by this choice."
+        },
+        {
+          "label": "Password / Password confirmation",
+          "description": "Creation: required matching password when Enabled. Minimum eight characters, account-similarity, common-password and numeric-only checks apply."
+        },
+        {
+          "label": "Password",
+          "description": "Change only: read-only password-hash status, never the original secret. Reset password or Set password opens the separate administrator password form; changing this display is not password entry."
+        },
+        {
+          "label": "First name / Last name",
+          "description": "Change only; optional, each at most 150 characters, used for operator display and searching."
+        }
+      ]
+    },
+    {
+      "title": "Client, roles and technical access",
+      "items": [
+        {
+          "label": "Client",
+          "description": "Optional client selection. Blank means internal laboratory account; a selected client limits portal records to that client. Clear the link before granting staff flags, groups or permissions. Related-object maintenance shortcuts appear only when their registered model and permission allow them."
+        },
+        {
+          "label": "Groups",
+          "description": "Optional assigned groups in Available groups and Chosen groups, with filter boxes, choose/remove controls and Choose all/Remove all. Built-in group names determine roles. Custom groups can carry explicit permissions without becoming operational roles."
+        },
+        {
+          "label": "Active",
+          "description": "Change only; controls whether the account may authenticate and have operational access. Clear instead of deleting a historical contributor."
+        },
+        {
+          "label": "Staff status",
+          "description": "Allows the maintenance-site entry check; does not grant laboratory roles, superuser status or model permissions."
+        },
+        {
+          "label": "Superuser status",
+          "description": "Enables Django permission bypass for administration; does not grant laboratory roles or explicit report-release authority."
+        },
+        {
+          "label": "User permissions",
+          "description": "Change only. Available user permissions/Chosen user permissions assign explicit capabilities including accounts authorize_release. Groups can grant the same capability. Model permissions do not replace laboratory role/ownership checks."
+        },
+        {
+          "label": "Last login",
+          "description": "Change only; optional date and time, editable, with standard date/time widgets. It is not a complete login history."
+        },
+        {
+          "label": "Date joined",
+          "description": "Change only; required date and time, defaults to account creation, editable."
+        }
+      ]
+    },
+    {
+      "title": "Integrity and history",
+      "paragraphs": [
+        "Client isolation, last-active-superuser preservation and immutable historical actors are checked by this administration implementation. Existing built-in groups cannot be renamed in group editing. Only active internal users with explicit release permission may release reports, and contributors cannot review their own results. Account/role changes are audited with before/after snapshots; secret values are omitted. This form has no optimistic original-version token: a valid later save can replace another editor’s values."
+      ]
+    },
+    {
+      "title": "Save and navigation",
+      "items": [
+        {
+          "label": "Save",
+          "description": "On Add user, saves and normally opens the new change form so you can edit remaining options. On Change user, saves and returns to the user list. Popup creation returns the selection to its opener."
+        },
+        {
+          "label": "Save and continue editing",
+          "description": "Saves and opens the user change form."
+        },
+        {
+          "label": "Save and add another",
+          "description": "Saves and starts a new user add form."
+        },
+        {
+          "label": "History",
+          "description": "Change only: opens Django object administration history."
+        },
+        {
+          "label": "Delete",
+          "description": "Never available for users; direct deletion is refused."
+        },
+        {
+          "label": "Home / app / Users / View site",
+          "description": "Breadcrumbs return through administration; View site returns to the operational application. Validation errors retain non-secret form input for correction."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "accounts/admin.py",
+    "accounts/models.py",
+    "accounts/roles.py",
+    "core/admin.py",
+    "config/settings.py",
+    "uv.lock",
+    "accounts/tests/test_admin.py",
+    "templates/admin/base_site.html"
+  ]
+}

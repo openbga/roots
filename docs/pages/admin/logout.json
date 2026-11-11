@@ -1,0 +1,35 @@
+{
+  "id": "admin-logout",
+  "routes": [
+    "admin:logout"
+  ],
+  "title": "Administration signed out",
+  "purpose": "Confirm that the administration session has ended.",
+  "sections": [
+    {
+      "title": "State",
+      "paragraphs": [
+        "This is the result of submitting Log out in the administration header. The action signs out immediately; there is no pre-sign-out confirmation. With no Django logout redirect configured, the response displays the stock signed-out page. Direct GET requests to this endpoint are not accepted."
+      ]
+    },
+    {
+      "title": "Navigation",
+      "items": [
+        {
+          "label": "Log in again",
+          "description": "Opens administration home, which sends signed-out visitors to the application sign-in page."
+        },
+        {
+          "label": "Home",
+          "description": "The breadcrumb also returns to administration home/login. No credentials or other editable fields are shown here."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "config/settings.py",
+    "config/urls.py",
+    "templates/admin/base_site.html",
+    "uv.lock"
+  ]
+}

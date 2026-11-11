@@ -1,0 +1,97 @@
+{
+  "id": "catalog-method-form",
+  "routes": [
+    "catalog:method-create",
+    "catalog:method-edit"
+  ],
+  "title": "Method version",
+  "purpose": "Create a laboratory method version or edit an existing version. Editing adds usage facts, lock explanations and history.",
+  "sections": [
+    {
+      "title": "Fields and related work",
+      "paragraphs": [
+        "Method code, Version, Title and Source or SOP reference lock once work depends on the version directly or through definitions. Policy-only configuration does not lock method identity. Reference source, Technique and Availability remain editable with a reason. Saved text is trimmed."
+      ],
+      "items": [
+        {
+          "label": "Method code",
+          "description": "Required, up to 60 characters. Code and version together are unique ignoring case."
+        },
+        {
+          "label": "Version",
+          "description": "Required, up to 40 characters. Use the lab’s revision, edition or year text; versions are not assigned automatically."
+        },
+        {
+          "label": "Title",
+          "description": "Required laboratory method title, up to 200 characters."
+        },
+        {
+          "label": "Source or SOP reference",
+          "description": "Optional citation or SOP number/revision for provenance."
+        },
+        {
+          "label": "Reference source",
+          "description": "Optional, from a fixed list (EPA, Standard Methods, EPA SW-846, ASTM, USGS, Laboratory-developed (SOP), Other); Not recorded leaves it blank. Records who publishes the method and filters the Methods list. It describes the record only: it is not printed on reports and is not part of what locks when work depends on the record, so it stays editable with a reason."
+        },
+        {
+          "label": "Technique",
+          "description": "Optional, from a fixed list (for example ICP-MS, Ion chromatography, Titrimetric, GC-MS); Not recorded leaves it blank. Filters the Methods list and can be shown beside tests. It describes the record only: it is not printed on reports and is not part of what locks when work depends on the record, so it stays editable with a reason."
+        },
+        {
+          "label": "Active (available for new work)",
+          "description": "Checked initially. Retiring removes this version from new sample requests and batches; existing work keeps its reference."
+        },
+        {
+          "label": "New version",
+          "description": "Edit-only action to create a separate version using this code."
+        },
+        {
+          "label": "View this version’s tests",
+          "description": "Edit-only link filters Tests to this exact version, when dependency facts are displayed."
+        }
+      ]
+    },
+    {
+      "title": "Saving and history",
+      "paragraphs": [
+        "A record changed since opening cannot be overwritten. Submitted input remains on the error page; reload and compare current values before re-entering the intended change. Records are retained rather than deleted."
+      ],
+      "items": [
+        {
+          "label": "Create / Save changes",
+          "description": "Only administrators submit. Creation is audited; an existing change records before/after values and requires a reason. An unchanged submission returns to the list with No changes to save and adds no edit event."
+        },
+        {
+          "label": "Reason for change",
+          "description": "Existing records only: explain any changed value or availability decision."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the corresponding list without saving."
+        },
+        {
+          "label": "What depends on this",
+          "description": "Counts referring records. Methods/analytes also show active tests out of all tests. These facts can include more dependencies than list work counts."
+        },
+        {
+          "label": "Locked values",
+          "description": "Dependent identity values become read-only facts with lock reasons. Locks are rechecked when saving, including concurrent references."
+        },
+        {
+          "label": "History",
+          "description": "The newest 20 audit events appear in chronological order with actor, timestamp and reason."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "catalog/urls.py",
+    "catalog/views.py",
+    "catalog/forms.py",
+    "catalog/models.py",
+    "catalog/services.py",
+    "catalog/tests/test_catalog.py",
+    "catalog/templates/catalog/form.html",
+    "core/concurrency.py"
+  ]
+}

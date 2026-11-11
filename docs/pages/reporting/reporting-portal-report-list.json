@@ -1,0 +1,146 @@
+{
+  "id": "reporting-portal-report-list",
+  "routes": [
+    "portal:report-list"
+  ],
+  "title": "Client reports",
+  "purpose": "Find your issued report scopes and download their latest immutable PDFs.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Only an active signed-in account linked to a client can use these pages. Every project, sample, report and download is limited to that client. Other clients’ records are treated as missing. Internal staff and unrelated accounts cannot use the portal. These reporting views are read-only; drafts never appear here.",
+        "When Demonstration appears, all clients, samples and results are synthetic and must not be used as laboratory results or for regulatory or compliance purposes.",
+        "The portal’s top navigation marks the current area. No staff work queue or result-edit controls are available here."
+      ],
+      "items": [
+        {
+          "label": "Home",
+          "description": "Client overview, recent reports and live sample-status counts."
+        },
+        {
+          "label": "Projects",
+          "description": "Client projects with sample/report counts."
+        },
+        {
+          "label": "Quotes",
+          "description": "Open the separate client quote workflow."
+        },
+        {
+          "label": "Submissions",
+          "description": "Open the separate client pre-login/submission workflow."
+        },
+        {
+          "label": "Samples",
+          "description": "Live status of the client’s received samples."
+        },
+        {
+          "label": "Reports",
+          "description": "Issued reports and stored downloads."
+        }
+      ]
+    },
+    {
+      "title": "Filters and defaults",
+      "paragraphs": [
+        "Only reports with at least one released version appear. Default order is newest latest release first. Each row is one report scope, not one version. Header/title/project text is live metadata; the report detail’s result summary and downloaded PDF come from the issued snapshot."
+      ],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Case-insensitive current report title or project name. A numeric ID or RPT-prefixed zero-padded ID also matches report number. Does not search analytes or result values."
+        },
+        {
+          "label": "Project",
+          "description": "All projects by default, or one of this client’s projects. An invalid/other-client project gives errors and no rows."
+        }
+      ]
+    },
+    {
+      "title": "Columns and row actions",
+      "items": [
+        {
+          "label": "Report",
+          "description": "RPT number links to current issued detail/history; locked visible."
+        },
+        {
+          "label": "Title",
+          "description": "Current editable title; an in-progress amendment may cause it to differ from issued content."
+        },
+        {
+          "label": "Project",
+          "description": "Current owning project name."
+        },
+        {
+          "label": "Current version",
+          "description": "Issued v1 or Amended vN. A draft scope edit alone does not increase the number."
+        },
+        {
+          "label": "First issued",
+          "description": "Original v1 release date/time; hidden initially."
+        },
+        {
+          "label": "Last released",
+          "description": "Most recent issue date/time; hover shows timezone."
+        },
+        {
+          "label": "Download PDF",
+          "description": "Get the latest stored PDF bytes. The action stays visible; staff changes after release do not update that PDF. Use report history for older issues."
+        }
+      ]
+    },
+    {
+      "title": "Using the table",
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Apply combined search and filters to all matching records and return to page 1."
+        },
+        {
+          "label": "Clear all",
+          "description": "Remove search, filters and query-based sorting/page settings. An active-filter chip removes only that filter and returns to page 1."
+        },
+        {
+          "label": "Column headings",
+          "description": "Linked headings sort ascending or descending across the full filtered set. Unlinked headings cannot sort. Equal values use record ID as a tie-breaker; unsupported sorts fall back to the page default."
+        },
+        {
+          "label": "Rows per page",
+          "description": "Choose 25, 50 or 100, default 25. Changing this returns to page 1 and preserves other filters. Show applies the choice when automatic submission is unavailable. Other sizes are refused."
+        },
+        {
+          "label": "First page / Previous page / Next page / Last page",
+          "description": "Move through matching records while preserving filters and sort. The footer shows visible range, total, current page and page count. Invalid page text selects page 1; out-of-range pages select the last page."
+        },
+        {
+          "label": "Columns",
+          "description": "With browser enhancement, change optional column visibility and order using the dialog’s move controls or by dragging headings. Changes apply immediately and are saved in this browser only. Locked identity/action columns stay visible and fixed. Reset columns restores defaults; Done or Close closes the dialog. Presentation settings do not change records, filters or exports."
+        }
+      ]
+    },
+    {
+      "title": "Empty states and file errors",
+      "paragraphs": [
+        "No reports issued yet means the laboratory has not released an issue for this client. No reports match asks you to check the ID or clear filters. The saved PDF hash is checked before download; integrity failure refuses the file and asks you to contact the laboratory."
+      ]
+    }
+  ],
+  "sources": [
+    "reporting/portal_urls.py",
+    "reporting/portal_views.py",
+    "reporting/queries.py",
+    "reporting/models.py",
+    "reporting/content.py",
+    "reporting/templates/reporting/portal/notice.html",
+    "templates/layouts/portal.html",
+    "reporting/tests/test_portal.py",
+    "reporting/tests/test_grids.py",
+    "reporting/templates/reporting/portal/report_list.html",
+    "reporting/views.py",
+    "core/grids.py",
+    "templates/includes/grid_toolbar.html",
+    "templates/includes/pagination.html",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js"
+  ]
+}

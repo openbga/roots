@@ -1,0 +1,16 @@
+{% extends user.client_id|yesno:"layouts/portal.html,layouts/entrance.html,base.html" %}
+{% load documentation %}
+{% comment %}
+Error pages (400, 403, 404). Signed-in users keep their own shell so they can navigate away: staff
+get base.html, client users the portal (client_id set); anonymous visitors get the entrance panel.
+yesno maps an integer client_id to the portal, None (staff) to base.html, and the missing attribute
+of an anonymous user ("") to the entrance layout. No navigation item is current.
+Blocks: title, page_heading (the h1 text, in either layout), content (explanation and next step).
+Usage: {% extends "layouts/error.html" %}{% block page_heading %}Page not found{% endblock %}
+{% endcomment %}
+{% block form_surface_attributes %}{% endblock %}
+{% block documentation_panel %}
+  {% page_help "documentation:unavailable" as error_help %}
+  {% include "documentation/panel.html" with page_documentation=error_help %}
+{% endblock %}
+{% block entrance_heading %}<h1 class="vr-page-title mb-2">{% block page_heading %}{% endblock %}</h1>{% endblock %}

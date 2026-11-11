@@ -1,0 +1,81 @@
+/* The reference sheet shares the workspace's paper, ink and sage heading band. */
+:root { --vr-documentation-width: 400px; }
+.vr-documentation[hidden], .vr-documentation-toggle[hidden] { display: none !important; }
+.vr-documentation {
+  position: fixed;
+  inset: var(--vr-documentation-top, var(--vr-topbar-height, 3.25rem)) 0 0 auto;
+  z-index: 1020;
+  display: flex;
+  flex-direction: column;
+  width: min(var(--vr-documentation-width), 100vw);
+  background: var(--vr-surface);
+  color: var(--vr-text);
+  border-left: 1px solid var(--vr-border-strong);
+  text-align: left;
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+.vr-documentation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  gap: 1rem;
+  padding: 0.625rem 1.25rem;
+  background: var(--vr-band);
+  border-bottom: 1px solid var(--vr-border);
+}
+.vr-documentation-label { margin: 0; font-weight: 650; }
+.vr-documentation-content { overflow: auto; overscroll-behavior: contain; padding: 1.5rem; }
+.vr-documentation-page-title { margin: 0 0 0.75rem; font-size: 1.25rem; line-height: 1.3; }
+.vr-documentation-purpose { color: var(--vr-text-muted); }
+.vr-documentation-section { margin-top: 1.75rem; }
+.vr-documentation-section h3 { margin: 0 0 0.625rem; font-size: 1rem; font-weight: 650; }
+.vr-documentation-section p { margin-bottom: 0.75rem; }
+.vr-documentation :is(p, th, td, h2, h3) { overflow-wrap: anywhere; }
+.vr-documentation-table { width: 100%; table-layout: fixed; margin-bottom: 0; }
+.vr-documentation-table th:first-child { width: 35%; }
+.vr-documentation-table :is(th, td) { padding: 0.625rem 0.5rem; vertical-align: top; }
+.vr-documentation-table tbody th { font-weight: 600; }
+.vr-documentation-resize {
+  position: absolute;
+  inset: 0 auto 0 -5px;
+  width: 10px;
+  cursor: ew-resize;
+  touch-action: none;
+}
+.vr-documentation-resize::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 4px;
+  width: 2px;
+  background: transparent;
+}
+.vr-documentation-resize:is(:hover, :focus-visible)::after { background: var(--vr-pen); }
+.vr-documentation-resize:focus-visible { outline: 2px solid var(--vr-focus, var(--vr-pen)); outline-offset: -2px; }
+.vr-documentation-resizing, .vr-documentation-resizing * { cursor: ew-resize !important; user-select: none !important; }
+.vr-entrance-page .vr-documentation { top: 0; }
+.vr-form-dialog > .modal-dialog { z-index: 0; }
+.vr-form-dialog > .vr-documentation { top: 0; z-index: 1; }
+@media (min-width: 992px) {
+  body.vr-documentation-open > .vr-shell { margin-right: var(--vr-documentation-width); }
+  body.vr-documentation-open > .vr-entrance { margin-right: var(--vr-documentation-width); }
+  body.vr-documentation-open .vr-form-dialog { padding-right: var(--vr-documentation-width) !important; }
+  body.vr-documentation-open .vr-form-dialog .modal-fullscreen { width: 100%; }
+}
+@media (max-width: 991.98px) {
+  .vr-documentation { width: min(var(--vr-documentation-width), calc(100vw - 2rem)); }
+  .vr-documentation-content { padding: 1rem; }
+}
+/* The extra help control must fit beside the menu and account controls with
+   wider system fonts too. Keep the controls whole; the brand can abbreviate. */
+@media (max-width: 575.98px) {
+  .vr-topbar:not(.vr-topbar-portal) > .vr-brand { min-width: 0; }
+  .vr-topbar:not(.vr-topbar-portal) > .vr-brand img { flex: none; }
+  .vr-topbar:not(.vr-topbar-portal) > .vr-brand span { overflow: hidden; text-overflow: ellipsis; }
+  .vr-topbar:not(.vr-topbar-portal) > :is(.vr-topbar-btn, .vr-topbar-end) { flex: none; }
+}
+@media print {
+  .vr-documentation, .vr-documentation-toggle { display: none !important; }
+  body.vr-documentation-open > :is(.vr-shell, .vr-entrance) { margin-right: 0; }
+}

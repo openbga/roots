@@ -1,0 +1,157 @@
+{
+  "id": "laboratory-nc-list",
+  "routes": [
+    "laboratory:nc-list"
+  ],
+  "title": "Nonconformances",
+  "purpose": "Find issues, assignments, due dates and corrective action status.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Available to active signed-in lab staff with an admin, custodian, analyst, reviewer, approver or project manager role. Client accounts and accounts without a lab role cannot open laboratory pages. Sidebar links open Lab overview, Inventory, Equipment, Training and Nonconformances. Breadcrumbs return to the list or parent record."
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "New nonconformance",
+          "description": "All lab staff can report an issue. Open Number to read details and timeline."
+        }
+      ]
+    },
+    {
+      "title": "Search and filters",
+      "items": [
+        {
+          "label": "Search",
+          "description": "Case-insensitive search across title, original description and root cause, sample lab ID, asset ID, lot number and material name. Numeric search also matches nonconformance ID or batch ID; NC-000123 searches number 123. Owner, category, corrective action, notes and evidence content are not searched."
+        },
+        {
+          "label": "Status",
+          "description": "All statuses is default, including Closed. Not closed excludes Closed; individual choices are Open, Investigating, Corrective action, Verification and Closed."
+        },
+        {
+          "label": "Severity",
+          "description": "All severities by default; Minor, Major or Critical; the application does not assign thresholds for these choices."
+        },
+        {
+          "label": "Owner",
+          "description": "Any owner by default; Assigned to me or Unassigned."
+        },
+        {
+          "label": "Category",
+          "description": "Under More filters; All categories or Sample, Batch / QC, Equipment, Standard / reagent, Personnel / training, Procedure / documentation or Other."
+        },
+        {
+          "label": "Due",
+          "description": "Under More filters; All or Overdue only. Overdue requires nonclosed status and due date before today. Due today and records without a due date are not overdue."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Number",
+          "description": "Generated NC identifier and detail link, always visible. Default sort is newest number first."
+        },
+        {
+          "label": "Title",
+          "description": "Issue summary."
+        },
+        {
+          "label": "Severity",
+          "description": "Recorded severity; Major is highlighted and Critical receives a stronger alert."
+        },
+        {
+          "label": "Status",
+          "description": "Current workflow step."
+        },
+        {
+          "label": "Linked records",
+          "description": "Sample ID, batch number, material/lot and asset ID, or dash; not sortable."
+        },
+        {
+          "label": "Owner",
+          "description": "Assigned person or Unassigned; sorting uses username."
+        },
+        {
+          "label": "Due",
+          "description": "Entered due date with Past due when nonclosed and before today, or dash."
+        },
+        {
+          "label": "Discovered",
+          "description": "Discovery date; initially hidden. First click sorts newest first."
+        }
+      ]
+    },
+    {
+      "title": "Table controls",
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Apply search and filters to all records, keeping sort and page size and returning to page 1. Search is case-insensitive and limited to 200 characters."
+        },
+        {
+          "label": "More filters",
+          "description": "Open additional filters where available. Opens automatically for active additional filters or filter errors."
+        },
+        {
+          "label": "Active filters",
+          "description": "Remove a chip to clear that filter and return to page 1. Clear all restores the unfiltered list, default sort and 25 rows per page. The default 30-day window is not an active filter."
+        },
+        {
+          "label": "Column headings",
+          "description": "Sortable headings order the full matching list and toggle direction. Ties use record ID ascending. Plain headings cannot sort. Invalid sort parameters use the default. Changing sort returns to page 1. Most headings start ascending; date/high-quantity exceptions are described under Columns. Text and stored-choice sorting is alphabetical, not an assessment of urgency or laboratory priority."
+        },
+        {
+          "label": "Rows per page",
+          "description": "Choose 25, 50 or 100, default 25. Show applies when automatic submission is unavailable. First, Previous, Next and Last keep filters and sort. The footer shows range and total. Invalid page text opens page 1; an out-of-range number opens the last page. Unsupported page sizes are rejected."
+        },
+        {
+          "label": "Columns",
+          "description": "When table enhancement is available, check columns to show them or uncheck to hide them. Changes apply immediately and remain in this browser. Use Move … up or Move … down controls, or drag headings. The identity column is Always shown and cannot move or hide. Reset columns restores the initial layout. Close or Done closes the dialog. These preferences do not change records, filters, sorting or paging. If browser storage is blocked, the layout applies only to this page."
+        }
+      ]
+    },
+    {
+      "title": "Empty and invalid states",
+      "paragraphs": [
+        "Invalid filters show These filters cannot be applied and no rows; correct the highlighted filter or clear it. No matches shows a filtered empty state. An empty unfiltered list explains what to create; create actions follow your role. There are no row selections or bulk actions."
+      ]
+    },
+    {
+      "title": "Who can change this record",
+      "paragraphs": [
+        "Any lab staff member can open a nonconformance, read it and add notes/evidence, including after closure. Only its assigned owner or an admin, reviewer, approver or project manager role can edit details or drive workflow. Opening a record does not by itself give the opener management rights. Staff selectors list active non-client accounts, ordered by username, with full name and username when available."
+      ]
+    },
+    {
+      "title": "Workflow and limits",
+      "paragraphs": [
+        "The fixed flow is Open, Investigating, Corrective action, Verification, Closed. Steps cannot be skipped. Verification can return to Corrective action; Closed can reopen to Investigating, each with a reason. Severity and disposition are recorded choices; the system does not infer them. A linked issue or a disposition such as Hold or Qualify does not automatically hold a batch, qualify a result, retire equipment, alter stock or block report release. Apply any separate operational controls explicitly. There is no required independent verifier rule in this workflow; the owner or lead can verify and close."
+      ]
+    }
+  ],
+  "sources": [
+    "laboratory/urls.py",
+    "laboratory/forms.py",
+    "laboratory/models.py",
+    "laboratory/permissions.py",
+    "laboratory/nc_views.py",
+    "laboratory/nonconformance.py",
+    "laboratory/tests/test_nonconformance.py",
+    "laboratory/tests/test_views.py",
+    "laboratory/selectors.py",
+    "laboratory/lists.py",
+    "core/grids.py",
+    "laboratory/templates/laboratory/nc_list.html",
+    "templates/includes/grid_toolbar.html",
+    "templates/includes/pagination.html",
+    "templates/includes/sort_header.html",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js"
+  ]
+}

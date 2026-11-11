@@ -1,0 +1,129 @@
+{
+  "id": "laboratory-equipment-event-form",
+  "routes": [
+    "laboratory:event-create",
+    "laboratory:event-correct"
+  ],
+  "title": "Record or correct equipment event",
+  "purpose": "Append calibration or maintenance evidence or replace a mistaken event with a linked correction.",
+  "sections": [
+    {
+      "title": "Access and variants",
+      "paragraphs": [
+        "Admin, analyst and reviewer roles may record events on In service or Out of service assets. Retired assets reject events; change status first if appropriate. Record calibration and Record maintenance preselect Kind but leave it editable. A generic event link shows Record event. Correct event preloads the original values, fixes Kind and requires Correction reason. An already-corrected event redirects with an error; correct the newer event. The original record stays unchanged."
+      ]
+    },
+    {
+      "title": "Event",
+      "items": [
+        {
+          "label": "Kind",
+          "description": "Required: Calibration or Maintenance. Disabled on correction. Generic new-event forms initially show Calibration."
+        },
+        {
+          "label": "Performed on",
+          "description": "Required date, default today for new events; cannot be future."
+        },
+        {
+          "label": "Performed by (staff)",
+          "description": "Optional active non-client account. At least this or an outside provider is required. If both are supplied, the table displays the staff name."
+        },
+        {
+          "label": "Performed by (outside provider)",
+          "description": "Optional provider name, maximum 160 characters; needed when no staff performer is chosen."
+        },
+        {
+          "label": "Outcome",
+          "description": "Required. Calibration permits Acceptable or Not acceptable; maintenance permits Completed or Not acceptable. The form can show all choices, but an incompatible combination is rejected. New forms initially show Acceptable, including a preselected Maintenance form, so choose Completed or Not acceptable for maintenance."
+        }
+      ]
+    },
+    {
+      "title": "Record and correction",
+      "items": [
+        {
+          "label": "Reference",
+          "description": "Optional certificate, work order, procedure or standard reference, maximum 160 characters."
+        },
+        {
+          "label": "Description",
+          "description": "Optional account of work, standards or parts used."
+        },
+        {
+          "label": "Next due",
+          "description": "Optional lab-set date; cannot precede Performed on. Blank leaves no scheduled date for this event. No interval is suggested."
+        },
+        {
+          "label": "Evidence file",
+          "description": "Optional validated attachment; choose a new file for a correction if needed."
+        },
+        {
+          "label": "Correction reason",
+          "description": "Correction only; required explanation kept with the replacement and in audit history."
+        }
+      ]
+    },
+    {
+      "title": "Saving and current state",
+      "paragraphs": [
+        "Submission appends a record and returns to asset details. The latest uncorrected event by performed date, then ID, supplies current due/outcome, so entering an older event does not necessarily replace the displayed latest one. Correction and asset status are rechecked under locks; simultaneous attempts to correct the same event cannot both succeed. Not acceptable shows a warning to consider opening a nonconformance, without automatically creating it or changing asset status."
+      ]
+    },
+    {
+      "title": "Evidence files",
+      "paragraphs": [
+        "Attach a nonempty PDF, PNG, JPEG, TXT or CSV no larger than 10 MiB. TXT/CSV must be UTF-8; PDF and image bytes must match the extension. Evidence is optional unless a step requires a reference or file. Downloads are attachments, not inline previews. File links show name, size and the first 12 SHA-256 checksum characters. No file indicates no stored attachment. Staff can download equipment/nonconformance evidence; training evidence is limited to the person and lead roles. A correction is a new record: an earlier attachment is not copied automatically, so attach evidence again if it belongs on the new record."
+      ]
+    },
+    {
+      "title": "Saving and errors",
+      "paragraphs": [
+        "An asterisk marks required fields. Cancel returns to the parent record or list without saving. Success opens the saved record with a confirmation. Validation errors appear above the form and beside affected fields; correct them and submit again. Text input remains after validation errors; select an evidence file again if necessary. Dates use year-month-day; date and time fields use the deployment time zone."
+      ]
+    },
+    {
+      "title": "Form dialog controls",
+      "paragraphs": [
+        "With enhancement enabled, the form opens in a dialog, including when its URL is opened directly. Without enhancement it remains a normal page. While loading or saving, controls are disabled to avoid duplicate submissions; focus moves to the first invalid field or first editable field when ready. Saving successfully navigates to the resulting record."
+      ],
+      "items": [
+        {
+          "label": "Maximize / Restore size",
+          "description": "Expand the dialog to full screen or restore its normal size. Small screens use a full-screen layout."
+        },
+        {
+          "label": "Cancel / Close form / Escape",
+          "description": "Close an unchanged form. When opened over another page, return focus to its opening control; when opened directly, return to the Cancel destination. Clicking outside the dialog does not close it."
+        },
+        {
+          "label": "Keep editing / Discard changes",
+          "description": "After an input change, attempting to leave asks Discard your unsaved changes? Keep editing retains the form; Discard changes closes or follows the requested destination without saving. Escape during that prompt keeps editing."
+        },
+        {
+          "label": "Try again",
+          "description": "Shown after a failed initial load. Retry loading the form. Save/connection errors keep the current input and show an error so you can retry the submission. Validation errors replace the form with its submitted values and field messages; files may need selecting again."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "laboratory/urls.py",
+    "laboratory/forms.py",
+    "laboratory/models.py",
+    "laboratory/permissions.py",
+    "laboratory/equipment_views.py",
+    "laboratory/equipment.py",
+    "laboratory/evidence.py",
+    "laboratory/templates/laboratory/form.html",
+    "laboratory/selectors.py",
+    "laboratory/templates/laboratory/equipment_list.html",
+    "laboratory/templates/laboratory/equipment_detail.html",
+    "laboratory/tests/test_equipment.py",
+    "laboratory/tests/test_views.py",
+    "core/form_surfaces.py",
+    "core/form_dialog.py",
+    "templates/includes/form_dialog.html",
+    "static/js/form-dialog.js",
+    "tests/test_form_dialog.py"
+  ]
+}

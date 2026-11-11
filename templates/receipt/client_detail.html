@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% comment %}
+One client: account and primary contact, mailing address, invoicing, report instructions, portal
+accounts, additional contacts, projects, recent chains of
+custody, quotes, client submissions and history.
+Context: client, contacts, projects (order_count), orders (sample_count), order_total, quotes,
+submissions, portal_users, history (AuditEvent, newest first; shown oldest first). can_manage_clients
+and can_receive come from the workspace context processor. Contacts and projects have no page of
+their own: the name links to the edit form for project managers and is plain text for others.
+{% endcomment %}
+{% block title %}{{ client.name }} · Clients · OpenBGA Roots{% endblock %}
+{% block breadcrumbs %}{% url 'receipt:client-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Clients" section_url=list_url current=client.name %}{% endblock %}
+{% block page_meta %}
+<ul class="vr-page-meta">
+  {% if client.account_number %}<li>Account <span class="vr-id">{{ client.account_number }}</span></li>{% endif %}
+  <li>{% if client.is_active %}{% include "includes/status.html" with label="Active" tone="success" plain=True %}{% else %}{% include "includes/status.html" with label="Inactive" tone="neutral" plain=True title="No new intake; history stays readable" %}{% endif %}</li>
+  <li>{{ projects|length }} project{{ projects|length|pluralize }}</li>
+  <li>{{ order_total }} chain{{ order_total|pluralize }} of custody</li>
+</ul>
+{% endblock %}
+{% block page_actions %}{% if can_manage_clients %}<a class="btn btn-outline-secondary" href="{% url 'receipt:client-edit' client.pk %}">Edit client</a>{% endif %}{% endblock %}
+{% block content %}
+{% if not client.is_active %}
+<div class="alert alert-secondary" role="status">{% include "includes/status.html" with label="Inactive" tone="neutral" plain=True %}<div>No new intake is accepted for this client. Its history stays readable.</div></div>
+{% endif %}
+<div class="row g-3 mb-3">
+  <div class="col-lg-6">
+    <section class="card h-100" aria-labelledby="client-contact-heading">
+      <div class="card-header"><h2 class="card-title" id="client-contact-heading">Primary contact and address</h2></div>
+      <div class="card-body">
+        <dl class="vr-facts">
+          <div><dt>Contact</dt><dd>{{ client.contact_name|default:"—" }}</dd></div>
+          <div><dt>Email</dt><dd>{% if client.email %}<a href="mailto:{{ client.email }}">{{ client.email }}</a>{% else %}—{% endif %}</dd></div>
+          <div><dt>Phone</dt><dd class="vr-nowrap">{{ client.phone|default:"—" }}</dd></div>
+          <div><dt>Mailing address</dt><dd>{% for line in client.address_lines %}{{ line }}{% if not forloop.last %}<br>{% endif %}{% empty %}<span class="vr-muted">Not recorded</span>{% endfor %}</dd></div>
+        </dl>
+      </div>
+    </section>
+  </div>
+  <div class="col-lg-6">
+    <section class="card h-100" aria-labelledby="client-billing-heading">
+      <div class="card-header"><h2 class="card-title" id="client-billing-heading">Invoicing</h2></div>
+      <div class="card-body">
+        <dl class="vr-facts">
+          <div><dt>Invoice to</dt><dd>{% if client.billing_contact_name or client.billing_email %}{{ client.billing_contact_name }}{% if client.billing_contact_name and client.billing_email %}<br>{% endif %}{% if client.billing_email %}<a href="mailto:{{ client.billing_email }}">{{ client.billing_email }}</a>{% endif %}{% else %}<span class="vr-muted">Primary contact</span>{% endif %}</dd></div>
+          <div><dt>Billing address</dt><dd>{% if client.billing_address %}{{ client.billing_address|linebreaksbr }}{% else %}<span class="vr-muted">Same as mailing address</span>{% endif %}</dd></div>
+          <div><dt>Payment terms</dt><dd>{{ client.get_payment_terms_display|default:"—" }}</dd></div>
+          <div><dt>Purchase order</dt><dd>{% if client.po_required %}Required on each chain of custody{% else %}Not required{% endif %}</dd></div>
+        </dl>
+      </div>
+    </section>
+  </div>
+</div>
+<section class="card mb-3" aria-labelledby="client-notes-heading">
+  <div class="card-header"><h2 class="card-title" id="client-notes-heading">Report instructions and notes</h2></div>
+  <div class="card-body">
+    <dl class="vr-facts">
+      <div><dt>Report instructions</dt><dd>{{ client.report_preferences|default:"—"|linebreaksbr }}</dd></div>
+      <div><dt>Internal notes</dt><dd>{{ client.notes|default:"—"|linebreaksbr }}</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="card vr-table-card mb-3" aria-labelledby="contacts-heading">
+  <div class="card-header"><h2 class="card-title" id="contacts-heading">Additional contacts</h2><span class="vr-count">{{ contacts|length }}</span>{% if can_manage_clients %}<a class="btn btn-sm btn-outline-secondary ms-auto" href="{% url 'receipt:contact-create' client.pk %}">Add contact</a>{% endif %}</div>
+  <div class="card-body">
+    {% if contacts %}
+    <div class="vr-table-wrap"><table class="table table-hover vr-table">
+      <thead><tr><th scope="col">Name</th><th scope="col">Role</th><th scope="col">Email</th><th scope="col">Phone</th><th scope="col">Reports</th></tr></thead>
+      <tbody>
+        {% for contact in contacts %}
+        <tr>
+          <th scope="row">{% if can_manage_clients %}<a class="vr-row-link" href="{% url 'receipt:contact-edit' client.pk contact.pk %}">{{ contact.name }}</a>{% else %}{{ contact.name }}{% endif %}{% if not contact.is_active %} {% include "includes/status.html" with label="Inactive" tone="neutral" plain=True %}{% endif %}</th>
+          <td>{{ contact.role|default:"—" }}</td>
+          <td>{% if contact.email %}<a href="mailto:{{ contact.email }}">{{ contact.email }}</a>{% else %}—{% endif %}</td>
+          <td class="vr-nowrap">{{ contact.phone|default:"—" }}</td>
+          <td>{% if contact.receives_reports %}Receives reports{% else %}—{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}
+    {% include "includes/empty_state.html" with title="No additional contacts" body="Add billing, sampling or report contacts besides the primary contact." %}
+    {% endif %}
+  </div>
+</section>
+
+<section class="card vr-table-card mb-3" aria-labelledby="projects-heading">
+  <div class="card-header"><h2 class="card-title" id="projects-heading">Projects</h2><span class="vr-count">{{ projects|length }}</span>{% if can_manage_clients %}<a class="btn btn-sm btn-outline-secondary ms-auto" href="{% url 'receipt:project-create' %}?client={{ client.pk }}">Add project</a>{% endif %}</div>
+  <div class="card-body">
+    {% if projects %}
+    <div class="vr-table-wrap"><table class="table table-hover vr-table">
+      <thead><tr><th scope="col">Project</th><th scope="col">Number</th><th scope="col">Status</th><th scope="col">Program</th><th scope="col">Project manager</th><th scope="col" class="text-end">Turnaround (days)</th><th scope="col" class="text-end">Chains of custody</th></tr></thead>
+      <tbody>
+        {% for project in projects %}
+        <tr>
+          <th scope="row">{% if can_manage_clients %}<a class="vr-row-link" href="{% url 'receipt:project-edit' project.pk %}">{{ project.name }}</a>{% else %}{{ project.name }}{% endif %}</th>
+          <td class="vr-id">{{ project.number|default:"—" }}</td>
+          <td>{% if project.is_active %}{% include "includes/status.html" with label="Active" tone="success" plain=True %}{% else %}{% include "includes/status.html" with label="Inactive" tone="neutral" plain=True %}{% endif %}</td>
+          <td>{{ project.get_regulatory_program_display|default:"—" }}{% if project.program %}<div class="small vr-muted">{{ project.program }}</div>{% endif %}</td>
+          <td>{% if project.project_manager %}{{ project.project_manager.get_full_name|default:project.project_manager.get_username }}{% else %}—{% endif %}</td>
+          <td class="text-end">{{ project.turnaround_days }}</td>
+          <td class="text-end">{% if project.order_count %}<a href="{% url 'receipt:order-list' %}?project={{ project.pk }}">{{ project.order_count }}<span class="visually-hidden"> chains of custody for {{ project.name }}</span></a>{% else %}0{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}
+    {% include "includes/empty_state.html" with title="No projects yet" body="Add a project for this client before receiving samples." %}
+    {% endif %}
+  </div>
+</section>
+
+<section class="card vr-table-card mb-3" aria-labelledby="orders-heading">
+  <div class="card-header"><h2 class="card-title" id="orders-heading">Recent chains of custody</h2><span class="vr-count">{{ orders|length }} of {{ order_total }}</span>{% if order_total %}<a class="ms-auto" href="{% url 'receipt:order-list' %}?client={{ client.pk }}">All chains of custody</a>{% endif %}</div>
+  <div class="card-body">
+    {% if orders %}
+    <div class="vr-table-wrap"><table class="table table-hover vr-table">
+      <thead><tr><th scope="col">Chain of custody</th><th scope="col">Project</th><th scope="col">Purchase order</th><th scope="col" class="text-end">Samples</th><th scope="col">Delivery target</th></tr></thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <th scope="row"><a class="vr-row-link vr-id" href="{% url 'receipt:order-detail' order.pk %}">{{ order.coc_reference }}</a></th>
+          <td>{{ order.project.name }}</td>
+          <td class="vr-id">{{ order.po_number|default:"—" }}</td>
+          <td class="text-end">{{ order.sample_count }}</td>
+          <td class="vr-nowrap">{% if order.due_at %}<time datetime="{{ order.due_at|date:'c' }}" title="{{ order.due_at|date:'Y-m-d H:i T' }}">{{ order.due_at|date:"Y-m-d H:i" }}</time>{% else %}<span class="vr-muted">Not set</span>{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}
+    {% include "includes/empty_state.html" with title="No chains of custody yet" body="Chains of custody for this client's projects appear here." %}
+    {% endif %}
+  </div>
+</section>
+
+<section class="card vr-table-card mb-3" aria-labelledby="quotes-heading">
+  <div class="card-header"><h2 class="card-title" id="quotes-heading">Quotes</h2><span class="vr-count">{{ quotes|length }}</span></div>
+  <div class="card-body">
+    {% if quotes %}
+    <div class="vr-table-wrap"><table class="table table-hover vr-table">
+      <thead><tr><th scope="col">Quote</th><th scope="col">Status</th><th scope="col">Title</th></tr></thead>
+      <tbody>
+        {% for quote in quotes %}
+        <tr>
+          <th scope="row">{% if can_manage_clients %}<a class="vr-row-link vr-id" href="{% url 'commercial:quote-detail' quote.pk %}">{{ quote.number }}</a>{% else %}<span class="vr-id">{{ quote.number }}</span>{% endif %}</th>
+          <td>{% include "commercial/_quote_status.html" with plain=True %}</td>
+          <td>{{ quote.title }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}
+    {% include "includes/empty_state.html" with title="No quotes" body="Quotes for this client appear here." %}
+    {% endif %}
+  </div>
+</section>
+
+<section class="card vr-table-card mb-3" aria-labelledby="submissions-heading">
+  <div class="card-header"><h2 class="card-title" id="submissions-heading">Client submissions</h2><span class="vr-count">{{ submissions|length }}</span></div>
+  <div class="card-body">
+    {% if submissions %}
+    <div class="vr-table-wrap"><table class="table table-hover vr-table">
+      <thead><tr><th scope="col">Submission</th><th scope="col">Status</th><th scope="col">Chain of custody</th></tr></thead>
+      <tbody>
+        {% for submission in submissions %}
+        <tr>
+          <th scope="row">{% if can_receive %}<a class="vr-row-link vr-id" href="{% url 'commercial:submission-detail' submission.pk %}">{{ submission.number }}</a>{% else %}<span class="vr-id">{{ submission.number }}</span>{% endif %}</th>
+          <td>{% include "commercial/_submission_status.html" with plain=True %}</td>
+          <td class="vr-id">{{ submission.coc_reference }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}
+    {% include "includes/empty_state.html" with title="No client submissions" body="Submissions this client sends through the portal appear here." %}
+    {% endif %}
+  </div>
+</section>
+
+<section class="card vr-table-card mb-3" aria-labelledby="portal-heading">
+  <div class="card-header"><h2 class="card-title" id="portal-heading">Portal accounts</h2><span class="vr-count">{{ portal_users|length }}</span></div>
+  <div class="card-body">
+    {% if portal_users %}
+    <div class="vr-table-wrap"><table class="table vr-table">
+      <thead><tr><th scope="col">Name</th><th scope="col">Email</th><th scope="col">Status</th><th scope="col">Last sign-in</th></tr></thead>
+      <tbody>
+        {% for account in portal_users %}
+        <tr>
+          <th scope="row">{{ account.get_full_name|default:account.get_username }}</th>
+          <td>{{ account.email|default:"—" }}</td>
+          <td>{% if account.is_active %}{% include "includes/status.html" with label="Active" tone="success" plain=True %}{% else %}{% include "includes/status.html" with label="Inactive" tone="neutral" plain=True %}{% endif %}</td>
+          <td class="vr-nowrap">{% if account.last_login %}<time datetime="{{ account.last_login|date:'c' }}" title="{{ account.last_login|date:'Y-m-d H:i T' }}">{{ account.last_login|date:"Y-m-d H:i" }}</time>{% else %}<span class="vr-muted">Never signed in</span>{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}
+    {% include "includes/empty_state.html" with title="No portal accounts" body="No client has signed-in access yet." %}
+    {% endif %}
+    <p class="vr-muted small mt-2 mb-0">Portal access is invitation-only and managed by an administrator. These clients see only their own projects, samples and issued reports.</p>
+  </div>
+</section>
+
+<section class="card" aria-labelledby="history-heading">
+  <div class="card-header"><h2 class="card-title" id="history-heading">History</h2></div>
+  <div class="card-body">
+    {% if history %}
+    <ol class="vr-timeline">
+      {% for event in history|dictsort:"occurred_at" %}{% include "includes/history_item.html" with title=event.action at=event.occurred_at actor=event.actor reason=event.reason %}{% endfor %}
+    </ol>
+    {% else %}
+    {% include "includes/empty_state.html" with title="No recorded changes" body="Changes to this client are listed here with their reasons." %}
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+{% block record_foot %}{% include "includes/record_foot.html" with identifier=client.name %}{% endblock %}

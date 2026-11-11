@@ -1,0 +1,154 @@
+{
+  "id": "analytical-main-preservation",
+  "routes": [
+    "analytical:preservation-assess"
+  ],
+  "title": "Preservation assessment",
+  "purpose": "Compare recorded cooler receipt evidence with this requested test’s exact preservation rule, then record a separate attributed laboratory disposition when needed.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "These are staff pages. Active users with an application staff role can read them; client accounts cannot. Analysts perform result entry and batch work, reviewers decide results, and administrators maintain configuration. Administrators also have operational analyst and reviewer access, but independence rules still apply. Superuser status alone does not grant an application role."
+      ]
+    },
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Sample links and Cancel return to the sample’s receipt/custody record. Staff may read findings/history; recording requires custodian, project manager or reviewer access, including administrators with operational roles. Analyst access alone is read-only. This page is for a currently requested test; a withdrawn test no longer has this page but its assessment history remains with the sample."
+      ]
+    },
+    {
+      "title": "Current findings",
+      "items": [
+        {
+          "label": "Current findings",
+          "description": "Shows the temperature-screen result and whether manual review is needed. The finding is separate from the laboratory’s acceptance/disposition and does not turn into a pass when Proceed or Qualify is recorded."
+        },
+        {
+          "label": "Recorded cooler temperature",
+          "description": "Original supplied reading when retained, exact numeric observation, unit and thermometer/instrument if recorded. This is the cooler receipt observation, not a configured limit or continuously measured sample temperature."
+        },
+        {
+          "label": "Seal observation",
+          "description": "Recorded seal condition; narrative is not interpreted as a pass."
+        },
+        {
+          "label": "Preservation observation",
+          "description": "Recorded receipt preservation check; no chemical/pH conclusion is inferred from text."
+        },
+        {
+          "label": "Receipt discrepancy",
+          "description": "Recorded discrepancy, or None recorded."
+        },
+        {
+          "label": "Rule availability",
+          "description": "Active or Inactive — not evaluated for the exact method version, analyte and matrix."
+        },
+        {
+          "label": "Temperature bounds",
+          "description": "Configured inclusive minimum/maximum in °C. A missing bound means that side is unrestricted; the reading is not rounded down or converted."
+        },
+        {
+          "label": "Container requirements (manual)",
+          "description": "Configured text requiring documented human assessment; not automatically parsed."
+        },
+        {
+          "label": "Chemical preservation requirements (manual)",
+          "description": "Configured chemical/pH requirements, never inferred from observations."
+        },
+        {
+          "label": "Other checks (manual)",
+          "description": "Other configured manual requirements."
+        },
+        {
+          "label": "Method/SOP and applicability",
+          "description": "Recorded rule source, program/applicability and revision context. This source text participates in evidence matching."
+        },
+        {
+          "label": "Recorded containers",
+          "description": "Each container’s label, description, condition and preservation text when recorded."
+        },
+        {
+          "label": "Lab disposition",
+          "description": "Current assessment’s Proceed, Qualify, Hold or Reject and reason, if present. An earlier-evidence Hold/Reject is shown with a warning that it still blocks until a new attributed assessment lifts it."
+        }
+      ]
+    },
+    {
+      "title": "Temperature finding states",
+      "items": [
+        {
+          "label": "Within configured temperature range",
+          "description": "Exact recorded cooler reading lies within configured inclusive bounds, with compatible supported unit. This does not establish any manual preservation condition."
+        },
+        {
+          "label": "Outside configured temperature range",
+          "description": "Exact unrounded reading is outside at least one configured bound. Requires a current reasoned disposition for new approval/release."
+        },
+        {
+          "label": "No temperature requirement",
+          "description": "The active rule explicitly states none; other preservation requirements may still need assessment."
+        },
+        {
+          "label": "Manual review required",
+          "description": "Manual temperature mode, absent/unsupported measurement unit, missing reading or incomplete numeric inputs require human assessment. Manual container/chemical/other requirements also require assessment even when temperature is within range."
+        },
+        {
+          "label": "Rule not configured",
+          "description": "No applicable active rule, including an inactive configured rule. Absence of a rule is not acceptance; a current reasoned disposition is required."
+        }
+      ]
+    },
+    {
+      "title": "Record lab disposition fields",
+      "items": [
+        {
+          "label": "Lab disposition",
+          "description": "Required Proceed, Qualify, Hold or Reject. Proceed/Qualify address required findings when recorded against current evidence; they do not establish regulatory validity or an exception."
+        },
+        {
+          "label": "Assessment evidence and reason",
+          "description": "Required nonblank account addressing findings and manual requirements, at most 4000 characters. Proceed/Qualify evidence, reasons and rule basis appear on issued PDFs/client copies; do not enter internal-only notes."
+        }
+      ]
+    },
+    {
+      "title": "Actions and approval effects",
+      "items": [
+        {
+          "label": "Record assessment",
+          "description": "Save a new append-only assessment with exact evidence snapshot, actor/time and audit event. Earlier records remain. Hold or Reject blocks new approval and release until a newer attributed assessment lifts it, including after receipt evidence or rule changes."
+        },
+        {
+          "label": "Cancel",
+          "description": "Return to the sample without saving a new decision."
+        }
+      ]
+    },
+    {
+      "title": "Evidence changes, history and errors",
+      "paragraphs": [
+        "Receipt evidence, containers, test identity, active requirements or rule source text changes invalidate evidence matching. A current matching assessment is needed wherever a disposition is required. A stale Hold/Reject remains blocking even when changed evidence would otherwise screen within range; a new attributed decision is needed to lift it.",
+        "The form rechecks both the evidence fingerprint and latest assessment. A changed rule/receipt record or another person’s newer assessment rejects the save and keeps typed input. Reload, inspect current evidence and assess again. Do not assume reload preserves your unsaved reason.",
+        "History shows assessments for all tests on this sample, including withdrawn tests, oldest first. Each item identifies test/disposition, actor, time, reason, and Matches current evidence versus Earlier evidence or withdrawn test. Withdrawing/readding the same definition creates a new requested-test identity and does not reuse its old assessment.",
+        "Screening does not establish container temperature, continuous cooling, freezing, chemical preservation or container suitability. No narrative is parsed into acceptance. Issued reports retain their original evidence rather than changing with later rules or assessments."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/preservation_views.py",
+    "analytical/preservation_services.py",
+    "analytical/preservation.py",
+    "analytical/templates/analytical/preservation_assess.html",
+    "analytical/tests/test_preservation_workflow.py",
+    "analytical/tests/test_preservation_pure.py",
+    "reporting/tests/test_preservation_release.py"
+  ]
+}

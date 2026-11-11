@@ -1,0 +1,47 @@
+{
+  "id": "accounts-reset-key",
+  "routes": [
+    "account_reset_password_from_key"
+  ],
+  "title": "Choose a new password",
+  "purpose": "Use the recovery link to replace the account password.",
+  "sections": [
+    {
+      "title": "Fields and actions",
+      "items": [
+        {
+          "label": "New Password",
+          "description": "Required new password, at least eight characters. It must pass the configured checks for similarity to account details, common passwords and entirely numeric values. The confirmation must match exactly. Errors keep the form open; password fields may need entering again."
+        },
+        {
+          "label": "New Password (again)",
+          "description": "Required identical repeat of the replacement."
+        },
+        {
+          "label": "Change Password",
+          "description": "Saves only for a valid, unexpired recovery token. Success opens the password-changed acknowledgement. This deployment does not automatically sign in the account after reset."
+        },
+        {
+          "label": "Cancel",
+          "description": "On a valid reset form, cancels the pending stage by signing out and returns to sign-in."
+        },
+        {
+          "label": "new password reset",
+          "description": "A Bad Token page has no password form and offers this link to request another reset. Already-used, invalid or expired tokens cannot change the account."
+        }
+      ]
+    },
+    {
+      "title": "Link and session rules",
+      "paragraphs": [
+        "The emailed key is moved into this browser’s session before showing the form; continue in the same browser session. Following another account’s reset link while signed in signs out the current different account. Requesting a link does not reset MFA or laboratory permissions. Password fields are not guaranteed to be preserved after validation errors."
+      ]
+    }
+  ],
+  "sources": [
+    "config/settings.py",
+    "templates/allauth/layouts/base.html",
+    "templates/allauth/layouts/manage.html",
+    "uv.lock"
+  ]
+}

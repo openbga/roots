@@ -1,0 +1,2 @@
+{% if batch.matrix == "soil" %}<div class="small">Basis: {% if row.values.result_basis == "wet" %}Wet weight{% elif row.values.result_basis == "dry" %}Dry weight{% else %}{{ row.values.result_basis|default:"Not recorded" }}{% endif %}</div>
+{% if row.values.percent_solids %}<div class="small">{{ row.values.percent_solids }}% solids · {{ row.values.solids_reference }}</div>{% endif %}{% endif %}

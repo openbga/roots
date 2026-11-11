@@ -1,0 +1,139 @@
+{
+  "id": "receipt-schedule",
+  "routes": [
+    "receipt:schedule"
+  ],
+  "title": "Delivery schedule",
+  "purpose": "Prioritize requested tests by the explicit delivery target on their chain of custody. These operational commitments are separate from the holding clocks shown on the worklist.",
+  "sections": [
+    {
+      "title": "Search and filters",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Case-insensitive contains over lab ID, client sample ID, chain-of-custody reference, project/client name, analyte and method code."
+        },
+        {
+          "label": "Stage",
+          "description": "Outstanding work is the default, excluding reported latest results and, unless a disposition filter is selected, rejected samples. Held samples remain. All work includes those records. Other choices select Not batched, Awaiting entry, Entered, Returned for correction, Awaiting review, Approved awaiting report, the four external-source stages, or Reported."
+        },
+        {
+          "label": "Deadline",
+          "description": "All delivery targets includes unset targets. Overdue means target before now; Due today uses the current laboratory date; Next seven days means now through seven days from now, inclusive; No delivery target means unset."
+        },
+        {
+          "label": "Client",
+          "description": "Exact client, including inactive historical records."
+        },
+        {
+          "label": "Method",
+          "description": "More filters: one exact method version, including inactive versions."
+        },
+        {
+          "label": "Matrix / Disposition",
+          "description": "More filters: exact matrix or receipt decision. Explicit Reject allows rejected tests into Outstanding work if they are not reported."
+        }
+      ]
+    },
+    {
+      "title": "Columns and record links",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Lab ID",
+          "description": "Opens sample receipt/custody."
+        },
+        {
+          "label": "Stage",
+          "description": "Derived from the latest internal result or active external route. Reported requires the latest revision to belong to an issued report. A new correction reopens outstanding work even if an earlier revision was issued. An external route links its subcontract."
+        },
+        {
+          "label": "Delivery target",
+          "description": "Local date/time shared by all tests on the order, or Not set. Overdue is marked whenever target precedes now, including when All work shows a reported row. Default sort is earliest target first, with unset targets last."
+        },
+        {
+          "label": "Analyte",
+          "description": "Analyte and catalog unit."
+        },
+        {
+          "label": "Method",
+          "description": "Method code and version."
+        },
+        {
+          "label": "Client / Matrix / Disposition",
+          "description": "Order ownership, sample matrix and current receipt decision."
+        },
+        {
+          "label": "Project / Received",
+          "description": "Initially hidden owning project and receipt time."
+        },
+        {
+          "label": "Batch",
+          "description": "Initially hidden link to the internal batch when assigned; a dash otherwise."
+        }
+      ]
+    },
+    {
+      "title": "Table controls",
+      "paragraphs": [
+        "All laboratory staff can read; portal accounts cannot. Invalid filters show errors and no rows; invalid page size is refused. A no-match state suggests widening filters. No outstanding work means received tests are reported or rejected under default filtering; Open the worklist navigates to analytical work."
+      ],
+      "items": [
+        {
+          "label": "Apply / More filters",
+          "description": "Apply combines criteria over all requested tests and returns to page 1. More filters opens method, matrix and disposition."
+        },
+        {
+          "label": "Clear all / filter chips",
+          "description": "Clear all restores the default Outstanding work view. Removing one chip preserves other criteria and resets paging."
+        },
+        {
+          "label": "Column headings / Columns",
+          "description": "Linked headings sort all matches; record ID breaks ties. Columns changes browser-local column visibility/order and can reset defaults; it does not change work."
+        },
+        {
+          "label": "Rows per page / Pagination",
+          "description": "25 by default; 25, 50 or 100 allowed. Show submits when automatic size submission is unavailable. Size changes start at page 1; First/Previous/Next/Last retain criteria."
+        }
+      ]
+    },
+    {
+      "title": "Column layout dialog",
+      "items": [
+        {
+          "label": "Column checkboxes",
+          "description": "Changes apply immediately. Check to show an optional column or uncheck to hide it. Always shown columns are fixed."
+        },
+        {
+          "label": "Move column up / down",
+          "description": "Moves an optional column within the displayed order; the first/last position disables the unavailable move. You can also drag movable table headers."
+        },
+        {
+          "label": "Reset columns",
+          "description": "Restores this table’s default order and visibility in this browser."
+        },
+        {
+          "label": "Done / Close",
+          "description": "Closes the dialog; layout changes have already been applied and saved locally. No laboratory record is changed."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/views.py",
+    "receipt/forms.py",
+    "receipt/models.py",
+    "receipt/services.py",
+    "accounts/roles.py",
+    "receipt/scheduling.py",
+    "templates/receipt/schedule.html",
+    "templates/receipt/stage.html",
+    "core/grids.py",
+    "receipt/tests/test_scheduling.py",
+    "receipt/tests/test_external_delivery.py",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js"
+  ]
+}

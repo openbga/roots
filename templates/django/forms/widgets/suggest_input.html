@@ -1,0 +1,1 @@
+{% include "django/forms/widgets/input.html" %}{% if widget.suggestions %}<datalist id="{{ widget.attrs.list }}">{% for value in widget.suggestions %}<option value="{{ value }}">{% endfor %}</datalist>{% endif %}

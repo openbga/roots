@@ -1,0 +1,71 @@
+{
+  "id": "admin-authenticators",
+  "routes": [
+    "admin:mfa_authenticator_changelist"
+  ],
+  "title": "Authenticators",
+  "purpose": "See which second sign-in factors each account has enrolled, and find a lost factor to remove so its owner can enroll again.",
+  "sections": [
+    {
+      "title": "Access and columns",
+      "paragraphs": [
+        "Requires an active account with both Staff and Superuser status. A laboratory admin role, Staff status alone or individual authenticator or email-address model permissions granted to a user or group do not open this page.",
+        "These are Django administration tables, not operational grids. The server uses 100 records per page, with numbered page links and a total count. Show all appears when the filtered result count is at most 200 and exceeds one page. There is no Rows per page selector, Columns dialog, row checkbox or bulk action. Linked sortable headings change order; repeated heading clicks change direction or remove that ordering. The sidebar navigation filter only filters module links, not table records.",
+        "Factor secrets and recovery codes are never shown on any administration page."
+      ],
+      "items": [
+        {
+          "label": "User",
+          "description": "Account that enrolled the factor; opens the read-only factor record. Sortable."
+        },
+        {
+          "label": "Type",
+          "description": "Recovery codes or TOTP Authenticator (an authenticator app). The underlying model also lists WebAuthn, which this deployment’s sign-in does not enable. Sortable."
+        },
+        {
+          "label": "Created at",
+          "description": "When the factor was enrolled. Sortable."
+        },
+        {
+          "label": "Last used at",
+          "description": "Most recent successful use of the factor, or a dash if never used. Sortable."
+        }
+      ]
+    },
+    {
+      "title": "Filters",
+      "paragraphs": [
+        "Sidebar filters use links, with All restoring that filter. Show counts or Hide counts toggles per-option counts, and Clear all filters clears active sidebar restrictions. Filtering applies to all records and resets paging.",
+        "Initial order is newest record identity first. This list has no record search box."
+      ],
+      "items": [
+        {
+          "label": "type",
+          "description": "All or one factor type."
+        },
+        {
+          "label": "created at",
+          "description": "Any date, Today, Past 7 days, This month or This year."
+        },
+        {
+          "label": "last used at",
+          "description": "The same date ranges, plus No date and Has date."
+        }
+      ]
+    },
+    {
+      "title": "What cannot be done here",
+      "paragraphs": [
+        "There is no Add button and factors cannot be edited: users enroll and replace their own factors on their Two-factor authentication pages, which prove possession of the device. The only change available here is removing one factor at a time from its record page; each removal is recorded in the account’s audit history. When and on what evidence to remove a user’s factor is the laboratory’s account-recovery decision."
+      ]
+    }
+  ],
+  "sources": [
+    "accounts/admin.py",
+    "accounts/models.py",
+    "accounts/roles.py",
+    "core/admin.py",
+    "config/settings.py",
+    "uv.lock"
+  ]
+}

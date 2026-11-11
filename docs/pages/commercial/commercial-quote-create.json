@@ -1,0 +1,83 @@
+{
+  "id": "commercial-quote-create",
+  "routes": [
+    "commercial:quote-create"
+  ],
+  "title": "New quote",
+  "purpose": "Start a client draft; enter prices and terms on the next page.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "Project managers can create and change quotes; admins inherit this operational role. Client accounts cannot use staff pages or make staff decisions."
+      ]
+    },
+    {
+      "title": "Quote",
+      "items": [
+        {
+          "label": "Client",
+          "description": "Required active client. Establishes ownership and cannot be changed through the later draft editor."
+        },
+        {
+          "label": "Project",
+          "description": "Optional active project belonging to the selected client. Other clients’ active projects may appear in the options, but a mismatch is rejected."
+        },
+        {
+          "label": "Title",
+          "description": "Required description up to 160 characters; surrounding spaces are removed."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Create quote",
+          "description": "Assign a QT number, create draft version 1, record the creator and open the draft editor. Retrying the same creation request returns the same record. The client cannot see this draft."
+        },
+        {
+          "label": "Cancel / Quotes",
+          "description": "Return to quotes without creating a record."
+        }
+      ]
+    },
+    {
+      "title": "Form controls and errors",
+      "items": [
+        {
+          "label": "Required fields and errors",
+          "description": "Asterisks mark required fields. Errors appear beside fields or above the form; entered values stay available for correction after validation fails. A stale-record error requires reloading and reviewing the current record before retrying."
+        },
+        {
+          "label": "Maximize / Restore size",
+          "description": "When this form opens in a dialog, change its size without saving. Small screens already use the full screen."
+        },
+        {
+          "label": "Close form / Cancel",
+          "description": "Leave without saving. If the dialog detects edits, Keep editing returns to the form and Discard changes leaves without saving."
+        },
+        {
+          "label": "Try again",
+          "description": "Retry if loading the dialog failed. During saving, wait for the request to finish; the submit button indicates work is running."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "commercial/urls.py",
+    "commercial/views.py",
+    "commercial/models.py",
+    "commercial/forms.py",
+    "commercial/permissions.py",
+    "accounts/roles.py",
+    "commercial/quotes.py",
+    "commercial/templates/commercial/quote_create.html",
+    "commercial/tests/test_quotes.py",
+    "commercial/tests/test_concurrency.py",
+    "core/form_surfaces.py",
+    "templates/includes/form_dialog.html",
+    "static/js/form-dialog.js",
+    "static/js/app.js"
+  ]
+}

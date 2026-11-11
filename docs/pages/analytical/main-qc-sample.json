@@ -1,0 +1,67 @@
+{
+  "id": "analytical-main-qc-sample",
+  "routes": [
+    "analytical:qc-sample-add"
+  ],
+  "title": "Add QC sample",
+  "purpose": "Create a labeled QC sample in an open analytical or preparation batch, then record observations for its analytes.",
+  "sections": [
+    {
+      "title": "Access and relationship",
+      "paragraphs": [
+        "Only analysts, including administrators with operational access, can create QC samples. A QC sample belongs to one batch and has separate per-test measurement history; it is not a new client field sample. Breadcrumbs and Cancel follow analytical versus preparation batch context. Closed batches cannot gain QC samples."
+      ]
+    },
+    {
+      "title": "Fields",
+      "items": [
+        {
+          "label": "QC type",
+          "description": "Required: Method blank, Laboratory control sample, Matrix spike, Matrix spike duplicate, Laboratory duplicate or Calibration verification. The type determines required parent sample and measurement inputs."
+        },
+        {
+          "label": "Label",
+          "description": "Required, up to 60 characters, unique within this batch after leading/trailing whitespace is removed. Use a meaningful synthetic-style label such as MB-1."
+        },
+        {
+          "label": "Parent sample",
+          "description": "Required for Matrix spike, Matrix spike duplicate and Laboratory duplicate; choose the field sample used from samples represented in this batch. Other QC types require No parent sample. For preparation batches, available samples come from prepared members. A parent already disposed of cannot be used for new QC; preparation cannot precede its collection event."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Add QC sample",
+          "description": "Create the attributed QC sample and open Record measurements. Adding the sample contributes to configured frequency counts but does not satisfy its required measurements."
+        },
+        {
+          "label": "Cancel",
+          "description": "Return to the owning batch without creating QC."
+        }
+      ]
+    },
+    {
+      "title": "Errors and next steps",
+      "paragraphs": [
+        "Errors retain form input. Duplicate labels, closed membership, wrong/missing parent or invalid chronology must be resolved before creation. The laboratory’s configured requirements determine counts; the application does not invent frequencies."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/templates/analytical/form.html",
+    "analytical/qc.py",
+    "analytical/preparation.py",
+    "analytical/tests/test_views.py",
+    "analytical/tests/test_preparation_views.py",
+    "analytical/tests/test_disposed_samples.py",
+    "analytical/tests/test_qc_parent_chronology.py"
+  ]
+}

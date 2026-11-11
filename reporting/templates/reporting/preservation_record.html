@@ -1,0 +1,9 @@
+{% if r.preservation %}
+<strong>Receipt preservation screening:</strong> {{ r.preservation.label }}.
+{% if r.preservation.label != r.preservation.evidence.temperature.label %}{{ r.preservation.evidence.temperature.label }}.{% endif %}
+{% with o=r.preservation.evidence.observations %}Recorded cooler reading: {{ o.cooler_temperature_original|default:o.cooler_temperature }} {{ o.unit }}.{% endwith %}
+{% if r.preservation.decision %}Lab disposition: {{ r.preservation.decision.label }} — {{ r.preservation.decision.reason }} ({{ r.preservation.decision.actor }}).{% elif r.preservation.evidence.manual_requirements %}Manual requirements recorded.{% endif %}
+{% if r.preservation.evidence.rule.basis %}Basis: {{ r.preservation.evidence.rule.basis }}{% endif %}
+Container temperature, continuous preservation and regulatory acceptance are not established by this screen.
+{% else %}Preservation screening: not recorded in this issued version.{% endif %}
+<br>{% include "reporting/preparation_record.html" %}

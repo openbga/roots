@@ -1,0 +1,8 @@
+{% comment %}One input row of an MDL calculation snapshot. Parameters: r (the stored input), kind_label.
+Times are stored as ISO strings; they print as YYYY-MM-DD HH:MM with the full value in the tooltip.{% endcomment %}
+<tr><th scope="row">{{ kind_label }}</th><td class="vr-id">{{ r.supplied_text }}</td>
+  <td class="vr-nowrap"><time datetime="{{ r.prepared_at }}" title="{{ r.prepared_at }}">{{ r.prepared_at|slice:":10" }} {{ r.prepared_at|slice:"11:16" }}</time>{% if r.prepared_assumed %} (assumed){% endif %}</td>
+  <td class="vr-nowrap"><time datetime="{{ r.analyzed_at }}" title="{{ r.analyzed_at }}">{{ r.analyzed_at|slice:":10" }} {{ r.analyzed_at|slice:"11:16" }}</time></td>
+  <td>{{ r.batch }} / {{ r.preparation }}{% if r.kind == "blank" %}<div class="vr-form-note">{% if r.source_context %}Basis: {{ r.source_context.basis }}; analytical run {{ r.source_context.analytical_batch|default:"not recorded" }}{% if r.source_context.reason %}. {{ r.source_context.reason }}{% endif %}{% else %}Basis not recorded{% endif %}</div>{% endif %}</td>
+  <td>{{ r.instrument|default:"—" }}</td><td>{{ r.entered_by }}</td>
+  <td>{% if r.used %}Yes{% elif r.excluded %}Excluded: {{ r.exclusion_reason }}{% else %}No (outside window){% endif %}</td></tr>

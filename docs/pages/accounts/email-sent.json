@@ -1,0 +1,23 @@
+{
+  "id": "accounts-email-sent",
+  "routes": [
+    "account_email_verification_sent"
+  ],
+  "title": "Verify your email",
+  "purpose": "Follow the email sent to confirm ownership of an address.",
+  "sections": [
+    {
+      "title": "State and next step",
+      "paragraphs": [
+        "Verify Your Email Address has no editable fields or resend action. Follow the verification link in the mailbox and check spam if needed. The stock text mentions signup, but public sign-up is closed here; this screen also serves existing-account verification. Delivery depends on the deployment’s outgoing-mail configuration. A message being requested does not make an address verified. Return to Email Addresses to request another link when needed."
+      ]
+    }
+  ],
+  "sources": [
+    "config/settings.py",
+    "templates/allauth/layouts/base.html",
+    "templates/allauth/layouts/manage.html",
+    "uv.lock",
+    "accounts/adapter.py"
+  ]
+}

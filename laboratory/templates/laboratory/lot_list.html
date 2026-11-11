@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load laboratory_extras %}
+{% comment %}Lots. Context: page_obj (lots_with_state), filter_form, q, sort, per_page, active_filters, filtered, today, can_use_stock.{% endcomment %}
+{% block page_heading %}Inventory{% endblock %}
+{% block page_actions %}{% if can_use_stock %}<a class="btn btn-primary" href="{% url 'laboratory:lot-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New lot</a>{% endif %}{% endblock %}
+{% block content %}
+{% include "laboratory/_tabs.html" %}
+<section class="card vr-table-card" aria-labelledby="lots-heading">
+  <h2 class="visually-hidden" id="lots-heading">Lots</h2>
+  {% include "includes/grid_toolbar.html" with label="Filter lots" q=q placeholder="Material, lot, vendor, reference or location" inline=inline more=more more_open=more_open grid="laboratory.lots" %}
+  {% if page_obj.paginator.count %}
+  <div class="vr-table-wrap">
+    <table class="table table-hover vr-table" data-vr-grid="laboratory.lots" data-vr-grid-version="2" aria-labelledby="lots-heading">
+      <thead><tr>
+        {% include "includes/sort_header.html" with label="Lot" asc="lot" desc="-lot" col="lot" locked=True %}
+        {% include "includes/sort_header.html" with label="Material" asc="material" desc="-material" col="material" %}
+        <th scope="col" data-vr-col="kind" data-vr-col-label="Kind" data-vr-col-hidden>Kind</th>
+        {% include "includes/sort_header.html" with label="Vendor" asc="vendor" desc="-vendor" col="vendor" hidden=True %}
+        {% include "includes/sort_header.html" with label="Received / prepared" asc="received" desc="-received" first="desc" col="received" hidden=True %}
+        {% include "includes/sort_header.html" with label="Expires" asc="expires" desc="-expires" col="expires" %}
+        {% include "includes/sort_header.html" with label="On hand" asc="on_hand" desc="-on_hand" first="desc" col="on_hand" class="text-end" %}
+        <th scope="col" data-vr-col="unit" data-vr-col-label="Unit">Unit</th>
+        {% include "includes/sort_header.html" with label="Location" asc="location" desc="-location" col="location" %}
+        {% include "includes/sort_header.html" with label="Status" asc="status" desc="-status" col="status" %}
+      </tr></thead>
+      <tbody>
+        {% for lot in page_obj %}
+        {% lot_status lot today as st %}
+        <tr>
+          <th scope="row"><a class="vr-row-link vr-id" href="{% url 'laboratory:lot-detail' lot.pk %}">{{ lot.lot_number }}</a></th>
+          <td>{{ lot.material.name }}</td>
+          <td>{{ lot.material.get_kind_display }}</td>
+          <td>{{ lot.vendor|default:"—" }}</td>
+          <td class="vr-nowrap">{{ lot.received_on|default:lot.prepared_on|date:"Y-m-d" }}{% if lot.source == "prepared" %} <span class="vr-muted small">prepared</span>{% endif %}</td>
+          <td class="vr-nowrap"><time datetime="{{ lot.expires_on|date:'Y-m-d' }}">{{ lot.expires_on|date:"Y-m-d" }}</time></td>
+          <td class="text-end vr-nowrap">{{ lot.quantity_on_hand|qty }}</td>
+          <td>{{ lot.unit }}</td>
+          <td>{{ lot.storage_location }}</td>
+          <td>{% include "includes/status.html" with label=st.label tone=st.tone plain=True %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "includes/pagination.html" with noun="lots" filtered=filtered %}
+  {% elif filter_form.errors %}
+  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above." clear_url=request.path %}
+  {% elif filtered %}
+  {% include "includes/empty_state.html" with kind="no-results" title="No lots match these filters" body="Check the material or lot number, or clear the filters." clear_url=request.path %}
+  {% else %}
+  {% if can_use_stock %}{% url 'laboratory:lot-create' as create_url %}{% endif %}
+  {% include "includes/empty_state.html" with title="No lots recorded yet" body="Define a material, then record each lot received or prepared with its expiry and quantity." action_url=create_url action_label="New lot" %}
+  {% endif %}
+</section>
+{% endblock %}

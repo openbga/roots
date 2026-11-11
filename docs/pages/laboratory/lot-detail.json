@@ -1,0 +1,170 @@
+{
+  "id": "laboratory-lot-detail",
+  "routes": [
+    "laboratory:lot-detail"
+  ],
+  "title": "Lot details",
+  "purpose": "Review one lot, exact balance, preparation lineage and stock ledger.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Available to active signed-in lab staff with an admin, custodian, analyst, reviewer, approver or project manager role. Client accounts and accounts without a lab role cannot open laboratory pages. Sidebar links open Lab overview, Inventory, Equipment, Training and Nonconformances. Breadcrumbs return to the list or parent record."
+      ]
+    },
+    {
+      "title": "Header and lot facts",
+      "items": [
+        {
+          "label": "Lot number, state, on hand and Expires",
+          "description": "Identity, exact amount with unit and expiry. Display state takes precedence in this order: Retired; Expired after the expiry date; Depleted at zero balance; Expiring through 30 days from today; otherwise In stock. The expiry date itself is still unexpired. The status highlight always uses 30 days even when a filter uses another window."
+        },
+        {
+          "label": "Material",
+          "description": "Link to shared definition."
+        },
+        {
+          "label": "Source",
+          "description": "Purchased / supplied or Prepared in the lab."
+        },
+        {
+          "label": "Vendor",
+          "description": "Supplier or dash if absent."
+        },
+        {
+          "label": "Catalog / certificate reference",
+          "description": "Optional traceability reference."
+        },
+        {
+          "label": "Stated concentration",
+          "description": "Original label/certificate text and unit; no calculation or conversion."
+        },
+        {
+          "label": "Received / Prepared",
+          "description": "Entered dates, shown when present."
+        },
+        {
+          "label": "Prepared from",
+          "description": "Parent lot link and material, when present."
+        },
+        {
+          "label": "Storage",
+          "description": "Current location and optional conditions."
+        },
+        {
+          "label": "Opening quantity",
+          "description": "Original quantity; later movements do not rewrite it."
+        },
+        {
+          "label": "Material specification",
+          "description": "Current shared specification, not a frozen lot certificate."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Edit",
+          "description": "Admin, analyst and reviewer roles can correct vendor, reference, concentration, expiry and storage. Hidden on retired lots."
+        },
+        {
+          "label": "Record receipt",
+          "description": "Admin, analyst and reviewer roles can add quantity to the same non-retired lot."
+        },
+        {
+          "label": "Record use",
+          "description": "Admin, analyst and reviewer roles can consume stock against a batch or purpose. Expired use needs confirmation and remains flagged."
+        },
+        {
+          "label": "Record adjustment",
+          "description": "Admin and reviewer roles can append a signed correction with a reason."
+        },
+        {
+          "label": "Retire lot",
+          "description": "Admin and reviewer roles can write off all remaining quantity and retire with a reason. Retired lots have no stock buttons."
+        },
+        {
+          "label": "Reverse",
+          "description": "Admin and reviewer roles can undo an unreversed, non-reversal movement on a non-retired lot. Cannot make balance negative."
+        }
+      ]
+    },
+    {
+      "title": "Stock movements",
+      "items": [
+        {
+          "label": "Rows and order",
+          "description": "Newest effective time first, then newest ID, at most 200 rows, no pagination. Earlier rows remain stored."
+        },
+        {
+          "label": "When",
+          "description": "Effective time to the second, not necessarily system recording time."
+        },
+        {
+          "label": "Movement",
+          "description": "Received / prepared, Used, Adjustment, Disposed or Reversal. Reversed identifies an undone original. Used after expiry preserves the flag for the use date."
+        },
+        {
+          "label": "Change",
+          "description": "Signed exact amount and unit; positive adds, negative removes."
+        },
+        {
+          "label": "Balance",
+          "description": "Balance after the movement was recorded, in lot unit. Backdated effective times can make displayed balances differ from a chronological running total."
+        },
+        {
+          "label": "Batch / purpose",
+          "description": "Optional batch link, purpose and reason/note."
+        },
+        {
+          "label": "By",
+          "description": "Person who recorded the movement."
+        }
+      ]
+    },
+    {
+      "title": "Related records",
+      "items": [
+        {
+          "label": "Prepared from this lot",
+          "description": "All child lot links, Material and Prepared date; default expiry/name/lot ordering and no cap."
+        },
+        {
+          "label": "Linked nonconformances",
+          "description": "Newest 20 issues with Number link, Title and Status. Count is displayed rows. Add nonconformance preselects this lot and Standard / reagent category; an empty state appears when none are linked."
+        }
+      ]
+    },
+    {
+      "title": "History",
+      "paragraphs": [
+        "History shows up to the latest 50 audit events, oldest of those first and the newest last. Each shows action, recorded time, actor and reason when supplied. If the record has more than 50 audit events, older events beyond this cap are not shown in this panel. They remain stored. This panel is separate from the operational ledger or timeline."
+      ]
+    },
+    {
+      "title": "Record footer",
+      "paragraphs": [
+        "The footer repeats the record identifier and shows Viewed with the time this page was produced in the deployment time zone and the signed-in viewer. This is a viewing timestamp, distinct from creation, event, review or closure time. Numbered section headings identify panels on the record page."
+      ]
+    }
+  ],
+  "sources": [
+    "laboratory/urls.py",
+    "laboratory/forms.py",
+    "laboratory/models.py",
+    "laboratory/permissions.py",
+    "laboratory/inventory_views.py",
+    "laboratory/inventory.py",
+    "laboratory/selectors.py",
+    "laboratory/templates/laboratory/lot_detail.html",
+    "laboratory/templates/laboratory/_linked_nc.html",
+    "laboratory/templates/laboratory/form.html",
+    "laboratory/tests/test_inventory.py",
+    "laboratory/tests/test_views.py",
+    "templates/includes/record_foot.html",
+    "laboratory/common.py",
+    "core/models.py",
+    "laboratory/templates/laboratory/_history.html"
+  ]
+}

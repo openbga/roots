@@ -1,0 +1,44 @@
+{
+  "id": "accounts-request-login-code",
+  "routes": [
+    "account_request_login_code"
+  ],
+  "title": "Request a sign-in code",
+  "purpose": "Request a one-time email code to sign in to an account your laboratory has already issued, without entering its password.",
+  "sections": [
+    {
+      "title": "Fields and actions",
+      "items": [
+        {
+          "label": "Email",
+          "description": "Required email address on your laboratory account. Enter an email address, not a username. The address determines the code recipient and account; it does not create an account or grant new roles. An invalid address format shows a field error."
+        },
+        {
+          "label": "Send code",
+          "description": "Requests a code and opens Enter Sign-In Code in this browser session. For an active account, the email contains a one-time code that expires five minutes after this request. Keep this browser window open and type the code here when it arrives. Requests are rate limited; if a limit is reached, wait before trying again."
+        },
+        {
+          "label": "Sign in with a password instead",
+          "description": "Returns to the username-or-email and password form. Password sign-in remains available; an email code is an optional alternative."
+        }
+      ]
+    },
+    {
+      "title": "Account and delivery conditions",
+      "paragraphs": [
+        "Staff and client accounts share this flow. The same confirmation page appears for unknown or inactive accounts, without a usable sign-in code. An address without an active account may receive an account-information email instead. Public sign-up is closed; contact your laboratory if you need an account or the recorded address is wrong.",
+        "The email-code option is enabled when this deployment uses an email backend other than the disabled dummy backend. Its availability does not confirm successful email delivery. Check your mail folders and contact the laboratory if the code does not arrive. You can request replacements on the confirmation page, subject to its limits and the original expiry time.",
+        "A valid code verifies the account email and continues the normal sign-in checks, including an enrolled second factor when applicable. It does not change laboratory roles or which client records the account may access. Accounts that are already signed in are redirected to their signed-in destination."
+      ]
+    }
+  ],
+  "sources": [
+    "templates/account/request_login_code.html",
+    "templates/account/login.html",
+    "config/settings.py",
+    "accounts/adapter.py",
+    "accounts/models.py",
+    "accounts/tests/test_login.py",
+    "uv.lock"
+  ]
+}

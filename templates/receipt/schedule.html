@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% comment %}
+Delivery schedule: requested tests by the order's delivery target. Context (receipt.scheduling.
+schedule_response): page_obj of RequestedTest (stage, stage_label, overdue), filter_form
+(ScheduleFilter), q, sort, per_page, active_filters, now. Server owns search, filters, sort and
+pagination; grid.js only presents columns. Delivery targets are not holding-time deadlines.
+{% endcomment %}
+{% block page_intro %}<p class="vr-page-intro">Requested tests by the delivery target of their chain of custody; holding times are tracked on the worklist.</p>{% endblock %}
+{% block content %}
+{% url 'analytical:batch-worklist' as worklist_url %}
+<section class="card vr-table-card" aria-labelledby="schedule-heading">
+  <h2 class="visually-hidden" id="schedule-heading">Scheduled tests</h2>
+  {% include "includes/grid_toolbar.html" with label="Filter the delivery schedule" grid="receipt.schedule" %}
+  {% if page_obj.paginator.count %}
+  <div class="vr-table-wrap">
+    <table class="table table-hover vr-table" data-vr-grid="receipt.schedule" data-vr-grid-version="2" aria-labelledby="schedule-heading">
+      <thead>
+        <tr>
+          {% include "includes/sort_header.html" with label="Lab ID" asc="lab_id" desc="-lab_id" col="lab_id" locked=True %}
+          {% include "includes/sort_header.html" with label="Stage" asc="stage" desc="-stage" col="stage" %}
+          {% include "includes/sort_header.html" with label="Delivery target" asc="due_at" desc="-due_at" col="due_at" %}
+          {% include "includes/sort_header.html" with label="Analyte" asc="analyte" desc="-analyte" col="analyte" %}
+          {% include "includes/sort_header.html" with label="Method" asc="method" desc="-method" col="method" %}
+          {% include "includes/sort_header.html" with label="Client" asc="client" desc="-client" col="client" %}
+          {% include "includes/sort_header.html" with label="Matrix" asc="matrix" desc="-matrix" col="matrix" %}
+          {% include "includes/sort_header.html" with label="Disposition" asc="disposition" desc="-disposition" col="disposition" %}
+          {% include "includes/sort_header.html" with label="Project" asc="project" desc="-project" col="project" hidden=True %}
+          {% include "includes/sort_header.html" with label="Received" asc="received_at" desc="-received_at" first="desc" col="received_at" hidden=True %}
+          <th scope="col" data-vr-col="batch" data-vr-col-hidden>Batch</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in page_obj %}
+        {% with sample=item.sample order=item.sample.order %}
+        <tr>
+          <th scope="row"><a class="vr-row-link vr-id" href="{% url 'receipt:sample-detail' sample.pk %}">{{ sample.lab_id }}</a></th>
+          <td>{% include "receipt/stage.html" %}</td>
+          <td class="vr-nowrap">
+            {% if order.due_at %}<time datetime="{{ order.due_at|date:'c' }}" title="{{ order.due_at|date:'Y-m-d H:i T' }}">{{ order.due_at|date:"Y-m-d H:i" }}</time>
+            {% if item.overdue %} {% include "includes/status.html" with label="Overdue" tone="danger" plain=True %}{% endif %}
+            {% else %}<span class="vr-muted">Not set</span>{% endif %}
+          </td>
+          <td>{{ item.definition.analyte.name }} <span class="vr-muted small">{{ item.definition.unit }}</span></td>
+          <td>{{ item.definition.method.code }} <span class="vr-muted small">({{ item.definition.method.version }})</span></td>
+          <td>{{ order.project.client }}</td>
+          <td>{{ sample.get_matrix_display }}</td>
+          <td>{% include "receipt/disposition.html" with plain=True %}</td>
+          <td>{{ order.project.name }}</td>
+          <td class="vr-nowrap"><time datetime="{{ sample.received_at|date:'c' }}" title="{{ sample.received_at|date:'Y-m-d H:i T' }}">{{ sample.received_at|date:"Y-m-d H:i" }}</time></td>
+          <td class="vr-id">{% if item.result.batch %}{% url 'analytical:batch-detail' item.result.batch.pk as batch_url %}{% if batch_url %}<a href="{{ batch_url }}">{{ item.result.batch.number }}</a>{% else %}{{ item.result.batch.number }}{% endif %}{% else %}<span class="vr-muted">—</span>{% endif %}</td>
+        </tr>
+        {% endwith %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "includes/pagination.html" with noun="tests" filtered=active_filters|default:q %}
+  {% elif filter_form.errors %}
+  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above; nothing was hidden by an invalid filter." clear_url=request.path %}
+  {% elif active_filters or q %}
+  {% include "includes/empty_state.html" with kind="no-results" title="No scheduled tests match these filters" body="Widen the stage or delivery target, or clear the filters to see all outstanding work." clear_url=request.path %}
+  {% else %}
+  {% include "includes/empty_state.html" with title="No outstanding work" body="Every received test is reported or rejected. New work appears here when samples are received." action_url=worklist_url action_label="Open the worklist" %}
+  {% endif %}
+</section>
+{% endblock %}

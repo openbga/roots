@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load laboratory_extras %}
+{% block breadcrumbs %}{% url 'laboratory:material-list' as materials_url %}{% include "includes/breadcrumbs.html" with section="Inventory" tab="Materials" tab_url=materials_url current=material.name %}{% endblock %}
+{% block page_meta %}<ul class="vr-page-meta"><li>{% if material.is_active %}{% include "laboratory/_status.html" with kind="material" value="active" label="Active" %}{% else %}{% include "laboratory/_status.html" with kind="material" value="inactive" label="Inactive" %}{% endif %}</li><li>{{ material.get_kind_display }}</li><li>Counted in {{ material.unit }}</li></ul>{% endblock %}
+{% block page_actions %}{% if can_manage_stock %}<a class="btn btn-outline-secondary" href="{% url 'laboratory:material-edit' material.pk %}">Edit</a>{% endif %}{% endblock %}
+{% block content %}
+<section class="card mb-3" aria-labelledby="mat-heading"><div class="card-header"><h2 class="card-title" id="mat-heading">Specification</h2></div>
+  <div class="card-body"><dl class="vr-facts">
+    <div><dt>CAS number</dt><dd class="vr-id">{{ material.cas_number|default:"—" }}</dd></div>
+    <div><dt>Storage requirements</dt><dd>{{ material.storage_requirements|default:"—" }}</dd></div>
+    <div><dt>Specification</dt><dd>{{ material.specification|default:"—"|linebreaksbr }}</dd></div>
+  </dl></div></section>
+<section class="card vr-table-card" aria-labelledby="mlots-heading"><div class="card-header"><h2 class="card-title" id="mlots-heading">Lots</h2><span class="vr-count">{{ lots|length }}{% if lots|length >= 100 %}, newest 100 shown{% endif %}</span>{% if can_use_stock and material.is_active %}<a class="btn btn-sm btn-outline-secondary ms-auto" href="{% url 'laboratory:lot-create' %}?material={{ material.pk }}">Add lot</a>{% endif %}</div>
+  {% if lots %}
+  <div class="vr-table-wrap"><table class="table table-hover vr-table"><thead><tr><th scope="col">Lot</th><th scope="col">Vendor</th><th scope="col">Expires</th><th scope="col" class="text-end">On hand</th><th scope="col">Unit</th><th scope="col">Location</th><th scope="col">Status</th></tr></thead>
+  <tbody>{% for lot in lots %}{% lot_status lot as st %}
+    <tr><th scope="row"><a class="vr-row-link vr-id" href="{% url 'laboratory:lot-detail' lot.pk %}">{{ lot.lot_number }}</a></th><td>{{ lot.vendor|default:"—" }}</td><td class="vr-nowrap"><time datetime="{{ lot.expires_on|date:'Y-m-d' }}">{{ lot.expires_on|date:"Y-m-d" }}</time></td><td class="text-end vr-nowrap">{{ lot.quantity_on_hand|qty }}</td><td>{{ lot.unit }}</td><td>{{ lot.storage_location }}</td><td>{% include "includes/status.html" with label=st.label tone=st.tone plain=True %}</td></tr>{% endfor %}
+  </tbody></table></div>
+  {% else %}{% include "includes/empty_state.html" with title="No lots yet" body="Add a lot of this material to start tracking it." %}{% endif %}
+</section>
+{% include "laboratory/_history.html" %}
+{% endblock %}
+{% block record_foot %}{% include "includes/record_foot.html" with identifier=material.name %}{% endblock %}

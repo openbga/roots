@@ -1,0 +1,92 @@
+{
+  "id": "analytical-support-mdl-observation-add",
+  "routes": [
+    "analytical:mdl-observation-add"
+  ],
+  "title": "Add MDL observation",
+  "purpose": "Append one exact spiked-sample or method-blank observation with preparation identity and chronology.",
+  "sections": [
+    {
+      "title": "Context and fields",
+      "paragraphs": [
+        "Active internal staff with a laboratory role can read MDL records. Analysts enter observations, import routine blanks and calculate. Analysts or reviewers can exclude observations and close studies; the page buttons for these two actions are shown to analysts. Only an independent reviewer can decide a calculation. Admin includes operational roles but never bypasses independence; client accounts and superuser status alone do not grant access.",
+        "The header shows Study, test definition, test Unit and study Spiking level. Analyst access and an open study are required to save."
+      ],
+      "items": [
+        {
+          "label": "Sample type",
+          "description": "Required Spiked sample or Method blank; initial choice is Spiked sample."
+        },
+        {
+          "label": "Result",
+          "description": "Required original numeric result or ND, at most 60 characters. Numerical text is preserved with exact decimals; no thousands separators, units or comparisons. ND is stored without a numeric value. Nonpositive or ND spikes may be recorded but prevent an evaluated calculation."
+        },
+        {
+          "label": "Spiking level",
+          "description": "Prefilled with the study level. Required and positive for spikes; calculation requires exact equality with the study level. Ignored for blanks."
+        },
+        {
+          "label": "Qualitative identification met",
+          "description": "Choose Yes or No for spikes; a missing answer is rejected. A No observation can be retained but prevents an evaluated calculation. Not used for blanks."
+        },
+        {
+          "label": "Prepared",
+          "description": "Required actual local preparation date/time. Cannot be after analysis."
+        },
+        {
+          "label": "Analysed",
+          "description": "Required actual local analysis time; cannot exceed the server clock by more than two minutes."
+        },
+        {
+          "label": "Preparation batch",
+          "description": "Required batch identity, at most 60 characters; trimmed. It contributes to batch-spread checks."
+        },
+        {
+          "label": "Preparation / extract ID",
+          "description": "Required extract identity, at most 60 characters; trimmed. Use the same batch/extract labels for repeated analyses of one preparation, including across instruments."
+        },
+        {
+          "label": "Instrument",
+          "description": "Optional name, at most 80 characters. If multiple instrument names occur, every observation must identify an instrument and per-instrument date spread is checked."
+        }
+      ]
+    },
+    {
+      "title": "Actions and history",
+      "items": [
+        {
+          "label": "Add observation",
+          "description": "Appends the observation with contributor and timestamp, records an audit event and returns to the study. The study is locked and rechecked before saving."
+        },
+        {
+          "label": "Save and add another",
+          "description": "Saves the observation, then opens a fresh observation form with the initial spike defaults. It does not copy the prior observation’s entered fields."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the study without saving."
+        }
+      ]
+    },
+    {
+      "title": "Calculation eligibility",
+      "paragraphs": [
+        "Readiness requires at least seven distinct spike preparations and seven distinct blank preparations, with at least three preparation batches, three actual preparation dates and three analysis dates separately for spikes and blanks. Batch and extract labels identify preparations case-insensitively after trimming; repeated analyses of one extract increase analyses but not preparations. Assumed preparation dates cannot prove date spread. Calendar dates follow the laboratory time zone. Every included spike must have the study’s one positive spiking level, a positive numerical result and successful qualitative identification. Spikes older than 24 months make the calculation not evaluated, rather than being silently dropped. When multiple instrument names occur, every observation needs an instrument and each instrument needs at least two spikes and two blanks prepared and analysed on different dates.",
+        "Observations cannot be edited or deleted here. For a documented gross failure use exclusion with a reason; record replacement observations as new evidence. Save errors show on the bound form."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/mdl_views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/mdl_services.py",
+    "analytical/mdl.py",
+    "analytical/selectors.py",
+    "analytical/templates/analytical/mdl_observation_form.html",
+    "analytical/tests/test_mdl_views.py",
+    "analytical/tests/test_mdl_workflow.py",
+    "analytical/tests/test_mdl_pure.py",
+    "analytical/parsing.py"
+  ]
+}

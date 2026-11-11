@@ -1,0 +1,41 @@
+# Local use only. `docker compose up -d db` runs the development database.
+# `docker compose --profile app up --build` also builds and runs the application for a local
+# trial at http://127.0.0.1:8000 (DEBUG mode, development credentials, loopback only).
+# This is not a production configuration; see the README for deployment.
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: roots
+      POSTGRES_PASSWORD: roots
+      POSTGRES_DB: roots
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U roots -d roots"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  web:
+    profiles: ["app"]
+    build: .
+    environment:
+      DEBUG: "true"
+      DATABASE_URL: postgresql://roots:roots@db:5432/roots
+      ALLOWED_HOSTS: localhost,127.0.0.1
+    command:
+      - sh
+      - -c
+      - >-
+        python manage.py migrate --noinput &&
+        exec gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 2 --timeout 60
+        --error-logfile -
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  postgres_data:

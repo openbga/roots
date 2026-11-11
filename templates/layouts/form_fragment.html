@@ -1,0 +1,16 @@
+{# Same server-rendered form and permissions; only the surrounding document changes. #}
+<section data-vr-form-page data-vr-form-url="{{ request.get_full_path }}" data-vr-form-size="{{ form_surface.size|default:'lg' }}">
+  <template data-vr-documentation-source>{% include "documentation/content.html" %}</template>
+  <div class="vr-page-header">
+    {% block breadcrumbs %}{% endblock %}
+    <h1 class="vr-page-title">{% block page_heading %}{{ page_title }}{% endblock %}</h1>
+  </div>
+  {% block page_meta %}{% endblock %}
+  {% block page_intro %}{% endblock %}
+  {% block page_actions %}{% endblock %}
+  {% include "includes/messages.html" %}
+  {% block content %}{% endblock %}
+  {% block record_foot %}{% endblock %}
+</section>
+{% block extra_css %}{% endblock %}
+{% block extra_js %}{% endblock %}

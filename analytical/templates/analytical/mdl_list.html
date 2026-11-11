@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load catalog_extras %}
+{% comment %}MDL studies. Server owns search, filters, sort and paging; grid.js presents columns.
+Optional columns (hidden by default): Created, Created by, Spiking level.{% endcomment %}
+{% block page_intro %}<p class="vr-page-intro">Method detection limit studies follow 40 CFR Part 136 Appendix B (Revision 2) for the laboratory's own records.</p>{% endblock %}
+{% block page_actions %}
+{% if can_enter %}<a class="btn btn-primary" href="{% url 'analytical:mdl-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New MDL study</a>{% endif %}
+{% endblock %}
+{% block content %}
+<section class="card vr-table-card" aria-labelledby="mdl-heading">
+  <h2 class="visually-hidden" id="mdl-heading">MDL studies</h2>
+  {% include "includes/grid_toolbar.html" with label="Filter MDL studies" grid=grid_key %}
+  {% if page_obj.paginator.count %}
+  <div class="vr-table-wrap">
+    <table class="table table-hover vr-table" data-vr-grid="analytical.mdl_studies" data-vr-grid-version="1" aria-labelledby="mdl-heading">
+      <thead><tr>
+        <th scope="col" data-vr-col="study" data-vr-col-locked>Study</th>
+        {% include "includes/sort_header.html" with label="Analyte" asc="analyte" desc="-analyte" col="analyte" %}
+        {% include "includes/sort_header.html" with label="Method" asc="method" desc="-method" col="method" %}
+        <th scope="col" data-vr-col="matrix">Matrix</th>
+        <th scope="col" data-vr-col="kind">Kind</th>
+        <th scope="col" class="text-end" data-vr-col="data" data-vr-col-label="Spikes / blanks">Spikes / blanks</th>
+        <th scope="col" data-vr-col="state">State</th>
+        {% include "includes/sort_header.html" with label="Current MDL" asc="current" desc="-current" class="text-end" col="current" %}
+        {% include "includes/sort_header.html" with label="Last review" asc="reviewed" desc="-reviewed" first="desc" col="reviewed" %}
+        <th scope="col" data-vr-col="due">Recalculate by</th>
+        {% include "includes/sort_header.html" with label="Created" asc="created" desc="-created" first="desc" col="created" hidden=True %}
+        <th scope="col" data-vr-col="created_by" data-vr-col-hidden>Created by</th>
+        <th scope="col" class="text-end" data-vr-col="spiking_level" data-vr-col-hidden>Spiking level</th>
+      </tr></thead>
+      <tbody>
+        {% for s in page_obj %}
+        <tr>
+          <th scope="row"><a class="vr-row-link vr-id" href="{% url 'analytical:mdl-detail' s.pk %}">{{ s.number }}</a></th>
+          <td>{{ s.definition.analyte }}</td>
+          <td>{{ s.definition.method }}</td>
+          <td>{{ s.definition.get_matrix_display }}</td>
+          <td>{{ s.get_kind_display }}{% if s.status == "closed" %} <span class="vr-muted small">(closed)</span>{% endif %}</td>
+          <td class="text-end">{{ s.spike_count }} / {{ s.blank_count }}</td>
+          <td>{% include "analytical/_mdl_state.html" %}</td>
+          <td class="text-end">{% if s.current_mdl is not None %}{{ s.current_mdl|plain_decimal }} {{ s.definition.unit }}{% else %}<span class="vr-muted">—</span>{% endif %}</td>
+          <td class="vr-nowrap">{% if s.current_reviewed_at %}<time datetime="{{ s.current_reviewed_at|date:'c' }}" title="{{ s.current_reviewed_at|date:'Y-m-d H:i T' }}">{{ s.current_reviewed_at|date:"Y-m-d H:i" }}</time>{% else %}<span class="vr-muted">—</span>{% endif %}</td>
+          <td class="vr-nowrap">{% if s.due_at %}<time datetime="{{ s.due_at|date:'c' }}">{{ s.due_at|date:"Y-m-d" }}</time>{% if s.overdue %} {% include "includes/status.html" with label="Past due" tone="warning" plain=True title="More than 13 months since the calculation behind the adopted MDL was performed. Review does not restart the interval (Appendix B II.4(a))." %}{% endif %}<div class="vr-muted small">13 months after calculation of {{ s.basis_calculated_at|date:"Y-m-d" }}</div>{% if s.pending_recalculation %}<div class="small">{% include "includes/status.html" with label="Awaiting review" tone="progress" plain=True title="A newer calculation has not been reviewed; the adopted MDL stays in place." %} recalculated {{ s.pending_calculated_at|date:"Y-m-d" }}</div>{% endif %}{% else %}<span class="vr-muted">—</span>{% endif %}</td>
+          <td class="vr-nowrap"><time datetime="{{ s.created_at|date:'c' }}" title="{{ s.created_at|date:'Y-m-d H:i T' }}">{{ s.created_at|date:"Y-m-d H:i" }}</time></td>
+          <td>{{ s.created_by.get_full_name|default:s.created_by.get_username }}</td>
+          <td class="text-end">{{ s.spiking_level|plain_decimal }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <details class="px-3 pb-3 vr-form-note">
+    <summary>What a recorded MDL does and does not mean</summary>
+    <p class="mt-2 mb-0">A recorded MDL is not a statement that a method or result is acceptable, and nothing here changes a configured reporting limit. Observations document the laboratory's quarterly spiked runs, but the application does not check that every quarter of use is covered.</p>
+  </details>
+  {% include "includes/pagination.html" with noun="studies" filtered=filtered %}
+  {% elif filtered %}
+  {% include "includes/empty_state.html" with kind="no-results" title="No studies match these filters" body="Clear the filters to see every MDL study." clear_url=request.path %}
+  {% else %}
+  {% url 'analytical:mdl-create' as create_url %}
+  {% include "includes/empty_state.html" with title="No MDL studies yet" body="Start a study for a method, analyte and matrix, then record spiked samples and method blanks." action_url=create_url action_label="New MDL study" %}
+  {% endif %}
+</section>
+{% endblock %}

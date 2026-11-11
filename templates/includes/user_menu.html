@@ -1,0 +1,24 @@
+{% comment %}Signed-in user dropdown for the top bar. Account links resolve with the non-raising url-as form, so an unmounted route just hides. Sign-out is a POST (allauth default).{% endcomment %}
+{% url 'account_logout' as logout_url %}
+{% url 'account_change_password' as password_url %}
+{% url 'mfa_index' as mfa_url %}
+<div class="dropdown">
+  <button class="btn btn-sm vr-topbar-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    {% include "includes/icon.html" with name="person-circle" %}<span class="d-none d-md-inline">{{ user.get_full_name|default:user.get_username }}</span><span class="visually-hidden d-md-none">Account</span>
+  </button>
+  <div class="dropdown-menu dropdown-menu-end">
+    <div class="px-2 py-2 mb-1 border-bottom">
+      <strong>{{ user.get_full_name|default:user.get_username }}</strong>
+      {% if user.client %}<span class="vr-user-roles">{{ user.client }}</span>
+      {% else %}<span class="vr-user-roles">{% for group in user.groups.all %}{% if group.name == "project_manager" %}Project manager{% else %}{{ group.name|capfirst }}{% endif %}{% if not forloop.last %}, {% endif %}{% empty %}No lab role assigned{% endfor %}</span>{% endif %}
+    </div>
+    {% if password_url %}<a class="dropdown-item" href="{{ password_url }}">{% include "includes/icon.html" with name="key" %}Change password</a>{% endif %}
+    {% if mfa_url %}<a class="dropdown-item" href="{{ mfa_url }}">{% include "includes/icon.html" with name="lock" %}Two-factor authentication</a>{% endif %}
+    {% if logout_url %}
+    <form method="post" action="{{ logout_url }}">
+      {% csrf_token %}
+      <button class="dropdown-item" type="submit">{% include "includes/icon.html" with name="box-arrow-right" %}Sign out</button>
+    </form>
+    {% endif %}
+  </div>
+</div>

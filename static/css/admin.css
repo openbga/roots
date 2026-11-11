@@ -1,0 +1,99 @@
+/* OpenBGA Roots colours for Django admin (maintenance tooling). Admin keeps its own layout and
+   light/dark modes; only brand-bearing variables change. */
+html[data-theme="light"],
+:root {
+  --primary: #b4c49b;
+  --secondary: #3d5a2c;
+  --accent: #ffffff;
+  --primary-fg: #ffffff;
+  --header-color: #e5ebd8;
+  --header-branding-color: #ffffff;
+  --header-bg: #3d5a2c;
+  --header-link-color: #ffffff;
+  --breadcrumbs-bg: #e5ebd8;
+  --breadcrumbs-fg: #2c4320;
+  --breadcrumbs-link-fg: #2c4320;
+  --link-fg: #3d5a2c;
+  --link-hover-color: #2f4722;
+  --link-selected-fg: #2f4722;
+  --button-bg: #3d5a2c;
+  --button-hover-bg: #2f4722;
+  --default-button-bg: #2f4722;
+  --default-button-hover-bg: #243819;
+  --selected-row: #fdf7e0;
+}
+
+html[data-theme="dark"] {
+  --primary: #4b6239;
+  --secondary: #26321f;
+  --header-color: #d1e2b8;
+  --header-bg: #1c2119;
+  --breadcrumbs-bg: #26321f;
+  --breadcrumbs-fg: #d1e2b8;
+  --breadcrumbs-link-fg: #d1e2b8;
+  --link-fg: #abc985;
+  --link-hover-color: #b9d494;
+  --link-selected-fg: #d1e2b8;
+  --button-bg: #4b6239;
+  --button-hover-bg: #5a7445;
+  --default-button-bg: #93ad70;
+  --default-button-hover-bg: #b9d494;
+}
+
+@media (prefers-color-scheme: dark) {
+  html[data-theme="auto"] {
+    --primary: #4b6239;
+    --secondary: #26321f;
+    --header-color: #d1e2b8;
+    --header-bg: #1c2119;
+    --breadcrumbs-bg: #26321f;
+    --breadcrumbs-fg: #d1e2b8;
+    --breadcrumbs-link-fg: #d1e2b8;
+    --link-fg: #abc985;
+    --link-hover-color: #b9d494;
+    --link-selected-fg: #d1e2b8;
+    --button-bg: #4b6239;
+    --button-hover-bg: #5a7445;
+    --default-button-bg: #93ad70;
+    --default-button-hover-bg: #b9d494;
+  }
+}
+
+/* Dark primary buttons use dark text for contrast. */
+html[data-theme="dark"] .submit-row input.default,
+html[data-theme="dark"] input[type="submit"].default {
+  color: #152011;
+}
+
+@media (prefers-color-scheme: dark) {
+  html[data-theme="auto"] .submit-row input.default,
+  html[data-theme="auto"] input[type="submit"].default {
+    color: #152011;
+  }
+}
+
+#site-name a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#site-name img {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Field errors keep admin's error list styling (root form templates add vr-field-errors). */
+.errorlist.vr-field-errors li::before {
+  content: none;
+}
+
+/* Application footer with the AGPL-3.0 section 13 source link (templates/includes/source_footer.html). */
+#footer .vr-app-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  padding: 0 40px 20px;
+  color: var(--body-quiet-color);
+  font-size: 0.75rem;
+}

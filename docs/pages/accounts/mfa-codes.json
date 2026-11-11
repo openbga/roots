@@ -1,0 +1,43 @@
+{
+  "id": "accounts-mfa-codes",
+  "routes": [
+    "mfa_view_recovery_codes"
+  ],
+  "title": "Recovery codes",
+  "purpose": "Read the unused backup codes for your enrolled two-factor authentication.",
+  "sections": [
+    {
+      "title": "Fields and actions",
+      "items": [
+        {
+          "label": "Available count",
+          "description": "Unused codes out of the configured total of ten. A successful recovery-code authentication consumes one code."
+        },
+        {
+          "label": "Unused codes",
+          "description": "Read-only text area containing only unused eight-digit codes. Codes can be viewed repeatedly in this deployment; no I have saved my recovery codes checkbox is shown because show-once mode is disabled."
+        },
+        {
+          "label": "Download codes",
+          "description": "Shown only with unused codes; downloads recovery-codes.txt containing the unused set. This binary/text attachment has no separate documentation page."
+        },
+        {
+          "label": "Generate new codes",
+          "description": "Opens replacement confirmation, available under this deployment’s default reusable-view policy. Generating requires an existing non-recovery authenticator."
+        }
+      ]
+    },
+    {
+      "title": "Access and state",
+      "paragraphs": [
+        "Requires sign-in, an existing recovery-code record and recent reauthentication, normally within five minutes. With no record this page is not found; with zero unused codes it shows the count and an empty list, offers generation and omits download. Accessing this page records that the set has been viewed, but does not consume a code. Keep codes privately outside laboratory records; this page provides no automatic account-recovery procedure if all factors are lost."
+      ]
+    }
+  ],
+  "sources": [
+    "config/settings.py",
+    "templates/allauth/layouts/base.html",
+    "templates/allauth/layouts/manage.html",
+    "uv.lock"
+  ]
+}

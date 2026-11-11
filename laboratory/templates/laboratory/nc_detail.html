@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load laboratory_extras %}
+{% block breadcrumbs %}{% url 'laboratory:nc-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Nonconformances" section_url=list_url current=nc.number %}{% endblock %}
+{% block page_heading %}<span class="vr-id">{{ nc.number }}</span>{% endblock %}
+{% block page_meta %}<ul class="vr-page-meta"><li>{% include "laboratory/_status.html" with kind="nc-status" value=nc.status label=nc.get_status_display %}</li><li>{{ nc.get_severity_display }} severity</li><li>{{ nc.get_category_display }}</li>{% if nc.is_overdue %}<li>{% include "includes/status.html" with label="Past due" tone="danger" %}</li>{% endif %}</ul>{% endblock %}
+{% block page_intro %}<p class="vr-page-intro">{{ nc.title }}</p>{% endblock %}
+{% block page_actions %}
+<a class="btn btn-outline-secondary" href="{% url 'laboratory:nc-note' nc.pk %}">Add note or evidence</a>
+{% if can_manage %}
+{% if reopening %}<a class="btn btn-primary" href="{% url 'laboratory:nc-step' nc.pk 'reopen' %}">Reopen</a>
+{% else %}<a class="btn btn-outline-secondary" href="{% url 'laboratory:nc-edit' nc.pk %}">Edit</a>{% if can_return %}<a class="btn btn-outline-secondary" href="{% url 'laboratory:nc-step' nc.pk 'return' %}">Return to corrective action</a>{% endif %}
+<a class="btn btn-primary" href="{% url 'laboratory:nc-step' nc.pk 'advance' %}">{{ next_label }}</a>{% endif %}
+{% endif %}
+{% endblock %}
+{% block content %}
+<section class="card mb-3" aria-labelledby="nc-facts"><div class="card-header"><h2 class="card-title" id="nc-facts">Issue</h2></div>
+  <div class="card-body"><dl class="vr-facts">
+    <div><dt>Description</dt><dd>{{ nc.description|linebreaksbr }}</dd></div>
+    <div><dt>Discovered</dt><dd>{{ nc.discovered_on|date:"Y-m-d" }}</dd></div>
+    <div><dt>Opened by</dt><dd>{{ nc.opened_by.get_full_name|default:nc.opened_by.get_username }} on {{ nc.opened_at|date:"Y-m-d H:i T" }}</dd></div>
+    <div><dt>Owner</dt><dd>{% if nc.owner %}{{ nc.owner.get_full_name|default:nc.owner.get_username }}{% else %}<span class="vr-muted">Unassigned</span>{% endif %}</dd></div>
+    <div><dt>Due</dt><dd>{{ nc.due_on|date:"Y-m-d"|default:"—" }}</dd></div>
+    <div><dt>Sample</dt><dd>{% if nc.sample %}<a class="vr-id" href="{% url 'receipt:sample-detail' nc.sample_id %}">{{ nc.sample.lab_id }}</a>{% else %}—{% endif %}</dd></div>
+    <div><dt>Analytical batch</dt><dd>{% if nc.batch %}<a class="vr-id" href="{% url 'analytical:batch-detail' nc.batch_id %}">{{ nc.batch.number }}</a>{% else %}—{% endif %}</dd></div>
+    <div><dt>Standard / reagent lot</dt><dd>{% if nc.lot %}<a class="vr-id" href="{% url 'laboratory:lot-detail' nc.lot_id %}">{{ nc.lot.lot_number }}</a> {{ nc.lot.material.name }}{% else %}—{% endif %}</dd></div>
+    <div><dt>Equipment</dt><dd>{% if nc.equipment %}<a class="vr-id" href="{% url 'laboratory:equipment-detail' nc.equipment_id %}">{{ nc.equipment.asset_id }}</a> {{ nc.equipment.name }}{% else %}—{% endif %}</dd></div>
+  </dl></div></section>
+<section class="card mb-3" aria-labelledby="nc-find"><div class="card-header"><h2 class="card-title" id="nc-find">Findings and action</h2></div>
+  <div class="card-body"><dl class="vr-facts">
+    <div><dt>Disposition of affected work</dt><dd>{% if nc.disposition %}{{ nc.get_disposition_display }}{% if nc.disposition_note %}<div class="vr-muted small">{{ nc.disposition_note }}</div>{% endif %}{% else %}<span class="vr-muted">Not decided</span>{% endif %}</dd></div>
+    <div><dt>Root cause</dt><dd>{{ nc.root_cause|default:"—"|linebreaksbr }}</dd></div>
+    <div><dt>Corrective action</dt><dd>{{ nc.corrective_action|default:"—"|linebreaksbr }}</dd></div>
+    <div><dt>Verification</dt><dd>{{ nc.verification|default:"—"|linebreaksbr }}</dd></div>
+    {% if nc.status == "closed" %}<div><dt>Closed</dt><dd>{{ nc.closed_by.get_full_name|default:nc.closed_by.get_username }} on {{ nc.closed_at|date:"Y-m-d H:i T" }}{% if nc.closure_note %}<div class="vr-muted small">{{ nc.closure_note }}</div>{% endif %}</dd></div>{% endif %}
+  </dl></div></section>
+<section class="card mb-3" aria-labelledby="nc-timeline"><div class="card-header"><h2 class="card-title" id="nc-timeline">Timeline</h2><span class="vr-count">{{ events|length }} entr{{ events|length|pluralize:"y,ies" }}, oldest first</span></div>
+  <div class="card-body"><ol class="vr-timeline">
+    {% for e in events %}{% include "includes/history_item.html" with title=e.heading at=e.occurred_at actor=e.actor reason=e.note changes=e.change_rows extra="laboratory/_nc_event_extra.html" %}{% endfor %}
+  </ol></div></section>
+{% include "laboratory/_history.html" %}
+{% endblock %}
+{% block record_foot %}{% include "includes/record_foot.html" with identifier=nc.number %}{% endblock %}

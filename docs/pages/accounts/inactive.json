@@ -1,0 +1,23 @@
+{
+  "id": "accounts-inactive",
+  "routes": [
+    "account_inactive"
+  ],
+  "title": "Account inactive",
+  "purpose": "Understand why this account cannot sign in.",
+  "sections": [
+    {
+      "title": "State and next step",
+      "paragraphs": [
+        "Account Inactive reports that the account is inactive, with no editable account fields or reactivation button. Ask the laboratory administrator to review Active on the account. The page does not change any account state or expose a public reactivation flow."
+      ]
+    }
+  ],
+  "sources": [
+    "config/settings.py",
+    "templates/allauth/layouts/base.html",
+    "templates/allauth/layouts/manage.html",
+    "uv.lock",
+    "accounts/models.py"
+  ]
+}

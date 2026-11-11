@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load laboratory_extras %}
+{% block breadcrumbs %}{% url 'laboratory:equipment-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Equipment" section_url=list_url current=equipment.asset_id %}{% endblock %}
+{% block page_heading %}<span class="vr-id">{{ equipment.asset_id }}</span>{% endblock %}
+{% block page_meta %}<ul class="vr-page-meta"><li>{% include "laboratory/_status.html" with kind="equipment" value=equipment.status label=equipment.get_status_display %}</li><li>{{ equipment.name }}</li><li>{{ equipment.location }}</li>{% if equipment.equipment_type %}<li>{{ equipment.equipment_type }}</li>{% endif %}</ul>{% endblock %}
+{% block page_actions %}
+{% if can_manage_equipment %}<a class="btn btn-outline-secondary" href="{% url 'laboratory:equipment-edit' equipment.pk %}">Edit</a><a class="btn btn-outline-secondary" href="{% url 'laboratory:equipment-status' equipment.pk %}">Change status</a>{% endif %}
+{% if can_record_equipment and equipment.status != "retired" %}<a class="btn btn-outline-secondary" href="{% url 'laboratory:event-create' equipment.pk %}?kind=maintenance">Record maintenance</a><a class="btn btn-primary" href="{% url 'laboratory:event-create' equipment.pk %}?kind=calibration">Record calibration</a>{% endif %}
+{% endblock %}
+{% block content %}
+{% due_status equipment.calibration_due as cal %}{% due_status equipment.maintenance_due as mnt %}
+{% if equipment.status == "out_of_service" %}<div class="alert alert-warning" role="status">{% include "includes/status.html" with label="Out of service" tone="hold" plain=True %}<div>Record why and when it returns to service in the history below.</div></div>{% endif %}
+{% if cal.kind == "overdue" or mnt.kind == "overdue" %}{% if equipment.status != "retired" %}<div class="alert alert-danger" role="status">{% include "includes/status.html" with label="Overdue" tone="danger" plain=True %}<div>{% if cal.kind == "overdue" %}Calibration was due {{ equipment.calibration_due|date:"Y-m-d" }}. {% endif %}{% if mnt.kind == "overdue" %}Maintenance was due {{ equipment.maintenance_due|date:"Y-m-d" }}.{% endif %}</div></div>{% endif %}{% endif %}
+<section class="card mb-3" aria-labelledby="eq-due"><div class="card-header"><h2 class="card-title" id="eq-due">Due dates</h2></div>
+  <div class="card-body"><dl class="vr-facts">
+    <div><dt>Calibration due</dt><dd>{% if equipment.calibration_due %}{{ equipment.calibration_due|date:"Y-m-d" }} {% endif %}{% include "includes/status.html" with label=cal.label tone=cal.tone plain=True %}{% if equipment.calibrated_on %}<div class="vr-muted small">Last {{ equipment.calibrated_on|date:"Y-m-d" }}</div>{% endif %}</dd></div>
+    <div><dt>Maintenance due</dt><dd>{% if equipment.maintenance_due %}{{ equipment.maintenance_due|date:"Y-m-d" }} {% endif %}{% include "includes/status.html" with label=mnt.label tone=mnt.tone plain=True %}{% if equipment.maintained_on %}<div class="vr-muted small">Last {{ equipment.maintained_on|date:"Y-m-d" }}</div>{% endif %}</dd></div>
+  </dl><p class="vr-muted small mt-3 mb-0">Due dates come from the latest uncorrected event. The lab sets them; no interval is assumed.</p></div></section>
+<section class="card mb-3" aria-labelledby="eq-id"><div class="card-header"><h2 class="card-title" id="eq-id">Asset</h2></div>
+  <div class="card-body"><dl class="vr-facts">
+    <div><dt>Manufacturer</dt><dd>{{ equipment.manufacturer|default:"—" }}</dd></div>
+    <div><dt>Model</dt><dd>{{ equipment.model|default:"—" }}</dd></div>
+    <div><dt>Serial number</dt><dd class="vr-id">{{ equipment.serial_number|default:"—" }}</dd></div>
+    <div><dt>Notes</dt><dd>{{ equipment.notes|default:"—"|linebreaksbr }}</dd></div>
+  </dl></div></section>
+<section class="card vr-table-card mb-3" aria-labelledby="events-heading"><div class="card-header"><h2 class="card-title" id="events-heading">Calibration and maintenance</h2><span class="vr-count">{{ events|length }}{% if events|length >= 200 %}, newest 200 shown{% endif %}, newest first; earlier records are kept</span></div>
+  {% if events %}
+  <div class="vr-table-wrap"><table class="table vr-table"><thead><tr><th scope="col">Performed</th><th scope="col">Kind</th><th scope="col">Outcome</th><th scope="col">By</th><th scope="col">Reference</th><th scope="col">Next due</th><th scope="col">Evidence</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
+  <tbody>{% for e in events %}
+    <tr>
+      <th scope="row" class="vr-nowrap">{{ e.performed_on|date:"Y-m-d" }}</th>
+      <td>{{ e.get_kind_display }}{% if e.corrected_by %} {% include "includes/status.html" with label="Corrected" tone="neutral" plain=True %}{% endif %}{% if e.corrects %} {% include "includes/status.html" with label="Correction" tone="info" plain=True %}{% endif %}</td>
+      <td>{% include "laboratory/_status.html" with kind="outcome" value=e.outcome label=e.get_outcome_display plain=True %}</td>
+      <td>{% if e.performed_by %}{{ e.performed_by.get_full_name|default:e.performed_by.get_username }}{% else %}{{ e.performed_by_external }}{% endif %}</td>
+      <td>{{ e.reference|default:"—" }}{% if e.description %}<div class="vr-muted small">{{ e.description }}</div>{% endif %}{% if e.correction_reason %}<div class="vr-muted small">Correction: {{ e.correction_reason }}</div>{% endif %}</td>
+      <td class="vr-nowrap">{{ e.next_due_on|date:"Y-m-d"|default:"—" }}</td>
+      <td>{% include "laboratory/_evidence.html" with item=e kind="equipment" %}</td>
+      <td class="text-end">{% if can_record_equipment and not e.corrected_by and equipment.status != "retired" %}<a class="btn btn-sm btn-outline-secondary" href="{% url 'laboratory:event-correct' equipment.pk e.pk %}">Correct<span class="visually-hidden"> event of {{ e.performed_on|date:"Y-m-d" }}</span></a>{% endif %}</td>
+    </tr>{% endfor %}
+  </tbody></table></div>
+  {% else %}{% include "includes/empty_state.html" with title="No calibration or maintenance recorded" body="Record the first event and the date the lab wants it repeated." %}{% endif %}
+</section>
+{% include "laboratory/_linked_nc.html" with heading_id="eqnc-heading" link_param="equipment" link_pk=equipment.pk %}
+{% include "laboratory/_history.html" %}
+{% endblock %}
+{% block record_foot %}{% include "includes/record_foot.html" with identifier=equipment.asset_id %}{% endblock %}

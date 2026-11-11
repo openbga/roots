@@ -1,0 +1,60 @@
+{% extends "layouts/portal.html" %}
+{% load static %}
+{% comment %}
+Add or edit one declared sample. Context: submission, sample, form (SubmissionSampleForm), container_formset
+(prefix "containers"). Tests use the shared requested-test picker; "Save and add another" repeats the
+collection details for the next sample.
+{% endcomment %}
+{% block breadcrumbs %}{% url 'client_commercial:submission-list' as list_url %}{% url 'client_commercial:submission-detail' submission.pk as record_url %}{% include "includes/breadcrumbs.html" with section="Submissions" section_url=list_url record=submission.number record_url=record_url current=page_title %}{% endblock %}
+{% block content %}
+{% with formset=container_formset prefix=container_formset.prefix %}
+<form class="vr-form" method="post" novalidate>
+  {% csrf_token %}
+  {% include "includes/form_errors.html" with form=form formset=formset formset_label="container details" %}
+  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required. Times are laboratory local time.</p>
+  <fieldset class="vr-form-section">
+    <legend>Sample and collection</legend>
+    <div class="row g-3">
+      <div class="col-md-6">{{ form.client_sample_id.as_field_group }}</div>
+      <div class="col-md-3 col-6">{{ form.sample_type.as_field_group }}</div>
+      <div class="col-md-3 col-6">{{ form.collection_type.as_field_group }}</div>
+      <div class="col-md-3 col-6">{{ form.matrix.as_field_group }}</div>
+      <div class="col-md-3 col-6">{{ form.source_type.as_field_group }}</div>
+      <div class="col-md-6">{{ form.collector_name.as_field_group }}</div>
+      <div class="col-md-6">{{ form.collection_started_at.as_field_group }}</div>
+      <div class="col-md-6">{{ form.collected_at.as_field_group }}</div>
+      <div class="col-md-6">{{ form.planned_collection_on.as_field_group }}</div>
+      <div class="col-md-6">{{ form.collection_location.as_field_group }}</div>
+      <div class="col-12">{{ form.field_notes.as_field_group }}</div>
+    </div>
+  </fieldset>
+  <fieldset class="vr-form-section">
+    <legend>Intended tests</legend>
+    {{ form.tests.as_field_group }}
+  </fieldset>
+  <fieldset class="vr-form-section" id="containers">
+    <legend>Containers</legend>
+    {{ formset.management_form }}
+    {% if formset.non_form_errors %}<ul class="vr-field-errors mb-2">{% for error in formset.non_form_errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+    <div class="vr-container-rows" id="{{ prefix }}-rows">
+      {% for cform in formset %}{% include "commercial/portal/_container_row.html" with number=forloop.counter %}{% endfor %}
+    </div>
+    <template id="{{ prefix }}-empty">{% include "commercial/portal/_container_row.html" with cform=formset.empty_form number="__num__" %}</template>
+    <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+      <button class="btn btn-outline-secondary btn-sm" type="button" data-formset-add="{{ prefix }}" hidden>{% include "includes/icon.html" with name="plus-lg" %}Add container type</button>
+      <span class="form-text">Group identical bottles with a quantity. At most 20 containers per sample.</span>
+    </div>
+  </fieldset>
+  {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+  <div class="vr-form-actions">
+    <a class="btn btn-link" href="{% url 'client_commercial:submission-detail' submission.pk %}">Cancel</a>
+    <button class="btn btn-outline-secondary" type="submit" name="add_another" value="1">Save and add another</button>
+    <button class="btn btn-primary" type="submit">{% if sample %}Save changes{% else %}Add sample{% endif %}</button>
+  </div>
+</form>
+{% endwith %}
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'vendor/tom-select/tom-select.complete.js' %}" defer></script>
+<script src="{% static 'js/test-picker.js' %}" defer></script>
+{% endblock %}

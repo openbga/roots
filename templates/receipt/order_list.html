@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% comment %}
+Chains of custody (receipt orders). Context (receipt.lists.list_response): page_obj (Order, annotated
+sample_count), filter_form (OrderFilter), q, sort, per_page, active_filters and the toolbar context.
+{% endcomment %}
+{% block page_actions %}{% if can_receive %}<a class="btn btn-primary" href="{% url 'receipt:order-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New chain of custody</a>{% endif %}{% endblock %}
+{% block content %}
+<section class="card vr-table-card" aria-labelledby="orders-heading">
+  <h2 class="visually-hidden" id="orders-heading">Chains of custody</h2>
+  {% include "includes/grid_toolbar.html" with label="Filter chains of custody" grid="receipt.orders" %}
+  {% if page_obj.paginator.count %}
+  <div class="vr-table-wrap">
+    <table class="table table-hover vr-table" data-vr-grid="receipt.orders" data-vr-grid-version="2" aria-labelledby="orders-heading">
+      <thead>
+        <tr>
+          {% include "includes/sort_header.html" with label="Chain of custody" asc="coc_reference" desc="-coc_reference" col="coc_reference" locked=True %}
+          {% include "includes/sort_header.html" with label="Client" asc="client" desc="-client" col="client" %}
+          {% include "includes/sort_header.html" with label="Project" asc="project" desc="-project" col="project" %}
+          {% include "includes/sort_header.html" with label="Samples" asc="sample_count" desc="-sample_count" first="desc" col="sample_count" class="text-end" %}
+          {% include "includes/sort_header.html" with label="Turnaround" asc="priority" desc="-priority" col="priority" %}
+          {% include "includes/sort_header.html" with label="Delivery target" asc="due_at" desc="-due_at" col="due_at" %}
+          {% include "includes/sort_header.html" with label="Purchase order" asc="po_number" desc="-po_number" col="po_number" hidden=True %}
+          <th scope="col" data-vr-col="delivery" data-vr-col-hidden>Delivery</th>
+          {% include "includes/sort_header.html" with label="Created" asc="created_at" desc="-created_at" first="desc" col="created_at" %}
+          <th scope="col" data-vr-col="created_by" data-vr-col-hidden>Created by</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in page_obj %}
+        <tr>
+          <th scope="row"><a class="vr-row-link vr-id" href="{% url 'receipt:order-detail' order.pk %}">{{ order.coc_reference }}</a>{% if order.cancelled_at %} {% include "includes/status.html" with label="Cancelled" tone="neutral" plain=True %}{% endif %}</th>
+          <td>{{ order.project.client }}</td>
+          <td>{{ order.project.name }}</td>
+          <td class="text-end">{% firstof order.sample_count order.samples.count %}</td>
+          <td>{% if order.is_rush %}{% include "includes/status.html" with label="Rush" tone="warning" plain=True %}{% else %}Standard{% endif %}</td>
+          <td class="vr-nowrap">{% if order.due_at %}<time datetime="{{ order.due_at|date:'c' }}" title="{{ order.due_at|date:'Y-m-d H:i T' }}">{{ order.due_at|date:"Y-m-d H:i" }}</time>{% else %}<span class="vr-muted">Not set</span>{% endif %}</td>
+          <td class="vr-id">{{ order.po_number|default:"—" }}</td>
+          <td>{{ order.get_delivery_method_display|default:"—" }}{% if order.carrier_tracking %} · {{ order.carrier_tracking }}{% endif %}</td>
+          <td class="vr-nowrap"><time datetime="{{ order.created_at|date:'c' }}" title="{{ order.created_at|date:'Y-m-d H:i T' }}">{{ order.created_at|date:"Y-m-d H:i" }}</time></td>
+          <td>{{ order.created_by.get_full_name|default:order.created_by.get_username }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "includes/pagination.html" with noun="chains of custody" filtered=active_filters|default:q %}
+  {% elif filter_form.errors %}
+  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above." clear_url=request.path %}
+  {% elif active_filters or q %}
+  {% include "includes/empty_state.html" with kind="no-results" title="No chains of custody match these filters" body="Check the reference, widen the dates, or clear the filters." clear_url=request.path %}
+  {% else %}
+  {% if can_receive %}{% url 'receipt:order-create' as create_url %}{% endif %}
+  {% include "includes/empty_state.html" with title="No chains of custody yet" body="Create one for each chain of custody form you receive, then receive its samples one after another." action_url=create_url action_label="New chain of custody" %}
+  {% endif %}
+</section>
+{% endblock %}

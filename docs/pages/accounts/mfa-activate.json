@@ -1,0 +1,43 @@
+{
+  "id": "accounts-mfa-activate",
+  "routes": [
+    "mfa_activate_totp"
+  ],
+  "title": "Activate authenticator app",
+  "purpose": "Enroll a time-based authenticator for future sign-in verification.",
+  "sections": [
+    {
+      "title": "Fields and actions",
+      "items": [
+        {
+          "label": "QR code",
+          "description": "Scan into your authenticator app. Enrollment information belongs only to this signed-in account."
+        },
+        {
+          "label": "Authenticator secret",
+          "description": "Disabled read-only enrollment secret beneath the QR image; use it for manual app setup or private recovery of the app configuration."
+        },
+        {
+          "label": "Authenticator code",
+          "description": "Required current six-digit code from the new app. Default time steps are 30 seconds with no adjacent-step tolerance. A wrong or rate-limited code leaves activation incomplete."
+        },
+        {
+          "label": "Activate",
+          "description": "Validates the code and creates the TOTP authenticator. If recovery codes do not exist, creates ten eight-digit recovery codes automatically and opens that page; otherwise returns to the MFA overview."
+        }
+      ]
+    },
+    {
+      "title": "Prerequisites and changing enrollment",
+      "paragraphs": [
+        "Requires sign-in, recent reauthentication and no unverified associated email records. This check is not a blanket requirement that a verified email record must exist: an account with no address records passes that particular test. If an app is already active, this route opens deactivation instead. Reloading an unsubmitted activation form generates new enrollment information; use the QR/secret currently displayed. There is no Back or Cancel button in this form; leave through the normal account navigation to abandon enrollment."
+      ]
+    }
+  ],
+  "sources": [
+    "config/settings.py",
+    "templates/allauth/layouts/base.html",
+    "templates/allauth/layouts/manage.html",
+    "uv.lock"
+  ]
+}

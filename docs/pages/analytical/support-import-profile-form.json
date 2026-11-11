@@ -1,0 +1,173 @@
+{
+  "id": "analytical-support-import-profile-form",
+  "routes": [
+    "analytical:import-profile-create",
+    "analytical:import-profile-edit"
+  ],
+  "title": "Create or edit import mapping",
+  "purpose": "Describe exactly which exported columns provide result fields for a reusable long or wide file import.",
+  "sections": [
+    {
+      "title": "Access, variants and file assumptions",
+      "paragraphs": [
+        "Active internal staff with a laboratory role can read this workspace; clients cannot. Analysts manage mappings and import results. Admin includes analyst operational access; superuser status alone does not grant a laboratory role.",
+        "New mapping starts a new active mapping and offers Create mapping; Edit preloads all fields, adds Active and offers Save changes. Names and header mappings are not inferred. Headers match exactly after surrounding whitespace is removed; sample IDs and analyte names are matched case-insensitively after trimming. Explicit aliases map different names, not approximate spellings. UTF-8 comma/tab-delimited text is supported, including a leading byte order mark; Excel files are not. Keep the source file: the application stores parsed results, mapping snapshots and digests, not uploaded file bytes."
+      ]
+    },
+    {
+      "title": "File layout",
+      "items": [
+        {
+          "label": "Profile name",
+          "description": "Required at most 80 characters, trimmed, unique case-insensitively across active and inactive profiles."
+        },
+        {
+          "label": "Layout",
+          "description": "Required Long (one result per row) or Wide (one row per sample). Only fill layout-specific fields for the selected layout."
+        },
+        {
+          "label": "Delimiter",
+          "description": "Required Comma or Tab; filename extension does not choose it."
+        },
+        {
+          "label": "Header row",
+          "description": "Required integer 1 through 50, initially 1. Rows before this CSV record are ignored and counted in preview."
+        },
+        {
+          "label": "Date format in the file",
+          "description": "Required ISO 8601, MM/DD/YYYY HH:MM (24-hour), or MM/DD/YYYY HH:MM AM/PM. US formats also accept seconds. Times without offsets are interpreted in laboratory local time; ambiguous/nonexistent daylight-saving times are rejected unless an ISO offset disambiguates them."
+        },
+        {
+          "label": "Active",
+          "description": "Edit only, initially reflects the stored state. Uncheck to remove the profile from upload selection. Existing import snapshots remain intact."
+        }
+      ]
+    },
+    {
+      "title": "Columns for every row",
+      "paragraphs": [
+        "Column names are at most 120 characters. Each field that supports a column or fixed value accepts only one of them, not both. A fixed value applies to every result generated from each row. No mapped column header can be assigned to more than one role."
+      ],
+      "items": [
+        {
+          "label": "Sample ID column",
+          "description": "Required header containing the laboratory sample ID, not the client sample ID. That sample/analyte test must already belong to the target analytical batch."
+        },
+        {
+          "label": "Analysis start column",
+          "description": "Required header containing actual analysis start in the selected date format."
+        },
+        {
+          "label": "Reporting limit column / Fixed reporting limit",
+          "description": "Choose one required source of the positive exact reporting limit in the test unit. In wide layout, this common source can be omitted only if every analyte line supplies its own reporting limit; an analyte-specific limit takes precedence."
+        },
+        {
+          "label": "Dilution factor column / Fixed dilution factor",
+          "description": "Choose one required source of a positive exact factor. Result validation allows at most four effective decimal places and fewer than ten integer digits. There is no assumed factor of 1."
+        },
+        {
+          "label": "Qualifiers column",
+          "description": "Optional header with active configured qualifier codes separated by semicolon or comma. Codes are not inferred from result text."
+        },
+        {
+          "label": "Comments column",
+          "description": "Optional header with comments carried into each result revision."
+        },
+        {
+          "label": "Reason column",
+          "description": "Optional header; a nonblank reason is required to correct an approved or returned result. A submitted revision must first be returned. Revising draft work without a supplied reason uses the recorded draft-revision reason."
+        },
+        {
+          "label": "Prepared aliquot ID column",
+          "description": "Optional header with an explicit stable integer LIMS aliquot ID. Required by result validation when the test has active independent preparation. No selection by vessel label or sample is inferred; the aliquot must cover this exact sample/test and be uncancelled, prepared and chronologically eligible."
+        }
+      ]
+    },
+    {
+      "title": "Soil basis and supplied solids (when applicable)",
+      "items": [
+        {
+          "label": "Result basis column / Fixed result basis",
+          "description": "Optional mapping, but soil observations require explicit wet or dry. Fixed choices are No fixed basis, Wet weight, Dry weight and Not applicable. Non-soil rows allow only na, with blank interpreted as Not applicable."
+        },
+        {
+          "label": "Percent solids column / Fixed percent solids (%)",
+          "description": "Optional exact percentage from 0 through 100 inclusive, for soil only. Blank is unknown, not 100%. Use a fixed value only when the same measured value applies to every imported observation."
+        },
+        {
+          "label": "Solids reference column / Fixed solids source reference",
+          "description": "Required in result validation whenever solids is supplied; a reference without a solids percentage is also rejected. Fixed reference is at most 240 characters, and imported references have the same limit. Non-soil rows reject solids metadata. Neither concentration nor reporting limit is converted between wet and dry basis."
+        }
+      ]
+    },
+    {
+      "title": "Long layout: analyte, result and unit",
+      "items": [
+        {
+          "label": "Analyte column",
+          "description": "Required in long layout: header of exported analyte name."
+        },
+        {
+          "label": "Result column",
+          "description": "Required in long layout: header of original result text. ND denotes non-detect; comparison values such as less-than text must not substitute for ND plus a separate reporting limit."
+        },
+        {
+          "label": "Unit column / Fixed unit",
+          "description": "Required one source in long layout. Units must exactly match the test unit, including case; no conversion or guessing."
+        },
+        {
+          "label": "Analyte names in the file",
+          "description": "Optional long-layout aliases, one nonblank line per file name | analyte in the catalog. Both sides are required; duplicate alias names are rejected case-insensitively. Destination analytes must exist in the catalog. Unlisted file names must match a catalog analyte name; no fuzzy matching."
+        }
+      ]
+    },
+    {
+      "title": "Wide layout: analyte columns",
+      "items": [
+        {
+          "label": "Analyte columns",
+          "description": "Required one or more nonblank lines in wide layout: column | catalog analyte | unit in the file | optional reporting limit. The first three entries are required. Catalog analyte must exist, a given analyte cannot be mapped twice case-insensitively, and each column header must be unique across roles. Unit is explicit on every analyte line. An optional per-analyte reporting limit overrides the common mapping; otherwise the common column/fixed limit is required. Blank analyte cells import nothing and leave existing results unchanged. Long-layout analyte/result/unit/alias fields must be empty for wide layouts."
+        }
+      ]
+    },
+    {
+      "title": "Notes and actions",
+      "items": [
+        {
+          "label": "Notes",
+          "description": "Optional mapping notes; stored trimmed and searchable in the list."
+        },
+        {
+          "label": "Create mapping",
+          "description": "Validates structure and known catalog analyte names, saves an active profile with creator and audit event and returns to Import mappings. A saved mapping must still be previewed against a real file and target batch."
+        },
+        {
+          "label": "Save changes",
+          "description": "Saves edits with editor, time and before/after mapping audit history. The profile is locked and checked against its original form state; stale edits are refused and the bound input remains visible. Reload and compare current values before trying again."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to Import mappings without saving."
+        }
+      ]
+    },
+    {
+      "title": "Validation limits",
+      "paragraphs": [
+        "Fixed reporting limit and dilution factor must be positive numbers when present. Some fixed values and analyte-line limits are fully checked only during result preview; saving a mapping does not validate a vendor export or prove file suitability. Results retain their supplied text; exact numeric inputs needing rounding beyond ten decimal places, more than fourteen integer digits, thousands separators, units or comparison symbols are refused in preview. A profile name or notes change does not change its meaning digest; layout, delimiter or mapping content does."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/import_views.py",
+    "analytical/forms.py",
+    "analytical/import_profiles.py",
+    "analytical/models.py",
+    "analytical/selectors.py",
+    "analytical/tests/test_import_profiles.py",
+    "analytical/templates/analytical/import_profile_form.html",
+    "analytical/parsing.py",
+    "analytical/services.py",
+    "core/concurrency.py"
+  ]
+}

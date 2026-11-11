@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load catalog_extras laboratory_extras %}
+{% block title %}{{ sample.lab_id }} · Samples · OpenBGA Roots{% endblock %}
+{% block breadcrumbs %}{% url 'receipt:sample-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Samples" section_url=list_url current=sample.lab_id %}{% endblock %}
+{% block page_heading %}<span class="vr-id">{{ sample.lab_id }}</span>{% endblock %}
+{% block page_meta %}
+<ul class="vr-page-meta">
+  <li>{% include "receipt/disposition.html" with plain=True %}</li>
+  <li>Client sample <span class="vr-id">{{ sample.client_sample_id }}</span></li>
+  <li>{{ sample.order.project.client }} / {{ sample.order.project.name }}</li>
+  <li>{{ sample.get_matrix_display }}{% if sample.source_type %} · {{ sample.get_source_type_display }}{% endif %}</li>
+  {% if sample.sample_type != "sample" %}<li>{{ sample.get_sample_type_display }}</li>{% endif %}
+  {% if sample.order.is_rush %}<li>{% include "includes/status.html" with label="Rush" tone="warning" plain=True %}</li>{% endif %}
+  {% if sample.order.due_at %}<li>Delivery target <time datetime="{{ sample.order.due_at|date:'c' }}">{{ sample.order.due_at|date:"Y-m-d H:i T" }}</time></li>{% endif %}
+</ul>
+{% endblock %}
+{% block page_actions %}
+{% url 'receipt:sample-labels' sample.pk as labels_url %}{% include "receipt/labels_menu.html" with url=labels_url %}
+{% if can_receive %}
+<a class="btn btn-outline-secondary" href="{% url 'receipt:sample-disposition' sample.pk %}">Change disposition</a>
+<a class="btn btn-outline-secondary" href="{% url 'receipt:sample-correct' sample.pk 'identity' %}">Correct sample details</a>
+{% endif %}
+{% endblock %}
+{% block content %}
+{% if sample.discrepancy or sample.disposition != "proceed" %}
+<div class="alert alert-{% if sample.disposition == 'reject' %}danger{% else %}warning{% endif %}" role="status">
+  {% include "receipt/disposition.html" with plain=True %}
+  <div>
+    {% if sample.discrepancy %}<p class="mb-1"><strong>Receipt discrepancy:</strong> {{ sample.discrepancy }}</p>{% endif %}
+    {% if sample.disposition_note %}<p class="mb-0"><strong>Disposition note:</strong> {{ sample.disposition_note }}</p>{% endif %}
+  </div>
+</div>
+{% endif %}
+<div class="row g-3">
+  <div class="{% if can_receive %}col-xl-8{% else %}col-12{% endif %}">
+    <section class="card mb-3" aria-labelledby="collection-heading">
+      <div class="card-header"><h2 class="card-title" id="collection-heading">Collection and receipt</h2></div>
+      <div class="card-body">
+        <dl class="vr-facts">
+          <div><dt>Chain of custody</dt><dd class="vr-id"><a href="{% url 'receipt:order-detail' sample.order.pk %}">{{ sample.order.coc_reference }}</a></dd></div>
+          <div><dt>Sample type</dt><dd>{{ sample.get_sample_type_display }}</dd></div>
+          <div><dt>Matrix and source</dt><dd>{{ sample.get_matrix_display }}{% if sample.source_type %} · {{ sample.get_source_type_display }}{% else %} <span class="vr-muted small">source not recorded</span>{% endif %}</dd></div>
+          <div><dt>Collection type</dt><dd>{{ sample.get_collection_type_display }}</dd></div>
+          {% if sample.collection_started_at %}<div><dt>Composite started</dt><dd><time datetime="{{ sample.collection_started_at|date:'c' }}">{{ sample.collection_started_at|date:"Y-m-d H:i T" }}</time></dd></div>{% endif %}
+          <div><dt>{% if sample.collection_type == "composite" %}Composite ended{% else %}Collected{% endif %}</dt><dd><time datetime="{{ sample.collected_at|date:'c' }}">{{ sample.collected_at|date:"Y-m-d H:i T" }}</time></dd></div>
+          <div><dt>Collection location</dt><dd>{% if sample.collection_location %}{{ sample.collection_location }}{% else %}<span class="vr-muted">Not recorded</span>{% endif %}</dd></div>
+          <div><dt>Collector</dt><dd>{{ sample.collector_name }}</dd></div>
+          {% if sample.remarks %}<div><dt>Sample remarks</dt><dd>{{ sample.remarks|linebreaksbr }}</dd></div>{% endif %}
+          <div><dt>Received</dt><dd><time datetime="{{ sample.received_at|date:'c' }}">{{ sample.received_at|date:"Y-m-d H:i T" }}</time></dd></div>
+          <div><dt>Received by</dt><dd>{{ sample.received_by.get_full_name|default:sample.received_by.get_username }}</dd></div>
+          <div><dt>Cooler temperature</dt><dd>{% if sample.cooler_temperature_original %}{{ sample.cooler_temperature_original }}{% else %}{{ sample.cooler_temperature }}{% endif %} {{ sample.cooler_temperature_unit|default:"°C" }} <span class="vr-muted small">{% if sample.cooler_temperature_original %}as read{% else %}reading text not recorded{% endif %}</span>{% if sample.temperature_instrument %}<div class="vr-muted small">Instrument: {{ sample.temperature_instrument }}</div>{% endif %}</dd></div>
+          <div><dt>Coolant on arrival</dt><dd>{% if sample.coolant %}{{ sample.get_coolant_display }}{% else %}<span class="vr-muted">Not recorded</span>{% endif %}</dd></div>
+          <div><dt>Custody seal</dt><dd>{{ sample.seal_condition }}</dd></div>
+          <div><dt>Preservation check</dt><dd>{{ sample.preservation_check }}</dd></div>
+          <div><dt>Current location</dt><dd>{{ sample.current_location }}</dd></div>
+          <div><dt>Physical storage</dt><dd><a href="{% url 'receipt:sample-storage' sample.pk %}">Retention and disposal</a></dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="card vr-table-card mb-3" aria-labelledby="tests-heading">
+      <div class="card-header"><h2 class="card-title" id="tests-heading">Requested tests</h2><span class="vr-count">{{ test_work|length }}</span>{% if can_receive %}<a class="btn btn-sm btn-outline-secondary ms-auto" href="{% url 'receipt:sample-correct' sample.pk 'tests' %}">Add or withdraw tests</a>{% endif %}</div>
+      <div class="card-body">
+        {% if test_work %}
+        <div class="vr-table-wrap">
+          <table class="table vr-table">
+            <thead><tr><th scope="col">Analyte and method</th><th scope="col" class="text-end">Default reporting limit</th><th scope="col">Work status and holding time</th><th scope="col">Preservation</th><th scope="col">Reported</th></tr></thead>
+            <tbody>
+              {% for rt in test_work %}
+              <tr>
+                <th scope="row">{{ rt.definition.analyte }}<div class="small vr-muted fw-normal">{{ rt.definition.method }}</div></th>
+                <td class="text-end vr-nowrap">{{ rt.definition.reporting_limit|plain_decimal }} <span class="vr-muted small">{{ rt.definition.unit }}</span></td>
+                <td>
+                  {% include "includes/status.html" with label=rt.status_label tone=rt.status_tone plain=True %}
+                  {% if rt.batch %}<div class="small"><a class="vr-id" href="{% url 'analytical:batch-detail' rt.batch.pk %}">{{ rt.batch.number }}</a>{% if rt.latest %} · <a href="{% url 'analytical:result-detail' rt.result.pk %}">Result</a>{% endif %}</div>{% endif %}
+                  {% if rt.external %}<div class="small"><a class="vr-id" href="{% url 'receipt:subcontract-detail' rt.external.pk %}">{{ rt.external.number }}</a> {{ rt.external.external_lab }}</div>
+                  {% elif can_receive and rt.work_status == "not_batched" %}<div class="small"><a href="{% url 'receipt:subcontract-create' rt.pk %}">{% include "includes/icon.html" with name="truck" %}Send out<span class="visually-hidden"> {{ rt.definition.analyte }} to an external laboratory</span></a></div>{% endif %}
+                  <div class="small mt-1"><span class="vr-muted">Holding time:</span> {% if rt.latest %}{% include "analytical/_holding.html" with status=rt.latest.holding_status %}{% else %}{% include "analytical/_hold_clock.html" %}{% endif %}</div>
+                </td>
+                <td>
+                  {% with p=rt.preservation %}{% if p %}
+                  {% include "includes/status.html" with label=p.label tone=p.tone plain=True title="Screening of the recorded cooler temperature against the lab's rule for this test. Not a statement about the container or preservative." %}
+                  {% if p.latest_decision %}<div class="small">Disposition: {{ p.latest_decision.get_decision_display }}</div>{% elif p.needs_decision %}<div class="small vr-muted">Needs an assessment</div>{% endif %}
+                  {% if p.blocking_decision and not p.latest_decision %}<div class="small">{% include "includes/status.html" with label=p.blocking_decision.get_decision_display|add:" still applies" tone="danger" plain=True %} Recorded {{ p.blocking_decision.recorded_at|date:"Y-m-d" }} on earlier evidence; it keeps blocking approval and release until reassessed.</div>
+                  {% elif rt.stale_assessment %}<div class="small">{% include "includes/status.html" with label="Out of date" tone="warning" plain=True %} Earlier assessment ({{ rt.stale_assessment.get_decision_display }}, {{ rt.stale_assessment.recorded_at|date:"Y-m-d" }}) no longer matches the receipt record or rule.</div>{% endif %}
+                  <div class="small"><a href="{% url 'analytical:preservation-assess' rt.pk %}">{% if p.latest_decision or not p.needs_decision %}Assessment{% else %}Assess{% endif %}<span class="visually-hidden"> preservation of {{ rt.definition.analyte }}</span></a></div>
+                  {% endif %}{% endwith %}
+                </td>
+                <td>{% for link in rt.reports %}<a href="{% url 'reporting:version-pdf' link.report_id link.version %}">{{ link.report_number }} v{{ link.version }}</a> <span class="vr-muted small">{{ link.label }}</span>{% if not forloop.last %}<br>{% endif %}{% empty %}<span class="vr-muted">Not reported</span>{% endfor %}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        {% include "includes/empty_state.html" with title="No tests requested" body="Requested tests are recorded at receipt." %}
+        {% endif %}
+      </div>
+    </section>
+
+    <section class="card vr-table-card mb-3" aria-labelledby="containers-heading">
+      <div class="card-header"><h2 class="card-title" id="containers-heading">Containers</h2><span class="vr-count">{{ sample.containers.all|length }}</span></div>
+      <div class="card-body">
+        {% if sample.containers.all %}
+        <div class="vr-table-wrap">
+          <table class="table vr-table">
+            <thead><tr><th scope="col">Label</th><th scope="col">Container type</th><th scope="col">Preservative</th><th scope="col">Condition at receipt</th></tr></thead>
+            <tbody>
+              {% for container in sample.containers.all %}
+              <tr><th scope="row" class="vr-id">{{ container.label }}</th><td>{{ container.description }}</td><td>{{ container.preservation|default:"—" }}</td><td>{{ container.condition }}</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        {% include "includes/empty_state.html" with title="No containers recorded" body="Containers are recorded at receipt." %}
+        {% endif %}
+      </div>
+    </section>
+
+    <div class="mb-3">{% laboratory_context request.user sample=sample equipment=test_equipment %}</div>
+
+    <section class="card" aria-labelledby="history-heading">
+      <div class="card-header"><h2 class="card-title" id="history-heading">History</h2></div>
+      <div class="card-body">
+        {% if history %}
+        <ol class="vr-timeline">
+          {% for item in history %}{% include "includes/history_item.html" with title=item.title at=item.at actor=item.actor by=item.by reason=item.reason changes=item.changes detail=item.detail %}{% endfor %}
+        </ol>
+        {% else %}
+        {% include "includes/empty_state.html" with title="No history recorded" body="Custody transfers, disposition changes, corrections and preservation assessments are listed here." %}
+        {% endif %}
+      </div>
+    </section>
+  </div>
+
+  {% if can_receive %}
+  <div class="col-xl-4">
+    <section class="card" id="transfer" aria-labelledby="transfer-heading">
+      <div class="card-header"><h2 class="card-title" id="transfer-heading">Record custody transfer</h2></div>
+      <div class="card-body">
+        <form class="vr-form" method="post" action="{{ request.path }}#transfer" data-vr-local-form="Record transfer" data-vr-local-title="Record custody transfer" novalidate>
+          {% csrf_token %}
+          <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required. Transfers are added to the history; earlier events are never changed.</p>
+          {{ transfer_form }}
+          <div class="vr-form-actions">
+            <button class="btn btn-primary" type="submit">Record transfer</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+{% block record_foot %}{% include "includes/record_foot.html" with identifier=sample.lab_id %}{% endblock %}

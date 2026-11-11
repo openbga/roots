@@ -1,0 +1,131 @@
+{
+  "id": "commercial-price-list-form",
+  "routes": [
+    "commercial:price-list-create",
+    "commercial:price-list-edit"
+  ],
+  "title": "Price list",
+  "purpose": "Create or edit staff pricing. Quote lines copy prices when saved; a list edit never changes already stored quote prices.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "Project managers and admins can use price lists and quotes. Other staff roles do not grant this access. Admin includes the project manager role. A superuser flag alone supplies no application role."
+      ]
+    },
+    {
+      "title": "List",
+      "items": [
+        {
+          "label": "Name",
+          "description": "Required unique name, up to 120 characters; uniqueness ignores letter case."
+        },
+        {
+          "label": "Description",
+          "description": "Optional staff-only explanation; not included in the client quote document."
+        },
+        {
+          "label": "Active (can be quoted)",
+          "description": "Checked by default for a new list. Clear to prevent new quote selection; existing drafts may retain this list."
+        },
+        {
+          "label": "Reason for change",
+          "description": "Shown and required when editing; omitted when creating. Explain changes to details, availability or prices. Kept in audit history."
+        }
+      ]
+    },
+    {
+      "title": "Prices",
+      "paragraphs": [
+        "Rows include active tests on active methods and all tests already priced on an existing list, ordered by matrix, analyte, method code and version. Existing entries remain visible after retirement; new entries require active tests on active methods. Price rows have no filtering or pagination."
+      ],
+      "items": [
+        {
+          "label": "Analyte",
+          "description": "Substance or measurement identified by the catalog test."
+        },
+        {
+          "label": "Method version",
+          "description": "Specific method/version for this test. Different versions can have different prices."
+        },
+        {
+          "label": "Matrix",
+          "description": "Water, Wastewater or Soil distinguishes the sample material."
+        },
+        {
+          "label": "Unit",
+          "description": "Analytical result unit for identifying the test, not the charging basis."
+        },
+        {
+          "label": "Price (USD)",
+          "description": "Optional exact US dollars per sample, from 0 to 9,999,999,999.99 with at most two decimal places. Blank means no price is offered on this list; clearing a saved price removes that entry. Zero is a real price."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Create price list",
+          "description": "Save a new list and reopen it for editing; an empty list is allowed."
+        },
+        {
+          "label": "Save changes",
+          "description": "Save details and prices with the reason. Refused if the list changed after opening; reload and review current prices."
+        },
+        {
+          "label": "Cancel / Price lists",
+          "description": "Return to the list directory without saving."
+        },
+        {
+          "label": "Open catalog",
+          "description": "Shown if no tests are available to price; opens the test catalog. Catalog changes require their own permissions."
+        }
+      ]
+    },
+    {
+      "title": "History",
+      "paragraphs": [
+        "Shows up to the first 20 recorded events in oldest-first order. Each event identifies action, time, actor and any reason. Changes and their audit event save together. The timeline does not display every stored before-and-after value."
+      ]
+    },
+    {
+      "title": "Form controls and errors",
+      "items": [
+        {
+          "label": "Required fields and errors",
+          "description": "Asterisks mark required fields. Errors appear beside fields or above the form; entered values stay available for correction after validation fails. A stale-record error requires reloading and reviewing the current record before retrying."
+        },
+        {
+          "label": "Maximize / Restore size",
+          "description": "When this form opens in a dialog, change its size without saving. Small screens already use the full screen."
+        },
+        {
+          "label": "Close form / Cancel",
+          "description": "Leave without saving. If the dialog detects edits, Keep editing returns to the form and Discard changes leaves without saving."
+        },
+        {
+          "label": "Try again",
+          "description": "Retry if loading the dialog failed. During saving, wait for the request to finish; the submit button indicates work is running."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "commercial/urls.py",
+    "commercial/views.py",
+    "commercial/models.py",
+    "commercial/forms.py",
+    "commercial/permissions.py",
+    "accounts/roles.py",
+    "commercial/pricing.py",
+    "commercial/selectors.py",
+    "commercial/templates/commercial/price_list_form.html",
+    "commercial/templates/commercial/_history.html",
+    "commercial/tests/test_quotes.py",
+    "core/form_surfaces.py",
+    "templates/includes/form_dialog.html",
+    "static/js/form-dialog.js",
+    "static/js/app.js"
+  ]
+}

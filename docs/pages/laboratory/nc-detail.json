@@ -1,0 +1,177 @@
+{
+  "id": "laboratory-nc-detail",
+  "routes": [
+    "laboratory:nc-detail"
+  ],
+  "title": "Nonconformance details",
+  "purpose": "Read one issue, linked records, current findings and the complete corrective action timeline.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Available to active signed-in lab staff with an admin, custodian, analyst, reviewer, approver or project manager role. Client accounts and accounts without a lab role cannot open laboratory pages. Sidebar links open Lab overview, Inventory, Equipment, Training and Nonconformances. Breadcrumbs return to the list or parent record."
+      ]
+    },
+    {
+      "title": "Who can change this record",
+      "paragraphs": [
+        "Any lab staff member can open a nonconformance, read it and add notes/evidence, including after closure. Only its assigned owner or an admin, reviewer, approver or project manager role can edit details or drive workflow. Opening a record does not by itself give the opener management rights. Staff selectors list active non-client accounts, ordered by username, with full name and username when available."
+      ]
+    },
+    {
+      "title": "Header and actions",
+      "items": [
+        {
+          "label": "Number, Title, Status, Severity and Category",
+          "description": "Generated number, current issue title, workflow step and recorded classifications. Past due appears only when nonclosed and due before today."
+        },
+        {
+          "label": "Add note or evidence",
+          "description": "All staff can append supporting text, reference or file, even when Closed; changes no status."
+        },
+        {
+          "label": "Edit",
+          "description": "Owner/lead only while nonclosed. Changes current details with a required reason and retains prior values in the timeline."
+        },
+        {
+          "label": "Start investigation",
+          "description": "Available in Open; requires an owner and moves to Investigating."
+        },
+        {
+          "label": "Record root cause and disposition",
+          "description": "Available in Investigating; records required cause and disposition and moves to Corrective action."
+        },
+        {
+          "label": "Submit for verification",
+          "description": "Available in Corrective action; requires corrective action and moves to Verification."
+        },
+        {
+          "label": "Verify and close",
+          "description": "Available in Verification; requires verification plus a reference or evidence file, records closer/time and moves to Closed."
+        },
+        {
+          "label": "Return to corrective action",
+          "description": "Owner/lead action in Verification, with a required reason."
+        },
+        {
+          "label": "Reopen",
+          "description": "Owner/lead action in Closed, with a required reason. Returns to Investigating and clears current verification, closure note, closer and close time; earlier closure remains in timeline."
+        }
+      ]
+    },
+    {
+      "title": "Issue facts",
+      "items": [
+        {
+          "label": "Description",
+          "description": "Original account of what happened and how discovered; cannot be edited in the detail form. Add a note for clarification."
+        },
+        {
+          "label": "Discovered",
+          "description": "Entered date of discovery."
+        },
+        {
+          "label": "Opened by",
+          "description": "Original reporting actor and system timestamp."
+        },
+        {
+          "label": "Owner",
+          "description": "Current assigned person or Unassigned."
+        },
+        {
+          "label": "Due",
+          "description": "Current entered due date or dash."
+        },
+        {
+          "label": "Sample",
+          "description": "Linked sample ID opens sample details."
+        },
+        {
+          "label": "Analytical batch",
+          "description": "Linked batch number opens analytical batch."
+        },
+        {
+          "label": "Standard / reagent lot",
+          "description": "Linked lot number and material; opens lot ledger."
+        },
+        {
+          "label": "Equipment",
+          "description": "Linked asset ID and name; opens equipment details."
+        }
+      ]
+    },
+    {
+      "title": "Findings and action",
+      "items": [
+        {
+          "label": "Disposition of affected work",
+          "description": "Current chosen disposition and its note, or Not decided."
+        },
+        {
+          "label": "Root cause",
+          "description": "Current explanation of why the issue occurred."
+        },
+        {
+          "label": "Corrective action",
+          "description": "Current action taken to correct the cause or prevent recurrence."
+        },
+        {
+          "label": "Verification",
+          "description": "Current explanation of how the action was shown to work."
+        },
+        {
+          "label": "Closed",
+          "description": "Shown only when closed; closing person, system time and closure note if supplied."
+        }
+      ]
+    },
+    {
+      "title": "Timeline",
+      "paragraphs": [
+        "Every operational event is shown oldest first by occurrence time and ID, without a cap or pagination. Count is the full number of timeline entries. Each shows kind, status move where present, actor, timestamp, note/reason, changed fields with earlier/later values, optional Reference and attachment. Changes to the owner or a linked sample, batch, lot or equipment show the person or record identifier, and category, severity and disposition show their labels; a value that was blank shows as blank. The Issue facts show current linked records. Original text and prior closure evidence remain here after correction or reopening."
+      ]
+    },
+    {
+      "title": "History",
+      "paragraphs": [
+        "History shows up to the latest 50 audit events, oldest of those first and the newest last. Each shows action, recorded time, actor and reason when supplied. If the record has more than 50 audit events, older events beyond this cap are not shown in this panel. They remain stored. This panel is separate from the operational ledger or timeline."
+      ]
+    },
+    {
+      "title": "Workflow and limits",
+      "paragraphs": [
+        "The fixed flow is Open, Investigating, Corrective action, Verification, Closed. Steps cannot be skipped. Verification can return to Corrective action; Closed can reopen to Investigating, each with a reason. Severity and disposition are recorded choices; the system does not infer them. A linked issue or a disposition such as Hold or Qualify does not automatically hold a batch, qualify a result, retire equipment, alter stock or block report release. Apply any separate operational controls explicitly. There is no required independent verifier rule in this workflow; the owner or lead can verify and close."
+      ]
+    },
+    {
+      "title": "Evidence files",
+      "paragraphs": [
+        "Attach a nonempty PDF, PNG, JPEG, TXT or CSV no larger than 10 MiB. TXT/CSV must be UTF-8; PDF and image bytes must match the extension. Evidence is optional unless a step requires a reference or file. Downloads are attachments, not inline previews. File links show name, size and the first 12 SHA-256 checksum characters. No file indicates no stored attachment. Staff can download equipment/nonconformance evidence; training evidence is limited to the person and lead roles. A correction is a new record: an earlier attachment is not copied automatically, so attach evidence again if it belongs on the new record."
+      ]
+    },
+    {
+      "title": "Record footer",
+      "paragraphs": [
+        "The footer repeats the record identifier and shows Viewed with the time this page was produced in the deployment time zone and the signed-in viewer. This is a viewing timestamp, distinct from creation, event, review or closure time. Numbered section headings identify panels on the record page."
+      ]
+    }
+  ],
+  "sources": [
+    "laboratory/urls.py",
+    "laboratory/forms.py",
+    "laboratory/models.py",
+    "laboratory/permissions.py",
+    "laboratory/nc_views.py",
+    "laboratory/nonconformance.py",
+    "laboratory/tests/test_nonconformance.py",
+    "laboratory/tests/test_views.py",
+    "laboratory/selectors.py",
+    "laboratory/evidence.py",
+    "laboratory/templates/laboratory/nc_detail.html",
+    "laboratory/templates/laboratory/_nc_event_extra.html",
+    "templates/includes/record_foot.html",
+    "laboratory/common.py",
+    "core/models.py",
+    "laboratory/templates/laboratory/_history.html"
+  ]
+}

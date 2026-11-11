@@ -1,0 +1,148 @@
+{
+  "id": "laboratory-lot-create",
+  "routes": [
+    "laboratory:lot-create"
+  ],
+  "title": "New lot",
+  "purpose": "Record a purchased or prepared lot and opening stock, optionally consuming a parent in the same save.",
+  "sections": [
+    {
+      "title": "Access and relationships",
+      "paragraphs": [
+        "Admin, analyst and reviewer roles can create lots. An active material must exist. Creation from a material page preselects it. Parent consumption and child creation succeed together; insufficient parent balance leaves no partial record."
+      ]
+    },
+    {
+      "title": "Material and lot",
+      "items": [
+        {
+          "label": "Material",
+          "description": "Required; active materials only. Choices show counting unit, copied to the lot."
+        },
+        {
+          "label": "Lot number",
+          "description": "Required, maximum 80 characters; unique per material ignoring case."
+        },
+        {
+          "label": "Source",
+          "description": "Required; defaults to Purchased / supplied. Prepared in the lab requires a prepared date and allows a parent."
+        },
+        {
+          "label": "Vendor",
+          "description": "Optional, maximum 160 characters."
+        },
+        {
+          "label": "Catalog / certificate reference",
+          "description": "Optional traceability reference, maximum 160 characters."
+        },
+        {
+          "label": "Stated concentration",
+          "description": "Optional original text and unit, maximum 120 characters; not calculated."
+        }
+      ]
+    },
+    {
+      "title": "Dates and quantity",
+      "items": [
+        {
+          "label": "Received on",
+          "description": "Required for Purchased / supplied; cannot be future. May also be supplied for prepared stock."
+        },
+        {
+          "label": "Prepared on",
+          "description": "Required for Prepared in the lab; cannot be future."
+        },
+        {
+          "label": "Expires on",
+          "description": "Required label or lab-set date, never calculated; cannot precede either supplied received/prepared date. Already-expired stock can be recorded."
+        },
+        {
+          "label": "Opening quantity",
+          "description": "Required positive amount in material unit. Use exact decimals with up to six decimal places and magnitude below 1,000,000,000,000. No unit conversion is applied. Opening receipt is effective at save time, not the entered source date."
+        }
+      ]
+    },
+    {
+      "title": "Storage",
+      "items": [
+        {
+          "label": "Storage location",
+          "description": "Required, maximum 160 characters."
+        },
+        {
+          "label": "Storage conditions",
+          "description": "Optional, maximum 200 characters."
+        }
+      ]
+    },
+    {
+      "title": "Preparation",
+      "items": [
+        {
+          "label": "Prepared from lot",
+          "description": "Optional for lab-prepared stock. Choices are active positive-balance lots, including expired lots. Parent and draw quantity are ignored for Purchased / supplied."
+        },
+        {
+          "label": "Quantity drawn from parent",
+          "description": "Required with a parent, positive exact decimal in parent unit; cannot exceed current balance. Parent and child can have different units; no conversion or concentration calculation occurs."
+        },
+        {
+          "label": "Parent lot has expired; record anyway",
+          "description": "Confirm if parent expired on the prepared date. Parent use is effective at save time, and its Used after expiry flag uses that movement date."
+        }
+      ]
+    },
+    {
+      "title": "Create lot",
+      "paragraphs": [
+        "Creates opening receipt and parent use when selected, then opens the new lot."
+      ]
+    },
+    {
+      "title": "Saving and errors",
+      "paragraphs": [
+        "An asterisk marks required fields. Cancel returns to the parent record or list without saving. Success opens the saved record with a confirmation. Validation errors appear above the form and beside affected fields; correct them and submit again. Text input remains after validation errors; select an evidence file again if necessary. Dates use year-month-day; date and time fields use the deployment time zone."
+      ]
+    },
+    {
+      "title": "Form dialog controls",
+      "paragraphs": [
+        "With enhancement enabled, the form opens in a dialog, including when its URL is opened directly. Without enhancement it remains a normal page. While loading or saving, controls are disabled to avoid duplicate submissions; focus moves to the first invalid field or first editable field when ready. Saving successfully navigates to the resulting record."
+      ],
+      "items": [
+        {
+          "label": "Maximize / Restore size",
+          "description": "Expand the dialog to full screen or restore its normal size. Small screens use a full-screen layout."
+        },
+        {
+          "label": "Cancel / Close form / Escape",
+          "description": "Close an unchanged form. When opened over another page, return focus to its opening control; when opened directly, return to the Cancel destination. Clicking outside the dialog does not close it."
+        },
+        {
+          "label": "Keep editing / Discard changes",
+          "description": "After an input change, attempting to leave asks Discard your unsaved changes? Keep editing retains the form; Discard changes closes or follows the requested destination without saving. Escape during that prompt keeps editing."
+        },
+        {
+          "label": "Try again",
+          "description": "Shown after a failed initial load. Retry loading the form. Save/connection errors keep the current input and show an error so you can retry the submission. Validation errors replace the form with its submitted values and field messages; files may need selecting again."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "laboratory/urls.py",
+    "laboratory/forms.py",
+    "laboratory/models.py",
+    "laboratory/permissions.py",
+    "laboratory/inventory_views.py",
+    "laboratory/inventory.py",
+    "laboratory/templates/laboratory/form.html",
+    "laboratory/tests/test_inventory.py",
+    "laboratory/tests/test_views.py",
+    "core/form_surfaces.py",
+    "core/form_dialog.py",
+    "templates/includes/form_dialog.html",
+    "static/js/form-dialog.js",
+    "tests/test_form_dialog.py"
+  ]
+}

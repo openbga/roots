@@ -1,0 +1,161 @@
+{
+  "id": "receipt-subcontract-detail",
+  "routes": [
+    "receipt:subcontract-detail"
+  ],
+  "title": "Subcontract record",
+  "purpose": "Review a completed external handoff, its selected containers, immutable source-result versions and independent acceptance history.",
+  "sections": [
+    {
+      "title": "Header and actions",
+      "paragraphs": [
+        "All laboratory staff can read; portal accounts cannot. Source status considers the latest version, not a historical acceptance. Cancelled records retain their history."
+      ],
+      "items": [
+        {
+          "label": "Subcontract / Source status / Client / Lab ID / Analyte / External laboratory",
+          "description": "Identifies the route, latest source state and requested test; Lab ID links to the sample."
+        },
+        {
+          "label": "Cancel external dispatch",
+          "description": "Receipt roles can cancel only an active dispatch with no source result history."
+        },
+        {
+          "label": "Enter external source result",
+          "description": "Analysts, project managers and administrators can enter the first result for an active dispatch."
+        },
+        {
+          "label": "Correct external source",
+          "description": "The same entry roles add a source version when one already exists. Earlier source data and attachments remain; each new version needs independent review."
+        },
+        {
+          "label": "Review external source",
+          "description": "Reviewers/administrators can review the latest undecided source only if someone else entered it. The entry author cannot accept their own transcription."
+        }
+      ]
+    },
+    {
+      "title": "External handoff",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "External order reference",
+          "description": "Actual external arrangement reference."
+        },
+        {
+          "label": "Sample ID at dispatch",
+          "description": "ID known at handoff, or Not assigned at dispatch; later source identity is stored separately."
+        },
+        {
+          "label": "Completed handoff",
+          "description": "Event timestamp, origin location and receiving custodian/courier."
+        },
+        {
+          "label": "Recorded by",
+          "description": "Local recording actor and timestamp."
+        },
+        {
+          "label": "Cancellation",
+          "description": "When present, cancellation actor/time/reason. It does not assert physical return of containers."
+        }
+      ]
+    },
+    {
+      "title": "Containers selected at handoff",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Container label / Description / Condition at receipt / Preservation",
+          "description": "Snapshots of only the selected containers as recorded at dispatch. Other containers and the sample location are tracked separately in receipt/custody. No containers selected is an explicit empty state."
+        }
+      ]
+    },
+    {
+      "title": "Source versions",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Latest / historical",
+          "description": "Versions are ordered newest first. The latest observation is expanded. Show original observation and source review expands each historical version; corrections do not overwrite it."
+        },
+        {
+          "label": "No external result received",
+          "description": "Enter the reported observation and source PDF when available; this state is different from an unreviewed result."
+        }
+      ]
+    },
+    {
+      "title": "Source observation and evidence",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Exact reported result",
+          "description": "Original reported text and unit; ND is preserved as non-detect rather than numeric zero."
+        },
+        {
+          "label": "Reporting limit / dilution",
+          "description": "Exact applied reporting limit in the reported unit and the external dilution; these are source facts, not catalog defaults."
+        },
+        {
+          "label": "External method and version",
+          "description": "Method/version transcribed from the external report, which may differ from the catalog request."
+        },
+        {
+          "label": "External analyst / analysis time",
+          "description": "Reported analyst and analysis start in laboratory local time."
+        },
+        {
+          "label": "External laboratory / sample ID",
+          "description": "Frozen source identity, including actual external sample ID; not merely an ID tentatively known at dispatch."
+        },
+        {
+          "label": "External report reference",
+          "description": "Reference identifying the supplied source report."
+        },
+        {
+          "label": "External qualifiers and meanings",
+          "description": "Recorded qualifiers/explanations or None recorded."
+        },
+        {
+          "label": "Entered by",
+          "description": "Local transcription actor and entry timestamp, separate from the external analyst."
+        },
+        {
+          "label": "Correction reason / source note",
+          "description": "Reason for a new version or Initial external source entry when the first has no note."
+        },
+        {
+          "label": "Source PDF",
+          "description": "Download staff-only source opens the exact attachment for this version. Size and SHA-256 identify stored bytes. The download verifies size/hash and refuses a corrupt file with a contact-the-laboratory error; it is unavailable to portal accounts."
+        },
+        {
+          "label": "Source review",
+          "description": "Awaiting independent source review, or Accepted source/Rejected source with reviewer, time and note. Source acceptance is separate from internal analytical/QC approval."
+        }
+      ]
+    },
+    {
+      "title": "History",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "History",
+          "description": "Chronological external handoff, cancellation, source-entry and source-review audit events with actor, time and reason/source note. Accepted source remains a provenance decision separate from internal analytical and QC approval; reporting uses the latest independently accepted source."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "receipt/urls.py",
+    "receipt/subcontract_views.py",
+    "receipt/subcontract_forms.py",
+    "receipt/subcontract_models.py",
+    "receipt/subcontracts.py",
+    "receipt/models.py",
+    "accounts/roles.py",
+    "receipt/tests/test_subcontracts.py",
+    "receipt/templates/receipt/subcontract/detail.html",
+    "receipt/templates/receipt/subcontract/source_summary.html",
+    "receipt/templates/receipt/subcontract/status.html"
+  ]
+}

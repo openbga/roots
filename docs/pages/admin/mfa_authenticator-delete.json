@@ -1,0 +1,50 @@
+{
+  "id": "admin-mfa_authenticator-delete",
+  "routes": [
+    "admin:mfa_authenticator_delete"
+  ],
+  "title": "Remove authenticator",
+  "purpose": "Confirm removal of one lost sign-in factor from an account.",
+  "sections": [
+    {
+      "title": "Access and displayed scope",
+      "paragraphs": [
+        "Requires an active account with both Staff and Superuser status. A laboratory admin role, Staff status alone or individual authenticator or email-address model permissions granted to a user or group do not open this page.",
+        "The page names the factor type and shows a summary of what will be removed: this single factor record. There is no bulk removal from the list."
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Yes, I’m sure",
+          "description": "Removes the factor. In the same step the account’s audit history records who removed it, when, and the factor’s type, enrollment and last-use times. The secret is never recorded. If the audit record cannot be written, nothing is removed."
+        },
+        {
+          "label": "No, take me back",
+          "description": "Returns without removing anything."
+        }
+      ]
+    },
+    {
+      "title": "Effect",
+      "paragraphs": [
+        "Only this factor is removed; the account, its roles and its other factors stay. Removing an authenticator app leaves any Recovery codes record in place, and removing recovery codes leaves the app. Self-service deactivation cleanup is not run. The owner can enroll a new factor from their own Two-factor authentication pages."
+      ]
+    },
+    {
+      "title": "Navigation",
+      "paragraphs": [
+        "Home, application, model list and object breadcrumbs return to the permitted maintenance pages."
+      ]
+    }
+  ],
+  "sources": [
+    "accounts/admin.py",
+    "accounts/models.py",
+    "accounts/roles.py",
+    "core/admin.py",
+    "config/settings.py",
+    "uv.lock"
+  ]
+}

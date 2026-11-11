@@ -1,0 +1,184 @@
+{
+  "id": "client-commercial-sample-form",
+  "routes": [
+    "client_commercial:sample-create",
+    "client_commercial:sample-edit"
+  ],
+  "title": "Declared sample",
+  "purpose": "Add or edit one sample’s collection details, intended tests and grouped containers before laboratory review.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "Sign in with an active client account. Every page, selection and action is limited to the client attached to your account, including work created by other users for the same client. Staff accounts cannot use these portal pages. Another client’s record is treated as missing."
+      ]
+    },
+    {
+      "title": "Eligibility and defaults",
+      "paragraphs": [
+        "The parent submission must be Draft or Returned for changes. Submitted, Accepted and Cancelled declarations cannot be edited. Up to 200 samples are allowed per submission. Edits replace the current declaration; earlier submitted snapshots stay frozen.",
+        "A normal new sample starts with Grab, Field sample and quantity 1. Save and add another opens a new sample copied from the one just saved, including sample type, matrix, sample source, times/planned date, collector, location, field notes, intended tests and container groups, but clears Your sample ID. Every copied value remains editable; check it for the next sample. Editing opens that sample’s current values. Times use laboratory local time."
+      ]
+    },
+    {
+      "title": "Sample and collection",
+      "items": [
+        {
+          "label": "Your sample ID",
+          "description": "Required identifier up to 120 characters; must be unique within this submission without regard to letter case. Used on planned labels and to match the received sample."
+        },
+        {
+          "label": "Sample type",
+          "description": "List: Field sample (initially), Field duplicate, Field blank, Trip blank or Equipment / rinsate blank. Mark field blanks, trip blanks and field duplicates. The laboratory confirms it at receipt."
+        },
+        {
+          "label": "Collection type",
+          "description": "Required Grab or Composite; initially Grab."
+        },
+        {
+          "label": "Matrix",
+          "description": "Required Water, Wastewater or Soil; intended tests must match."
+        },
+        {
+          "label": "Sample source",
+          "description": "Optional list grouped by matrix, with Not stated first. Water: Drinking water, Groundwater, Surface water, Stormwater. Wastewater: Wastewater influent, Wastewater effluent, Industrial wastewater, Stormwater. Soil: Soil, Sediment, Sludge / biosolids, Solid waste. What was sampled. It must belong to the matrix; otherwise the form refuses it (the message names the matrix) and nothing is saved."
+        },
+        {
+          "label": "Collector name",
+          "description": "Required collector identity, up to 160 characters, even for planned samples."
+        },
+        {
+          "label": "Collection started at",
+          "description": "Composites only. Required if an actual composite end is entered; start cannot follow end. A start without any end is refused. Grab saves clear a supplied start time."
+        },
+        {
+          "label": "Collected / composite ended at",
+          "description": "Optional actual collection/end timestamp. Leave blank when preparing bottles before collection; never enter an estimated future time. A real time cannot be in the future. Actual time is required later at laboratory receipt."
+        },
+        {
+          "label": "Planned collection date",
+          "description": "Optional date used only while actual collection time is blank. Saving an actual collection time clears this planned date. It is not treated as an observed collection or holding-time start."
+        },
+        {
+          "label": "Collection location",
+          "description": "Required specific place, up to 200 characters."
+        },
+        {
+          "label": "Field notes",
+          "description": "Optional field readings or conditions for the laboratory; carried into submitted history and displayed to receiving staff. At receipt they prefill the Sample remarks field."
+        }
+      ]
+    },
+    {
+      "title": "Intended tests",
+      "items": [
+        {
+          "label": "Intended tests",
+          "description": "Choose at least one active test on an active method for the sample matrix. Labels identify analyte, method code/version, result unit and matrix. These are intended requests; the laboratory confirms actual tests at receipt."
+        },
+        {
+          "label": "Search analyte, method or unit",
+          "description": "Enhanced picker searches analyte, method code/version and unit, with no result cap. Only matching-matrix tests can be added. Enter adds the highlighted choice, Backspace removes the last choice and Left arrow moves to earlier choices."
+        },
+        {
+          "label": "Remove test / Remove this test / Remove these tests",
+          "description": "Remove an individual choice or all highlighted matrix mismatches. Changing matrix keeps existing selections for review; remove mismatches or correct the matrix before saving. Errors preserve selections. Without enhancement, use the native multiple-select."
+        }
+      ]
+    },
+    {
+      "title": "Containers",
+      "items": [
+        {
+          "label": "Container type 1, 2, …",
+          "description": "Each group is one container type. Group identical bottles into one row; these are planned declarations, not verified receipt conditions."
+        },
+        {
+          "label": "Container type",
+          "description": "Required list: Select…, ten common vial, bottle and jar types (for example 40 mL VOA vial, 1 L plastic (HDPE), 1 L amber glass, 8 oz glass jar) or Other…. Other… reveals a text box (Describe) whose text is stored, up to 160 characters. The list is a starter vocabulary, not a method requirement."
+        },
+        {
+          "label": "Preservative",
+          "description": "Optional list, Not recorded first: None, HNO3 (nitric acid), H2SO4 (sulfuric acid), HCl (hydrochloric acid), NaOH (sodium hydroxide), Zinc acetate + NaOH, Na2S2O3 (sodium thiosulfate), NaHSO4 (sodium bisulfate), Methanol, Ascorbic acid or Other… (your own text, up to 200 characters). What was added to the container in the field. Does not record a laboratory preservation check."
+        },
+        {
+          "label": "Quantity",
+          "description": "Required whole number from 1 to 20, initially 1. Total quantity over retained types cannot exceed 20."
+        },
+        {
+          "label": "Remove this container type",
+          "description": "Exclude this entire type and its quantity when saving."
+        },
+        {
+          "label": "Add container type",
+          "description": "Append a type when JavaScript is available. At least one complete retained type is required. Up to 20 form rows and 20 total individual containers are allowed; unchanged spare rows are ignored."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "Add sample / Save changes",
+          "description": "Validate and save this sample in the current declaration, then return to submission detail. Does not submit, collect, receive or create laboratory sample IDs."
+        },
+        {
+          "label": "Save and add another",
+          "description": "Save this sample and open a new sample with its values copied and sample ID blank. The same submission limits and validations apply."
+        },
+        {
+          "label": "Cancel / submission number / Submissions",
+          "description": "Leave without saving and return to the related record or list."
+        },
+        {
+          "label": "Changed submission",
+          "description": "Any change to submission contents after opening can make this form stale. The save is refused and typed input is retained; reload and review current details before trying again."
+        }
+      ]
+    },
+    {
+      "title": "Form controls and errors",
+      "items": [
+        {
+          "label": "Required fields and errors",
+          "description": "Asterisks mark required fields. Errors appear beside fields or above the form; entered values stay available for correction after validation fails. A stale-record error requires reloading and reviewing the current record before retrying."
+        },
+        {
+          "label": "Maximize / Restore size",
+          "description": "When this form opens in a dialog, change its size without saving. Small screens already use the full screen."
+        },
+        {
+          "label": "Close form / Cancel",
+          "description": "Leave without saving. If the dialog detects edits, Keep editing returns to the form and Discard changes leaves without saving."
+        },
+        {
+          "label": "Try again",
+          "description": "Retry if loading the dialog failed. During saving, wait for the request to finish; the submit button indicates work is running."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "commercial/portal_urls.py",
+    "commercial/portal_views.py",
+    "commercial/models.py",
+    "commercial/forms.py",
+    "commercial/permissions.py",
+    "accounts/roles.py",
+    "commercial/submissions.py",
+    "receipt/models.py",
+    "receipt/widgets.py",
+    "commercial/templates/commercial/portal/sample_form.html",
+    "commercial/templates/commercial/portal/_container_row.html",
+    "static/js/test-picker.js",
+    "commercial/tests/test_submissions.py",
+    "commercial/tests/test_workflow.py",
+    "core/form_surfaces.py",
+    "templates/includes/form_dialog.html",
+    "static/js/form-dialog.js",
+    "static/js/app.js",
+    "receipt/vocabulary.py",
+    "core/widgets.py",
+    "templates/django/forms/widgets/list_or_other.html"
+  ]
+}

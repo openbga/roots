@@ -1,0 +1,163 @@
+{
+  "id": "analytical-main-batch-list",
+  "routes": [
+    "analytical:batch-list"
+  ],
+  "title": "Batches & QC",
+  "purpose": "Find analytical batches and compare result progress, open QC findings and holding-time issues. Independent preparation batches have their own list.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "These are staff pages. Active users with an application staff role can read them; client accounts cannot. Analysts perform result entry and batch work, reviewers decide results, and administrators maintain configuration. Administrators also have operational analyst and reviewer access, but independence rules still apply. Superuser status alone does not grant an application role."
+      ]
+    },
+    {
+      "title": "Filters",
+      "items": [
+        {
+          "label": "Search",
+          "description": "Match batch number, method code, current sample lab ID, current client sample ID or analyte. Historical result revisions also make the batch discoverable by lab ID after reanalysis moves work elsewhere."
+        },
+        {
+          "label": "Status",
+          "description": "Any status, Open or Closed. Closing freezes membership, not result entry or review."
+        },
+        {
+          "label": "Method",
+          "description": "An active exact method version."
+        },
+        {
+          "label": "More filters",
+          "description": "Expand Matrix, Review, Created from and Created to."
+        },
+        {
+          "label": "Matrix",
+          "description": "Water, Wastewater or Soil."
+        },
+        {
+          "label": "Review",
+          "description": "Has results awaiting review requires at least one currently assigned submitted result."
+        },
+        {
+          "label": "Created from",
+          "description": "Inclusive first creation date."
+        },
+        {
+          "label": "Created to",
+          "description": "Inclusive last creation date."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "items": [
+        {
+          "label": "Batch",
+          "description": "Batch number linking to samples, results and QC."
+        },
+        {
+          "label": "Status",
+          "description": "Open or Closed membership state."
+        },
+        {
+          "label": "Method",
+          "description": "Batch method/version."
+        },
+        {
+          "label": "Matrix",
+          "description": "Batch sample matrix."
+        },
+        {
+          "label": "Samples",
+          "description": "Distinct currently assigned field samples; several analytes on one sample count once."
+        },
+        {
+          "label": "Approved / tests",
+          "description": "Approved current results whose latest revision belongs to this batch, divided by current assigned tests. A moved-in result approved in another batch does not count as approved here."
+        },
+        {
+          "label": "Awaiting review",
+          "description": "Current assigned results submitted for review."
+        },
+        {
+          "label": "Open QC findings",
+          "description": "Distinct unresolved current QC findings holding approval. Display-only and not sortable."
+        },
+        {
+          "label": "Holding issues",
+          "description": "Latest entered or submitted revisions in this batch with holding time Exceeded or Not evaluable. Display-only and not sortable."
+        },
+        {
+          "label": "Created",
+          "description": "Creation date/time."
+        },
+        {
+          "label": "Created by",
+          "description": "Creator’s name or username; hidden initially."
+        },
+        {
+          "label": "Preparation start",
+          "description": "Recorded combined-batch start, or a dash; hidden initially."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "items": [
+        {
+          "label": "New batch",
+          "description": "Analysts open batch creation and then test selection."
+        },
+        {
+          "label": "Batch",
+          "description": "Open the batch to inspect its current membership, results, QC and equipment."
+        }
+      ]
+    },
+    {
+      "title": "Filtering and table controls",
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Apply search and filters to the entire matching dataset and return to page 1. Invalid filters show errors and no rows; they never widen the query."
+        },
+        {
+          "label": "Clear all",
+          "description": "Remove search and filters and restore this page’s defaults. A filter chip removes only that filter."
+        },
+        {
+          "label": "Rows per page",
+          "description": "Choose 25 (default), 50 or 100. First, Previous, Next and Last page links retain filters. Counts describe all matching records."
+        },
+        {
+          "label": "Columns",
+          "description": "Show or hide optional columns and change their order using movement controls or header dragging. Changes apply immediately and are saved for this table in this browser. Locked columns stay available."
+        },
+        {
+          "label": "Reset columns",
+          "description": "Restore the original column visibility and order. Done or Close dismisses the Columns dialog."
+        }
+      ],
+      "paragraphs": [
+        "Newest creation first by default. Batch, Awaiting review and Created headings sort the whole filtered list."
+      ]
+    },
+    {
+      "title": "Empty states",
+      "paragraphs": [
+        "No batches yet offers New batch. A filtered empty list offers Clear all. Use Preparation batches to find independent preparation and aliquot work."
+      ]
+    }
+  ],
+  "sources": [
+    "analytical/views.py",
+    "analytical/forms.py",
+    "analytical/models.py",
+    "analytical/services.py",
+    "analytical/selectors.py",
+    "accounts/roles.py",
+    "analytical/templates/analytical/batch_list.html",
+    "analytical/tests/test_lists.py"
+  ]
+}

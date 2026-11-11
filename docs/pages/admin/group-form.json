@@ -1,0 +1,71 @@
+{
+  "id": "admin-group-form",
+  "routes": [
+    "admin:auth_group_add",
+    "admin:auth_group_change"
+  ],
+  "title": "Group permissions",
+  "purpose": "Maintain the capabilities granted to a group of users.",
+  "sections": [
+    {
+      "title": "Access and fields",
+      "paragraphs": [
+        "The administration site requires an active account with Staff status. User and group pages additionally require Superuser status; a laboratory admin role alone or individual model permissions do not open them. These technical flags do not themselves confer operational roles or report-release authority."
+      ],
+      "items": [
+        {
+          "label": "Name",
+          "description": "Required unique name, at most 150 characters. On existing built-in laboratory groups the name is read only; other existing group names remain editable."
+        },
+        {
+          "label": "Permissions",
+          "description": "Optional Available permissions and Chosen permissions with filtering, choose/remove and Choose all/Remove all. accounts authorize_release grants release capability to active internal members. Permissions do not create laboratory roles for arbitrary group names."
+        }
+      ]
+    },
+    {
+      "title": "Membership and history",
+      "paragraphs": [
+        "No user/member selector is on this group form; edit membership on each User. Saves record before/after group snapshots in attributed audit events. There is no original-version token on this form, so a later valid save can replace concurrent edits. Delete is disabled."
+      ]
+    },
+    {
+      "title": "Save and navigation",
+      "items": [
+        {
+          "label": "Save",
+          "description": "Validates and saves, then returns to the model list with preserved filters, except the user-creation flow described separately."
+        },
+        {
+          "label": "Save and continue editing",
+          "description": "Saves and reopens this record’s change form."
+        },
+        {
+          "label": "Save and add another",
+          "description": "Appears only when creation is permitted; saves and opens a fresh add form."
+        },
+        {
+          "label": "History",
+          "description": "Existing records only: opens Django administration history, separate from attributed domain audit records."
+        },
+        {
+          "label": "Home / app / model breadcrumbs",
+          "description": "Return to administration home, the application module or the current model list."
+        },
+        {
+          "label": "View site",
+          "description": "Header link to the operational application. Log out submits immediate sign-out; it has no administration confirmation page."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "accounts/admin.py",
+    "accounts/models.py",
+    "accounts/roles.py",
+    "core/admin.py",
+    "config/settings.py",
+    "uv.lock",
+    "accounts/tests/test_admin.py"
+  ]
+}

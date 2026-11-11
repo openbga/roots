@@ -1,0 +1,157 @@
+{
+  "id": "catalog-analyte-list",
+  "routes": [
+    "catalog:analyte-list"
+  ],
+  "title": "Catalog: analytes",
+  "purpose": "Find measured substances/properties and see how their test definitions are used. An analyte is requestable through a test definition.",
+  "sections": [
+    {
+      "title": "Access and navigation",
+      "paragraphs": [
+        "Active staff with a laboratory role can read the lists. Client portal accounts cannot. Only the admin role creates or edits catalog records."
+      ],
+      "items": [
+        {
+          "label": "Tests",
+          "description": "Combinations of analyte, method version and matrix available for requesting work."
+        },
+        {
+          "label": "Methods",
+          "description": "Laboratory method versions that tests and batches refer to."
+        },
+        {
+          "label": "Analytes",
+          "description": "Substances or properties measured by tests."
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "New analyte",
+          "description": "Administrators create an analyte before defining tests for it."
+        },
+        {
+          "label": "Analyte row link",
+          "description": "Administrators open its edit form; other staff see a plain name."
+        }
+      ]
+    },
+    {
+      "title": "Filters",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Search",
+          "description": "Searches name and CAS number."
+        },
+        {
+          "label": "Group",
+          "description": "Inline filter: one analyte group from the fixed list. Analytes with Not recorded match only when the filter is blank."
+        },
+        {
+          "label": "Tests",
+          "description": "Has tests requires at least one active or inactive definition. No tests yet requires none."
+        },
+        {
+          "label": "Requested on samples",
+          "description": "More filters: Yes requires a received requested test through any definition of this analyte; No requires none."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "paragraphs": [],
+      "items": [
+        {
+          "label": "Analyte",
+          "description": "Unique substance/property name; default sort is name ascending."
+        },
+        {
+          "label": "CAS number",
+          "description": "Optional chemical identifier, or a dash."
+        },
+        {
+          "label": "Group",
+          "description": "Analyte group recorded on the analyte, or a dash when not recorded. Sortable by its stored value, so the order follows the internal choice value rather than the displayed name."
+        },
+        {
+          "label": "Active tests",
+          "description": "Active definitions out of all definitions for the analyte, regardless of method availability."
+        },
+        {
+          "label": "Requested on samples",
+          "description": "Initially hidden count of received requests across the analyte’s definitions."
+        }
+      ]
+    },
+    {
+      "title": "Using the table",
+      "paragraphs": [
+        "Invalid filters leave the table empty with errors until corrected or cleared. A no-match state differs from an empty catalog. Administrators see the relevant New action in an empty catalog."
+      ],
+      "items": [
+        {
+          "label": "Apply",
+          "description": "Combines search and filters across all records and starts at page 1. Search is case-insensitive and matches contained text."
+        },
+        {
+          "label": "More filters",
+          "description": "Opens additional criteria and stays open when they are used or invalid."
+        },
+        {
+          "label": "Clear all and filter chips",
+          "description": "Clear all restores the unfiltered URL and default sort. Removing one chip clears that criterion and starts at page 1 while keeping the other criteria."
+        },
+        {
+          "label": "Column headings",
+          "description": "Linked headings sort the full filtered set; record ID breaks ties. Unsupported sort values fall back to the default."
+        },
+        {
+          "label": "Columns",
+          "description": "Show, hide or reorder optional columns; the identifying column stays visible. Preferences belong to this browser. Reset restores the default presentation without changing records or filters."
+        },
+        {
+          "label": "Rows per page and pagination",
+          "description": "Choose 25, 50 or 100 rows; use Show if automatic submission is unavailable. A size change starts at page 1. First, Previous, Next and Last preserve filters and sort; the result count describes the filtered set."
+        }
+      ]
+    },
+    {
+      "title": "Column layout dialog",
+      "items": [
+        {
+          "label": "Column checkboxes",
+          "description": "Changes apply immediately. Check to show an optional column or uncheck to hide it. Always shown columns are fixed."
+        },
+        {
+          "label": "Move column up / down",
+          "description": "Moves an optional column within the displayed order; the first/last position disables the unavailable move. You can also drag movable table headers."
+        },
+        {
+          "label": "Reset columns",
+          "description": "Restores this table’s default order and visibility in this browser."
+        },
+        {
+          "label": "Done / Close",
+          "description": "Closes the dialog; layout changes have already been applied and saved locally. No laboratory record is changed."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "catalog/urls.py",
+    "catalog/views.py",
+    "catalog/forms.py",
+    "catalog/models.py",
+    "catalog/services.py",
+    "catalog/tests/test_catalog.py",
+    "catalog/templates/catalog/analyte_list.html",
+    "core/grids.py",
+    "templates/includes/grid_columns_dialog.html",
+    "static/js/grid.js"
+  ]
+}
