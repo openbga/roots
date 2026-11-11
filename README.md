@@ -38,6 +38,12 @@ deployment.
 
 Screens show the synthetic demo data.
 
+## Hosted demo
+
+Open the [OpenBGA Roots demo](https://openbga-roots.onrender.com/) on Render to explore the
+application with an existing demo account. The [demo presentation](https://openbga-roots.onrender.com/about/)
+is available without signing in. Use synthetic data only.
+
 ## Try it with Docker
 
 Requires Docker with Compose. This builds the application image and runs it with a local
