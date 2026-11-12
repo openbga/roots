@@ -22,7 +22,8 @@ def test_sort_search_filters_paging_and_columns_work_on_the_full_dataset(
 ):
     total = dataset["total"]
     sign_in_as("analyst")
-    page.get_by_role("link", name="Samples", exact=True).first.click()
+    # Analysts follow related sample links; receipt destinations are absent from their menu.
+    page.get_by_role("link", name="All samples", exact=True).click()
     expect(page.get_by_role("heading", level=1, name="Samples")).to_be_visible()
     expect(page.get_by_text(re.compile(rf"Showing 1–25\s+of {total} samples"))).to_be_visible()
     assert "ZZ-EARLIEST" not in column_values(page, "Client sample ID")  # last page by default
