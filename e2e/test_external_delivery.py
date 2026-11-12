@@ -212,7 +212,9 @@ def test_external_result_flows_to_a_report_correction_amendment_and_disposal(
     expect(page.get_by_text("independent source review is required")).to_be_visible()
     expect(page.get_by_text("Source 1").first).to_be_visible()  # the original stays listed
     expect(page.get_by_text("historical").first).to_be_visible()
-    page.get_by_role("link", name="Delivery schedule").click()
+    # The analyst can inspect delivery state by URL, but cannot manage the delivery schedule.
+    expect(page.locator("#vr-nav").get_by_role("link", name="Delivery schedule")).to_have_count(0)
+    page.goto("/schedule/")
     grid_search(page, "Filter the delivery schedule").fill(lab_id)
     page.get_by_role("button", name="Apply").click()
     expect(
