@@ -40,9 +40,11 @@ Every page is one of these. The type fixes its header, layout and navigation beh
 
 ## 3. Navigation
 
-1. The sidebar owns destinations. Every list and overview a user can go to is a sidebar item.
-   A destination appears in exactly one navigation component: never in the sidebar and again as
-   tabs, pills or header buttons.
+1. The sidebar owns work destinations. Show destinations for the account’s effective roles and
+   explicit capabilities, combine them across roles, and omit empty sections. Existing record
+   links and direct pages retain their authorization even when their destination is absent from
+   the sidebar. A destination appears in exactly one navigation component: never in the sidebar
+   and again as tabs, pills or header buttons.
 2. Section tabs exist for one case only: one sidebar item whose content is two to six sibling
    lists that are not themselves sidebar items (Catalog: Tests, Methods, Analytes; Inventory:
    Lots, Materials), or sibling sub-views of one action (the sections of a sample correction).
@@ -51,11 +53,12 @@ Every page is one of these. The type fixes its header, layout and navigation beh
    visible on every list in the set and never appear on record or form pages.
 3. A long page with four or more sections gets an "On this page" list of anchors
    (`includes/page_toc.html`). It is not a tab set and does not hide content.
-4. Every page marks exactly one sidebar item as current, including record, form and action pages
-   beneath a list. Pages reached from the user menu (password, two-factor) mark none. The mapping
-   from route to sidebar item is declared in one place and checked by a test (section 11). A
-   route shared by two kinds of record (QC pages of an analytical or a preparation batch) is
-   declared as shared, and the view names the item for the record at hand.
+4. Each list, overview, record, form and action page maps to one sidebar item. Mark that item
+   current only when it is visible for the account; a permitted page whose destination is absent
+   marks none. Pages reached from the user menu (password, two-factor) also mark none. The
+   mapping from route to sidebar item is declared in one place and checked by a test (section
+   11). A route shared by two kinds of record (QC pages of an analytical or a preparation batch)
+   is declared as shared, and the view names the item for the record at hand.
 5. Breadcrumbs appear on every record, form, action, entry and document page, and never on lists
    or overviews. The trail is `Sidebar item › Record identifier › Action`; the last crumb is the
    current page and is not a link. Under a tabbed section the trail is `Section › Tab › …`, where

@@ -36,7 +36,7 @@
         },
         {
           "label": "Menus and section tabs",
-          "description": "Select a menu destination or a section tab to change pages. The current destination is marked and keyboard focus has a visible outline. Portal destinations wrap onto another line on narrow screens. Availability depends on the signed-in account and role; opening a direct link still checks permission."
+          "description": "Select a menu destination or a section tab to change pages. The current destination is marked when it appears in your menu, and keyboard focus has a visible outline. The staff sidebar shows destinations for the work your roles can perform, combines destinations when you hold several roles, and omits empty sections. Related record links and direct pages retain their existing access checks, so a readable record may have no sidebar destination for your role; no sidebar item is marked on that page. Portal destinations wrap onto another line on narrow screens; client portal navigation is unchanged."
         },
         {
           "label": "Theme",
@@ -53,6 +53,43 @@
         {
           "label": "Footer / Source code",
           "description": "Every staff, client portal, sign-in and error page ends with the product name, a Source code link and the AGPL-3.0-only licence. Source code opens the published source of the software this deployment runs, which the licence requires to be offered to its users; a deployment running modified code points it at its own source. It opens an external site and changes no records."
+        }
+      ]
+    },
+    {
+      "title": "Staff sidebar destinations",
+      "items": [
+        {
+          "label": "Every internal role",
+          "description": "Dashboard, Training and Nonconformances are available to every active internal laboratory role. Training still limits whose records you may read, and each page checks its own actions."
+        },
+        {
+          "label": "Project manager",
+          "description": "Clients, Projects, Quotes and Price lists support client and quotation work. Client submissions, Chains of custody, Sample storage and Delivery schedule are shared with custodians. Samples is shared with custodians and reviewers."
+        },
+        {
+          "label": "Custodian",
+          "description": "Client submissions, Chains of custody, Samples, Sample storage and Delivery schedule support intake, custody and delivery work."
+        },
+        {
+          "label": "Analyst and reviewer",
+          "description": "Both roles see Preparation batches, Batches & QC, MDL studies, QC control charts, Lab overview, Inventory and Equipment. Analysts also see Worklist and Import mappings. Reviewers also see Samples for preservation assessment and Technical review. Individual actions still require the page’s permissions."
+        },
+        {
+          "label": "Subcontracted tests",
+          "description": "Available to custodians, project managers, analysts and reviewers for their parts of subcontracted work."
+        },
+        {
+          "label": "Reports",
+          "description": "Available to project managers, approvers and internal staff with explicit report-release permission. Release itself still requires that explicit permission and the report’s checks."
+        },
+        {
+          "label": "Admin",
+          "description": "Admin includes the operational destinations of custodians, project managers, analysts and reviewers, plus Catalog, QC configuration, Record retention and Announcements. The admin role does not grant report-release permission."
+        },
+        {
+          "label": "Accounts & roles",
+          "description": "Available only to an active internal account with both Django staff and superuser status. The laboratory admin role alone does not grant account administration."
         }
       ]
     },
@@ -99,6 +136,10 @@
     "tests/test_core_request_limits.py",
     "accounts/middleware.py",
     "accounts/adapter.py",
-    "accounts/tests/test_locked_credentials.py"
+    "accounts/tests/test_locked_credentials.py",
+    "accounts/roles.py",
+    "core/templatetags/navigation.py",
+    "templates/includes/nav_staff.html",
+    "tests/test_navigation.py"
   ]
 }

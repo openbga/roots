@@ -1,9 +1,10 @@
 """Sign-in, role landing and server-side denial, exercised through the real browser."""
 
 import re
+from pathlib import Path
 
 import pytest
-from conftest import Lab
+from conftest import DESKTOP, NARROW, Lab
 from helpers import sign_in, sign_out
 from playwright.sync_api import Page, expect
 
@@ -57,3 +58,65 @@ def test_client_lands_in_portal_and_cannot_use_staff_routes(page: Page, sign_in_
     for path in ("/samples/", "/samples/new/", "/analytical/review/", "/reports/"):
         assert page.goto(path).status == 403, path
     assert page.goto("/").url.endswith("/portal/")
+
+
+@pytest.mark.parametrize("viewport", [DESKTOP, NARROW], ids=["desktop", "mobile"])
+@pytest.mark.parametrize(
+    ("role", "destination", "absent"),
+    [
+        (
+            "custodian",
+            "Samples",
+            ["Clients", "Batches & QC", "Technical review", "Reports", "Catalog"],
+        ),
+        (
+            "analyst",
+            "Batches & QC",
+            ["Samples", "Quotes", "Technical review", "Reports", "Catalog"],
+        ),
+        ("reviewer", "Technical review", ["Clients", "Quotes", "Worklist", "Reports", "Catalog"]),
+        ("approver", "Reports", ["Samples", "Batches & QC", "Technical review", "Catalog"]),
+        ("project_manager", "Quotes", ["Batches & QC", "Technical review", "Catalog"]),
+    ],
+)
+def test_role_menu_on_desktop_and_mobile(
+    page: Page, sign_in_as, request, viewport, role, destination, absent
+):
+    page.set_viewport_size(viewport)
+    sign_in_as(role)
+    nav = page.locator("#vr-nav")  # Bootstrap exposes the open mobile rail as a dialog.
+    mobile = viewport == NARROW
+    if mobile:
+        page.get_by_role("button", name="Menu", exact=True).click()
+    expect(nav).to_be_visible()
+    for label in absent:
+        expect(nav.get_by_role("link", name=label, exact=True)).to_have_count(0)
+    if role == "approver":
+        expect(nav.locator(".vr-nav-heading")).to_have_text(["Release", "Laboratory"])
+    link = nav.get_by_role("link", name=destination, exact=True)
+    expect(link).to_be_visible()
+    # Keyboard activation works in the responsive menu as well as the desktop rail.
+    link.focus()
+    expect(link).to_be_focused()
+    if output := request.config.getoption("--screenshots-dir"):
+        directory = Path(output)
+        directory.mkdir(parents=True, exist_ok=True)
+        page.screenshot(path=directory / f"menu-{role}-{viewport['width']}.png")
+    link.press("Enter")
+    expect(page.get_by_role("heading", level=1, name=destination, exact=True)).to_be_visible()
+    if mobile:
+        page.get_by_role("button", name="Menu", exact=True).click()
+    expect(nav.get_by_role("link", name=destination, exact=True)).to_have_attribute(
+        "aria-current", "page"
+    )
+    if mobile:
+        expect(nav).to_have_class(re.compile(r"\bshow\b"))
+        nav.press("Escape")
+        expect(nav).to_be_hidden()
+    page.locator(".vr-topbar [data-vr-documentation-toggle]").click()
+    panel = page.locator("#vr-documentation")
+    expect(panel).to_be_visible()
+    expect(
+        panel.get_by_role("heading", name="Staff sidebar destinations", exact=True)
+    ).to_be_visible()
+    assert page.console_errors == []

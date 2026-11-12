@@ -83,10 +83,12 @@ def test_release_needs_explicit_permission_and_clients_only_see_their_own_report
 
     report = Report.objects.get()
 
-    # A reviewer without the release permission can preview but not release.
+    # A reviewer without release permission can follow a report URL, but has no Reports menu.
     sign_in_as("reviewer")
-    page.get_by_role("link", name="Reports").first.click()
-    page.get_by_role("link", name=report.number, exact=True).click()
+    expect(
+        page.get_by_role("navigation", name="Primary").get_by_role("link", name="Reports")
+    ).to_have_count(0)
+    page.goto(f"/reports/{report.pk}/")
     page.get_by_role("link", name="Preview and release").click()
     expect(page.get_by_text("Release needs the report release permission")).to_be_visible()
     expect(page.get_by_role("button", name=re.compile("^Release version"))).to_have_count(0)

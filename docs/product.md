@@ -129,6 +129,7 @@ The project wants clean, reusable code, standard libraries and components, a pro
 
 - Prefer a few well-modeled concepts (sample, container, test, batch, result, report version) over configurable generality. Add configuration only where a lab must change it: methods, analytes, units, limits, holding rules, qualifiers.
 - Professional means dense, scannable, keyboard-friendly tables for receipt, batches and review, with clear status, holding-time warnings and queues per role. Chemists work in volume.
+- Staff navigation shows work destinations for the account’s effective roles and explicit capabilities, combines destinations across roles, and omits empty sections. Related record links and direct pages retain their existing authorization; client portal navigation remains separate.
 - Tests concentrate on the rules in the table above: holding-time computation, QC evaluation, separation of duties, report immutability and amendment lineage, audit completeness. Skip tests that restate framework behavior.
 - Keep documentation to intent and constraints. Do not duplicate the code in prose.
 - Every application page has contextual operator documentation, opened by a top-right icon

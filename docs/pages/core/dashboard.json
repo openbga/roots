@@ -23,7 +23,7 @@
         },
         {
           "label": "Recently received / All samples",
-          "description": "Shows the ten most recently received samples across the laboratory. Lab ID opens the sample; All samples opens the complete sample list. There are no dashboard search, sorting or paging controls."
+          "description": "Shows the ten most recently received samples across the laboratory. Lab ID opens the sample; All samples opens the complete sample list, including for staff whose sidebar omits Samples. These links retain the sample pages’ access checks. There are no dashboard search, sorting or paging controls."
         }
       ]
     },
@@ -129,7 +129,7 @@
     {
       "title": "Access and records",
       "paragraphs": [
-        "Active internal users see queues for their effective roles; admin includes operational roles but does not imply report-release authority. Client-linked users are redirected to their own portal. Dashboard counts are live queries over the linked operational records, not saved tasks."
+        "Active internal users see queues for their effective roles; admin includes operational roles but does not imply report-release authority. The sidebar offers destinations for your work capabilities and combines them when you hold several roles. Related record links may open pages beyond those destinations when existing page permissions allow. Client-linked users are redirected to their own portal. Dashboard counts are live queries over the linked operational records, not saved tasks."
       ]
     }
   ],
@@ -141,6 +141,9 @@
     "core/announcements.py",
     "core/templatetags/announcements.py",
     "templates/includes/announcements.html",
-    "tests/test_announcements.py"
+    "tests/test_announcements.py",
+    "core/templatetags/navigation.py",
+    "templates/includes/nav_staff.html",
+    "tests/test_navigation.py"
   ]
 }

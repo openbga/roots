@@ -159,7 +159,11 @@ def test_only_the_admin_role_manages_announcements(client, staff, admin, portal_
     assert Announcement.objects.count() == 1
     assert not Announcement.objects.get().withdrawn_at
     client.force_login(superuser)
-    assert b"Announcements" not in client.get(reverse("record-retention")).content
+    # Shared help describes all roles; only the navigation link must be absent.
+    assert (
+        f'href="{reverse("announcement-list")}"'.encode()
+        not in client.get(reverse("record-retention")).content
+    )
     client.force_login(admin)
     assert [client.get(url).status_code for url in urls] == [200, 200, 200]
     assert client.get(withdraw).status_code == 405
