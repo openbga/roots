@@ -113,6 +113,11 @@ def test_each_audience_sees_only_its_own_current_announcements(client, staff, ad
 
     text, titles = shown(reverse("account_login"))
     assert titles == {"For visitors", "Everywhere"}
+    # Beside or under the sign-in form, after it in reading and tab order, keyboard-scrollable.
+    box = text.index(
+        'class="vr-announcements vr-announcements-aside" aria-label="Announcements" tabindex="0"'
+    )
+    assert box > text.index('name="password"') and box > text.index('type="submit"')
     assert (
         "Line one<br>&lt;script&gt;alert(1)&lt;/script&gt;" in text and "<script>alert" not in text
     )
@@ -124,7 +129,10 @@ def test_each_audience_sees_only_its_own_current_announcements(client, staff, ad
     assert shown(reverse("record-retention"))[1] == set()
 
     client.force_login(portal_user)
-    assert shown(reverse("portal:home"))[1] == {"For clients", "Everywhere"}
+    portal_text, portal_titles = shown(reverse("portal:home"))
+    assert portal_titles == {"For clients", "Everywhere"}
+    assert '<section class="vr-announcements" aria-label="Announcements">' in portal_text
+    assert 'class="vr-announcements vr-announcements-aside"' not in portal_text
 
     # the audience follows the account, whatever page asks
     assert {a.title for a in announcements_for(portal_user)} == {"For clients", "Everywhere"}

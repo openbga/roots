@@ -839,6 +839,25 @@ s,
   margin: 0;
 }
 
+/* Sign-in page: the announcements box under the sheet, beside it from 1280px (see the
+   Application shell section). Denser text; a single notice fills the box. */
+.vr-announcements-aside {
+  width: 100%;
+  max-width: 28rem;
+  margin: 1rem 0 0;
+}
+
+.vr-announcements-aside .vr-announcement-title,
+.vr-announcements-aside .vr-announcement-body {
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.vr-announcements-aside > .alert {
+  padding: 0.625rem 0.875rem;
+  box-shadow: var(--vr-shadow-raised);
+}
+
 /* The alert's leading status label is stamped onto the note. */
 .alert > .vr-status.vr-status-plain,
 .vr-announcement-head > .vr-status.vr-status-plain {
@@ -2589,6 +2608,14 @@ fieldset.vr-field > legend {
   padding: 2rem 1rem;
 }
 
+/* The sheet and an optional aside (sign-in announcements): stacked, side by side from 1280px. */
+.vr-entrance-sheets {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
 .vr-entrance-theme {
   position: absolute;
   top: 0.75rem;
@@ -3070,6 +3097,48 @@ fieldset.vr-field > legend {
 
   .vr-entrance:has(.vr-scene) .vr-scene {
     display: block;
+  }
+}
+
+/* Beside the sheet, the announcements box takes the sheet's height whatever its text: size
+   containment keeps its text from sizing it (its width is the flex basis), the row stretches it to
+   the sheet, and longer text scrolls inside. The last notice fills the rest of the box. */
+@media (min-width: 1280px) {
+  .vr-entrance:has(.vr-scene):has(.vr-announcements-aside) {
+    grid-template-columns: minmax(0, 1fr) minmax(56.5rem, 1.15fr);
+  }
+
+  .vr-entrance-sheets:has(> .vr-announcements-aside) {
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+    gap: 1.25rem;
+  }
+
+  .vr-entrance-sheets > .vr-announcements-aside {
+    display: flex;
+    flex: 0 1 26rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 26rem;
+    margin: 0;
+    contain: size;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .vr-entrance-sheets > .vr-announcements-aside > .alert {
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: none;
+  }
+
+  .vr-entrance-sheets > .vr-announcements-aside > .alert:last-child {
+    flex-grow: 1;
+  }
+
+  .vr-entrance-sheets:has(> .vr-announcements-aside) > .vr-entrance-panel {
+    flex: 0 1 26rem;
   }
 }
 

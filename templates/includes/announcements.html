@@ -2,10 +2,11 @@
 Laboratory announcements showing now for the requester, newest first; rendered only by the
 {% announcements %} tag (core/templatetags/announcements.py), which chooses them by account.
 Each is a notice (docs/ui-standards.md section 8): the tone label and the title on one line, then
-the message as plain text with its line breaks kept. Nothing renders when there are none.
+the message as plain text with its line breaks kept. Nothing renders when there are none. placement="aside"
+(sign-in page) makes the section a keyboard-focusable box that may scroll inside.
 {% endcomment %}
 {% if announcements %}
-<section class="vr-announcements" aria-label="Announcements">
+<section class="vr-announcements{% if placement == "aside" %} vr-announcements-aside{% endif %}" aria-label="Announcements"{% if placement == "aside" %} tabindex="0"{% endif %}>
   {% for item in announcements %}
   <div class="alert alert-{{ item.tone }}" role="status">
     <div class="vr-announcement-head">

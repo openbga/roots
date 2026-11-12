@@ -305,7 +305,9 @@ Table headings sit on a full-weight ink rule, rows on hairlines.
 - Dateline: today's date and ISO week above an overview's title (`includes/dateline.html`).
 - Struck prior values: in history (`includes/history_item.html`) the value before a change is
   struck through in red pencil, the new value follows.
-- Sign-in: a punched notebook sheet on a mint desk beside the illustration.
+- Sign-in: a punched notebook sheet on a mint desk beside the illustration. Announcements for the
+  sign-in page sit in a box beside the sheet from 1280px, the sheet's height, scrolling inside when
+  longer; on narrower screens the box follows the sheet.
 
 Dates and times in these devices are rendered by the server in the laboratory's time zone
 (`TIME_ZONE`), never the browser's.
