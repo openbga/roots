@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load laboratory_extras %}
+{% comment %}
+The laboratory profile: what new reports print about the laboratory. Every staff role reads it;
+change controls are rendered for the admin role only (core.lab_profile.can_manage).
+Context: lab (or None), logo (sha256, content_type, width, height, or None), certificates (list
+order, each with state, state_label, state_tone, label, token (stale-edit token for removing it)
+and withheld: marked for printing but not current today), default_certificate_note, can_manage,
+lab_token (stale-edit token for removing the logo),
+history (AuditEvent newest first; certificate events carry detail).
+{% endcomment %}
+{% block page_intro %}<p class="vr-page-intro">The address, contact details, logo and certificates printed on new reports.</p>{% endblock %}
+{% block page_actions %}{% if can_manage %}<a class="btn btn-outline-secondary" href="{% url 'lab-profile-edit' %}">Edit</a>{% endif %}{% endblock %}
+{% block content %}
+{% if not lab %}
+<section class="card vr-narrow" aria-labelledby="profile-heading">
+  <div class="card-header"><h2 class="card-title" id="profile-heading">Printed on reports</h2></div>
+  <div class="card-body">
+    {% include "includes/empty_state.html" with title="No laboratory configured" body="The laboratory is not configured yet, so it has no profile." %}
+  </div>
+</section>
+{% else %}
+<div class="row g-3 mb-3">
+  <div class="col-lg-7">
+    <section class="card h-100" aria-labelledby="profile-heading">
+      <div class="card-header"><h2 class="card-title" id="profile-heading">Printed on reports</h2></div>
+      <div class="card-body">
+        <dl class="vr-facts">
+          <div><dt>Laboratory name</dt><dd>{{ lab.name }}</dd></div>
+          <div><dt>Address</dt><dd>{% for line in lab.address_lines %}{{ line }}{% if not forloop.last %}<br>{% endif %}{% empty %}<span class="vr-muted">Not recorded</span>{% endfor %}</dd></div>
+          <div><dt>Phone</dt><dd class="vr-nowrap">{% if lab.phone %}{{ lab.phone }}{% else %}<span class="vr-muted">Not recorded</span>{% endif %}</dd></div>
+          <div><dt>Email</dt><dd>{% if lab.email %}{{ lab.email }}{% else %}<span class="vr-muted">Not recorded</span>{% endif %}</dd></div>
+          <div><dt>Website</dt><dd>{% if lab.website %}{{ lab.website }}{% else %}<span class="vr-muted">Not recorded</span>{% endif %}</dd></div>
+        </dl>
+      </div>
+      <div class="card-footer vr-muted small">The laboratory name is set when the application is installed and is not changed here.</div>
+    </section>
+  </div>
+  <div class="col-lg-5">
+    <section class="card h-100" aria-labelledby="logo-heading">
+      <div class="card-header"><h2 class="card-title" id="logo-heading">Logo</h2>{% if can_manage %}<div class="ms-auto d-flex gap-2">{% if logo %}<button class="btn btn-sm btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#remove-logo">Remove<span class="visually-hidden"> logo</span></button>{% endif %}<a class="btn btn-sm btn-outline-secondary" href="{% url 'lab-logo-edit' %}">{% if logo %}Replace logo{% else %}Upload logo{% endif %}</a></div>{% endif %}</div>
+      <div class="card-body">
+        {% if logo %}
+        <img class="vr-lab-logo" src="{% url 'lab-logo-image' logo.sha256 %}" alt="Laboratory logo" width="{{ logo.width }}" height="{{ logo.height }}">
+        <dl class="vr-facts mt-3">
+          <div><dt>Size</dt><dd class="vr-nowrap">{{ logo.width }} × {{ logo.height }} pixels</dd></div>
+          <div><dt>Type</dt><dd>{% if logo.content_type == "image/png" %}PNG{% elif logo.content_type == "image/jpeg" %}JPEG{% else %}{{ logo.content_type }}{% endif %}</dd></div>
+        </dl>
+        {% else %}
+        {% include "includes/empty_state.html" with title="No logo" body="New reports print without a logo." %}
+        {% endif %}
+      </div>
+    </section>
+  </div>
+</div>
+
+<section class="card vr-table-card mb-3" aria-labelledby="certificates-heading">
+  <div class="card-header"><h2 class="card-title" id="certificates-heading">Certificates</h2><span class="vr-count">{{ certificates|length }}</span>{% if can_manage %}<a class="btn btn-sm btn-outline-secondary ms-auto" href="{% url 'lab-certificate-create' %}">Add certificate</a>{% endif %}</div>
+  {% if certificates %}
+  <div class="vr-table-wrap">
+    <table class="table vr-table" aria-labelledby="certificates-heading">
+      <thead><tr>
+        <th scope="col">Issuing authority</th>
+        <th scope="col">Program or scope</th>
+        <th scope="col">Certificate or laboratory ID</th>
+        <th scope="col">Valid from</th>
+        <th scope="col">Valid until</th>
+        <th scope="col">Status</th>
+        <th scope="col">Print on reports</th>
+        {% if can_manage %}<th scope="col" class="text-end"><span class="visually-hidden">Actions</span></th>{% endif %}
+      </tr></thead>
+      <tbody>
+        {% for c in certificates %}
+        <tr>
+          <th scope="row" class="vr-wrap">{% if can_manage %}<a class="vr-row-link" href="{% url 'lab-certificate-edit' c.pk %}">{{ c.authority }}</a>{% else %}{{ c.authority }}{% endif %}</th>
+          <td class="vr-wrap">{% if c.program %}{{ c.program }}{% else %}<span class="vr-muted">—</span>{% endif %}</td>
+          <td><span class="vr-id">{{ c.number }}</span></td>
+          <td class="vr-nowrap">{% if c.valid_from %}<time datetime="{{ c.valid_from|date:'Y-m-d' }}">{{ c.valid_from|date:"Y-m-d" }}</time>{% else %}<span class="vr-muted">—</span>{% endif %}</td>
+          <td class="vr-nowrap">{% if c.valid_until %}<time datetime="{{ c.valid_until|date:'Y-m-d' }}">{{ c.valid_until|date:"Y-m-d" }}</time>{% else %}<span class="vr-muted">—</span>{% endif %}</td>
+          <td>{% include "includes/status.html" with label=c.state_label tone=c.state_tone plain=True %}</td>
+          <td class="vr-wrap">{% if c.withheld %}Yes. Currently left off reports: today is outside its validity dates.{% elif c.show_on_reports %}Yes{% else %}No{% endif %}</td>
+          {% if can_manage %}<td class="text-end vr-nowrap"><button class="btn btn-sm btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#remove-certificate-{{ c.pk }}">Remove<span class="visually-hidden"> {{ c.label }}</span></button></td>{% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  {% if can_manage %}{% url 'lab-certificate-create' as create_url %}{% endif %}
+  {% include "includes/empty_state.html" with title="No certificates recorded" body="Certificates marked for printing are listed on reports issued within their validity dates." action_url=create_url action_label="Add certificate" %}
+  {% endif %}
+  <div class="card-footer">
+    <p class="vr-muted small mb-1">{% if lab.certificate_note %}Statement printed with the certificate list{% else %}Statement printed with the certificate list (the default; the laboratory has not written its own){% endif %}</p>
+    <p class="mb-0">{% if lab.certificate_note %}{{ lab.certificate_note|linebreaksbr }}{% else %}{{ default_certificate_note }}{% endif %}</p>
+  </div>
+</section>
+
+<section class="card mb-3" aria-labelledby="rules-heading">
+  <div class="card-header"><h2 class="card-title" id="rules-heading">How these details are used</h2></div>
+  <div class="card-body">
+    <ul class="mb-0">
+      <li>These details print on reports issued from now on. Reports already issued keep what they printed.</li>
+      <li>A certificate marked for printing is printed only on reports issued within its recorded validity. Both dates are included, and a blank date sets no limit.</li>
+      <li>The application keeps no register of what a certificate covers and does not check results against any certificate.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="card" aria-labelledby="history-heading">
+  <div class="card-header"><h2 class="card-title" id="history-heading">History</h2></div>
+  <div class="card-body">
+    {% if history %}
+    <ol class="vr-timeline">
+      {% for event in history reversed %}{% include "includes/history_item.html" with title=event.action|action_label at=event.occurred_at actor=event.actor detail=event.detail %}{% endfor %}
+    </ol>
+    {% else %}
+    {% include "includes/empty_state.html" with title="No changes recorded" body="Changes to the address, contact details, logo and certificates are listed here." %}
+    {% endif %}
+  </div>
+</section>
+
+{% if can_manage %}
+{% if logo %}{% url 'lab-logo-remove' as remove_logo_url %}{% include "includes/confirm_dialog.html" with id="remove-logo" label="Remove logo" action=remove_logo_url body="New reports print without a logo. Reports already issued keep the logo they printed." hidden_name="original_state" hidden_value=lab_token %}{% endif %}
+{% for c in certificates %}
+{% url 'lab-certificate-remove' c.pk as remove_url %}
+{% with pk_text=c.pk|stringformat:"s" %}{% with dialog_id="remove-certificate-"|add:pk_text %}{% include "includes/confirm_dialog.html" with id=dialog_id label="Remove certificate" object=c.label action=remove_url body="New reports no longer list it. Reports already issued keep what they printed." hidden_name="original_state" hidden_value=c.token %}{% endwith %}{% endwith %}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% endblock %}

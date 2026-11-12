@@ -10,7 +10,13 @@
       "title": "Access and header",
       "paragraphs": [
         "Active internal staff with an application role can read this page. Client accounts cannot use staff reporting pages. Project managers, approvers and users with explicit release authority can prepare and edit reports. Admin includes project-manager operational access, but release separately requires the explicit report release permission; admin or superuser status alone does not grant it.",
-        "Header shows report number, latest issue status, current editable title, client and project. Scope/readiness use live records. Issued versions describe stored snapshots. Records changed means the complete current fingerprint differs from latest issue, including differences missed by the list’s Results indicator."
+        "Header shows report number, latest issue status, current editable title, client and project. Scope/readiness use live records. Issued versions describe stored snapshots. Records changed means the complete current fingerprint differs from latest issue, including differences missed by the list’s Results indicator, such as a laboratory profile change (address, contact details, logo or printed certificates)."
+      ],
+      "items": [
+        {
+          "label": "Certificates left off",
+          "description": "Shown when a certificate in Setup → Laboratory profile is marked Print on reports but the date a version issued today would carry (laboratory local date) is outside its recorded validity. Each one is named with the date its validity ended on or starts on. Such a certificate is not printed on the version and the notice does not block release. If the dates are wrong, an administrator corrects them in Setup → Laboratory profile; reload this page afterwards. Certificates not marked for printing are never listed here."
+        }
       ]
     },
     {
@@ -126,6 +132,7 @@
         "A report contains 1 to 100 samples from one project and at most 1,000 internal and external results combined. All requested tests of the selected samples must be reportable; individual tests cannot be selected out of a sample here. Hold and Reject receipt dispositions block release.",
         "Internal work needs a current approved revision, independent technical review and no newer unapproved correction. Release rechecks current QC measurements, limits, requirements and dispositions, stored holding-time evaluation, preparation consistency and current receipt preservation evidence. Earlier approval alone does not guarantee release. Every test is checked again for an amendment, including unchanged results.",
         "The releasing person needs explicit release permission and cannot have entered or submitted any internal result in this report, or entered an external result in it. A technical reviewer can also release when explicitly authorized. Actor-specific independence checks run in the preview for a releasing user and on submission; another staff member may see different readiness.",
+        "The PDF prints the laboratory identity recorded in Setup → Laboratory profile when the content is assembled: name, address, phone, email, website, logo, and the certificates marked Print on reports whose recorded validity (both ends inclusive; a date not recorded is no bound) covers the issue date, followed by the certificate statement. Only recorded details are printed. The issued version freezes them: later profile changes, a new logo or a removed certificate never change an issued PDF. A profile change after the preview changes the content fingerprint, so release asks you to review the refreshed preview. An amendment lists laboratory address, phone, email, website, logo, certificate list and certificate statement changes, and a change of laboratory identity alone is a valid reason for an amendment.",
         "The fingerprint must still match the preview. Relevant ownership, sample, requested-test, result, batch, method-policy and source records are locked and rechecked after PDF rendering. Changed records or a concurrent release require reviewing the refreshed preview and confirming again. No partial release is stored.",
         "PDF bytes, frozen snapshot, version links, hashes, actor, release time and audit event commit together. Rendering failure or a PDF above 10 MiB leaves nothing released. Correct the reported issue and retry from the preview. Release does not send email."
       ]
@@ -144,6 +151,9 @@
     "analytical/eligibility.py",
     "analytical/services.py",
     "reporting/tests/test_release.py",
-    "reporting/tests/test_subcontract_release.py"
+    "reporting/tests/test_subcontract_release.py",
+    "core/lab_profile.py",
+    "reporting/templates/reporting/certificate_notice.html",
+    "reporting/tests/test_lab_identity.py"
   ]
 }

@@ -28,6 +28,7 @@
 {% if c.synthetic_notice %}
 <div class="alert alert-warning" role="status">{% include "includes/status.html" with label="Note" tone="warning" plain=True %}<div>This deployment marks every report as synthetic demonstration data, printed on each PDF page.</div></div>
 {% endif %}
+{% include "reporting/certificate_notice.html" %}
 {% include "includes/page_toc.html" with items=toc %}
 <div class="row g-3 mb-3">
   <div class="col-xl-8">

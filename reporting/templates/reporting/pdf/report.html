@@ -19,6 +19,17 @@ block (None in previews). Never read live models here; issued PDFs are stored, n
 </footer>
 {% if preview %}<div class="watermark">PREVIEW · NOT ISSUED</div>{% endif %}
 
+{% if c.lab.logo or c.lab.address or c.lab.phone or c.lab.email or c.lab.website %}
+<section class="letterhead">
+  {% if c.lab.logo %}<div class="letterhead-logo"><img src="{{ c.lab.logo|logo_url }}" alt=""></div>{% endif %}
+  <div class="letterhead-text">
+    <p class="letterhead-name">{{ c.lab.name }}</p>
+    {% for line in c.lab.address %}<p>{{ line }}</p>{% endfor %}
+    {% if c.lab.phone or c.lab.email or c.lab.website %}<p class="letterhead-contact">{% if c.lab.phone %}<span>Phone {{ c.lab.phone }}</span>{% endif %}{% if c.lab.email %}<span>{{ c.lab.email }}</span>{% endif %}{% if c.lab.website %}<span>{{ c.lab.website }}</span>{% endif %}</p>{% endif %}
+  </div>
+</section>
+{% endif %}
+
 <section class="title-block">
   <p class="eyebrow">Analytical report</p>
   <h1>{{ c.report.title }}</h1>
@@ -163,6 +174,17 @@ block (None in previews). Never read live models here; issued PDFs are stored, n
   {% endif %}
   <p class="muted">QC prepared from samples not in this report shows its type, outcome and disposition only. ND: not detected at or above the reporting limit (RL). RL: reporting limit applied to this result, including dilution. DF: dilution factor. Results are reported as entered by the analyst, without rounding by this report. Results apply to the samples as received.</p>
 </section>
+
+{% if c.lab.certificates %}
+<section class="certificates">
+  <h2>Laboratory certificates</h2>
+  <table class="grid">
+    <thead><tr><th class="c-authority">Issuing authority</th><th class="c-program">Program or scope</th><th class="c-number">Certificate or laboratory ID</th><th class="c-validity">Validity</th></tr></thead>
+    <tbody>{% for x in c.lab.certificates %}<tr><td>{{ x.authority }}</td><td>{{ x.program|default:"—" }}</td><td class="cert-id">{{ x.number }}</td><td>{% if x.valid_from and x.valid_until %}From {{ x.valid_from }} to {{ x.valid_until }}{% elif x.valid_from %}From {{ x.valid_from }}{% elif x.valid_until %}Until {{ x.valid_until }}{% else %}Not recorded{% endif %}</td></tr>{% endfor %}</tbody>
+  </table>
+  {% if c.lab.certificate_note %}<p class="muted">{{ c.lab.certificate_note|linebreaksbr }}</p>{% endif %}
+</section>
+{% endif %}
 
 <section class="authorization">
   {% if release %}

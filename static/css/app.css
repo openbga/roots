@@ -976,6 +976,20 @@ s,
   height: 1.5rem;
 }
 
+/* Laboratory logo preview (core/lab_profile.html): bounded, on the white of the report page it
+   prints on, so a logo drawn for paper stays legible in dark mode. */
+.vr-lab-logo {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 18rem);
+  max-height: 8rem;
+  object-fit: contain;
+  padding: 0.5rem;
+  background-color: #ffffff;
+  border: 1px solid var(--vr-border);
+}
+
 /* Product lock-up (includes/brand.html): the name over a quieter "An OpenBGA project" line. */
 .vr-wordmark {
   display: grid;

@@ -85,7 +85,7 @@
         },
         {
           "label": "Admin",
-          "description": "Admin includes the operational destinations of custodians, project managers, analysts and reviewers, plus Catalog, QC configuration, Record retention and Announcements. The admin role does not grant report-release permission."
+          "description": "Admin includes the operational destinations of custodians, project managers, analysts and reviewers, plus Catalog, QC configuration, Laboratory profile, Record retention and Announcements. The admin role does not grant report-release permission."
         },
         {
           "label": "Accounts & roles",

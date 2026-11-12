@@ -1,4 +1,5 @@
-/* Print stylesheet for issued report PDFs (WeasyPrint). No external fonts or images. */
+/* Print stylesheet for issued report PDFs (WeasyPrint). No external fonts; the only image is
+   the laboratory logo a snapshot names, served by reporting/pdf.py. */
 @page {
   size: letter;
   margin: 24mm 13mm 18mm;
@@ -61,3 +62,22 @@ table.results.short { break-inside: avoid; }
 .subcontracted p { break-after: avoid; }
 .authorization { margin-top: 6mm; padding-top: 2mm; border-top: 0.8pt solid #333; }
 td.strong .muted { font-weight: normal; }
+
+/* Letterhead: printed above the title on the first page only when the snapshot holds a logo,
+   an address or contact details. The logo keeps its aspect ratio inside a fixed box. */
+.letterhead { display: flex; align-items: center; gap: 4mm; margin: 0 0 5mm; padding-bottom: 3mm; border-bottom: 0.6pt solid #bbb; break-inside: avoid; }
+.letterhead-logo { flex: none; }
+.letterhead-logo img { display: block; width: auto; height: auto; max-width: 45mm; max-height: 16mm; }
+.letterhead-text { flex: 1 1 auto; min-width: 0; font-size: 8pt; color: #333; line-height: 1.3; overflow-wrap: anywhere; }
+.letterhead-text p { margin: 0; }
+.letterhead-text .letterhead-name { font-size: 10.5pt; font-weight: bold; color: #111; margin-bottom: 0.6mm; }
+.letterhead-contact span + span::before { content: " · "; }
+.certificates { break-inside: avoid; }
+/* Fixed columns so a long laboratory-entered value wraps inside its cell. */
+.certificates table { table-layout: fixed; }
+.certificates th, .certificates td { overflow-wrap: anywhere; }
+.certificates .c-authority { width: 28%; }
+.certificates .c-program { width: 25%; }
+.certificates .c-number { width: 19%; }
+.certificates td.cert-id { font-family: "DejaVu Sans Mono", monospace; font-size: 8pt; }
+.certificates p { margin-top: 1mm; }

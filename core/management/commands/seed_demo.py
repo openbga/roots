@@ -1,9 +1,11 @@
 import os
-from datetime import timedelta
+from datetime import date, timedelta
 from decimal import Decimal
+from pathlib import Path
 
 from django.contrib.auth.models import Group, Permission
 from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.utils import timezone
@@ -12,12 +14,30 @@ from accounts.models import User
 from accounts.roles import ROLES
 from analytical.synthetic_dataset import seed_synthetic_dataset
 from catalog.models import TestDefinition
+from core import lab_profile
 from core.announcements import save_announcement
-from core.models import Announcement, Lab
+from core.models import Announcement, AuditEvent, Lab, LabCertificate
 from receipt.models import Client, Project, Sample
 from receipt.services import receive_sample
 
 DEMO_LAB_NAME = "Example Environmental Lab"
+# An invented emblem for the demonstration laboratory's reports; not the product's mark.
+DEMO_LAB_LOGO = Path(__file__).resolve().parents[2] / "demo_assets" / "example-lab-logo.png"
+DEMO_LAB_IDENTITY = {
+    "address_line1": "200 Example Way",
+    "address_line2": "Building S (synthetic)",
+    "city": "Exampleville",
+    "state": "NY",
+    "postal_code": "00000",
+    "phone": "555-0142",
+    "email": "laboratory@example.invalid",
+    "website": "https://laboratory.example.invalid",
+}
+# (issuing authority, program or scope, certificate or laboratory ID, has validity dates)
+DEMO_LAB_CERTIFICATES = (
+    ("Example State Department of Health", "Potable and non-potable water", "EX-00000", True),
+    ("Example Accreditation Body", "Solid and chemical materials", "EX-ACC-0000", False),
+)
 ACCOUNTS_ANNOUNCEMENT = "Demo accounts"
 # Listed on the sign-in page by --announce-accounts. demo_admin manages announcements and
 # accounts, so it is never listed and must not share the published password.
@@ -86,6 +106,7 @@ class Command(BaseCommand):
                             content_type__app_label="accounts", codename="authorize_release"
                         )
                     )
+        self._seed_profile()
         client, _ = Client.objects.get_or_create(
             name="Example Utilities",
             defaults={
@@ -175,6 +196,37 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS("Synthetic demo ready; existing records/passwords retained.")
         )
+
+    def _seed_profile(self):
+        """Give the demonstration laboratory an invented identity for its reports, once.
+
+        A profile that was ever changed, by an earlier seed or by an administrator, is left as
+        it is. The certificates are invented and marked for printing so demo reports show them.
+        """
+        admin = User.objects.get(username="demo_admin")
+        if AuditEvent.objects.filter(
+            action__in=lab_profile.PROFILE_ACTIONS
+        ).exists() or not lab_profile.can_manage(admin):
+            return
+        lab_profile.save_identity(actor=admin, values=DEMO_LAB_IDENTITY)
+        lab_profile.set_logo(
+            actor=admin,
+            uploaded=SimpleUploadedFile(DEMO_LAB_LOGO.name, DEMO_LAB_LOGO.read_bytes()),
+        )
+        year = timezone.localdate().year
+        for position, (authority, program, number, dated) in enumerate(DEMO_LAB_CERTIFICATES, 1):
+            lab_profile.save_certificate(
+                actor=admin,
+                instance=LabCertificate(
+                    authority=authority,
+                    program=program,
+                    number=number,
+                    valid_from=date(year, 1, 1) if dated else None,
+                    valid_until=date(year + 1, 12, 31) if dated else None,
+                    show_on_reports=True,
+                    position=position,
+                ),
+            )
 
     def _announce_accounts(self, password):
         """Lock the accounts DEMO_PASSWORD opens and post them on the sign-in page, once.
