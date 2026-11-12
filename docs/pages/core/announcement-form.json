@@ -1,0 +1,79 @@
+{
+  "id": "core-announcement-form",
+  "routes": [
+    "announcement-create",
+    "announcement-edit"
+  ],
+  "title": "Announcement",
+  "purpose": "Post a new announcement or change one that has not been withdrawn. The edit form is also the announcement’s record page.",
+  "sections": [
+    {
+      "title": "Fields",
+      "paragraphs": [
+        "Only the admin laboratory role can open or submit this form."
+      ],
+      "items": [
+        {
+          "label": "Title",
+          "description": "Required, up to 120 characters. Shown as the heading of the announcement. Surrounding spaces are removed."
+        },
+        {
+          "label": "Message",
+          "description": "Required, up to 2000 characters of plain text. Line breaks are kept. Formatting, links and HTML are not interpreted: readers see exactly the characters entered."
+        },
+        {
+          "label": "Importance",
+          "description": "Notice is the default. Important marks the announcement Important and uses the warning colours; it does not change who sees it or its order."
+        },
+        {
+          "label": "Show on",
+          "description": "Required: choose at least one. Sign-in page shows the announcement to anyone who opens the sign-in page, without signing in, so keep confidential and client information out of it. Staff dashboard shows it to signed-in staff with a laboratory role. Client portal home page shows it to every client portal account."
+        },
+        {
+          "label": "Show from",
+          "description": "Required; a new form starts with the current time. Laboratory local time, to the minute. A future time schedules the announcement; it appears by itself when that time arrives."
+        },
+        {
+          "label": "Show until",
+          "description": "Optional; must be later than Show from. The announcement stops showing at that time and its status becomes Ended. Blank shows it until it is withdrawn. Moving this time later on an Ended announcement shows it again."
+        }
+      ]
+    },
+    {
+      "title": "Saving and history",
+      "paragraphs": [
+        "A posted announcement shows as soon as Show from has passed; there is no draft or approval step. An announcement changed by someone else since you opened the form cannot be overwritten: your input stays on the error page; reload and compare the current values before saving again.",
+        "A withdrawn announcement opens with every field disabled and no save button. It cannot be changed or shown again; post a new announcement instead. Announcements are never deleted."
+      ],
+      "items": [
+        {
+          "label": "Post announcement / Save changes",
+          "description": "Saves and returns to the list. Posting and every change are audited with the administrator, the time and the values before and after; no reason is asked. An unchanged submission returns to the list with No changes to save and records nothing."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the list without saving."
+        },
+        {
+          "label": "History",
+          "description": "Existing announcements only: the newest 20 audit events in chronological order (Announcement posted, changed or withdrawn), each with its time and the administrator who made it."
+        },
+        {
+          "label": "Withdrawing",
+          "description": "Done from the Announcements list, not from this form."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "config/urls.py",
+    "core/announcement_views.py",
+    "core/announcement_forms.py",
+    "core/announcements.py",
+    "core/models.py",
+    "core/concurrency.py",
+    "core/form_surfaces.py",
+    "templates/core/announcement_form.html",
+    "tests/test_announcements.py"
+  ]
+}

@@ -209,3 +209,58 @@ Limit: Gunicorn's access log and the development server's own request line (both
 are off, and Gunicorn's error log stays on for worker-level problems. Messages that application code logs itself are not rewritten, so
 do not log submitted values. Credentials, `DATABASE_URL`, `SECRET_KEY` and SMTP passwords belong only
 in environment settings or the provider's secret store.
+
+## Public demonstration
+
+A public demonstration lets anyone sign in with shared accounts, so it must return to a known
+state by itself. This is for a deployment that holds only the seed's synthetic records. Do not
+do any of it where a laboratory keeps its records.
+
+`seed_demo --announce-accounts` publishes the shared accounts on the sign-in page and stops them
+changing their own credentials (see the README). `reset_demo` then erases every record and runs
+the seed again:
+
+```sh
+ALLOW_DEMO_RESET=true python manage.py reset_demo --full --announce-accounts
+```
+
+It asks for confirmation unless `--noinput` is given, and refuses to run unless all of these hold:
+
+| Check | Why |
+| --- | --- |
+| `ALLOW_DEMO_RESET=true` in the job's environment | The deployment opts in; a laboratory's deployment never sets it |
+| The database's laboratory is the seed's "Example Environmental Lab", or the database is empty | A database set up with `setup_lab` is never erased |
+| No migration is pending and none is unknown to the release | A job from another release than the web service would seed the wrong schema |
+
+The erase and the seed are one transaction. Requests that arrive meanwhile wait, usually well
+under a minute, then see the fresh demonstration; everyone is signed out. If the seed fails, the
+transaction rolls back and nothing changes. The erase empties every application table, including
+accounts, sessions, custody and audit history and issued reports, and restarts identifiers such
+as sample accession numbers. The database triggers that keep history rows from being updated or
+deleted do not apply to this whole-table erase; that is deliberate and is the reason for the
+checks above.
+
+On Render the schedule is `render.demo.yaml`, a Blueprint separate from `render.yaml`. The deploy
+button and a laboratory's Blueprint never create it. In the workspace that already runs the
+demonstration from `render.yaml`:
+
+1. Deploy the release to the web service first; its pre-deploy step migrates.
+2. Create a new Blueprint from the same repository and branch with **Blueprint Path**
+   `render.demo.yaml`. It adds one paid cron job, `smart-roots-lims-demo-reset`, and refers to the
+   existing web service and database by name. Render asks once for `DEMO_PASSWORD`, which will be
+   public, and `DEMO_ADMIN_PASSWORD`, which must differ and stay private.
+3. Use **Trigger Run** on the job to reset straight away, or wait for the schedule (daily at
+   08:00 UTC). Change the time in the file's `schedule` and `DEMO_RESET_NOTE` together.
+
+Auto-deploy is off for the job, as for the web service: deploy both for every release, or the job
+refuses to run until they match. The job is billed for the time it runs, with a monthly minimum;
+check [Render pricing](https://render.com/pricing).
+
+Sources, checked 2026-11-12: a Blueprint file may sit at a custom path and one repository may back
+several independent Blueprints ([Render Blueprints](https://render.com/docs/infrastructure-as-code));
+cron schedules use UTC, at most one run is active at a time and billing is by running time with a
+monthly minimum ([cron jobs](https://render.com/docs/cronjobs)); a Blueprint may reference a
+service that exists in the workspace but is not in the file
+([Blueprint reference](https://render.com/docs/blueprint-spec)). `render blueprints validate
+render.demo.yaml` (CLI 2.36.0) accepted the file against the demonstration's workspace on that
+date, planning one new service; it creates nothing.

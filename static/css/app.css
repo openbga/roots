@@ -564,7 +564,8 @@ s,
   --bs-form-check-bg-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%230f201a' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10h8'/%3e%3c/svg%3e");
 }
 
-.form-check-input:disabled {
+/* A disabled box keeps its tick: only an empty one takes the muted surface. */
+.form-check-input:disabled:not(:checked, :indeterminate) {
   background-color: var(--vr-surface-2);
 }
 
@@ -804,8 +805,43 @@ s,
   --bs-alert-border-color: var(--vr-neutral-border);
 }
 
+/* Laboratory announcements (includes/announcements.html): notices on the sign-in page, the staff
+   dashboard and the client portal home page. The label and title share the first line and the
+   message takes the notice's full width below, so a long message still reads in the narrow
+   sign-in panel. The message is plain text; only a word longer than the line is broken. */
+.vr-announcements {
+  margin-bottom: 1rem;
+}
+
+.vr-announcements > .alert {
+  margin-bottom: 0.5rem;
+  overflow-wrap: break-word;
+}
+
+.vr-announcement-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.625rem;
+  align-items: baseline;
+  margin-bottom: 0.375rem;
+}
+
+.vr-announcement-title {
+  min-width: 0;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 650;
+  line-height: 1.35;
+  color: inherit;
+}
+
+.vr-announcement-body {
+  margin: 0;
+}
+
 /* The alert's leading status label is stamped onto the note. */
-.alert > .vr-status.vr-status-plain {
+.alert > .vr-status.vr-status-plain,
+.vr-announcement-head > .vr-status.vr-status-plain {
   flex: none;
   padding: 0 0.3125rem;
   border: 1.5px solid var(--vr-tone-border);

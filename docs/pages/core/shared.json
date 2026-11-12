@@ -44,7 +44,7 @@
         },
         {
           "label": "Account menu",
-          "description": "Shows the signed-in name and laboratory roles or client. Change password and Two-factor authentication open account settings. Sign out ends the session."
+          "description": "Shows the signed-in name and laboratory roles or client. Change password and Two-factor authentication open account settings. A shared demonstration account, one whose password the deployment publishes on the sign-in page, shows a note instead of those two links: its password, email addresses and two-factor settings cannot be changed, opening those pages returns to the home page with a notice, and no password-reset link is mailed for it. Sign out ends the session."
         },
         {
           "label": "Forms",
@@ -96,6 +96,9 @@
     "templates/includes/source_footer.html",
     "core/templatetags/source_code.py",
     "core/request_limits.py",
-    "tests/test_core_request_limits.py"
+    "tests/test_core_request_limits.py",
+    "accounts/middleware.py",
+    "accounts/adapter.py",
+    "accounts/tests/test_locked_credentials.py"
   ]
 }

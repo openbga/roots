@@ -40,9 +40,10 @@ Screens show the synthetic demo data.
 
 ## Hosted demo
 
-Open the [Smart Roots LIMS demo](https://smart-roots-lims.onrender.com/) on Render to explore the
-application with an existing demo account. The [demo presentation](https://smart-roots-lims.onrender.com/about/)
-is available without signing in. Use synthetic data only.
+Open the [Smart Roots LIMS demo](https://smart-roots-lims.onrender.com/) on Render and sign in with
+one of the demo accounts listed on its sign-in page. The [demo presentation](https://smart-roots-lims.onrender.com/about/)
+is available without signing in. The demo is public and is erased and seeded again every day, so
+enter synthetic data only.
 
 ## Try it with Docker
 
@@ -51,7 +52,7 @@ PostgreSQL database in development mode, reachable only from your machine. It is
 not for real laboratory data.
 
 ```sh
-git clone https://github.com/openbga/smart-roots-lims.git
+git clone --branch main https://github.com/openbga/smart-roots-lims.git
 cd smart-roots-lims
 docker compose --profile app up --build -d
 # Choose a private password (at least 12 characters) for the synthetic demo accounts.
@@ -89,6 +90,17 @@ Add `--full` for a synthetic working week: two clients, about 50 samples from re
 a batch awaiting review, a QC failure that needs a disposition, control-chart history, an MDL
 study, and draft, released and amended reports, with the quotes, submissions, inventory,
 equipment and training records. It takes about 20 seconds and adds nothing when run again.
+For a public demonstration, `seed_demo --announce-accounts` also posts an announcement on the
+sign-in page that lists the demo accounts and `DEMO_PASSWORD`, where anyone can read them. It
+leaves out `demo_admin`, which manages announcements and accounts, and refuses to run while
+`DEMO_PASSWORD` opens that account: set a different `DEMO_ADMIN_PASSWORD` (at least 12
+characters) before the first seed. The listed accounts become shared demonstration accounts:
+whoever signs in cannot change their password, email addresses or two-factor settings. A
+database that is emptied and seeded again gets the same announcement back; on an existing
+database the seed leaves an announcement an administrator changed or withdrew as it is.
+`reset_demo` erases a demonstration database and seeds it again on a schedule; see
+[Public demonstration](docs/operations.md#public-demonstration). It is never part of a
+laboratory's deployment.
 Release requires `accounts.authorize_release`, which may be granted to a reviewer; nobody may
 review their own results. Administrator/superuser status alone does not grant release. A newly created
 `demo_approver` receives this permission directly; the demo seed does not grant it to groups or
@@ -156,7 +168,7 @@ to an existing owner from the service shell, use `setup_lab --admin-username own
 
 ## Deploy to Render
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/openbga/smart-roots-lims)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/openbga/smart-roots-lims/tree/main)
 
 The Blueprint packages a Docker web service and PostgreSQL 17. **It creates paid resources:**
 review and accept the current charges in your Render account before deploying. For a private
@@ -189,8 +201,9 @@ See [Render's deploy button documentation](https://render.com/docs/deploy-to-ren
 | --- | --- |
 | [Workflow rules and limits](docs/workflows.md) | What each workflow does and the limits to know before relying on it |
 | [Product scope](docs/product.md) | What the product must do, the domain rules behind it and their sources |
+| [Roadmap](https://openbga.github.io/smart-roots-lims/roadmap/) | What is built, what comes next and what is being explored, without dates |
 | [Architecture](docs/architecture.md) | Stack, integrity and authorization design, deployment shape |
-| [Operations](docs/operations.md) | Backup, restore, recovery and logs for a self-hosted deployment |
+| [Operations](docs/operations.md) | Backup, restore, recovery and logs for a self-hosted deployment; running a public demonstration |
 | [UI standards](docs/ui-standards.md) | Layout, navigation, table and form conventions |
 | [Third-party notices](THIRD_PARTY_NOTICES.md) | Licences of bundled and required components |
 

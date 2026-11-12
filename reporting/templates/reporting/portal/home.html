@@ -1,8 +1,10 @@
 {% extends "layouts/portal.html" %}
+{% load announcements %}
 {% block page_meta %}<ul class="vr-page-meta"><li>{{ client.name }}</li><li>{{ project_count }} project{{ project_count|pluralize }}</li><li>{{ open_count }} sample{{ open_count|pluralize }} in progress</li></ul>{% endblock %}
 {% block page_intro %}<p class="vr-page-intro">Your latest reports and where your samples stand.</p>{% endblock %}
 {% block content %}
 {% include "reporting/portal/notice.html" %}
+{% announcements %}
 <div class="row g-3">
   <div class="col-lg-7">
     <section class="card vr-table-card" aria-labelledby="recent-reports-heading">

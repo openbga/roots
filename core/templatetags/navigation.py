@@ -321,6 +321,13 @@ STAFF_NAV = (
         ("analytical:import-profile-create", "analytical:import-profile-edit"),
     ),
     NavItem("record-retention", "Record retention", "record-retention", "lock"),
+    NavItem(
+        "announcements",
+        "Announcements",
+        "announcement-list",
+        "megaphone",
+        ("announcement-create", "announcement-edit"),
+    ),
     # Django admin renders its own chrome, so no shell page marks this item.
     NavItem("accounts-roles", "Accounts & roles", "admin:index", "people"),
 )

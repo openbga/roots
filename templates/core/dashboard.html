@@ -1,6 +1,8 @@
 {% extends "base.html" %}
+{% load announcements %}
 {% comment %}
-Staff start page: what needs doing now, then the newest receipts. No vanity counts.
+Staff start page: the laboratory's current announcements for staff (the announcements tag), what
+needs doing now, then the newest receipts. No vanity counts.
 Context: held_count, recent_samples; queues = [{label, count, url, oldest_at, note, tone}] built in
 core.views for the signed-in user's roles (each count is the count of the linked list), queues_clear
 when every count is zero. Queues with count 0 still show, so an empty queue reads as "nothing
@@ -10,6 +12,7 @@ above zero).
 {% block page_dateline %}{% include "includes/dateline.html" %}{% endblock %}
 {% block page_actions %}{% if can_receive %}<a class="btn btn-primary" href="{% url 'receipt:order-create' %}">{% include "includes/icon.html" with name="plus-lg" %}Receive samples</a>{% endif %}{% endblock %}
 {% block content %}
+{% announcements %}
 {% url 'receipt:sample-list' as samples_url %}
 {% if queues %}
 <section class="card vr-table-card mb-3" aria-labelledby="queues-heading">

@@ -7,6 +7,13 @@
   "purpose": "Start a session using the account issued by your laboratory.",
   "sections": [
     {
+      "title": "Announcements",
+      "paragraphs": [
+        "Notices from the laboratory can appear above the sign-in fields, newest first, each marked Notice or Important with a title and a plain-text message. They are shown to anyone who opens this page, before signing in, so they never depend on your account. The laboratory’s administrators post and withdraw them; nothing appears when none is current. Staff and client users may see further announcements after signing in, on the dashboard or the client portal home page.",
+        "A public demonstration may list shared accounts and their password in an announcement here. Those accounts cannot change their password, email addresses or two-factor settings after signing in."
+      ]
+    },
+    {
       "title": "Fields and actions",
       "items": [
         {
@@ -51,6 +58,12 @@
     "accounts/tests/test_login.py",
     "templates/account/request_login_code.html",
     "config/urls.py",
-    "tests/test_admin_login.py"
+    "tests/test_admin_login.py",
+    "core/announcements.py",
+    "core/templatetags/announcements.py",
+    "templates/includes/announcements.html",
+    "tests/test_announcements.py",
+    "accounts/middleware.py",
+    "core/management/commands/seed_demo.py"
   ]
 }

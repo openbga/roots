@@ -6,7 +6,7 @@ from django.shortcuts import redirect, resolve_url
 from django.urls import include, path
 from django.views.decorators.cache import never_cache
 
-from core import views
+from core import announcement_views, views
 
 
 @never_cache
@@ -31,6 +31,22 @@ urlpatterns = [
     path("", views.dashboard, name="dashboard"),
     path("health/", views.health, name="health"),
     path("lab/record-retention/", views.record_retention, name="record-retention"),
+    path("lab/announcements/", announcement_views.announcement_list, name="announcement-list"),
+    path(
+        "lab/announcements/new/",
+        announcement_views.announcement_edit,
+        name="announcement-create",
+    ),
+    path(
+        "lab/announcements/<int:pk>/",
+        announcement_views.announcement_edit,
+        name="announcement-edit",
+    ),
+    path(
+        "lab/announcements/<int:pk>/withdraw/",
+        announcement_views.announcement_withdraw,
+        name="announcement-withdraw",
+    ),
     path("ready/", views.ready, name="ready"),
     path("accounts/", include("allauth.urls")),
     path("admin/", admin.site.urls),

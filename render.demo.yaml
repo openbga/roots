@@ -1,0 +1,47 @@
+# DEMONSTRATION ONLY. Never use this file for a laboratory: every run of this job erases the
+# whole database (accounts, custody, results, audit history, issued reports) and seeds synthetic
+# records again. It is not part of render.yaml and the "Deploy to Render" button never creates it.
+#
+# A separate Blueprint for the workspace that already runs the demonstration from render.yaml:
+# create it with Blueprint Path "render.demo.yaml". It adds one paid cron job and refers to that
+# web service and database by name. Review the estimate before creating it.
+#
+# Render asks for DEMO_PASSWORD and DEMO_ADMIN_PASSWORD once, when the Blueprint is created.
+# DEMO_PASSWORD is published on the sign-in page; DEMO_ADMIN_PASSWORD must differ and stay private.
+# Deploy this job together with the web service: it refuses to run against another release's schema.
+services:
+  - type: cron
+    name: smart-roots-lims-demo-reset
+    runtime: docker
+    # Same size as the web service: the seed renders report PDFs. Billed for the seconds it runs.
+    plan: 1c-2g
+    region: virginia
+    # Every day at 08:00 UTC (03:00 or 04:00 in New York).
+    schedule: "0 8 * * *"
+    autoDeployTrigger: "off"
+    dockerCommand: python manage.py reset_demo --noinput --full --announce-accounts
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: smart-roots-lims-db
+          property: connectionString
+      - key: SECRET_KEY
+        fromService:
+          type: web
+          name: smart-roots-lims
+          envVarKey: SECRET_KEY
+      - key: DEBUG
+        value: "false"
+      # Keep equal to the web service: seeded times and report snapshots use it.
+      - key: TIME_ZONE
+        value: America/New_York
+      # The reset's opt-in. Set it on this job only, never on a laboratory's deployment.
+      - key: ALLOW_DEMO_RESET
+        value: "true"
+      # Last sentence of the sign-in page announcement. Keep it in step with the schedule above.
+      - key: DEMO_RESET_NOTE
+        value: Everything entered here is erased every day at 08:00 UTC.
+      - key: DEMO_PASSWORD
+        sync: false
+      - key: DEMO_ADMIN_PASSWORD
+        sync: false

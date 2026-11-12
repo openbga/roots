@@ -3,6 +3,7 @@ from datetime import timedelta
 from decimal import Decimal
 
 from django.contrib.auth.models import Group, Permission
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.utils import timezone
@@ -11,9 +12,23 @@ from accounts.models import User
 from accounts.roles import ROLES
 from analytical.synthetic_dataset import seed_synthetic_dataset
 from catalog.models import TestDefinition
-from core.models import Lab
+from core.announcements import save_announcement
+from core.models import Announcement, Lab
 from receipt.models import Client, Project, Sample
 from receipt.services import receive_sample
+
+DEMO_LAB_NAME = "Example Environmental Lab"
+ACCOUNTS_ANNOUNCEMENT = "Demo accounts"
+# Listed on the sign-in page by --announce-accounts. demo_admin manages announcements and
+# accounts, so it is never listed and must not share the published password.
+ANNOUNCED_ACCOUNTS = (
+    ("demo_custodian", "sample receipt and custody"),
+    ("demo_analyst", "batches, results and QC"),
+    ("demo_reviewer", "technical review"),
+    ("demo_approver", "report release"),
+    ("demo_project_manager", "clients, projects, quotes and reports"),
+    ("demo_client", "the client portal"),
+)
 
 
 class Command(BaseCommand):
@@ -27,16 +42,28 @@ class Command(BaseCommand):
             "every state, batches with QC, control-chart history, an MDL study, draft, released "
             "and amended reports, and the commercial and laboratory demo records.",
         )
+        parser.add_argument(
+            "--announce-accounts",
+            action="store_true",
+            help="For a public demonstration: also post a sign-in page announcement that lists "
+            "the demo accounts and DEMO_PASSWORD, where anyone can read them, and stop those "
+            "accounts changing their own credentials. demo_admin is left out and needs its own "
+            "password: set DEMO_ADMIN_PASSWORD before the first seed. DEMO_RESET_NOTE, if set, "
+            "ends the announcement (for example when a scheduled reset_demo runs).",
+        )
 
     @transaction.atomic
     def handle(self, *args, **options):
         password = os.environ.get("DEMO_PASSWORD")
         if not password or len(password) < 12:
             raise CommandError("Set DEMO_PASSWORD to at least 12 characters; it is never printed.")
-        lab, created = Lab.objects.get_or_create(
-            pk=1, defaults={"name": "Example Environmental Lab"}
-        )
-        if not created and lab.name != "Example Environmental Lab":
+        admin_password = os.environ.get("DEMO_ADMIN_PASSWORD") or password
+        if len(admin_password) < 12:
+            raise CommandError(
+                "DEMO_ADMIN_PASSWORD needs at least 12 characters, or leave it unset."
+            )
+        lab, created = Lab.objects.get_or_create(pk=1, defaults={"name": DEMO_LAB_NAME})
+        if not created and lab.name != DEMO_LAB_NAME:
             raise CommandError("Refusing to seed a non-demo laboratory.")
         for role in ROLES:
             group, _ = Group.objects.get_or_create(name=role)
@@ -50,7 +77,7 @@ class Command(BaseCommand):
                 },
             )
             if new:
-                user.set_password(password)
+                user.set_password(admin_password if role == "admin" else password)
                 user.save()
                 user.groups.add(group)
                 if role == "approver":
@@ -95,6 +122,13 @@ class Command(BaseCommand):
         if new:
             client_user.set_password(password)
             client_user.save()
+        if options.get("announce_accounts"):
+            posted = self._announce_accounts(password)
+            self.stdout.write(
+                "Demo accounts announced on the sign-in page."
+                if posted
+                else "Demo accounts announcement already present; left as it is."
+            )
         seed_synthetic_dataset()
         water_tests = list(
             TestDefinition.objects.filter(
@@ -141,3 +175,69 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS("Synthetic demo ready; existing records/passwords retained.")
         )
+
+    def _announce_accounts(self, password):
+        """Lock the accounts DEMO_PASSWORD opens and post them on the sign-in page, once.
+
+        Never demo_admin: it manages announcements and accounts.
+        """
+        admin = User.objects.get(username="demo_admin")
+        if admin.check_password(password):
+            raise CommandError(
+                "Refusing to publish DEMO_PASSWORD: it also opens demo_admin, which manages "
+                "announcements and accounts. Give demo_admin its own password (set "
+                "DEMO_ADMIN_PASSWORD before the first seed, or change its password) and run "
+                "this again. Nothing was saved."
+            )
+        users = User.objects.in_bulk(
+            [name for name, _ in ANNOUNCED_ACCOUNTS], field_name="username"
+        )
+        shared = [
+            (name, work)
+            for name, work in ANNOUNCED_ACCOUNTS
+            if name in users and users[name].check_password(password)
+        ]
+        if not shared:
+            raise CommandError(
+                "No demo account uses DEMO_PASSWORD, so there is nothing to announce. "
+                "Nothing was saved."
+            )
+        # Anyone can sign in to these accounts, so none of them may change its own credentials.
+        User.objects.filter(username__in=[name for name, _ in shared]).update(
+            credentials_locked=True
+        )
+        if Announcement.objects.filter(title=ACCOUNTS_ANNOUNCEMENT).exists():
+            return False  # posted before; an administrator may have changed or withdrawn it
+        lines = [f"{name}: {work}" for name, work in shared]
+        # A deployment with a scheduled reset_demo says when (render.demo.yaml sets this).
+        reset_note = (
+            os.environ.get("DEMO_RESET_NOTE", "").strip()
+            or "The demonstration can be reset at any time."
+        )
+        body = "\n".join(
+            [
+                "Public demonstration with synthetic data. Sign in as:",
+                "",
+                *lines,
+                "",
+                f"Password for each: {password}",
+                "",
+                "Do not enter real data. Anyone can use these accounts. " + reset_note,
+            ]
+        )
+        try:
+            save_announcement(
+                actor=admin,
+                instance=Announcement(title=ACCOUNTS_ANNOUNCEMENT, body=body, show_on_sign_in=True),
+            )
+        except PermissionDenied as exc:
+            raise CommandError(
+                "demo_admin no longer holds the admin role, so it cannot post the announcement. "
+                "Nothing was saved."
+            ) from exc
+        except ValidationError as exc:
+            raise CommandError(
+                f"The demo accounts announcement was refused: {' '.join(exc.messages)} "
+                "Nothing was saved."
+            ) from exc
+        return True

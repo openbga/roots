@@ -10,6 +10,10 @@
       "title": "Actions and sections",
       "items": [
         {
+          "label": "Announcements",
+          "description": "Current notices the laboratory’s administrators posted for staff appear first, newest first, each marked Notice or Important with a title and a plain-text message. They are the same for every staff role, cannot be dismissed, and disappear when they end or are withdrawn. Nothing appears when none is current. Announcements for the sign-in page or the client portal are not repeated here unless they were also posted for staff. Administrators manage them under Setup, Announcements."
+        },
+        {
           "label": "Receive samples",
           "description": "Opens a new chain of custody for actual receipt. Available to custodians and project managers, including the admin role’s operational access."
         },
@@ -133,6 +137,10 @@
     "core/views.py",
     "templates/core/dashboard.html",
     "accounts/roles.py",
-    "tests/test_dashboard.py"
+    "tests/test_dashboard.py",
+    "core/announcements.py",
+    "core/templatetags/announcements.py",
+    "templates/includes/announcements.html",
+    "tests/test_announcements.py"
   ]
 }

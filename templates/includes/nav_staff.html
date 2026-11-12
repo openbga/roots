@@ -71,6 +71,7 @@ project_manager; client submissions: custodian, project_manager). Views still en
     {% nav_item "qc-config" %}
     {% nav_item "import-mappings" %}
     {% nav_item "record-retention" %}
+    {% if "admin" in user_roles %}{% nav_item "announcements" %}{% endif %}
     {% if user.is_superuser %}{% nav_item "accounts-roles" %}{% endif %}
   </ul>
 </div>

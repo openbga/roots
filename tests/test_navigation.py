@@ -52,6 +52,7 @@ ENTRANCE_ROUTES = {
 
 # Not pages: POST-only actions that redirect, and downloads, PDFs, archives and probes.
 NON_PAGE_ROUTES = {
+    "announcement-withdraw",
     "receipt:order-cancel",
     "receipt:order-reinstate",
     "commercial:quote-issue",

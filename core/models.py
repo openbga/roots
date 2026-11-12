@@ -33,3 +33,45 @@ class AuditEvent(models.Model):
     class Meta:
         ordering = ["occurred_at", "id"]
         indexes = [models.Index(fields=["object_type", "object_id", "occurred_at"])]
+
+
+class Announcement(models.Model):
+    """A notice the laboratory posts on the sign-in page, for its staff or for client users.
+
+    core.announcements holds who may post one, who sees it and when it counts as showing.
+    """
+
+    class Tone(models.TextChoices):
+        INFO = "info", "Notice"
+        WARNING = "warning", "Important"
+
+    title = models.CharField(max_length=120)
+    body = models.TextField(max_length=2000)
+    tone = models.CharField(max_length=10, choices=Tone.choices, default=Tone.INFO)
+    show_on_sign_in = models.BooleanField(default=False)
+    show_to_staff = models.BooleanField(default=False)
+    show_to_clients = models.BooleanField(default=False)
+    starts_at = models.DateTimeField()
+    ends_at = models.DateTimeField(null=True, blank=True)
+    withdrawn_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-starts_at", "-pk"]
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(show_on_sign_in=True)
+                | models.Q(show_to_staff=True)
+                | models.Q(show_to_clients=True),
+                name="announcement_has_audience",
+                violation_error_message="Choose at least one place to show this announcement.",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(ends_at__isnull=True)
+                | models.Q(ends_at__gt=models.F("starts_at")),
+                name="announcement_ends_after_start",
+                violation_error_message="Show until must be later than Show from.",
+            ),
+        ]
+
+    def __str__(self):
+        return self.title

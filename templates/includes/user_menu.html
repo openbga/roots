@@ -1,4 +1,4 @@
-{% comment %}Signed-in user dropdown for the top bar. Account links resolve with the non-raising url-as form, so an unmounted route just hides. Sign-out is a POST (allauth default).{% endcomment %}
+{% comment %}Signed-in user dropdown for the top bar. Account links resolve with the non-raising url-as form, so an unmounted route just hides. Sign-out is a POST (allauth default). A shared demonstration account (user.credentials_locked) gets a note instead of the password and two-factor links; accounts.middleware refuses those pages.{% endcomment %}
 {% url 'account_logout' as logout_url %}
 {% url 'account_change_password' as password_url %}
 {% url 'mfa_index' as mfa_url %}
@@ -12,8 +12,12 @@
       {% if user.client %}<span class="vr-user-roles">{{ user.client }}</span>
       {% else %}<span class="vr-user-roles">{% for group in user.groups.all %}{% if group.name == "project_manager" %}Project manager{% else %}{{ group.name|capfirst }}{% endif %}{% if not forloop.last %}, {% endif %}{% empty %}No lab role assigned{% endfor %}</span>{% endif %}
     </div>
+    {% if user.credentials_locked %}
+    <p class="dropdown-item-text vr-muted small mb-0">Shared demonstration account: its password and two-factor settings cannot be changed.</p>
+    {% else %}
     {% if password_url %}<a class="dropdown-item" href="{{ password_url }}">{% include "includes/icon.html" with name="key" %}Change password</a>{% endif %}
     {% if mfa_url %}<a class="dropdown-item" href="{{ mfa_url }}">{% include "includes/icon.html" with name="lock" %}Two-factor authentication</a>{% endif %}
+    {% endif %}
     {% if logout_url %}
     <form method="post" action="{{ logout_url }}">
       {% csrf_token %}

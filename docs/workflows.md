@@ -128,6 +128,30 @@ recorded**. A deployment administrator with the `admin` role records or clears t
 statement under **Administration → Core → Lab**, with a required reason and stale-edit protection.
 Changes preserve the prior statement and attribution. No duration or automatic deletion is inferred.
 
+## Announcements
+
+The `admin` role posts announcements under **Setup → Announcements**. Each has a title, a
+plain-text message, an importance (Notice or Important) and one or more places: the sign-in page,
+the staff dashboard and the client portal home page. No other page shows them. Who sees one
+follows the account, not the page: a visitor who is not signed in sees only sign-in page
+announcements, staff only staff ones, and client users only client ones, which are the same for
+every client. Anything on the sign-in page is public, so keep confidential and client
+information out of it. Messages are shown exactly as typed; formatting, links and HTML are not
+interpreted.
+
+An announcement shows from **Show from** until **Show until**, or until it is withdrawn when no
+end is set. Withdrawing is permanent: the announcement stays in the list with its history and
+cannot be changed or shown again. Announcements are never deleted, there is no draft or approval
+step, readers cannot dismiss them, and nothing is emailed. Posting, every change and withdrawal
+are audited with the administrator and the values before and after.
+
+`seed_demo --announce-accounts` posts one sign-in page announcement that lists the demo accounts
+and their shared password, for a public demonstration; see the README. It never lists
+`demo_admin` and refuses to publish a password that opens that account. The listed accounts
+become shared demonstration accounts: whoever signs in to one cannot open its password, email
+address or two-factor pages, and no password-reset link is mailed for it. Nothing else sets that
+restriction, and no page removes it.
+
 ## Tables and page help
 
 Table search, filters, sorting and pagination run on the server. DataTables/ColReorder enhance

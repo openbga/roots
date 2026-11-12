@@ -11,6 +11,7 @@
       "paragraphs": [
         "Only an active signed-in account linked to a client can use these pages. Every project, sample, report and download is limited to that client. Other clients’ records are treated as missing. Internal staff and unrelated accounts cannot use the portal. These reporting views are read-only; drafts never appear here.",
         "When Demonstration appears, all clients, samples and results are synthetic and must not be used as laboratory results or for regulatory or compliance purposes.",
+        "Announcements from the laboratory for client users appear at the top of this page, newest first, each marked Notice or Important with a title and a plain-text message. Every client portal account sees the same announcements; they are not specific to your organization, cannot be dismissed, and disappear when the laboratory ends or withdraws them. Nothing appears when none is current.",
         "The portal’s top navigation marks the current area. No staff work queue or result-edit controls are available here."
       ],
       "items": [
@@ -164,6 +165,10 @@
     "reporting/tests/test_portal.py",
     "reporting/tests/test_grids.py",
     "reporting/templates/reporting/portal/home.html",
-    "reporting/views.py"
+    "reporting/views.py",
+    "core/announcements.py",
+    "core/templatetags/announcements.py",
+    "templates/includes/announcements.html",
+    "tests/test_announcements.py"
   ]
 }

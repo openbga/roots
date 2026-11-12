@@ -29,6 +29,8 @@ FORM_SURFACES = {
     "receipt:subcontract-result-create": "xl",
     "receipt:subcontract-result-review": "lg",
     "receipt:subcontract-cancel": "lg",
+    "announcement-create": "lg",
+    "announcement-edit": "lg",
     "catalog:test-create": "lg",
     "catalog:test-edit": "lg",
     "catalog:method-create": "lg",

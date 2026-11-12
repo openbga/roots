@@ -129,6 +129,10 @@ Health checks should distinguish process health from database readiness. Send st
 with request/record identifiers and errors, not scientific payloads or credentials. Configure
 timeouts, connection limits and size limits against actual service capacity. Provide a deliberate
 synthetic demo seed/reset operation; never run reset automatically on normal deployments.
+`reset_demo` is that operation: it runs only where `ALLOW_DEMO_RESET=true`, only against the
+seed's demonstration laboratory and only when the schema matches the release, and it erases and
+seeds in one transaction. Its schedule lives in `render.demo.yaml`, a separate Blueprint that the
+deploy button never uses (see [Operations](operations.md#public-demonstration)).
 
 Managed database recovery plus periodic encrypted off-provider exports are the minimum planned
 backup approach. Prove restore to a separate database and compare custody/audit/report versions
@@ -137,7 +141,8 @@ Report PDFs in the DB participate in the same recovery point. Real-data use need
 runbook and tested recovery, not merely a successful demo deployment.
 
 The Render Blueprint describes the web service, database, generated secret and required inputs.
-The README button targets `https://render.com/deploy?repo=https://github.com/openbga/smart-roots-lims`.
+The README button targets `https://render.com/deploy?repo=https://github.com/openbga/smart-roots-lims/tree/main`.
+It names `main` because Render otherwise deploys the repository's default branch, which is `develop`.
 A private fork is supported after granting the Render GitHub App access to it;
 the deployer still reviews/approves resources. Set `autoDeployTrigger: off` for distributed button
 instances. See [button requirements](https://render.com/docs/deploy-to-render).
