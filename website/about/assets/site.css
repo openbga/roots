@@ -45,6 +45,9 @@ section[id] { scroll-margin-top: 2rem; }
 .site-header { display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; padding-block: 1.5rem; }
 .brand { display: inline-flex; align-items: center; gap: .75rem; color: var(--ink); font-size: 1.125rem; font-weight: 650; text-decoration: none; white-space: nowrap; }
 .brand img { flex: none; }
+.wordmark { display: grid; gap: .125rem; line-height: 1.15; }
+.wordmark-name { font-size: 1.25rem; letter-spacing: -.015em; }
+.wordmark-parent { color: var(--muted); font-size: .75rem; font-weight: 500; }
 nav { display: flex; flex-wrap: wrap; gap: .5rem 1.75rem; }
 nav a { padding-block: .5rem; font-size: .9375rem; color: var(--ink); }
 

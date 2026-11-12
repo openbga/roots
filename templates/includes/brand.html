@@ -1,10 +1,11 @@
 {% load static %}{% comment %}
-Brand mark and name. Parameters:
+Brand lock-up: the mark, "Smart Roots" and "An OpenBGA project" beneath it. The written product
+name stays "Smart Roots LIMS" (titles, footer, help); OpenBGA appears only in this line. Parameters:
   href     link target; without it the brand is plain text (the 500 page, which has no request)
-  name     text beside the mark; default "Smart Roots LIMS" (the portal passes the lab's name)
+  name     replaces the lock-up text with this single line (the portal passes the lab's name)
   variant  "entrance" for the larger lock-up above entrance and error panels; default is the top bar
 Usage: {% include "includes/brand.html" with href=dashboard_url|default:"/" %}
 {% endcomment %}{% with size=variant|yesno:"32,24" css=variant|yesno:"vr-entrance-brand,vr-brand" %}{% if href %}<a class="{{ css }}" href="{{ href }}">{% else %}<p class="{{ css }}">{% endif %}
   <img src="{% static 'img/mark.svg' %}" alt="" width="{{ size }}" height="{{ size }}">
-  <span>{{ name|default:"Smart Roots LIMS" }}</span>
+  {% if name %}<span>{{ name }}</span>{% else %}<span class="vr-wordmark"><span class="vr-wordmark-name">Smart Roots</span> <span class="vr-wordmark-parent">An OpenBGA project</span></span>{% endif %}
 {% if href %}</a>{% else %}</p>{% endif %}{% endwith %}

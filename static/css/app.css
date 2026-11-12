@@ -921,9 +921,37 @@ s,
   height: 1.5rem;
 }
 
+/* Product lock-up (includes/brand.html): the name over a quieter "An OpenBGA project" line. */
+.vr-wordmark {
+  display: grid;
+  gap: 0.0625rem;
+  line-height: 1.15;
+}
+
+.vr-wordmark-parent {
+  color: var(--vr-topbar-text-muted);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+/* Phones: the bar keeps its controls whole, so it shows the name alone rather than a cut-off line. */
+@media (max-width: 575.98px) {
+  .vr-topbar .vr-wordmark-parent {
+    display: none;
+  }
+}
+
+/* Wider screens: the brand keeps its size; the lab name, then the sample lookup give way first. */
+@media (min-width: 576px) {
+  .vr-topbar > .vr-brand {
+    flex-shrink: 0;
+  }
+}
+
 .vr-lab-name {
   min-width: 0;
-  flex: 0 1 auto;
+  flex: 0 100 auto;
   color: var(--vr-topbar-text-muted);
   font-weight: 500;
   padding-left: 0.75rem;
@@ -934,9 +962,10 @@ s,
 }
 
 .vr-topbar-end {
+  flex: 1 1 auto;
+  min-width: 0;
   margin-left: auto;
   display: flex;
-  flex-wrap: wrap;
   justify-content: flex-end;
   align-items: center;
   gap: 0.375rem;
@@ -970,7 +999,8 @@ s,
 
 .vr-lookup {
   position: relative;
-  width: min(18rem, 34vw);
+  flex: 0 1 18rem;
+  min-width: 7.5rem;
 }
 
 .vr-lookup .vr-icon {
@@ -2544,6 +2574,11 @@ fieldset.vr-field > legend {
 .vr-entrance-brand img {
   width: 2rem;
   height: 2rem;
+}
+
+.vr-entrance-brand .vr-wordmark-parent {
+  color: var(--vr-text-muted);
+  font-size: 0.75rem;
 }
 
 .vr-entrance-panel {

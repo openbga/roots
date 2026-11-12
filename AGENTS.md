@@ -17,7 +17,9 @@ published in the public repository `openbga/smart-roots-lims`. Everything commit
 The coordinator owns main/origin, Git index, commits and pushes. License (2026-11-11):
 AGPL-3.0-only with the copyright and trademark notice in `NOTICE`; the footer "Source code" link
 (`SOURCE_CODE_URL`) serves AGPL section 13. The canonical GNU LICENSE and dependency notices are
-included; retain them when distributing. Write the name exactly "Smart Roots LIMS". Keep material
+included; retain them when distributing. Write the name exactly "Smart Roots LIMS". Owner decision
+2026-11-12: the logo lock-up (app brand, presentation header, link preview) is the mark with
+"Smart Roots" over "An OpenBGA project"; OpenBGA never prefixes the product name. Keep material
 about other LIMS/LIS products or vendors out of the repository; regulatory and standards sources
 and formats an implemented feature supports are fine.
 Owner instruction 2026-11-11: the README "Project and support" section (BGASoft as sponsor,

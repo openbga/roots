@@ -58,7 +58,7 @@ core/templatetags/navigation.py. Error pages (400/403/404) keep this shell for s
   <header class="vr-topbar">
     <button class="btn btn-sm vr-topbar-btn d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#vr-nav" aria-controls="vr-nav">{% include "includes/icon.html" with name="list" %}<span>Menu</span></button>
     {% include "includes/brand.html" with href=dashboard_url|default:"/" %}
-    {% if lab.name %}<span class="vr-lab-name d-none d-md-inline">{{ lab.name }}</span>{% endif %}
+    {% if lab.name %}<span class="vr-lab-name d-none d-lg-inline">{{ lab.name }}</span>{% endif %}
     <div class="vr-topbar-end">
       {% url 'receipt:sample-list' as sample_list_url %}
       {% if sample_list_url %}
