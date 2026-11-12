@@ -252,8 +252,19 @@ demonstration from `render.yaml`:
 3. Use **Trigger Run** on the job to reset straight away, or wait for the schedule (daily at
    08:00 UTC). Change the time in the file's `schedule` and `DEMO_RESET_NOTE` together.
 
-Auto-deploy is off for the job, as for the web service: deploy both for every release, or the job
-refuses to run until they match. The job is billed for the time it runs, with a monthly minimum;
+Both files set auto-deploy off, the right default for a laboratory: deploy the job and the web
+service together for every release, or the job refuses to run until they match.
+
+The public demonstration instead shows the current `develop` branch. Its web service and reset job
+both track `develop` with Render's **After CI Checks Pass** auto-deploy (`checksPass`), set on the
+two services (2026-11-12) rather than in the files. Render waits for the `checks` workflow, which
+cancels runs superseded by a newer push, so several pushes in a row end in one deploy of the last
+commit and a commit that fails its checks is not deployed. Keep branch and trigger equal on both
+services. Syncing the demonstration's Blueprint from `render.yaml` would turn the web service's
+auto-deploy off again; its automatic sync is off. A deploy migrates but does not reseed: changed
+seed data appears at the next reset.
+
+The job is billed for the time it runs, with a monthly minimum;
 check [Render pricing](https://render.com/pricing).
 
 Sources, checked 2026-11-12: a Blueprint file may sit at a custom path and one repository may back
@@ -261,6 +272,7 @@ several independent Blueprints ([Render Blueprints](https://render.com/docs/infr
 cron schedules use UTC, at most one run is active at a time and billing is by running time with a
 monthly minimum ([cron jobs](https://render.com/docs/cronjobs)); a Blueprint may reference a
 service that exists in the workspace but is not in the file
-([Blueprint reference](https://render.com/docs/blueprint-spec)). `render blueprints validate
+([Blueprint reference](https://render.com/docs/blueprint-spec)); `checksPass` deploys a commit
+only after its CI checks pass ([deploys](https://render.com/docs/deploys)). `render blueprints validate
 render.demo.yaml` (CLI 2.36.0) accepted the file against the demonstration's workspace on that
 date, planning one new service; it creates nothing.
