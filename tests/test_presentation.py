@@ -65,6 +65,21 @@ def test_presentation_references_exactly_the_assets_it_ships():
     assert referenced == shipped
 
 
+@pytest.mark.django_db
+def test_roadmap_page_is_linked_served_and_self_consistent(client):
+    """The roadmap is a second static page: it shares the presentation's assets, and its
+    in-page links must resolve because a static site reports neither kind of miss."""
+    assert 'href="roadmap/"' in (PRESENTATION / "index.html").read_text()
+    response = client.get("/about/roadmap/")
+    assert response.status_code == 200
+    html = b"".join(response.streaming_content).decode()
+    assert 'href="../"' in html and "AGPL-3.0-only" in html
+    assets = set(re.findall(r'(?:src|href)="\.\./(assets/[^"]+)"', html))
+    assert assets and all((PRESENTATION / asset).is_file() for asset in assets)
+    anchors = set(re.findall(r'href="#([^"]+)"', html))
+    assert anchors and anchors <= set(re.findall(r'\bid="([^"]+)"', html))
+
+
 @pytest.mark.parametrize("path", ["/about", "/about/index.html"])
 def test_presentation_redirects_to_its_directory_url(client, path):
     response = client.get(path)

@@ -127,6 +127,35 @@ td { color: var(--muted); }
 .support a { display: inline-block; padding-block: .25rem; font-weight: 600; }
 .site-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; padding-block: 1.5rem; border-top: 1px solid var(--rule); color: var(--muted); font-size: .875rem; }
 
+/* Roadmap page. A status is always named in text; its marker only repeats it. */
+.status { display: flex; align-items: center; gap: .5rem; margin-bottom: .75rem; font-family: var(--mono); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); }
+.status::before { content: ""; flex: none; width: .625rem; height: .625rem; border: 1px solid var(--action); border-radius: 2px; }
+.status-built::before { background: var(--action); }
+.status-next::before { background: var(--highlight); }
+.status-later::before { background: var(--sage); }
+.status-exploring::before { border-style: dashed; }
+
+/* The board sits across the edge of the sage band, where the overview page has its screenshot. */
+.hero-board { --overlap: clamp(4rem, 9vw, 7rem); }
+.board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; box-shadow: 0 1px 2px rgb(21 39 29 / .06), 0 28px 56px -28px rgb(21 39 29 / .3); }
+.board > div { padding: 1.5rem 1.5rem 1.75rem; }
+.board > div + div { border-left: 1px solid var(--rule); }
+.board .status { display: inline-flex; margin-bottom: 0; padding-block: .25rem; font-size: .8125rem; font-weight: 650; }
+.board p { color: var(--muted); font-size: .8125rem; }
+.board ul { display: grid; gap: .5rem; margin: 1rem 0 0; padding: 1rem 0 0; border-top: 1px solid var(--rule); list-style: none; font-size: .9375rem; line-height: 1.35; }
+
+.buckets { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem 4rem; margin: 0; padding: 0; list-style: none; counter-reset: bucket; }
+.buckets > li { padding-top: 1rem; border-top: 1px solid var(--rule); scroll-margin-top: 2rem; }
+ol.buckets > li { counter-increment: bucket; }
+ol.buckets > li::before { content: counter(bucket, decimal-leading-zero); display: block; margin-bottom: .75rem; font-family: var(--mono); font-size: .8125rem; color: var(--muted); }
+.buckets h3 { font-size: 1.25rem; letter-spacing: -.01em; }
+.buckets h3 + p { margin-top: .5rem; font-size: .9375rem; }
+.buckets ul { margin: .875rem 0 0; padding-left: 1.125rem; list-style: disc; color: var(--muted); font-size: .9375rem; }
+.buckets ul li + li { margin-top: .375rem; }
+.closing { margin-bottom: 0; }
+.closing p { color: var(--muted); }
+.closing .links { display: flex; flex-wrap: wrap; gap: .25rem 2rem; margin-top: 1.5rem; }
+
 @media (max-width: 850px) {
   .hero-inner { grid-template-columns: 1fr; gap: 2rem; }
   .hero-description { max-width: 65ch; }
@@ -137,6 +166,10 @@ td { color: var(--muted); }
   .feature:nth-child(even) .feature-text { order: 0; }
   .feature + .feature { margin-top: 3.5rem; }
   .project { grid-template-columns: 1fr; gap: 2rem; }
+  .board { grid-template-columns: 1fr 1fr; }
+  .board > div:nth-child(odd) { border-left: 0; }
+  .board > div:nth-child(n + 3) { border-top: 1px solid var(--rule); }
+  .buckets { grid-template-columns: 1fr; gap: 2.5rem; }
 }
 
 @media (max-width: 600px) {
@@ -156,6 +189,9 @@ td { color: var(--muted); }
   th, td { padding: .875rem .625rem; font-size: .875rem; }
   tbody th { width: 34%; }
   .support { padding: 1.25rem; }
+  .board { grid-template-columns: 1fr; }
+  .board > div { padding: 1.25rem; }
+  .board > div + div { border-left: 0; border-top: 1px solid var(--rule); }
 }
 
 @media print {
@@ -165,6 +201,6 @@ td { color: var(--muted); }
   .commands { background: none; border-color: var(--rule); }
   .commands pre { white-space: pre-wrap; }
   .hero-inner, .section > .wrap { padding-block: 1.5rem; }
-  .feature, .principles > div, .workflow li, tr { break-inside: avoid; }
-  .shot img { box-shadow: none; }
+  .feature, .principles > div, .workflow li, .buckets > li, tr { break-inside: avoid; }
+  .shot img, .board { box-shadow: none; }
 }

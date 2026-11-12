@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="The Smart Roots LIMS roadmap: what the open-source environmental laboratory LIMS has built, what comes next and where it is heading, grouped by what a laboratory needs.">
+  <meta name="theme-color" content="#e5efe9">
+  <title>Roadmap · Smart Roots LIMS</title>
+  <link rel="canonical" href="https://openbga.github.io/smart-roots-lims/roadmap/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Smart Roots LIMS">
+  <meta property="og:title" content="Smart Roots LIMS roadmap: what is built, what is next">
+  <meta property="og:description" content="What the open-source environmental laboratory LIMS has built, what comes next and where it is heading.">
+  <meta property="og:url" content="https://openbga.github.io/smart-roots-lims/roadmap/">
+  <meta property="og:image" content="https://openbga.github.io/smart-roots-lims/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Smart Roots LIMS: smart roots, strong results. The sample list of the staff workspace.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header">
+    <a class="brand" href="../">
+      <img src="../assets/mark.svg" alt="" width="40" height="40">
+      <span class="wordmark"><span class="wordmark-name">Smart Roots</span> <span class="wordmark-parent">An OpenBGA project</span></span>
+    </a>
+    <nav aria-label="Main navigation">
+      <a href="../">Overview</a>
+      <a href="#built">Built</a>
+      <a href="#next">Next</a>
+      <a href="#later">Later</a>
+      <a href="#exploring">Exploring</a>
+      <a href="#basis">Basis</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero hero-board" aria-labelledby="roadmap-title">
+      <div class="wrap">
+        <div class="hero-inner">
+          <h1 id="roadmap-title">What is built.<br>What is next.</h1>
+          <div class="hero-description">
+            <p>Smart Roots LIMS is developed in the open. This roadmap lists what the project has built, what it is working on next and where it is heading after that.</p>
+            <p>It carries no dates. Work is grouped by what a laboratory needs and ordered by what stands between a laboratory and daily use. The order can change when laboratories say otherwise.</p>
+            <p class="project-status">Reviewed November 2026</p>
+          </div>
+        </div>
+        <nav class="board" aria-label="Roadmap at a glance">
+          <div>
+            <a class="status status-built" href="#built">Built</a>
+            <p>In the software today</p>
+            <ul>
+              <li>Custody and receipt</li>
+              <li>Methods and rules</li>
+              <li>Bench work</li>
+              <li>QC and review</li>
+              <li>Reports</li>
+              <li>Client portal</li>
+              <li>Sales and scheduling</li>
+              <li>Laboratory records</li>
+              <li>Platform</li>
+            </ul>
+          </div>
+          <div>
+            <a class="status status-next" href="#next">Next</a>
+            <p>Needed for daily work</p>
+            <ul>
+              <li>A first stable release</li>
+              <li>Calculated results at the bench</li>
+              <li>Instrument data</li>
+              <li>Invoicing</li>
+              <li>Notifications and client results</li>
+              <li>Electronic deliverables</li>
+            </ul>
+          </div>
+          <div>
+            <a class="status status-later" href="#later">Later</a>
+            <p>Depth and breadth</p>
+            <ul>
+              <li>Quality system records</li>
+              <li>Management view</li>
+              <li>Drinking water programs</li>
+              <li>Microbiology</li>
+              <li>Sampling and field work</li>
+              <li>Trace organics and PFAS</li>
+              <li>Integrations and scale</li>
+            </ul>
+          </div>
+          <div>
+            <a class="status status-exploring" href="#exploring">Exploring</a>
+            <p>Open questions</p>
+            <ul>
+              <li>More regulator formats</li>
+              <li>Assisted review</li>
+              <li>Multi-site laboratories</li>
+              <li>Other disciplines</li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </section>
+
+    <section class="section" id="built" aria-labelledby="built-title">
+      <div class="wrap">
+        <div class="section-intro">
+          <div>
+            <p class="status status-built">Built</p>
+            <h2 id="built-title">The journey<br>is in place.</h2>
+          </div>
+          <p>A sample can travel from receipt to an amended report with its custody, QC, review and release on record. These areas are implemented and covered by automated checks on synthetic data. The project has not yet made a stable release.</p>
+        </div>
+        <table>
+          <caption>What Smart Roots LIMS has built</caption>
+          <thead><tr><th scope="col">Area</th><th scope="col">What is in place</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Custody and receipt</th><td>Clients, projects and chains of custody. Receipt inspection with containers, preservation checks, discrepancies and their dispositions. Custody events and corrections that keep their reason.</td></tr>
+            <tr><th scope="row">Methods and rules</th><td>Versioned methods, analytes and tests per matrix, with units, reporting limits and qualifiers. Holding-time and preservation rules, QC requirements and limits, all set by the laboratory.</td></tr>
+            <tr><th scope="row">Bench work</th><td>Preparation and analytical batches with their QC samples. Manual entry and mapped CSV or TSV import, each keeping its source. Holding times computed from the rules, never typed.</td></tr>
+            <tr><th scope="row">QC and review</th><td>QC evaluated against configured limits, with a recorded disposition for each failure. Control charts and MDL studies. Independent technical review that can return work with a reason.</td></tr>
+            <tr><th scope="row">Reports</th><td>Explicit release authorization. Stored PDF versions with a content hash, and amendments that keep earlier versions. One exploratory electronic deliverable in the New York State format.</td></tr>
+            <tr><th scope="row">Client portal</th><td>Each client sees its own projects, samples, reports and quotes, and can send a chain of custody ahead of the samples.</td></tr>
+            <tr><th scope="row">Sales and scheduling</th><td>Price lists and versioned quotes, delivery targets with a schedule by due date, sample and container labels with barcodes, and subcontracted tests with an independent check of the source.</td></tr>
+            <tr><th scope="row">Laboratory records</th><td>Standards, reagents and lots with stock movements. Equipment calibration and maintenance. Training and demonstrations of capability. Nonconformance and corrective action. Sample storage and disposal.</td></tr>
+            <tr><th scope="row">Platform</th><td>Roles and permissions checked on the server, an attributed audit trail, optional two-factor sign-in, help for every page, announcements, a container image and a documented backup and restore procedure.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" id="next" aria-labelledby="next-title">
+      <div class="wrap">
+        <div class="section-intro">
+          <div>
+            <p class="status status-next">Next</p>
+            <h2 id="next-title">What daily work<br>still needs.</h2>
+          </div>
+          <p>Six areas stand between the current software and a laboratory that runs its routine work in it. They are listed in the order the project intends to take them.</p>
+        </div>
+        <ol class="buckets">
+          <li id="stable-release">
+            <h3>A first stable release</h3>
+            <p>Laboratories are asked to evaluate with synthetic data. They need a version they can install, check and upgrade.</p>
+            <ul>
+              <li>Versioned releases with upgrade notes and tested migrations</li>
+              <li>Acceptance scripts a laboratory can run and keep as its own evidence</li>
+              <li>Spreadsheet import for clients, projects, methods, tests and limits</li>
+              <li>Editable starter rules for common methods, each naming its public source</li>
+              <li>The laboratory's address, logo and certificate numbers on reports</li>
+            </ul>
+          </li>
+          <li id="bench-calculations">
+            <h3>Calculated results at the bench</h3>
+            <p>Wet chemistry and soil results are still worked out on paper or in a spreadsheet and typed in as final values. The readings behind a result belong in the record.</p>
+            <ul>
+              <li>Worksheets for BOD, solids by weight and titrations that keep each reading</li>
+              <li>Percent moisture and dry-weight correction for soil</li>
+              <li>Dilution and preparation factors applied to results and reporting limits</li>
+              <li>Rounding and significant-figure rules set by the laboratory</li>
+              <li>Versioned calculations, so a reported value can be reproduced</li>
+            </ul>
+          </li>
+          <li id="instrument-data">
+            <h3>Instrument data</h3>
+            <p>Results load today from CSV and TSV files that an operator maps. Laboratories expect instrument exports to load as they are, with the raw file kept beside the batch.</p>
+            <ul>
+              <li>Import layouts checked against real exports from common instrument types, such as ICP, discrete analyzers, ion chromatography and TOC</li>
+              <li>Excel workbooks</li>
+              <li>Raw files stored with the batch, in storage sized for them</li>
+              <li>Run lists exported for the instrument</li>
+              <li>Calibration recorded in the run, with curves and verification standards linked to results</li>
+            </ul>
+          </li>
+          <li id="invoicing">
+            <h3>Invoicing</h3>
+            <p>A commercial laboratory bills for its work. Price lists and quotes exist, invoices do not.</p>
+            <ul>
+              <li>Invoices built from quotes, price lists and the work received</li>
+              <li>Billing contact, purchase order and payment terms taken from the client and project records</li>
+              <li>Export to accounting software, which stays the ledger</li>
+              <li>An optional account hold shown at receipt and at release</li>
+            </ul>
+          </li>
+          <li id="client-delivery">
+            <h3>Notifications and client results</h3>
+            <p>The application sends no notifications today, and the portal shows status and report files. Clients want to be told, and to work with their numbers.</p>
+            <ul>
+              <li>Email when samples arrive, when a receipt problem needs a decision and when a report is issued or amended</li>
+              <li>Reminders for staff, such as holding times at risk and work returned from review</li>
+              <li>Result tables in the portal, with download</li>
+              <li>Trends by sampling location, with results marked against limits the client supplies</li>
+            </ul>
+          </li>
+          <li id="deliverables">
+            <h3>Electronic deliverables</h3>
+            <p>Many clients and agencies take data as a file in their own format, and accept it only against their own specification. One exploratory export exists.</p>
+            <ul>
+              <li>A configurable CSV and Excel deliverable for client templates</li>
+              <li>The EQuIS-style four-file deliverable with reference values, passed through a named recipient's checker</li>
+              <li>Report packages with a QC summary, chosen per order</li>
+              <li>Permit summaries for discharge monitoring reports: averages, maximums and loadings. The permittee still files the report.</li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section tinted" id="later" aria-labelledby="later-title">
+      <div class="wrap">
+        <div class="section-intro">
+          <div>
+            <p class="status status-later">Later</p>
+            <h2 id="later-title">Depth<br>and breadth.</h2>
+          </div>
+          <p>Planned after the work above. The order here is looser, and a laboratory that needs one of these can move it forward.</p>
+        </div>
+        <ul class="buckets">
+          <li id="quality-system">
+            <h3>Quality system records</h3>
+            <p>Assessors look past sample data to the laboratory's whole quality system. Equipment, materials, training and nonconformance are recorded today. These complete the set.</p>
+            <ul>
+              <li>Proficiency testing: studies, reported results, scores and follow-up</li>
+              <li>Controlled documents: SOP versions linked to methods, with read acknowledgement</li>
+              <li>Internal audits, findings, complaints and management review</li>
+              <li>Checks at the point of use that a laboratory can turn on: a current demonstration of capability, equipment in calibration, lots within expiry</li>
+              <li>Method validation, measurement uncertainty and ongoing MDL verification</li>
+            </ul>
+          </li>
+          <li id="management-view">
+            <h3>Management view</h3>
+            <p>Work queues show what is waiting. Managers also need to see how the laboratory is doing.</p>
+            <ul>
+              <li>Turnaround, on-time delivery and backlog by stage</li>
+              <li>Due dates worked out from turnaround terms and the laboratory's working calendar</li>
+              <li>Holding-time misses and QC failure rates by method</li>
+              <li>Workload by method and analyst</li>
+              <li>Audit trail search by person, record and date</li>
+            </ul>
+          </li>
+          <li id="drinking-water">
+            <h3>Drinking water programs</h3>
+            <p>Drinking water compliance results count only from a laboratory certified for the method and analyte, and many states take them electronically.</p>
+            <ul>
+              <li>A register of certified or accredited scope per program, with results outside it marked</li>
+              <li>Public water system, facility and sampling point identifiers</li>
+              <li>Compliance sample types, such as routine and repeat samples</li>
+              <li>Electronic reporting to a state agency, starting with the format of EPA's Compliance Monitoring Data Portal</li>
+            </ul>
+          </li>
+          <li id="microbiology">
+            <h3>Microbiology</h3>
+            <p>Coliform and E. coli testing is routine in water and wastewater laboratories, and its results are counts or presence, not concentrations.</p>
+            <ul>
+              <li>Presence or absence, most probable number and plate count results</li>
+              <li>Incubation start and read times checked against the method's window</li>
+              <li>Media, sterility and incubator temperature records</li>
+            </ul>
+          </li>
+          <li id="sampling">
+            <h3>Sampling and field work</h3>
+            <p>Much of a laboratory's work repeats on a permit schedule and starts before the cooler arrives.</p>
+            <ul>
+              <li>Recurring sampling plans, with expected and missed collections visible</li>
+              <li>Sampling locations kept per client and project</li>
+              <li>A bottle catalog, kit orders and pre-printed labels</li>
+              <li>Field measurements recorded with the sample, such as pH, temperature, residual chlorine and depth</li>
+              <li>Capture on a phone or tablet in the field</li>
+            </ul>
+          </li>
+          <li id="organics">
+            <h3>Trace organics and PFAS</h3>
+            <p>The first method set covers metals, nutrients and solids. Organic methods bring their own QC, and PFAS work adds isotope dilution at parts-per-trillion levels.</p>
+            <ul>
+              <li>Surrogates, internal standards and tentatively identified compounds</li>
+              <li>Isotope dilution with labeled-standard recoveries, as EPA Method 1633A uses</li>
+              <li>Summed analytes, and branched and linear isomers</li>
+            </ul>
+          </li>
+          <li id="platform">
+            <h3>Integrations and scale</h3>
+            <p>A laboratory system works beside other systems and grows with the laboratory.</p>
+            <ul>
+              <li>An API and webhooks for status, results and reports</li>
+              <li>Single sign-on, a sign-in policy the laboratory sets and a signature step at release</li>
+              <li>Background jobs for long imports and report runs</li>
+              <li>Stronger tamper evidence for the audit trail and issued reports</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="exploring" aria-labelledby="exploring-title">
+      <div class="wrap">
+        <div class="section-intro">
+          <div>
+            <p class="status status-exploring">Exploring</p>
+            <h2 id="exploring-title">Open<br>questions.</h2>
+          </div>
+          <p>Directions the project is weighing. Each needs a laboratory that wants it and can test it.</p>
+        </div>
+        <dl class="principles">
+          <div><dt>More regulator formats</dt><dd>California GeoTracker EDF, Florida ADaPT, EPA's SEDD and the Water Quality Exchange. One at a time, each tested against the recipient's own specification.</dd></div>
+          <div><dt>Assisted review</dt><dd>Software that points a reviewer to unusual results or missing evidence. A person still makes every review and release decision.</dd></div>
+          <div><dt>Multi-site laboratories</dt><dd>Several locations within one laboratory organization. One organization per deployment stays the design.</dd></div>
+          <div><dt>Other disciplines</dt><dd>Whole effluent toxicity, radiochemistry and air. Only with a laboratory that runs them.</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="basis" aria-labelledby="basis-title">
+      <div class="wrap">
+        <div class="section-intro">
+          <h2 id="basis-title">What shaped<br>the order.</h2>
+          <p>Three things: the public rules a US environmental laboratory works under, what laboratories ask for when they choose a system, and what the project's own documents list as unfinished. Sources were checked in November 2026.</p>
+        </div>
+        <dl class="principles">
+          <div><dt>What laboratories ask for</dt><dd>Public requests for proposals from water utility laboratories list instrument interfaces, calibration records, proficiency testing, data migration and acceptance testing among their requirements. A commercial laboratory also has to bill. That puts bench work, instruments, invoicing and deliverables first.</dd></div>
+          <div><dt>Accreditation records</dt><dd>Laboratories accredited to the <a href="https://nelac-institute.org/">TNI standard</a> or <a href="https://www.iso.org/standard/66912.html">ISO/IEC 17025</a> keep records for proficiency testing, document control, audits, complaints and management review. The roadmap adds those records. It does not reproduce either standard.</dd></div>
+          <div><dt>Permit reporting</dt><dd>Clean Water Act methods set holding times, preservation and QC elements (<a href="https://www.ecfr.gov/current/title-40/part-136">40 CFR Part 136</a>). Permittees file their discharge monitoring reports electronically (<a href="https://www.epa.gov/compliance/npdes-ereporting">NPDES Electronic Reporting Rule</a>), and the laboratory supplies the results, so the plan is a summary a permittee can file from.</dd></div>
+          <div><dt>Deliverables</dt><dd>A recipient accepts an electronic deliverable only against its own current specification and reference values. Formats are added one recipient at a time and are called supported only after that recipient's checker passes them.</dd></div>
+          <div><dt>Drinking water</dt><dd>Compliance samples must be analyzed by a certified laboratory (<a href="https://www.ecfr.gov/current/title-40/part-141/section-141.28">40 CFR 141.28</a>). EPA's <a href="https://www.epa.gov/ground-water-and-drinking-water/compliance-monitoring-data-portal">Compliance Monitoring Data Portal</a> lets laboratories report to state agencies electronically.</dd></div>
+          <div><dt>PFAS</dt><dd><a href="https://www.epa.gov/cwa-methods/cwa-analytical-methods-and-polyfluorinated-alkyl-substances-pfas">EPA Method 1633A</a> measures 40 PFAS in water, solids, biosolids and tissue. Its data differs enough from metals and nutrients to be its own item.</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="contribute" aria-labelledby="contribute-title">
+      <div class="wrap">
+        <div class="section-intro closing">
+          <h2 id="contribute-title">Help set<br>the order.</h2>
+          <div>
+            <p>Tell the project what your laboratory needs, or share an instrument export layout filled with invented values. Laboratory feedback moves items on this page.</p>
+            <p>Smart Roots LIMS supports laboratory records and quality systems. It does not certify compliance or accreditation, and nothing on this page is a commitment to a date.</p>
+            <p class="links">
+              <a class="text-link" href="https://github.com/openbga/smart-roots-lims/issues">Open an issue</a>
+              <a class="text-link" href="https://github.com/openbga/smart-roots-lims/blob/main/CONTRIBUTING.md">Contribute</a>
+              <a class="text-link" href="https://github.com/openbga/smart-roots-lims/blob/main/docs/product.md">Read the product scope</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Smart Roots LIMS</span>
+    <a href="https://github.com/openbga/smart-roots-lims">Source code</a>
+    <a href="https://github.com/openbga/smart-roots-lims/blob/main/LICENSE">AGPL-3.0-only</a>
+  </footer>
+</body>
+</html>
