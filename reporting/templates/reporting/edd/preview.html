@@ -5,7 +5,7 @@ snapshot plus the current recipient codes; generating freezes those codes into a
 Context: version, report, result (nysdec.Export), issue_groups (identical causes grouped with records and fix destination), fix_summary, post_errors, tables
 [(section, columns, rows, total)], notice, format_name/version, reference_values, exports, can_generate.
 {% endcomment %}
-{% block title %}NYSDEC EDD · {{ report.number }} v{{ version.number }} · OpenBGA Roots{% endblock %}
+{% block title %}NYSDEC EDD · {{ report.number }} v{{ version.number }} · Smart Roots LIMS{% endblock %}
 {% block breadcrumbs %}{% url 'reporting:report-list' as list_url %}{% url 'reporting:report-detail' report.pk as record_url %}{% with number=version.number|stringformat:"s" %}{% include "includes/breadcrumbs.html" with section="Reports" section_url=list_url record=report.number record_url=record_url current="NYSDEC EDD v"|add:number %}{% endwith %}{% endblock %}
 {% block page_heading %}NYSDEC EDD for <span class="vr-id">{{ report.number }}</span> version {{ version.number }}{% endblock %}
 {% block page_meta %}

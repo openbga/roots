@@ -4,7 +4,7 @@ Physical storage record of one sample. Context: sample, storage (SampleStorage o
 can_manage_storage, storage_events (AuditEvent oldest first, each with display_title), today.
 The record is identified by the sample's lab ID; the receipt record is one link away in the facts.
 {% endcomment %}
-{% block title %}{{ sample.lab_id }} · Sample storage · OpenBGA Roots{% endblock %}
+{% block title %}{{ sample.lab_id }} · Sample storage · Smart Roots LIMS{% endblock %}
 {% block breadcrumbs %}{% url 'receipt:storage-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Sample storage" section_url=list_url current=sample.lab_id %}{% endblock %}
 {% block page_heading %}<span class="vr-id">{{ sample.lab_id }}</span>{% endblock %}
 {% block page_meta %}

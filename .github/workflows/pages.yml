@@ -1,7 +1,7 @@
 name: Publish presentation
 
 # Publishes the static product presentation (website/about) to GitHub Pages at
-# https://openbga.github.io/roots/. The application serves the same files at /about/.
+# https://openbga.github.io/smart-roots-lims/. The application serves the same files at /about/.
 on:
   push:
     branches: [main]

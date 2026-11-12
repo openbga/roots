@@ -5,7 +5,7 @@ order.submission from commercial intake), samples, has_submission, action_form (
 correction_events, detail_events (order.details_updated audit events, oldest first), can_receive. The cancel and reinstate forms post to their own POST-only routes;
 their errors return as messages on this page.
 {% endcomment %}
-{% block title %}{{ order.coc_reference }} · Chains of custody · OpenBGA Roots{% endblock %}
+{% block title %}{{ order.coc_reference }} · Chains of custody · Smart Roots LIMS{% endblock %}
 {% block breadcrumbs %}{% url 'receipt:order-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Chains of custody" section_url=list_url current=order.coc_reference %}{% endblock %}
 {% block page_heading %}<span class="vr-id">{{ order.coc_reference }}</span>{% endblock %}
 {% block page_meta %}

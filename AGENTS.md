@@ -1,4 +1,4 @@
-# OpenBGA Roots
+# Smart Roots LIMS
 
 Working rules for AI coding agents. Human contributors: start with `CONTRIBUTING.md`.
 
@@ -12,12 +12,12 @@ A US environmental laboratory LIMS: one lab organization per deployment, staff a
 client portal, receipt/custody through analytical work, QC, review and versioned reports.
 Commercial US water/wastewater and soil scope and one lab per deployment are confirmed.
 Unresolved laboratory policies remain explicit assumptions; use synthetic data.
-Owner decision 2026-11-11: the product is OpenBGA Roots, an open-source project of BGASoft Inc.,
-published in the public repository `openbga/roots`. Everything committed is public: see rule 10.
+Owner decision 2026-11-11: the product is Smart Roots LIMS, an open-source project of BGASoft Inc.,
+published in the public repository `openbga/smart-roots-lims`. Everything committed is public: see rule 10.
 The coordinator owns main/origin, Git index, commits and pushes. License (2026-11-11):
 AGPL-3.0-only with the copyright and trademark notice in `NOTICE`; the footer "Source code" link
 (`SOURCE_CODE_URL`) serves AGPL section 13. The canonical GNU LICENSE and dependency notices are
-included; retain them when distributing. Write the name exactly "OpenBGA Roots". Keep material
+included; retain them when distributing. Write the name exactly "Smart Roots LIMS". Keep material
 about other LIMS/LIS products or vendors out of the repository; regulatory and standards sources
 and formats an implemented feature supports are fine.
 Owner instruction 2026-11-11: the README "Project and support" section (BGASoft as sponsor,

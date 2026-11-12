@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load reporting %}
-{% block title %}Preview {{ report.number }} · Reports · OpenBGA Roots{% endblock %}
+{% block title %}Preview {{ report.number }} · Reports · Smart Roots LIMS{% endblock %}
 {% block breadcrumbs %}{% url 'reporting:report-list' as list_url %}{% url 'reporting:report-detail' report.pk as record_url %}{% include "includes/breadcrumbs.html" with section="Reports" section_url=list_url record=report.number record_url=record_url current="Preview" %}{% endblock %}
 {% block page_heading %}Preview {% if amendment %}amendment v{{ next_version }}{% else %}version 1{% endif %} of <span class="vr-id">{{ report.number }}</span>{% endblock %}
 {% block page_meta %}

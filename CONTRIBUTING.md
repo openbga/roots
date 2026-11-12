@@ -1,6 +1,6 @@
-# Contributing to OpenBGA Roots
+# Contributing to Smart Roots LIMS
 
-Thank you for your interest. OpenBGA Roots is a LIMS for commercial US water, wastewater and
+Thank you for your interest. Smart Roots LIMS is a LIMS for commercial US water, wastewater and
 soil laboratories. Bug reports, fixes, documentation and focused improvements are welcome and
 are reviewed on a best-effort basis.
 
@@ -125,7 +125,7 @@ pull request.
 
 ## Licence of contributions
 
-OpenBGA Roots is licensed under [AGPL-3.0-only](LICENSE). By submitting a contribution you agree
+Smart Roots LIMS is licensed under [AGPL-3.0-only](LICENSE). By submitting a contribution you agree
 that it is licensed under the same terms, and you confirm that you have the right to submit it.
 Do not copy code or text from sources whose licence is incompatible with AGPL-3.0-only, and
 keep third-party notices intact (see [Third-party notices](THIRD_PARTY_NOTICES.md)).

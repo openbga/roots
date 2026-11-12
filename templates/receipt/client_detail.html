@@ -9,7 +9,7 @@ submissions, portal_users, history (AuditEvent, newest first; shown oldest first
 and can_receive come from the workspace context processor. Contacts and projects have no page of
 their own: the name links to the edit form for project managers and is plain text for others.
 {% endcomment %}
-{% block title %}{{ client.name }} · Clients · OpenBGA Roots{% endblock %}
+{% block title %}{{ client.name }} · Clients · Smart Roots LIMS{% endblock %}
 {% block breadcrumbs %}{% url 'receipt:client-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Clients" section_url=list_url current=client.name %}{% endblock %}
 {% block page_meta %}
 <ul class="vr-page-meta">

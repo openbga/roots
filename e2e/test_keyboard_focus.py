@@ -189,7 +189,7 @@ def test_portal_report_title_uses_product_name(page: Page, sign_in_as):
     report = Report.objects.get()
     release_version(report, User.objects.get(username="demo_approver"))
     page.goto(f"/portal/reports/{report.pk}/")
-    expect(page).to_have_title(f"{report.number} · Reports · OpenBGA Roots")
+    expect(page).to_have_title(f"{report.number} · Reports · Smart Roots LIMS")
 
 
 def test_entry_grid_focus_clears_sticky_sample_column(page: Page, sign_in_as):

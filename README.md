@@ -1,10 +1,10 @@
-# OpenBGA Roots: free, open-source LIMS for environmental laboratories
+# Smart Roots LIMS: free, open-source LIMS for environmental laboratories
 
-[![checks](https://github.com/openbga/roots/actions/workflows/checks.yml/badge.svg)](https://github.com/openbga/roots/actions/workflows/checks.yml)
+[![checks](https://github.com/openbga/smart-roots-lims/actions/workflows/checks.yml/badge.svg)](https://github.com/openbga/smart-roots-lims/actions/workflows/checks.yml)
 
-OpenBGA Roots is an environmental laboratory LIMS for one commercial US water, wastewater and soil
+Smart Roots LIMS is an environmental laboratory LIMS for one commercial US water, wastewater and soil
 lab per deployment, and an open-source project of BGASoft Inc. Built with Django, PostgreSQL and
-Bootstrap/HTMX. AGPL-3.0-only. Source: <https://github.com/openbga/roots>.
+Bootstrap/HTMX. AGPL-3.0-only. Source: <https://github.com/openbga/smart-roots-lims>.
 
 Use synthetic data while release validation is in progress. This software supports laboratory
 records; it does not certify compliance or accreditation.
@@ -29,7 +29,7 @@ reports are never overwritten. The NYSDEC EDD export is exploratory and requires
 validation; it is not an accepted regulatory submission.
 
 [Workflow rules and limits](docs/workflows.md) describes each of these in more detail. The
-[product presentation](https://openbga.github.io/roots/) is also served at `/about/` on each
+[product presentation](https://openbga.github.io/smart-roots-lims/) is also served at `/about/` on each
 deployment.
 
 ![Sample list with search, filters and receipt dispositions](docs/images/samples.png)
@@ -40,8 +40,8 @@ Screens show the synthetic demo data.
 
 ## Hosted demo
 
-Open the [OpenBGA Roots demo](https://openbga-roots.onrender.com/) on Render to explore the
-application with an existing demo account. The [demo presentation](https://openbga-roots.onrender.com/about/)
+Open the [Smart Roots LIMS demo](https://smart-roots-lims.onrender.com/) on Render to explore the
+application with an existing demo account. The [demo presentation](https://smart-roots-lims.onrender.com/about/)
 is available without signing in. Use synthetic data only.
 
 ## Try it with Docker
@@ -51,8 +51,8 @@ PostgreSQL database in development mode, reachable only from your machine. It is
 not for real laboratory data.
 
 ```sh
-git clone https://github.com/openbga/roots.git
-cd roots
+git clone https://github.com/openbga/smart-roots-lims.git
+cd smart-roots-lims
 docker compose --profile app up --build -d
 # Choose a private password (at least 12 characters) for the synthetic demo accounts.
 read -s DEMO_PASSWORD; export DEMO_PASSWORD
@@ -156,7 +156,7 @@ to an existing owner from the service shell, use `setup_lab --admin-username own
 
 ## Deploy to Render
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/openbga/roots)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/openbga/smart-roots-lims)
 
 The Blueprint packages a Docker web service and PostgreSQL 17. **It creates paid resources:**
 review and accept the current charges in your Render account before deploying. For a private
@@ -205,7 +205,7 @@ coding agents.
 
 ## Project and support
 
-OpenBGA Roots is an open-source project of [BGASoft](https://bgasoft.com), a laboratory software company, and part of [OpenBGA](https://github.com/openbga).
+Smart Roots LIMS is an open-source project of [BGASoft](https://bgasoft.com), a laboratory software company, and part of [OpenBGA](https://github.com/openbga).
 
 **Community use.** The software is free under the AGPL-3.0-only licence and is provided as is. The project does not include a support commitment: issues and pull requests are welcome and are answered on a best-effort basis.
 
@@ -215,12 +215,12 @@ OpenBGA Roots is an open-source project of [BGASoft](https://bgasoft.com), a lab
 
 Copyright (C) 2026 BGASoft Inc. and OpenBGA contributors.
 
-OpenBGA Roots is licensed under the GNU Affero General Public License version 3 only
+Smart Roots LIMS is licensed under the GNU Affero General Public License version 3 only
 (AGPL-3.0-only); see [LICENSE](LICENSE) and [NOTICE](NOTICE). If you run a modified version for
 users over a network, AGPL section 13 requires offering them its source: set `SOURCE_CODE_URL` to
 your published source so the "Source code" link in the application footer points to it.
 
-OpenBGA and the OpenBGA product names and logos are trademarks of BGASoft Inc. The licence
+OpenBGA, Smart Roots LIMS and their logos are trademarks of BGASoft Inc. The licence
 does not grant permission to use them (AGPL-3.0 section 7(e)), except as needed to describe the
 origin of the software.
 

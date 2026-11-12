@@ -1,6 +1,6 @@
 # Third-party software
 
-OpenBGA Roots is AGPL-3.0-only (copyright and trademark notice: [NOTICE](NOTICE)). Third-party packages retain their own licenses and notices.
+Smart Roots LIMS is AGPL-3.0-only (copyright and trademark notice: [NOTICE](NOTICE)). Third-party packages retain their own licenses and notices.
 The root LICENSE is the unmodified text retrieved from <https://www.gnu.org/licenses/agpl-3.0.txt>.
 `uv.lock` identifies the exact Python distributions; installed distributions retain their license
 files in the image. Do not strip those files or the notices in bundled browser assets.

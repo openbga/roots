@@ -1,7 +1,7 @@
 {% load static %}<!doctype html>
 {% comment %}
 Application document and staff shell. Block contract (docs/ui-standards.md section 4):
-  title          <title>; defaults to "{{ page_title }} · OpenBGA Roots"
+  title          <title>; defaults to "{{ page_title }} · Smart Roots LIMS"
   extra_css      extra <link> tags in <head> (local static only)
   body_class     classes on <body>
   body           everything inside <body>; the entrance layout replaces it
@@ -30,7 +30,7 @@ core/templatetags/navigation.py. Error pages (400/403/404) keep this shell for s
   {# Synchronous on purpose: sets data-bs-theme from the saved choice before the first paint. #}
   <script src="{% static 'js/theme-init.js' %}"></script>
   <meta name="htmx-config" content='{"allowEval": false, "includeIndicatorStyles": false, "responseHandling": [{"code": "204", "swap": false}, {"code": "[23]..", "swap": true}, {"code": "422", "swap": true}, {"code": "[45]..", "swap": false, "error": true}]}'>
-  <title>{% block title %}{% if page_title %}{{ page_title }} · {% endif %}OpenBGA Roots{% endblock %}</title>
+  <title>{% block title %}{% if page_title %}{{ page_title }} · {% endif %}Smart Roots LIMS{% endblock %}</title>
   <link rel="icon" href="{% static 'img/mark.svg' %}" type="image/svg+xml">
   <link rel="stylesheet" href="{% static 'vendor/bootstrap-5.3.8/css/bootstrap.min.css' %}">
   <link rel="stylesheet" href="{% static 'vendor/datatables/dataTables.bootstrap5.min.css' %}">
@@ -78,7 +78,7 @@ core/templatetags/navigation.py. Error pages (400/403/404) keep this shell for s
     {% block sidenav %}
     <nav class="vr-sidenav offcanvas-lg offcanvas-start" id="vr-nav" tabindex="-1" aria-label="Primary">
       <div class="offcanvas-header d-lg-none">
-        <p class="offcanvas-title h5 mb-0">OpenBGA Roots</p>
+        <p class="offcanvas-title h5 mb-0">Smart Roots LIMS</p>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#vr-nav" aria-label="Close navigation"></button>
       </div>
       <div class="offcanvas-body">

@@ -1,7 +1,7 @@
 {% extends "admin/base.html" %}
 {% load static %}
-{% comment %}Django admin (restricted maintenance tooling) in OpenBGA Roots colours; its theme follows the application theme.{% endcomment %}
-{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | OpenBGA Roots administration{% endblock %}
+{% comment %}Django admin (restricted maintenance tooling) in Smart Roots LIMS colours; its theme follows the application theme.{% endcomment %}
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | Smart Roots LIMS administration{% endblock %}
 {% block dark-mode-vars %}
   <script src="{% static 'js/admin-theme-sync.js' %}"></script>
   {{ block.super }}
@@ -10,7 +10,7 @@
 {% block extrahead %}{{ block.super }}<script src="{% static 'js/documentation.js' %}" defer></script>{% endblock %}
 {% block bodyclass %}{{ block.super }} vr-documentation-admin{% endblock %}
 {% block branding %}
-<div id="site-name"><a href="{% url 'admin:index' %}"><img src="{% static 'img/mark.svg' %}" alt="" width="24" height="24">OpenBGA Roots administration</a></div>
+<div id="site-name"><a href="{% url 'admin:index' %}"><img src="{% static 'img/mark.svg' %}" alt="" width="24" height="24">Smart Roots LIMS administration</a></div>
 {% if user.is_anonymous %}
   {% include "admin/color_theme_toggle.html" %}
 {% endif %}

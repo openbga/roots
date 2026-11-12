@@ -246,4 +246,4 @@ def test_shared_includes_render_their_documented_parameters(rf, django_user_mode
     assert 'name="per_page" value="50"' in toolbar and "btn-primary" not in toolbar
 
     brand = render_to_string("includes/brand.html", {"href": "/", "name": ""})
-    assert 'class="vr-brand" href="/"' in brand and "OpenBGA Roots" in brand
+    assert 'class="vr-brand" href="/"' in brand and "Smart Roots LIMS" in brand

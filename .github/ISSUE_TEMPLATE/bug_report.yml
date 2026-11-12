@@ -1,5 +1,5 @@
 name: Bug report
-description: Something in OpenBGA Roots does not work as documented
+description: Something in Smart Roots LIMS does not work as documented
 labels: [bug]
 body:
   - type: markdown

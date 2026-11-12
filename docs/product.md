@@ -1,6 +1,6 @@
-# OpenBGA Roots: product scope
+# Smart Roots LIMS: product scope
 
-OpenBGA Roots is a free, open-source laboratory information management system (LIMS) for US environmental testing labs. This document says what the product must do, why, and in what order. It does not prescribe architecture. Domain claims cite public sources, linked under Evidence and limits so they stay checkable after cloning. Researched 2026-11-08.
+Smart Roots LIMS is a free, open-source laboratory information management system (LIMS) for US environmental testing labs. This document says what the product must do, why, and in what order. It does not prescribe architecture. Domain claims cite public sources, linked under Evidence and limits so they stay checkable after cloning. Researched 2026-11-08.
 
 ## Working assumptions
 
@@ -16,7 +16,7 @@ Confirmed: lab type (commercial US water, wastewater and soil lab) and one lab o
 
 ## What this product claims
 
-OpenBGA Roots supports a lab's own quality system. It does not make a lab compliant, accredited or certified. Accreditation (for example under the National Environmental Laboratory Accreditation Program, run by The NELAC Institute, TNI) and drinking water certification belong to the lab and its accreditation body. Do not write UI copy, README text or reports that claim compliance. Say "supports" and name the record or control.
+Smart Roots LIMS supports a lab's own quality system. It does not make a lab compliant, accredited or certified. Accreditation (for example under the National Environmental Laboratory Accreditation Program, run by The NELAC Institute, TNI) and drinking water certification belong to the lab and its accreditation body. Do not write UI copy, README text or reports that claim compliance. Say "supports" and name the record or control.
 
 Restricted standards (TNI, ISO/IEC 17025) are not reproduced here or in code. Requirements below come from public federal rules and EPA material, plus paraphrased public interpretations.
 

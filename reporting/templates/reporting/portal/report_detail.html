@@ -1,6 +1,6 @@
 {% extends "layouts/portal.html" %}
 {% load reporting %}
-{% block title %}{{ report.number }} · Reports · OpenBGA Roots{% endblock %}
+{% block title %}{{ report.number }} · Reports · Smart Roots LIMS{% endblock %}
 {% block breadcrumbs %}{% url 'portal:report-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Reports" section_url=list_url current=report.number %}{% endblock %}
 {% block page_heading %}<span class="vr-id">{{ report.number }}</span>{% endblock %}
 {% block page_meta %}

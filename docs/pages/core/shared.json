@@ -31,7 +31,7 @@
       "title": "Navigation and appearance",
       "items": [
         {
-          "label": "OpenBGA Roots / Find sample ID",
+          "label": "Smart Roots LIMS / Find sample ID",
           "description": "The brand link returns to the workspace home. On staff pages, Find sample ID submits a search to Samples; its guide describes the search scope. Press Enter to search. The laboratory name identifies this deployment."
         },
         {

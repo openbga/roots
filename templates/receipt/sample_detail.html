@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load catalog_extras laboratory_extras %}
-{% block title %}{{ sample.lab_id }} · Samples · OpenBGA Roots{% endblock %}
+{% block title %}{{ sample.lab_id }} · Samples · Smart Roots LIMS{% endblock %}
 {% block breadcrumbs %}{% url 'receipt:sample-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Samples" section_url=list_url current=sample.lab_id %}{% endblock %}
 {% block page_heading %}<span class="vr-id">{{ sample.lab_id }}</span>{% endblock %}
 {% block page_meta %}

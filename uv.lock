@@ -339,7 +339,7 @@ wheels = [
 ]
 
 [[package]]
-name = "openbga-roots"
+name = "smart-roots-lims"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

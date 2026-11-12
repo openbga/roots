@@ -5,7 +5,7 @@ released-version preview on the content a release would freeze. Context: report,
 later / unsupported (grouped causes), counts, fix_summary, checked_results, incomplete_tests,
 incomplete_samples, can_configure, format_name/version, reference_values, tables.
 {% endcomment %}
-{% block title %}NYSDEC data check · {{ report.number }} · OpenBGA Roots{% endblock %}
+{% block title %}NYSDEC data check · {{ report.number }} · Smart Roots LIMS{% endblock %}
 {% block breadcrumbs %}{% url 'reporting:report-list' as list_url %}{% url 'reporting:report-detail' report.pk as record_url %}{% include "includes/breadcrumbs.html" with section="Reports" section_url=list_url record=report.number record_url=record_url current="NYSDEC data check" %}{% endblock %}
 {% block page_heading %}NYSDEC data check for <span class="vr-id">{{ report.number }}</span>{% endblock %}
 {% block page_meta %}

@@ -97,7 +97,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Build application image (no push)
-        run: docker build --tag openbga-roots:ci .
+        run: docker build --tag smart-roots-lims:ci .
       - name: Validate the local trial Compose file
         run: docker compose --profile app config --quiet
       - name: Configure disposable smoke environment
@@ -113,16 +113,16 @@ jobs:
           ENV
       - name: Migrate empty smoke database and verify PDF/statistics runtime
         run: |
-          docker run --rm --network host --env-file "$RUNNER_TEMP/roots-smoke.env" openbga-roots:ci python manage.py migrate --noinput
-          docker run --rm --network host --env-file "$RUNNER_TEMP/roots-smoke.env" openbga-roots:ci python manage.py check
-          docker run --rm --env-file "$RUNNER_TEMP/roots-smoke.env" openbga-roots:ci python -c 'from weasyprint import HTML; pdf=HTML(string="<h1>Synthetic container smoke</h1>").write_pdf(); assert pdf.startswith(b"%PDF-")'
-          docker run --rm openbga-roots:ci python -c 'from scipy.stats import t; assert 3.142 < t.ppf(0.99, 6) < 3.144'
+          docker run --rm --network host --env-file "$RUNNER_TEMP/roots-smoke.env" smart-roots-lims:ci python manage.py migrate --noinput
+          docker run --rm --network host --env-file "$RUNNER_TEMP/roots-smoke.env" smart-roots-lims:ci python manage.py check
+          docker run --rm --env-file "$RUNNER_TEMP/roots-smoke.env" smart-roots-lims:ci python -c 'from weasyprint import HTML; pdf=HTML(string="<h1>Synthetic container smoke</h1>").write_pdf(); assert pdf.startswith(b"%PDF-")'
+          docker run --rm smart-roots-lims:ci python -c 'from scipy.stats import t; assert 3.142 < t.ppf(0.99, 6) < 3.144'
       - name: Verify non-root Render SSH prerequisites
         run: |
-          docker run --rm openbga-roots:ci python -c 'import os, pwd, stat; from pathlib import Path; user=pwd.getpwuid(os.getuid()); home=Path.home(); ssh=home/".ssh"; assert os.getuid()==10001; assert str(home)==user.pw_dir=="/home/app" and os.access(home, os.W_OK); assert user.pw_shell=="/bin/bash" and os.access(user.pw_shell, os.X_OK); assert ssh.is_dir() and ssh.stat().st_uid==os.getuid(); assert stat.S_IMODE(ssh.stat().st_mode)==0o700; assert os.access(ssh, os.W_OK)'
+          docker run --rm smart-roots-lims:ci python -c 'import os, pwd, stat; from pathlib import Path; user=pwd.getpwuid(os.getuid()); home=Path.home(); ssh=home/".ssh"; assert os.getuid()==10001; assert str(home)==user.pw_dir=="/home/app" and os.access(home, os.W_OK); assert user.pw_shell=="/bin/bash" and os.access(user.pw_shell, os.X_OK); assert ssh.is_dir() and ssh.stat().st_uid==os.getuid(); assert stat.S_IMODE(ssh.stat().st_mode)==0o700; assert os.access(ssh, os.W_OK)'
       - name: Start production server and check HTTP endpoints
         run: |
-          docker run --detach --name roots-smoke --network host --env-file "$RUNNER_TEMP/roots-smoke.env" openbga-roots:ci
+          docker run --detach --name roots-smoke --network host --env-file "$RUNNER_TEMP/roots-smoke.env" smart-roots-lims:ci
           for attempt in $(seq 1 30); do
             if curl --fail --silent -H 'X-Forwarded-Proto: https' http://127.0.0.1:8000/ready/; then break; fi
             sleep 2

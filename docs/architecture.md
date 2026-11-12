@@ -120,7 +120,7 @@ serves collected static assets. No Redis, worker, separate frontend host or pers
 The public presentation at `/about/` ships with the same service. Only its static HTML and
 assets live under the [dedicated WhiteNoise root](https://whitenoise.readthedocs.io/en/stable/django.html#whitenoise-root);
 the workspace stays at `/` behind sign-in. The project also publishes those files, unchanged, to
-GitHub Pages at <https://openbga.github.io/roots/>; its links are relative so both addresses work.
+GitHub Pages at <https://openbga.github.io/smart-roots-lims/>; its links are relative so both addresses work.
 Build assets and collectstatic during image build; migrate once in a serialized pre-deploy step.
 Use backward-compatible migrations while old/new instances overlap; destructive changes need
 a staged migration and verified restore path. Rollback of code does not undo a database migration.
@@ -137,7 +137,7 @@ Report PDFs in the DB participate in the same recovery point. Real-data use need
 runbook and tested recovery, not merely a successful demo deployment.
 
 The Render Blueprint describes the web service, database, generated secret and required inputs.
-The README button targets `https://render.com/deploy?repo=https://github.com/openbga/roots`.
+The README button targets `https://render.com/deploy?repo=https://github.com/openbga/smart-roots-lims`.
 A private fork is supported after granting the Render GitHub App access to it;
 the deployer still reviews/approves resources. Set `autoDeployTrigger: off` for distributed button
 instances. See [button requirements](https://render.com/docs/deploy-to-render).
