@@ -11,6 +11,7 @@ previewed.
 import hashlib
 import json
 from dataclasses import dataclass, field
+from datetime import date
 from zoneinfo import ZoneInfo
 
 from django.conf import settings
@@ -21,6 +22,7 @@ from analytical.models import Result, ResultRevision
 from analytical.preparation import preparation_snapshot
 from analytical.preservation_services import preservation_blockers, preservation_snapshot
 from analytical.qc import NEEDS_PARENT, BatchQC
+from core.lab_profile import report_identity
 from core.models import Lab
 from receipt.models import Sample
 from receipt.subcontracts import external_reportable_results
@@ -90,6 +92,7 @@ class Assembly:
     requested_tests: dict  # requested_test_id -> included approved revision id, or None
     report_blockers: list = field(default_factory=list)  # not tied to one sample
     external_tests: dict = field(default_factory=dict)  # requested_test_id -> SubcontractResult id
+    issued_on: date | None = None  # local date whose laboratory identity the content holds
 
     @property
     def releasable(self):
@@ -180,6 +183,9 @@ def assemble(report, *, actor=None):
     # Canonical configured zone (never the Lab.timezone copy). Content stores aware ISO
     # timestamps with offsets plus the zone name, so issued reports never reinterpret them.
     zone = ZoneInfo(settings.TIME_ZONE)
+    # The laboratory identity a report issued today prints. Its parts are present only when
+    # recorded, so content without a profile keeps the keys (and fingerprint) it always had.
+    issued_on = timezone.localdate(timezone=zone)
 
     def when(dt):
         return None if dt is None else timezone.localtime(dt, zone).isoformat()
@@ -442,7 +448,11 @@ def assemble(report, *, actor=None):
     content = {
         "schema": SCHEMA,
         "synthetic_notice": synthetic_notice(),
-        "lab": {"name": lab.name if lab else "", "timezone": str(zone)},
+        "lab": {
+            "name": lab.name if lab else "",
+            "timezone": str(zone),
+            **report_identity(lab, on=issued_on),
+        },
         "report": {"number": report.number, "title": report.title, "narrative": report.narrative},
         "client": {
             "name": client.name,
@@ -468,6 +478,7 @@ def assemble(report, *, actor=None):
         requested,
         report_blockers,
         external_tests,
+        issued_on,
     )
 
 
@@ -586,6 +597,15 @@ def describe_changes(old, new):
     labels = {
         ("lab", "name"): "Laboratory name",
         ("lab", "timezone"): "Laboratory time zone",
+        # Identity parts are absent from snapshots that did not record them; absent on both
+        # sides is no change, absent on one side is.
+        ("lab", "address"): "Laboratory address",
+        ("lab", "phone"): "Laboratory phone",
+        ("lab", "email"): "Laboratory email",
+        ("lab", "website"): "Laboratory website",
+        ("lab", "logo"): "Laboratory logo",
+        ("lab", "certificates"): "Laboratory certificates",
+        ("lab", "certificate_note"): "Laboratory certificate statement",
         ("report", "title"): "Report title",
         ("report", "narrative"): "Case narrative",
         ("client", "name"): "Client name",

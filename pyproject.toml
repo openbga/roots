@@ -12,6 +12,7 @@ dependencies = [
   "gunicorn>=26.2,<27",
   "whitenoise>=6.12,<7",
   "weasyprint>=70,<71",
+  "pillow>=13,<14",
   "dj-database-url>=3,<4",
   "python-barcode>=0.16.1,<0.17",
   "scipy>=1.18.1,<1.19",

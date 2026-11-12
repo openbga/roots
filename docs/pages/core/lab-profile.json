@@ -1,0 +1,123 @@
+{
+  "id": "core-lab-profile",
+  "routes": [
+    "lab-profile"
+  ],
+  "title": "Laboratory profile",
+  "purpose": "See what new reports print about your laboratory: its name, address, contact details, logo, certificates and the statement printed with the certificates. The admin laboratory role changes these details here.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "Every staff laboratory role can read this page. The Setup menu lists it for the admin role; other staff open it from the Certificates left off notice on a report or its preview. Only the admin laboratory role sees Edit, Upload logo, Replace logo, Add certificate and the Remove buttons, and the server refuses changes from anyone else. Client portal accounts cannot open this page or the logo image.",
+        "When the laboratory has not been set up yet, the page shows No laboratory configured and offers no changes."
+      ]
+    },
+    {
+      "title": "Printed on reports",
+      "items": [
+        {
+          "label": "Laboratory name",
+          "description": "The name set when the application was installed. It is shown here for reference and cannot be changed on this page."
+        },
+        {
+          "label": "Address",
+          "description": "Street address, suite or building, then city, state and ZIP code on one line, as reports print them. Not recorded when no part of the address is entered."
+        },
+        {
+          "label": "Phone, Email, Website",
+          "description": "Contact details printed on reports. Each shows Not recorded when blank; a blank detail is simply left off reports."
+        },
+        {
+          "label": "Edit",
+          "description": "Admin role only. Opens the form for the address, contact details and certificate statement."
+        }
+      ]
+    },
+    {
+      "title": "Logo",
+      "items": [
+        {
+          "label": "Preview, Size and Type",
+          "description": "The current logo, scaled down to fit, with its stored size in pixels and its file type (PNG or JPEG). No logo means new reports print without one."
+        },
+        {
+          "label": "Upload logo / Replace logo",
+          "description": "Admin role only. Opens the upload form. A new logo prints on reports issued from then on."
+        },
+        {
+          "label": "Remove",
+          "description": "Admin role only, shown when there is a logo. Asks for confirmation, then new reports print without a logo. The image stays stored, because reports already issued keep the logo they printed. If someone changed the profile after you opened this page, the removal is refused; reload and try again."
+        }
+      ]
+    },
+    {
+      "title": "Certificates",
+      "paragraphs": [
+        "The certifications and accreditations your laboratory records, in list position order. The application keeps no register of what a certificate covers and does not check any result against a certificate."
+      ],
+      "items": [
+        {
+          "label": "Issuing authority",
+          "description": "The body that issued the certificate. For the admin role it opens the certificate’s edit form."
+        },
+        {
+          "label": "Program or scope",
+          "description": "The program, matrix or scope the laboratory recorded, or a dash."
+        },
+        {
+          "label": "Certificate or laboratory ID",
+          "description": "The number the authority assigned."
+        },
+        {
+          "label": "Valid from, Valid until",
+          "description": "The recorded validity dates, or a dash when a date is not recorded. A blank date sets no limit on that side."
+        },
+        {
+          "label": "Status",
+          "description": "Worked out for today’s date in the laboratory’s time zone. Current: today is within the validity dates (both dates count as valid). Not yet valid: Valid from is later than today. Expired: Valid until is earlier than today."
+        },
+        {
+          "label": "Print on reports",
+          "description": "Yes when the certificate is marked for printing, otherwise No. A certificate marked for printing is printed only on reports issued within its validity dates; when today is outside them the column says it is currently left off reports."
+        },
+        {
+          "label": "Add certificate",
+          "description": "Admin role only. Opens the form to record another certificate. A laboratory can list at most 50."
+        },
+        {
+          "label": "Remove",
+          "description": "Admin role only. Asks for confirmation, then removes the certificate from the list. New reports no longer list it; reports already issued keep what they printed, and the audit history keeps what the certificate held. If the certificate changed after you opened this page, the removal is refused; reload and try again."
+        },
+        {
+          "label": "Statement printed with the certificate list",
+          "description": "Printed under the certificates on a report that lists at least one. It is the laboratory’s own statement when one is recorded, otherwise the default statement, labelled as the default here."
+        }
+      ]
+    },
+    {
+      "title": "Rules and history",
+      "paragraphs": [
+        "These details print on reports issued from now on. Reports already issued keep what they printed, so a change here never alters an issued report.",
+        "Every change is audited with the administrator, the time and the values before and after."
+      ],
+      "items": [
+        {
+          "label": "History",
+          "description": "The newest 20 profile changes, shown oldest first: Lab profile changed (address, contact details or statement), Lab logo changed, Lab logo removed, and Lab certificate added, changed or removed with the certificate’s authority and number, each with its time and the administrator who made it."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "config/urls.py",
+    "core/lab_profile_views.py",
+    "core/lab_profile.py",
+    "core/models.py",
+    "templates/core/lab_profile.html",
+    "templates/includes/nav_staff.html",
+    "templates/includes/confirm_dialog.html",
+    "tests/test_lab_profile.py",
+    "tests/test_lab_profile_pages.py"
+  ]
+}

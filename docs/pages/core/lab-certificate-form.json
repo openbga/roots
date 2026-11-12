@@ -1,0 +1,74 @@
+{
+  "id": "core-lab-certificate-form",
+  "routes": [
+    "lab-certificate-create",
+    "lab-certificate-edit"
+  ],
+  "title": "Certificate",
+  "purpose": "Record a certificate your laboratory holds (Add certificate), or change one already listed (Edit). The certificate is printed as recorded; results are never checked against it.",
+  "sections": [
+    {
+      "title": "Fields",
+      "paragraphs": [
+        "Only the admin laboratory role can open or submit this form. Surrounding spaces are removed from the text fields."
+      ],
+      "items": [
+        {
+          "label": "Issuing authority",
+          "description": "Required, up to 160 characters. The body that issued the certificate."
+        },
+        {
+          "label": "Program or scope",
+          "description": "Optional, up to 160 characters. The program, matrix or scope named on the certificate. It is printed as entered; the application keeps no register of what a certificate covers."
+        },
+        {
+          "label": "Certificate or laboratory ID",
+          "description": "Required, up to 80 characters. The number the authority assigned."
+        },
+        {
+          "label": "Valid from, Valid until",
+          "description": "Optional dates. Both dates count as valid, and a blank date sets no limit on that side. Valid until cannot be earlier than Valid from."
+        },
+        {
+          "label": "Print on reports",
+          "description": "Unchecked by default. When checked, the certificate is printed on reports issued within its validity dates and left off reports issued outside them."
+        },
+        {
+          "label": "List position",
+          "description": "A whole number, 0 by default. Certificates are listed lowest first, then by issuing authority."
+        }
+      ]
+    },
+    {
+      "title": "Saving",
+      "items": [
+        {
+          "label": "Add certificate / Save changes",
+          "description": "Saves and returns to the Laboratory profile. Each addition and change is audited with the values before and after, and applies to reports issued from then on. An unchanged submission returns with No changes to save. A laboratory can list at most 50 certificates."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the Laboratory profile without saving."
+        },
+        {
+          "label": "Changed by someone else",
+          "description": "If the certificate changed after you opened the form, saving is refused and your input stays on the form; reload and compare the current values before saving again. If it was removed, the form is not found."
+        },
+        {
+          "label": "Removing",
+          "description": "Done from the Certificates table on the Laboratory profile, not from this form."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "config/urls.py",
+    "core/lab_profile_views.py",
+    "core/lab_profile_forms.py",
+    "core/lab_profile.py",
+    "core/models.py",
+    "core/concurrency.py",
+    "templates/core/lab_profile_form.html",
+    "tests/test_lab_profile_pages.py"
+  ]
+}

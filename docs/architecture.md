@@ -93,7 +93,9 @@ object storage then, with staged writes, reconciliation and coordinated restore.
 persistent files on Render's ephemeral filesystem. Product must confirm volumes and retention.
 
 Report rendering accepts only application templates and escaped data, with local approved
-assets; deny arbitrary network/file fetching. Serve uploaded documents as authorized downloads.
+assets; deny arbitrary network/file fetching. The one stored asset a report loads is the
+laboratory logo its snapshot names by content hash; uploaded logos are validated by decoding
+them and are then kept unchanged. Serve uploaded documents as authorized downloads.
 Start with bounded synchronous work and explicit retryable failures. Add a standard durable
 queue only when measured job duration/concurrency requires it; do not build an ad hoc scheduler.
 

@@ -1,0 +1,73 @@
+{
+  "id": "core-lab-profile-form",
+  "routes": [
+    "lab-profile-edit"
+  ],
+  "title": "Edit laboratory profile",
+  "purpose": "Change the address, contact details and certificate statement printed on new reports.",
+  "sections": [
+    {
+      "title": "Fields",
+      "paragraphs": [
+        "Only the admin laboratory role can open or submit this form. Every field is optional; surrounding spaces are removed. A blank detail is left off reports. The laboratory name is set when the application is installed and is not changed here."
+      ],
+      "items": [
+        {
+          "label": "Street address",
+          "description": "Up to 160 characters, the first address line."
+        },
+        {
+          "label": "Suite, building or PO box",
+          "description": "Up to 160 characters, the second address line."
+        },
+        {
+          "label": "City, State, ZIP code",
+          "description": "Printed together on the last address line, for example Testville, NY 10000. State is chosen from the US states and territories; ZIP code takes up to 12 characters."
+        },
+        {
+          "label": "Phone",
+          "description": "Up to 40 characters, printed as entered."
+        },
+        {
+          "label": "Email",
+          "description": "Must be a valid email address."
+        },
+        {
+          "label": "Website",
+          "description": "Must be a full web address starting with https:// or http://."
+        },
+        {
+          "label": "Certificate statement",
+          "description": "Up to 600 characters. Printed under the certificate list on reports that list at least one certificate. Leave it blank to print the default statement, which is shown in the field’s help."
+        }
+      ]
+    },
+    {
+      "title": "Saving",
+      "items": [
+        {
+          "label": "Save changes",
+          "description": "Saves and returns to the Laboratory profile. The change is audited with the administrator, the time and the values before and after, and applies to reports issued from then on. An unchanged submission returns with No changes to save and records nothing."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the Laboratory profile without saving."
+        },
+        {
+          "label": "Changed by someone else",
+          "description": "If the profile changed after you opened the form (including a logo change), saving is refused and your input stays on the form; reload and compare the current values before saving again."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "config/urls.py",
+    "core/lab_profile_views.py",
+    "core/lab_profile_forms.py",
+    "core/lab_profile.py",
+    "core/models.py",
+    "core/concurrency.py",
+    "templates/core/lab_profile_form.html",
+    "tests/test_lab_profile_pages.py"
+  ]
+}

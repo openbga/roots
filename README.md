@@ -17,8 +17,9 @@ records; it does not certify compliance or accreditation.
   inspection, holds and dispositions, custody events and reasoned corrections.
 - **Analytical work:** preparation and analytical batches, manual entry and mapped CSV/TSV
   imports, QC evaluation, independent review, control charts and MDL studies.
-- **Reporting:** explicit release authorization, versioned immutable PDF reports, amendments and
-  a client portal where each client sees only its own work.
+- **Reporting:** explicit release authorization, versioned immutable PDF reports that print the
+  laboratory's address, logo and certificate numbers, amendments and a client portal where each
+  client sees only its own work.
 - **Operations:** price lists and versioned quotes, client-submitted COCs, delivery scheduling,
   labels and subcontracted results.
 - **Laboratory records:** materials, lots and stock movements, equipment, training,
@@ -161,6 +162,11 @@ Before the first receipt:
    each method version. Creating a new method version does not copy this configuration.
 3. Have a project manager create the client and project, then receive the COC and its samples.
    Assign independent review and explicit release authority to the appropriate staff first.
+
+Before the first report, an administrator records the laboratory's address, contact details,
+logo and certificates under **Setup → Laboratory profile**. New reports print them; a
+certificate is printed only when it is marked for printing and the report is issued within its
+recorded validity. The application does not check results against a certificate's scope.
 
 Account administration requires a superuser and is separate from laboratory roles. To add a role
 to an existing owner from the service shell, use `setup_lab --admin-username owner --role admin`

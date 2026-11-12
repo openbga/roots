@@ -23,12 +23,12 @@ secrets from it. Keep the same key when recovering unless you intend those effec
 
 **Immutability protection, exactly.** Row triggers on the history tables (audit and custody
 events, result revisions, issued reports and files, EDD exports, subcontract and external
-results, MDL records) raise an error on `UPDATE` or `DELETE`. They do not block `INSERT`, so
-`pg_restore` works. They do not block `TRUNCATE`, `DROP TABLE` or schema changes, and the table
-owner or a superuser can disable them (`ALTER TABLE ... DISABLE TRIGGER`,
-`session_replication_role`). Runtime and migration use the same database role today. Do not
-repair history in place; restore into a new database and compare instead. This is not tamper
-evidence against database administrators.
+results, MDL records, uploaded laboratory logos) raise an error on `UPDATE` or `DELETE`. They
+do not block `INSERT`, so `pg_restore` works. They do not block `TRUNCATE`, `DROP TABLE` or
+schema changes, and the table owner or a superuser can disable them
+(`ALTER TABLE ... DISABLE TRIGGER`, `session_replication_role`). Runtime and migration use
+the same database role today. Do not repair history in place; restore into a new database
+and compare instead. This is not tamper evidence against database administrators.
 
 ## Decisions the operator must make
 

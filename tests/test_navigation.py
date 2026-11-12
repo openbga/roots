@@ -57,6 +57,9 @@ ENTRANCE_ROUTES = {
 # Not pages: POST-only actions that redirect, and downloads, PDFs, archives and probes.
 NON_PAGE_ROUTES = {
     "announcement-withdraw",
+    "lab-logo-remove",
+    "lab-logo-image",
+    "lab-certificate-remove",
     "receipt:order-cancel",
     "receipt:order-reinstate",
     "commercial:quote-issue",

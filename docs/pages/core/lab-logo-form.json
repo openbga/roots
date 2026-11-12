@@ -1,0 +1,53 @@
+{
+  "id": "core-lab-logo-form",
+  "routes": [
+    "lab-logo-edit"
+  ],
+  "title": "Upload logo",
+  "purpose": "Upload the logo printed on new reports, or replace the current one. The title reads Replace logo when a logo is already set.",
+  "sections": [
+    {
+      "title": "Field",
+      "paragraphs": [
+        "Only the admin laboratory role can open or submit this form."
+      ],
+      "items": [
+        {
+          "label": "Logo image",
+          "description": "Required. A PNG or JPEG file of at most 512 KiB, each side between 32 and 2000 pixels, in RGB or greyscale colour. The file is checked by reading the whole image; its type comes from the image itself, not from the file name. A file that cannot be read, is too large, has sides out of range or uses another colour mode (for example CMYK) is refused with the reason, and nothing changes. So is an image whose pixels or orientation data are damaged, because a report could not print it. An accepted file is kept exactly as uploaded; the size shown on the Laboratory profile is the size as printed, after any rotation the file's own orientation data asks for."
+        }
+      ]
+    },
+    {
+      "title": "Saving",
+      "items": [
+        {
+          "label": "Upload logo / Replace logo",
+          "description": "Makes the image the logo for reports issued from then on and returns to the Laboratory profile. The change is audited. Uploading the image that is already the logo returns with No changes to save. Uploading an image used before reuses the stored copy."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to the Laboratory profile without changing the logo."
+        },
+        {
+          "label": "Earlier logos",
+          "description": "A replaced logo stays stored, because reports already issued keep the logo they printed."
+        },
+        {
+          "label": "Changed by someone else",
+          "description": "If the profile changed after you opened the form, the upload is refused; choose the file again after reloading."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "config/urls.py",
+    "core/lab_profile_views.py",
+    "core/lab_profile_forms.py",
+    "core/lab_profile.py",
+    "core/models.py",
+    "templates/core/lab_profile_form.html",
+    "tests/test_lab_profile.py",
+    "tests/test_lab_profile_pages.py"
+  ]
+}

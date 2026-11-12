@@ -9,7 +9,8 @@
     {
       "title": "Access and fields",
       "paragraphs": [
-        "Requires an active staff superuser with the laboratory admin role."
+        "Requires an active staff superuser with the laboratory admin role.",
+        "This maintenance form changes only the retention statement. The address, contact details, logo, certificates and certificate statement printed on reports are changed on the Laboratory profile page under Setup."
       ],
       "items": [
         {
@@ -74,6 +75,7 @@
     "config/settings.py",
     "uv.lock",
     "core/models.py",
-    "core/retention.py"
+    "core/retention.py",
+    "core/lab_profile_views.py"
   ]
 }

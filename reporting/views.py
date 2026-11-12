@@ -14,6 +14,8 @@ from django.views.decorators.http import require_POST
 
 from accounts.roles import can_authorize_release, require_release_authority, require_staff
 from core.grids import active_filters
+from core.lab_profile import can_manage as can_manage_lab_profile
+from core.lab_profile import withheld_certificates
 from receipt.models import Project, Sample
 
 from .content import assemble, describe_changes
@@ -68,6 +70,17 @@ def toolbar_fields(form, inline, more=()):
         "inline": shown,
         "more": extra,
         "more_open": any(form.data.get(field.name) for field in extra),
+    }
+
+
+def _certificate_notice(request, assembly):
+    """Certificates marked for printing that the next version leaves off (validity), for the
+    person preparing it. Information only: it never blocks release."""
+    withheld = withheld_certificates(assembly.issued_on)
+    return {
+        "withheld_certificates": withheld,
+        "issued_on": assembly.issued_on,
+        "can_manage_lab_profile": bool(withheld) and can_manage_lab_profile(request.user),
     }
 
 
@@ -277,6 +290,7 @@ def report_detail(request, pk):
             "differs": current is not None and current.content_sha256 != assembly.fingerprint,
             "can_prepare": can_prepare(request.user),
             "can_release": can_authorize_release(request.user),
+            **_certificate_notice(request, assembly),
         },
     )
 
@@ -328,6 +342,7 @@ def _preview(request, report, *, posted=None, errors=(), status=200):
             "expand_samples": len(assembly.content["samples"]) <= PREVIEW_EXPANDED_SAMPLES,
             "can_release": can_release,
             "toc": toc,
+            **_certificate_notice(request, assembly),
         },
         status=status,
     )

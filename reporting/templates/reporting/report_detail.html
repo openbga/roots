@@ -18,9 +18,10 @@
 {% if differs %}
 <div class="alert alert-info" role="status">
   {% include "includes/status.html" with label="Records changed" tone="info" plain=True %}
-  <div>Current records differ from issued version {{ current.number }} (for example a corrected result, QC change or scope edit). Version {{ current.number }} is unchanged. <a href="{% url 'reporting:report-preview' report.pk %}">Preview the amendment</a> to see what would change.</div>
+  <div>Current records differ from issued version {{ current.number }} (for example a corrected result, QC change, scope edit or laboratory profile change). Version {{ current.number }} is unchanged. <a href="{% url 'reporting:report-preview' report.pk %}">Preview the amendment</a> to see what would change.</div>
 </div>
 {% endif %}
+{% include "reporting/certificate_notice.html" %}
 <section class="card mb-3" aria-labelledby="scope-heading">
   <div class="card-header"><h2 class="card-title" id="scope-heading">Scope of the next version</h2></div>
   <div class="card-body">

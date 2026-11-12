@@ -326,6 +326,18 @@ STAFF_NAV = (
     ),
     NavItem("record-retention", "Record retention", "record-retention", "lock"),
     NavItem(
+        "lab-profile",
+        "Laboratory profile",
+        "lab-profile",
+        "info-circle",
+        (
+            "lab-profile-edit",
+            "lab-logo-edit",
+            "lab-certificate-create",
+            "lab-certificate-edit",
+        ),
+    ),
+    NavItem(
         "announcements",
         "Announcements",
         "announcement-list",
@@ -388,6 +400,7 @@ STAFF_SECTIONS = (
             "catalog",
             "qc-config",
             "import-mappings",
+            "lab-profile",
             "record-retention",
             "announcements",
             "accounts-roles",
@@ -421,6 +434,7 @@ STAFF_MENU_ROLES = {
     "catalog": ("admin",),
     "qc-config": ("admin",),
     "import-mappings": ("analyst",),
+    "lab-profile": ("admin",),  # other staff read it from the report pages' certificate notice
     "record-retention": ("admin",),
     "announcements": ("admin",),
     "accounts-roles": (),  # deployment-owner access is separate from lab roles

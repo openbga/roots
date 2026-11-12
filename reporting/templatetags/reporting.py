@@ -3,6 +3,7 @@ from datetime import datetime
 from django import template
 
 from analytical.models import QCType
+from reporting.pdf import logo_url as snapshot_logo_url
 
 register = template.Library()
 
@@ -30,6 +31,12 @@ def iso_date(value):
         return datetime.fromisoformat(value).strftime("%Y-%m-%d")
     except TypeError, ValueError:
         return value
+
+
+@register.filter
+def logo_url(logo):
+    """Internal URL of a snapshot's laboratory logo, served only by the PDF renderer."""
+    return snapshot_logo_url(logo)
 
 
 @register.filter

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Example Environmental Lab (invented demonstration logo)">
+  <circle cx="120" cy="120" r="110" fill="#fff" stroke="#1d3c5a" stroke-width="12"/>
+  <path d="M90 150c11-8 20-8 30 0s19 8 30 0l15 26a6 6 0 0 1-5 9H80a6 6 0 0 1-5-9z" fill="#2f8fb3"/>
+  <path d="M98 54h44M106 54v46l-39 68a13 13 0 0 0 11 20h84a13 13 0 0 0 11-20l-39-68V54" fill="none" stroke="#1d3c5a" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -63,6 +63,31 @@ actual preparation identity; a missing QC run blocks the EDD.
 The NYSDEC EDD is exploratory and requires recipient validation; it is not an accepted regulatory
 submission.
 
+## Laboratory identity on reports
+
+The `admin` role keeps the laboratory's address, phone, email, website, logo and certificates
+under **Setup → Laboratory profile**. Other staff can read the page, and the report pages link
+to it when a certificate is left off. The laboratory name is set with `setup_lab`. Reports
+issued from then on print a letterhead on the first page and, near the end, the certificates
+marked **Print on reports**. Issued reports keep what they printed, and the next amendment's
+change list names the laboratory details that differ.
+
+Certificates are printed as the laboratory recorded them: issuing authority, program or scope,
+certificate or laboratory ID and validity dates. A marked certificate is printed only on a report
+issued within its recorded validity (both dates inclusive; a blank date is no bound). The report
+preview names any marked certificate that is left off, and that never blocks a release. The
+application keeps no scope register and never checks a result against a certificate. Under the
+list it prints the laboratory's own certificate statement or, when none is recorded, a sentence
+saying that results were not checked against any scope. The same list goes on every report;
+there is no selection per report, client or program. Whether to print a certificate, and how
+results outside its scope are identified, is the laboratory's decision under its accreditation
+body's rules. A subcontract laboratory's certificate number is not recorded or printed.
+
+The logo is a PNG or JPEG file of at most 512 KiB, 32 to 2000 pixels on each side. It is the
+laboratory's own logo; an accreditation body's symbol is the laboratory's to use under that
+body's rules. Uploaded logos are kept after they are replaced or removed, so a report can always
+be reproduced as issued.
+
 ## Delivery schedule
 
 Set an optional delivery target on the chain of custody, then use **Delivery schedule** to
