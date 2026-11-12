@@ -49,8 +49,9 @@ Follow [Local development](README.md#local-development) in the README. You need 
 
 - The repository has two long-lived branches. `develop` is where changes are integrated;
   `main` is the stable branch that deployments track, and maintainers update it from `develop`.
-  Branch from `develop`, open your pull request against `develop`, and keep each pull request
-  to one coherent change.
+  Neither can be deleted or force-pushed, and `main` accepts only commits whose checks have
+  already passed. Branch from `develop`, open your pull request against `develop`, and keep each
+  pull request to one coherent change.
 - Add or update tests for behaviour you change. Tests concentrate on roles and client
   boundaries, custody and history, exact results, QC and release gates, report amendments and
   concurrency. Do not add tests that only restate framework behaviour or templates.
