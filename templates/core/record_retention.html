@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 Laboratory record-retention statement, read-only for staff.
 Context: lab (or None), statement (possibly blank), policy_events (AuditEvent newest first: actor,
@@ -8,32 +9,18 @@ occurred_at, reason), can_manage_policy (edit happens in Django admin).
 {% if can_manage_policy and lab %}{% url 'admin:core_lab_change' lab.pk as edit_url %}{% if edit_url %}<a class="btn btn-outline-secondary" href="{{ edit_url }}">Edit in administration</a>{% endif %}{% endif %}
 {% endblock %}
 {% block content %}
-<section class="card vr-narrow" aria-labelledby="retention-heading">
-  <div class="card-header"><h2 class="card-title" id="retention-heading">Retention statement</h2>{% if lab %}<span class="vr-count">{{ lab.name }}</span>{% endif %}</div>
-  <div class="card-body">
+{% panel title="Retention statement" heading_id="retention-heading" count=lab.name class="vr-narrow" %}
+  {% fill footer %}<p class="vr-muted small mb-0">This is the laboratory's own statement. The application never deletes or purges records automatically; physical sample retention is recorded separately under Sample storage.</p>{% endfill %}
     {% if not lab %}
-    {% include "includes/empty_state.html" with title="No laboratory configured" body="The laboratory is not configured yet, so no retention statement exists." %}
+    {% empty_state title="No laboratory configured" body="The laboratory is not configured yet, so no retention statement exists." %}
     {% elif statement %}
     <div class="vr-retention-statement">{{ statement|linebreaks }}</div>
     {% else %}
-    {% include "includes/empty_state.html" with title="Not recorded" body="The laboratory has not entered its record-retention statement." %}
+    {% empty_state title="Not recorded" body="The laboratory has not entered its record-retention statement." %}
     {% endif %}
-  </div>
-  <div class="card-footer vr-muted small">
-    This is the laboratory's own statement. The application never deletes or purges records automatically; physical sample retention is recorded separately under Sample storage.
-  </div>
-</section>
+{% endpanel %}
 
-<section class="card mt-3 vr-narrow" aria-labelledby="retention-history-heading">
-  <div class="card-header"><h2 class="card-title" id="retention-history-heading">History</h2></div>
-  <div class="card-body">
-    {% if policy_events %}
-    <ol class="vr-timeline">
-      {% for event in policy_events|dictsort:"occurred_at" %}{% include "includes/history_item.html" with title="Statement changed" at=event.occurred_at actor=event.actor by="Recorded by" reason=event.reason %}{% endfor %}
-    </ol>
-    {% else %}
-    {% include "includes/empty_state.html" with title="No changes recorded" body="Changes to the retention statement are listed here with their reasons." %}
-    {% endif %}
-  </div>
-</section>
+{% history_panel events=policy_events|dictsort:"occurred_at" heading_id="retention-history-heading" class="mt-3 vr-narrow" empty_title="No changes recorded" empty_body="Changes to the retention statement are listed here with their reasons." %}
+      {% for event in policy_events|dictsort:"occurred_at" %}{% history_item title="Statement changed" at=event.occurred_at actor=event.actor by="Recorded by" reason=event.reason %}{% endfor %}
+{% endhistory_panel %}
 {% endblock %}

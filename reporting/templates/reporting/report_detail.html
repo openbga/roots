@@ -1,57 +1,47 @@
 {% extends "base.html" %}
+{% load ui %}
 {% block title %}{{ report.number }} · Reports · Smart Roots LIMS{% endblock %}
-{% block breadcrumbs %}{% url 'reporting:report-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Reports" section_url=list_url current=report.number %}{% endblock %}
+{% block breadcrumbs %}{% url 'reporting:report-list' as list_url %}{% breadcrumbs section="Reports" section_url=list_url current=report.number %}{% endblock %}
 {% block page_heading %}<span class="vr-id">{{ report.number }}</span>{% endblock %}
-{% block page_meta %}
-<ul class="vr-page-meta">
+{% block page_meta %}{% page_meta %}
   <li>{% include "reporting/version_status.html" %}</li>
   <li>{{ report.title }}</li>
   <li>{{ report.project.client }} / {{ report.project.name }}</li>
-</ul>
-{% endblock %}
+  {% if current %}<li>Released <strong><time datetime="{{ current.released_at|date:'c' }}">{{ current.released_at|date:"Y-m-d H:i T" }}</time></strong> by <strong>{{ current.released_by.get_full_name|default:current.released_by.get_username }}</strong></li>{% endif %}
+{% endpage_meta %}{% endblock %}
 {% block page_actions %}
-{% if current %}<a class="btn btn-outline-secondary" href="{% url 'reporting:version-pdf' report.pk current.number %}">{% include "includes/icon.html" with name="download" %}Download v{{ current.number }}</a>{% endif %}
+{% if current %}<a class="btn btn-outline-secondary" href="{% url 'reporting:version-pdf' report.pk current.number %}">{% icon name="download" %}Download v{{ current.number }}</a>{% endif %}
 {% if can_prepare %}<a class="btn btn-outline-secondary" href="{% url 'reporting:report-edit' report.pk %}">Edit</a>{% endif %}
 <a class="btn btn-primary" href="{% url 'reporting:report-preview' report.pk %}">{% if current %}Preview amendment{% else %}Preview and release{% endif %}</a>
 {% endblock %}
 {% block content %}
+{% if current.amends %}
+{% notice tone="info" label="Amended report" %}Version {{ current.number }} replaces version {{ current.amends.number }}. Reason: {{ current.amendment_reason }}{% endnotice %}
+{% endif %}
 {% if differs %}
-<div class="alert alert-info" role="status">
-  {% include "includes/status.html" with label="Records changed" tone="info" plain=True %}
-  <div>Current records differ from issued version {{ current.number }} (for example a corrected result, QC change, scope edit or laboratory profile change). Version {{ current.number }} is unchanged. <a href="{% url 'reporting:report-preview' report.pk %}">Preview the amendment</a> to see what would change.</div>
-</div>
+{% notice tone="info" label="Records changed" %}Current records differ from issued version {{ current.number }} (for example a corrected result, QC change, scope edit or laboratory profile change). Version {{ current.number }} is unchanged. <a href="{% url 'reporting:report-preview' report.pk %}">Preview the amendment</a> to see what would change.{% endnotice %}
 {% endif %}
 {% include "reporting/certificate_notice.html" %}
-<section class="card mb-3" aria-labelledby="scope-heading">
-  <div class="card-header"><h2 class="card-title" id="scope-heading">Scope of the next version</h2></div>
-  <div class="card-body">
+{% panel title="Scope of the next version" heading_id="scope-heading" class="mb-3" %}
     <dl class="vr-facts">
-      <div><dt>Prepared</dt><dd><time datetime="{{ report.created_at|date:'c' }}">{{ report.created_at|date:"Y-m-d H:i" }}</time> by {{ report.created_by.get_full_name|default:report.created_by.get_username }}</dd></div>
-      <div><dt>Samples</dt><dd>{{ assembly.samples|length }}</dd></div>
-      <div><dt>Results</dt><dd>{{ assembly.revision_ids|length }} approved</dd></div>
-      <div><dt>Case narrative</dt><dd>{{ report.narrative|default:"None"|linebreaksbr }}</dd></div>
+      {% fact label="Prepared" %}<time datetime="{{ report.created_at|date:'c' }}">{{ report.created_at|date:"Y-m-d H:i" }}</time> by {{ report.created_by.get_full_name|default:report.created_by.get_username }}{% endfact %}
+      {% fact label="Samples" %}{{ assembly.samples|length }}{% endfact %}
+      {% fact label="Results" %}{{ assembly.revision_ids|length }} approved{% endfact %}
+      {% fact label="Case narrative" wide=True %}{{ report.narrative|default:"None"|linebreaksbr }}{% endfact %}
     </dl>
-  </div>
-</section>
+{% endpanel %}
 
-<section class="card vr-table-card mb-3" aria-labelledby="readiness-heading">
-  <div class="card-header">
-    <h2 class="card-title" id="readiness-heading">Release readiness</h2>
-    <span class="d-flex flex-wrap align-items-center gap-2">
-      {% if assembly.releasable %}{% include "includes/status.html" with label="Ready" tone="success" %}{% else %}{% include "includes/status.html" with label=assembly.blockers|length|stringformat:"s"|add:" blocking" tone="warning" %}{% endif %}
-      <a class="btn btn-sm btn-outline-secondary" href="{% url 'reporting:edd-readiness' report.pk %}">NYSDEC data check (optional)</a>
-    </span>
-  </div>
-  {% if assembly.samples %}
+{% panel title="Release readiness" heading_id="readiness-heading" table=True flush=True class="mb-3" %}
+  {% fill actions %}{% if assembly.releasable %}{% status label="Ready" tone="success" %}{% else %}{% status label=assembly.blockers|length|stringformat:"s"|add:" blocking" tone="warning" %}{% endif %}
+      <a class="btn btn-sm btn-outline-secondary" href="{% url 'reporting:edd-readiness' report.pk %}">NYSDEC data check (optional)</a>{% endfill %}
+  {% list_results items=assembly.samples empty_title="No samples selected" empty_body="Edit the report scope to add samples from this project." %}
   {% include "reporting/readiness_table.html" with samples=assembly.samples %}
-  {% else %}
-  {% include "includes/empty_state.html" with title="No samples selected" body="Edit the report scope to add samples from this project." %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 
-<section class="card vr-table-card" aria-labelledby="versions-heading">
-  <div class="card-header"><h2 class="card-title" id="versions-heading">Issued versions</h2><span class="vr-count">{{ versions|length }}, newest first</span></div>
-  {% if versions %}
+{% panel title="Issued versions" heading_id="versions-heading" table=True flush=True %}
+  {% fill count %}{{ versions|length }}, newest first{% endfill %}
+  {% list_results items=versions empty_title="Not released yet" empty_body="Preview the report; an approver releases it once every result is reviewed and approved." %}
   <div class="vr-table-wrap">
     <table class="table vr-table">
       <caption class="visually-hidden">Issued versions of {{ report.number }}</caption>
@@ -59,10 +49,10 @@
       <tbody>
         {% for version in versions %}
         <tr>
-          <th scope="row"><span class="vr-id">v{{ version.number }}</span> {% if forloop.first %}{% include "includes/status.html" with label="Current" tone="success" plain=True %}{% else %}{% include "includes/status.html" with label="Superseded" tone="neutral" plain=True %}{% endif %}</th>
+          <th scope="row"><span class="vr-id">v{{ version.number }}</span> {% if forloop.first %}{% status label="Current" tone="success" plain=True %}{% else %}{% status label="Superseded" tone="neutral" plain=True %}{% endif %}</th>
           <td class="vr-nowrap"><time datetime="{{ version.released_at|date:'c' }}">{{ version.released_at|date:"Y-m-d H:i T" }}</time></td>
           <td>{{ version.released_by.get_full_name|default:version.released_by.get_username }}</td>
-          <td class="vr-wrap">{% if version.amends %}<strong>Replaces v{{ version.amends.number }}.</strong> {{ version.amendment_reason }}{% if version.changes %}<ul class="small mb-0 ps-3">{% for change in version.changes %}<li>{{ change }}</li>{% endfor %}</ul>{% endif %}{% else %}<span class="vr-muted">Original</span>{% endif %}</td>
+          <td class="vr-wrap">{% if version.amends %}<strong>Replaces v{{ version.amends.number }}.</strong> {{ version.amendment_reason }}{% if version.changes %}<ul class="small mb-0 ps-3">{% for change in version.changes %}<li>{% include "reporting/_change.html" %}</li>{% endfor %}</ul>{% endif %}{% else %}<span class="vr-muted">Original</span>{% endif %}</td>
           <td class="vr-wrap">{{ version.pdf_size|filesizeformat }} · <span class="vr-id" title="PDF SHA-256 {{ version.pdf_sha256 }}">{{ version.pdf_sha256|slice:":12" }}…</span>{% with n=version.edd_exports.count %}{% if n %}<div class="vr-muted small">{{ n }} NYSDEC export{{ n|pluralize }}</div>{% endif %}{% endwith %}</td>
           <td class="text-end">
             <div class="dropdown">
@@ -78,9 +68,7 @@
       </tbody>
     </table>
   </div>
-  {% else %}
-  {% include "includes/empty_state.html" with title="Not released yet" body="Preview the report; an approver releases it once every result is reviewed and approved." %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}
-{% block record_foot %}{% include "includes/record_foot.html" with identifier=report.number %}{% endblock %}
+{% block record_foot %}{% record_foot identifier=report.number %}{% endblock %}

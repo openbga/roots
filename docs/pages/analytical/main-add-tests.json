@@ -5,6 +5,35 @@
   ],
   "title": "Add tests",
   "purpose": "Add or move requested tests into this analytical batch. Approved work is marked Reanalysis and keeps its earlier approval until a new revision is entered.",
+  "summary": "Add received tests for this batch's method and matrix, or move approved work here for reanalysis.",
+  "tasks": [
+    {
+      "title": "Add new work",
+      "steps": [
+        "Select [[Select only new work]] to check every test on this page that is not approved.",
+        "Select [[Add selected to]] followed by the batch number."
+      ]
+    },
+    {
+      "title": "Move an approved result here for reanalysis",
+      "steps": [
+        "Check the row marked Reanalysis and add it.",
+        "Enter the corrected revision with a reason from the result page, or by import with a reason."
+      ]
+    },
+    {
+      "title": "Show only one client's tests",
+      "steps": [
+        "Open [[More filters]], choose the [[Client]] and select [[Apply]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A Reanalysis test keeps its approved result until a corrected revision is entered and approved by a different person.",
+    "If any checked test is no longer eligible, none are added.",
+    "Tests on hold or rejected at receipt, disposed of, sent out, or already entered or submitted are not offered.",
+    "A closed batch cannot take more tests."
+  ],
   "sections": [
     {
       "title": "Access",
@@ -114,7 +143,7 @@
         },
         {
           "label": "Columns",
-          "description": "Show or hide optional columns and change their order using movement controls or header dragging. Changes apply immediately and are saved for this table in this browser. Locked columns stay available."
+          "description": "Show or hide optional columns and change their order using movement controls or header dragging. Changes apply immediately and are saved for this table in your account, on any workstation. Locked columns stay available."
         },
         {
           "label": "Reset columns",

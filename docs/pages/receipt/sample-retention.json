@@ -5,6 +5,27 @@
   ],
   "title": "Set retention date",
   "purpose": "Record the laboratory’s chosen date through which this physical sample must be retained. This does not set electronic record retention.",
+  "summary": "Set the date through which this physical sample must be kept. Electronic record retention is separate.",
+  "tasks": [
+    {
+      "title": "Set or extend the retention date",
+      "steps": [
+        "Enter the date in [[Retain physical sample through]]. The sample is kept through that whole day.",
+        "Explain it in [[Retention basis / reason]] and select [[Set retention date]]."
+      ]
+    },
+    {
+      "title": "Review earlier retention decisions",
+      "steps": [
+        "Open the storage record. Its history shows each old and new date with the reason."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A passed retention date does not authorize disposal by itself.",
+    "The date cannot be before the receipt date, and this page cannot clear a date already set.",
+    "No default retention period is applied. The date is always the laboratory's choice."
+  ],
   "sections": [
     {
       "title": "Fields and actions",

@@ -5,6 +5,40 @@
   ],
   "title": "Subcontract record",
   "purpose": "Review a completed external handoff, its selected containers, immutable source-result versions and independent acceptance history.",
+  "summary": "One external handoff: the containers sent, every version of the external result with its source PDF, and the independent review of each.",
+  "tasks": [
+    {
+      "title": "Enter the external result",
+      "steps": [
+        "Select [[Enter external source result]], transcribe the report exactly and attach its PDF."
+      ]
+    },
+    {
+      "title": "Review the result",
+      "steps": [
+        "Select [[Review external source]], compare the entry with the source PDF and accept or reject it.",
+        "Someone other than the person who entered it must review it."
+      ]
+    },
+    {
+      "title": "Correct a mistyped result",
+      "steps": [
+        "Select [[Correct external source]]. A new version is added; the earlier one is kept and needs no change."
+      ]
+    },
+    {
+      "title": "Cancel a dispatch sent by mistake",
+      "steps": [
+        "Select [[Cancel external dispatch]]. This works only before any result is entered."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Every new source version needs its own independent review. Accepting an earlier one does not carry over.",
+    "Unit differs means the external laboratory reported in another unit. The value is reported as supplied and never converted.",
+    "ND is kept as non-detect, not as zero.",
+    "Accepting a source is not internal QC approval, and it does not issue a report."
+  ],
   "sections": [
     {
       "title": "Header and actions",

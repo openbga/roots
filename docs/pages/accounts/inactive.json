@@ -5,6 +5,26 @@
   ],
   "title": "Account inactive",
   "purpose": "Understand why this account cannot sign in.",
+  "summary": "This account is inactive and cannot sign in.",
+  "tasks": [
+    {
+      "title": "Get the account reactivated",
+      "steps": [
+        "Ask the laboratory administrator to review the account's Active setting."
+      ]
+    },
+    {
+      "title": "Go back to sign in",
+      "steps": [
+        "Select the Smart Roots name at the top to return to the sign-in page."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "This page has no reactivation button. Only an administrator can reactivate an account.",
+    "Opening this page does not change the account in any way.",
+    "There is no public way to reactivate an account."
+  ],
   "sections": [
     {
       "title": "State and next step",

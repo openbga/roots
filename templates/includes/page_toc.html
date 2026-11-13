@@ -1,4 +1,4 @@
-{% comment %}
+{% load ui %}{% comment %}
 "On this page": anchor links to the sections of a long page with four or more sections
 (docs/ui-standards.md section 3, rule 3). Not a tab set; it hides nothing. Place it at the top of
 the content block. Each target is the id of a section heading on the page.
@@ -6,7 +6,7 @@ Parameters:
   items  iterable of (anchor_id, label) pairs in page order; build it in the view so conditional
          sections and counts ("Samples (12)") stay correct
   label  accessible name; default "On this page"
-Usage: {% include "includes/page_toc.html" with items=toc %}
+Usage: {% page_toc items=toc %}
        where the view passes toc = [("release", "Release"), ("samples-heading", "Samples (12)"), ...]
 {% endcomment %}
 {% if items %}

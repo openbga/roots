@@ -4,7 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Smart Roots LIMS is a free, open-source LIMS for US environmental laboratories testing water, wastewater and soil, from sample custody through analytical work, independent review and versioned reports.">
-  <meta name="theme-color" content="#e5efe9">
+  <meta name="theme-color" content="#e6ebe1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1c14" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
   <title>Smart Roots LIMS · Environmental laboratory LIMS</title>
   <link rel="canonical" href="https://openbga.github.io/smart-roots-lims/">
   <meta property="og:type" content="website">
@@ -18,16 +20,27 @@
   <meta property="og:image:alt" content="Smart Roots LIMS: smart roots, strong results. The sample list of the staff workspace.">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/overpass-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <script src="assets/theme-init.js"></script>
   <link rel="stylesheet" href="assets/site.css">
+  <script src="assets/site.js" defer></script>
 </head>
 <body>
+  <!-- Bootstrap Icons 1.13.2 (MIT), copied verbatim -->
+  <svg xmlns="http://www.w3.org/2000/svg" hidden><symbol id="i-circle-half" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 0 8 1zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16"/></symbol><symbol id="i-sun" viewBox="0 0 16 16"><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6m0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"/></symbol><symbol id="i-moon-stars" viewBox="0 0 16 16"><path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278M4.858 1.311A7.27 7.27 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.32 7.32 0 0 0 5.205-2.162q-.506.063-1.029.063c-4.61 0-8.343-3.714-8.343-8.29 0-1.167.242-2.278.681-3.286"/><path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.73 1.73 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.73 1.73 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.73 1.73 0 0 0 1.097-1.097zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z"/></symbol><symbol id="i-check2" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></symbol><symbol id="i-github" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/></symbol><symbol id="i-arrow-right" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/></symbol><symbol id="i-terminal" viewBox="0 0 16 16"><path d="M6 9a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3A.5.5 0 0 1 6 9M3.854 4.146a.5.5 0 1 0-.708.708L4.793 6.5 3.146 8.146a.5.5 0 1 0 .708.708l2-2a.5.5 0 0 0 0-.708z"/>
+  <path d="M2 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/></symbol><symbol id="i-clock-history" viewBox="0 0 16 16"><path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z"/>
+  <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z"/>
+  <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5"/></symbol><symbol id="i-rulers" viewBox="0 0 16 16"><path d="M1 0a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h5v-1H2v-1h4v-1H4v-1h2v-1H2v-1h4V9H4V8h2V7H2V6h4V2h1v4h1V4h1v2h1V2h1v4h1V4h1v2h1V2h1v4h1V1a1 1 0 0 0-1-1z"/></symbol><symbol id="i-patch-check" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M10.354 6.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+  <path d="m10.273 2.513-.921-.944.715-.698.622.637.89-.011a2.89 2.89 0 0 1 2.924 2.924l-.01.89.636.622a2.89 2.89 0 0 1 0 4.134l-.637.622.011.89a2.89 2.89 0 0 1-2.924 2.924l-.89-.01-.622.636a2.89 2.89 0 0 1-4.134 0l-.622-.637-.89.011a2.89 2.89 0 0 1-2.924-2.924l.01-.89-.636-.622a2.89 2.89 0 0 1 0-4.134l.637-.622-.011-.89a2.89 2.89 0 0 1 2.924-2.924l.89.01.622-.636a2.89 2.89 0 0 1 4.134 0l-.715.698a1.89 1.89 0 0 0-2.704 0l-.92.944-1.32-.016a1.89 1.89 0 0 0-1.911 1.912l.016 1.318-.944.921a1.89 1.89 0 0 0 0 2.704l.944.92-.016 1.32a1.89 1.89 0 0 0 1.912 1.911l1.318-.016.921.944a1.89 1.89 0 0 0 2.704 0l.92-.944 1.32.016a1.89 1.89 0 0 0 1.911-1.912l-.016-1.318.944-.921a1.89 1.89 0 0 0 0-2.704l-.944-.92.016-1.32a1.89 1.89 0 0 0-1.912-1.911z"/></symbol><symbol id="i-file-earmark-text" viewBox="0 0 16 16"><path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5"/>
+  <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/></symbol></svg>
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header">
+   <div class="site-header-inner">
     <a class="brand" href="./">
       <img src="assets/mark.svg" alt="" width="40" height="40">
       <span class="wordmark"><span class="wordmark-name">Smart Roots</span> <span class="wordmark-parent">An OpenBGA project</span></span>
     </a>
-    <nav aria-label="Main navigation">
+    <nav class="site-nav" aria-label="Main navigation">
       <a href="#workflow">Workflow</a>
       <a href="#integrity">Integrity</a>
       <a href="#records">Records</a>
@@ -35,29 +48,43 @@
       <a href="#project">Project</a>
       <a href="roadmap/">Roadmap</a>
     </nav>
+    <div class="theme-menu" data-theme-menu>
+      <button class="theme-button" type="button" aria-expanded="false" aria-controls="theme-options" data-theme-button><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-circle-half"/></svg><span class="theme-button-text">Theme: <span data-theme-label>System</span></span></button>
+      <div class="theme-options" id="theme-options" role="group" aria-label="Theme" data-theme-options hidden>
+        <button type="button" data-theme-value="light" aria-pressed="false"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg>Light<svg class="icon theme-check" aria-hidden="true" focusable="false"><use href="#i-check2"/></svg></button>
+        <button type="button" data-theme-value="dark" aria-pressed="false"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-moon-stars"/></svg>Dark<svg class="icon theme-check" aria-hidden="true" focusable="false"><use href="#i-check2"/></svg></button>
+        <button type="button" data-theme-value="system" aria-pressed="false"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-circle-half"/></svg>System<svg class="icon theme-check" aria-hidden="true" focusable="false"><use href="#i-check2"/></svg></button>
+      </div>
+    </div>
+   </div>
   </header>
 
   <main id="main">
     <section class="hero" aria-labelledby="intro-title">
       <div class="wrap">
         <div class="hero-inner">
-          <h1 id="intro-title">Smart roots.<br>Strong results.</h1>
           <div class="hero-description">
+          <h1 id="intro-title">Smart roots.<br>Strong results.</h1>
             <p>Smart Roots LIMS is a free, open-source LIMS for US environmental laboratories testing water, wastewater and soil.</p>
             <p>A result is only as strong as the record beneath it. Smart Roots LIMS keeps custody, method versions, QC and independent review connected to every result, from the cooler to the report your client receives.</p>
             <div class="actions">
               <a class="button" href="#start">Get started</a>
-              <a class="button button-quiet" href="https://github.com/openbga/smart-roots-lims">View on GitHub</a>
+              <a class="button button-quiet" href="https://github.com/openbga/smart-roots-lims"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-github"></use></svg>View on GitHub</a>
             </div>
             <p class="project-status">AGPL-3.0-only · In development</p>
           </div>
+          <picture class="scene">
+            <source media="(prefers-color-scheme: dark)" srcset="assets/scene-dark.svg" data-theme-dark>
+            <img src="assets/scene-light.svg" alt="" width="1100" height="1000" fetchpriority="high">
+          </picture>
         </div>
         <figure class="shot hero-shot">
-          <img src="assets/samples-1280.webp"
+          <div class="window">
+          <img class="screen" src="assets/samples-1280.webp"
                srcset="assets/samples-1280.webp 1280w, assets/samples-2560.webp 2560w"
-               sizes="(min-width: 1240px) 1160px, 92vw"
-               width="1280" height="800" fetchpriority="high"
-               alt="The Samples page of the staff workspace: a searchable, filterable table of received water, wastewater and soil samples from two clients, with their laboratory ID, project, matrix, collection and receipt times.">
+               sizes="(min-width: 1280px) 1200px, 94vw"
+               width="1280" height="800"
+               alt="The Samples page of the staff workspace: a searchable, filterable table of received water, wastewater and soil samples from two clients, with their laboratory ID, project, matrix, collection and receipt times."></div>
           <figcaption>The sample list in the staff workspace. Every screen on this page shows synthetic demo data.</figcaption>
         </figure>
       </div>
@@ -78,17 +105,17 @@
       </div>
     </section>
 
-    <section class="section tinted" id="integrity" aria-labelledby="integrity-title">
+    <section class="section band" id="integrity" aria-labelledby="integrity-title">
       <div class="wrap">
         <div class="section-intro">
           <h2 id="integrity-title">Results that keep<br>their roots.</h2>
           <p>The history under a result is part of the result. Smart Roots LIMS records it as the work happens and keeps it when something later changes.</p>
         </div>
         <dl class="principles">
-          <div><dt>Nothing is overwritten</dt><dd>A correction adds a record with its reason. Original observations, custody events and issued reports stay as they were recorded.</dd></div>
-          <div><dt>Exact values</dt><dd>Results are stored as exact decimals with their units, reporting limits, qualifiers and the method version that produced them.</dd></div>
-          <div><dt>Independent review</dt><dd>Nobody reviews their own results. That applies to administrators too.</dd></div>
-          <div><dt>Explicit release</dt><dd>Issuing a report takes a separate release authorization. Each issued version is a stored PDF; an amendment adds a new version beside it.</dd></div>
+          <div><dt><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-clock-history"></use></svg>Nothing is overwritten</dt><dd>A correction adds a record with its reason. Original observations, custody events and issued reports stay as they were recorded.</dd></div>
+          <div><dt><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-rulers"></use></svg>Exact values</dt><dd>Results are stored as exact decimals with their units, reporting limits, qualifiers and the method version that produced them.</dd></div>
+          <div><dt><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-patch-check"></use></svg>Independent review</dt><dd>Nobody reviews their own results. That applies to administrators too.</dd></div>
+          <div><dt><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-file-earmark-text"></use></svg>Explicit release</dt><dd>Issuing a report takes a separate release authorization. Each issued version is a stored PDF; an amendment adds a new version beside it.</dd></div>
         </dl>
       </div>
     </section>
@@ -108,8 +135,8 @@
             <p>A reviewer works through a batch with its QC evaluation, holding-time findings, reporting limits and qualifiers on the same page, then approves each result or returns it with a reason. An open QC finding holds the results it affects.</p>
           </div>
           <figure class="shot">
-            <img src="assets/review-1280.webp" width="1280" height="800" loading="lazy" decoding="async"
-                 alt="Technical review of an analytical batch: the batch's QC evidence, where the laboratory control sample for lead failed at 130 percent recovery and holds approval while copper, zinc and the method blanks pass, above the nine results awaiting review.">
+            <div class="window"><img class="screen" src="assets/review-1280.webp" width="1280" height="800" loading="lazy" decoding="async"
+                 alt="Technical review of an analytical batch: its open QC finding, the laboratory control sample for lead failed at 130 percent recovery against limits of 85 to 115 and holds approval, with the other QC evaluations collapsed below it, above the table of nine results awaiting review."></div>
             <figcaption>Technical review of a batch. A failed control sample holds approval until a disposition is recorded.</figcaption>
           </figure>
         </div>
@@ -121,8 +148,8 @@
             <p>Control charts plot each QC observation against the laboratory's configured limits, which decide QC status, beside descriptive statistical bands. MDL studies record their observations and calculations.</p>
           </div>
           <figure class="shot">
-            <img src="assets/chart-1280.webp" width="1280" height="800" loading="lazy" decoding="async"
-                 alt="A control chart of laboratory control sample recoveries for lead: 21 points around 100 percent, configured limits at 85 and 115 percent, and one point outside the upper limit marked in red.">
+            <div class="window"><img class="screen" src="assets/chart-1280.webp" width="1280" height="800" loading="lazy" decoding="async"
+                 alt="A control chart of laboratory control sample recoveries for lead: 21 points around 100 percent, configured limits at 85 and 115 percent, and one point outside the upper limit marked in red."></div>
             <figcaption>A control chart for a laboratory control sample, with one recovery outside the configured limits.</figcaption>
           </figure>
         </div>
@@ -134,8 +161,8 @@
             <p>Each release stores a PDF version with its content hash. An amendment names the version it replaces, the reason and what changed, and the earlier version stays on record. Clients download both from their own portal, where they see only their own projects, samples and reports.</p>
           </div>
           <figure class="shot shot-paper">
-            <img src="assets/report-920.webp" width="920" height="1191" loading="lazy" decoding="async"
-                 alt="First page of an amended analytical report, version 2: report and client details, a highlighted note that it replaces version 1 with the reason and the corrected zinc result, the case narrative, a summary of three samples and the first sample's results.">
+            <img class="paper" src="assets/report-920.webp" width="920" height="1191" loading="lazy" decoding="async"
+                 alt="First page of an amended analytical report, version 2: an at-a-glance summary of three samples and nine results, a box noting that it replaces version 1 with the reason and the corrected zinc result, the client, project and release details, the case narrative and the sample summary.">
             <figcaption>The first page of an amended report, marked as synthetic demonstration data.</figcaption>
           </figure>
         </div>
@@ -164,18 +191,20 @@
     </section>
 
     <section class="section start" id="start" aria-labelledby="start-title">
-      <div class="wrap start-inner">
+      <div class="wrap">
+      <div class="start-inner">
         <div>
           <h2 id="start-title">Try it on<br>your machine.</h2>
           <p>With Docker and Compose installed, these commands build the application, start it beside a local PostgreSQL database and load a synthetic laboratory in the middle of a working week. It is reachable only from your machine and is meant for evaluation, not for real laboratory data.</p>
           <ul class="next-steps">
-            <li><a href="https://github.com/openbga/smart-roots-lims/blob/main/README.md#local-development">Develop locally without Docker</a></li>
-            <li><a href="https://github.com/openbga/smart-roots-lims/blob/main/README.md#set-up-your-laboratory">Set up your laboratory</a></li>
-            <li><a href="https://github.com/openbga/smart-roots-lims/blob/main/README.md#deploy-to-render">Deploy to Render</a></li>
+            <li><a href="https://github.com/openbga/smart-roots-lims/blob/main/README.md#local-development">Develop locally without Docker<svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"></use></svg></a></li>
+            <li><a href="https://github.com/openbga/smart-roots-lims/blob/main/README.md#set-up-your-laboratory">Set up your laboratory<svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"></use></svg></a></li>
+            <li><a href="https://github.com/openbga/smart-roots-lims/blob/main/README.md#deploy-to-render">Deploy to Render<svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"></use></svg></a></li>
           </ul>
         </div>
         <div class="terminal">
           <div class="commands" role="region" aria-label="Commands for the Docker trial" tabindex="0">
+          <p class="commands-bar" aria-hidden="true"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-terminal"></use></svg>Terminal</p>
           <pre><code>git clone --branch main https://github.com/openbga/smart-roots-lims.git
 cd smart-roots-lims
 docker compose --profile app up --build -d
@@ -186,6 +215,7 @@ docker compose --profile app exec -e DEMO_PASSWORD web \
           </div>
           <p>Then open <code>http://127.0.0.1:8000</code> and sign in as <code>demo_custodian</code>, <code>demo_analyst</code>, <code>demo_reviewer</code> or another demo role with that password.</p>
         </div>
+      </div>
       </div>
     </section>
 
@@ -212,6 +242,7 @@ docker compose --profile app exec -e DEMO_PASSWORD web \
     <span>Smart Roots LIMS</span>
     <a href="https://github.com/openbga/smart-roots-lims">Source code</a>
     <a href="https://github.com/openbga/smart-roots-lims/blob/main/LICENSE">AGPL-3.0-only</a>
+    <a href="assets/overpass-OFL.txt">Overpass font licence (OFL-1.1)</a>
   </footer>
 </body>
 </html>

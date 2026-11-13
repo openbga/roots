@@ -5,6 +5,28 @@
   ],
   "title": "Edit nonconformance",
   "purpose": "Revise current issue details while retaining the earlier values and reason in the timeline.",
+  "summary": "Revise a nonconformance's current details. The earlier values and your reason are kept in the timeline. Only the owner or a lead can edit.",
+  "tasks": [
+    {
+      "title": "Correct the details",
+      "steps": [
+        "Change the title, classification, owner, due date, links or findings.",
+        "Explain why in [[Reason]] and select [[Save changes]]."
+      ]
+    },
+    {
+      "title": "Clarify the original description",
+      "steps": [
+        "Go back to the record and select [[Add note or evidence]]. The original description cannot be edited."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A closed issue must be reopened before it can be edited.",
+    "An existing link can be replaced but not removed. Leaving it blank keeps it.",
+    "Once investigation has started, the owner cannot be cleared.",
+    "Saving does not move the issue to its next step, and a save with no changes is refused."
+  ],
   "sections": [
     {
       "title": "Who can change this record",

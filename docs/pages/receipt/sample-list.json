@@ -5,6 +5,39 @@
   ],
   "title": "Samples",
   "purpose": "Find received samples across clients and projects, then open their receipt observations, requested tests and custody history.",
+  "summary": "Every received sample across clients and projects. Open one for its receipt observations, requested tests and custody history.",
+  "tasks": [
+    {
+      "title": "Find a sample",
+      "steps": [
+        "Type a lab ID, client sample ID, client, project, reference or location in [[Search]].",
+        "Select [[Apply]], then select the Lab ID to open the sample."
+      ]
+    },
+    {
+      "title": "Find samples waiting for a decision",
+      "steps": [
+        "Set [[Disposition]] to Hold and select [[Apply]]."
+      ]
+    },
+    {
+      "title": "List what arrived in a date range",
+      "steps": [
+        "Open [[More filters]], set [[Received from]] and [[Received to]], then select [[Apply]]."
+      ]
+    },
+    {
+      "title": "Receive new samples",
+      "steps": [
+        "Select [[Receive samples]]. A new chain of custody opens; receive each sample on it."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Disposition is the receipt decision. It is separate from where the analytical work stands.",
+    "Search does not look at the collector's name.",
+    "Received dates use the laboratory's time zone, and both ends are included."
+  ],
   "sections": [
     {
       "title": "Search, filters and actions",
@@ -58,19 +91,25 @@
     },
     {
       "title": "Columns",
-      "paragraphs": [],
+      "paragraphs": [
+        "Columns appear in this order by default; Collection location and Collector start hidden. Your saved column layout is reset once, because the default columns changed."
+      ],
       "items": [
         {
           "label": "Lab ID",
           "description": "System-assigned accession identifying this physical sample; it stays visible."
         },
         {
+          "label": "Disposition",
+          "description": "Current receipt decision, separate from analytical work status."
+        },
+        {
           "label": "Client sample ID",
           "description": "Identifier supplied by the client."
         },
         {
-          "label": "Client / Project",
-          "description": "Ownership derived from the sample’s chain of custody and project."
+          "label": "Client / project",
+          "description": "Ownership derived from the sample’s chain of custody: the client, with the project beneath it. Long names are shortened; hover over the cell for the full client and project. Sorts by client."
         },
         {
           "label": "Matrix",
@@ -78,7 +117,7 @@
         },
         {
           "label": "Type",
-          "description": "Initially hidden. Sample type (Field sample, Field duplicate, Field blank, Trip blank or Equipment / rinsate blank). Sortable."
+          "description": "Sample type (Field sample, Field duplicate, Field blank, Trip blank or Equipment / rinsate blank). Sortable."
         },
         {
           "label": "Collected",
@@ -89,20 +128,16 @@
           "description": "Receipt time; default sort is newest receipt first."
         },
         {
-          "label": "Disposition",
-          "description": "Current receipt decision, separate from analytical work status."
-        },
-        {
           "label": "Location",
           "description": "Current location from receipt/custody."
         },
         {
-          "label": "Collection location",
-          "description": "Initially hidden collection place, or a dash when absent."
+          "label": "Chain of custody",
+          "description": "Reference of the sample’s chain of custody; it links to that order. Sortable."
         },
         {
-          "label": "Chain of custody",
-          "description": "Initially hidden reference linking to the order."
+          "label": "Collection location",
+          "description": "Initially hidden collection place, or a dash when absent."
         },
         {
           "label": "Collector",
@@ -130,7 +165,7 @@
         },
         {
           "label": "Column headings and Columns",
-          "description": "Linked headings sort the complete matching set, with record ID breaking ties. Columns controls optional visibility and order, saved locally in this browser; reset restores default presentation. Identifying columns stay visible."
+          "description": "Linked headings sort the complete matching set, with record ID breaking ties. Columns controls optional visibility and order, saved for your account; reset restores default presentation. Identifying columns stay visible."
         },
         {
           "label": "Rows per page / Show",
@@ -162,7 +197,7 @@
         },
         {
           "label": "Reset columns",
-          "description": "Restores this table’s default order and visibility in this browser."
+          "description": "Restores this table’s default order and visibility for your account."
         },
         {
           "label": "Done / Close",

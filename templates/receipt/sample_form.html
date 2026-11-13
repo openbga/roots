@@ -1,11 +1,9 @@
 {% extends "base.html" %}
-{% load static %}
-{% block breadcrumbs %}{% url 'receipt:sample-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Samples" section_url=list_url %}{% endblock %}
+{% load static ui %}
+{% block breadcrumbs %}{% url 'receipt:sample-list' as list_url %}{% breadcrumbs section="Samples" section_url=list_url %}{% endblock %}
 {% block content %}
-<form class="vr-form" method="post" novalidate>
-  {% csrf_token %}
-  {% include "includes/form_errors.html" with form=form %}
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required. Times are laboratory local time.</p>
+{% url 'receipt:sample-list' as cancel_url %}
+{% form_page form=form cancel_url=cancel_url submit_label="Receive sample" times=True %}
 
   <fieldset class="vr-form-section">
     <legend>Chain of custody</legend>
@@ -18,13 +16,8 @@
   {% include "receipt/_sample_fields.html" %}
 
   {% for field in form.hidden_fields %}{{ field }}{% endfor %}
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{% url 'receipt:sample-list' %}">Cancel</a>
-    <button class="btn btn-primary" type="submit">Receive sample</button>
-  </div>
-</form>
+{% endform_page %}
 {% endblock %}
 {% block extra_js %}
-<script src="{% static 'vendor/tom-select/tom-select.complete.js' %}" defer></script>
 <script src="{% static 'js/test-picker.js' %}" defer></script>
 {% endblock %}

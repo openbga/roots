@@ -1,27 +1,28 @@
 {% extends "base.html" %}
+{% load ui %}
 {% load laboratory_extras %}
 {% comment %}Lots. Context: page_obj (lots_with_state), filter_form, q, sort, per_page, active_filters, filtered, today, can_use_stock.{% endcomment %}
 {% block page_heading %}Inventory{% endblock %}
-{% block page_actions %}{% if can_use_stock %}<a class="btn btn-primary" href="{% url 'laboratory:lot-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New lot</a>{% endif %}{% endblock %}
+{% block page_actions %}{% if can_use_stock %}<a class="btn btn-primary" href="{% url 'laboratory:lot-create' %}">{% icon name="plus-lg" %}New lot</a>{% endif %}{% endblock %}
 {% block content %}
 {% include "laboratory/_tabs.html" %}
-<section class="card vr-table-card" aria-labelledby="lots-heading">
-  <h2 class="visually-hidden" id="lots-heading">Lots</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter lots" q=q placeholder="Material, lot, vendor, reference or location" inline=inline more=more more_open=more_open grid="laboratory.lots" %}
-  {% if page_obj.paginator.count %}
+{% if can_use_stock %}{% url 'laboratory:lot-create' as create_url %}{% endif %}
+{% panel title="Lots" heading_id="lots-heading" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter lots" q=q placeholder="Material, lot, vendor, reference or location" inline=inline more=more more_open=more_open grid="laboratory.lots" %}
+  {% list_results items=page_obj noun="lots" filtered=filtered invalid=filter_form.errors clear_url=request.path error_body="Correct the highlighted filter above." no_results_title="No lots match these filters" no_results_body="Check the material or lot number, or clear the filters." empty_title="No lots recorded yet" empty_body="Define a material, then record each lot received or prepared with its expiry and quantity." action_url=create_url action_label="New lot" %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table" data-vr-grid="laboratory.lots" data-vr-grid-version="2" aria-labelledby="lots-heading">
       <thead><tr>
-        {% include "includes/sort_header.html" with label="Lot" asc="lot" desc="-lot" col="lot" locked=True %}
-        {% include "includes/sort_header.html" with label="Material" asc="material" desc="-material" col="material" %}
+        {% sort_header label="Lot" asc="lot" desc="-lot" col="lot" locked=True %}
+        {% sort_header label="Material" asc="material" desc="-material" col="material" %}
         <th scope="col" data-vr-col="kind" data-vr-col-label="Kind" data-vr-col-hidden>Kind</th>
-        {% include "includes/sort_header.html" with label="Vendor" asc="vendor" desc="-vendor" col="vendor" hidden=True %}
-        {% include "includes/sort_header.html" with label="Received / prepared" asc="received" desc="-received" first="desc" col="received" hidden=True %}
-        {% include "includes/sort_header.html" with label="Expires" asc="expires" desc="-expires" col="expires" %}
-        {% include "includes/sort_header.html" with label="On hand" asc="on_hand" desc="-on_hand" first="desc" col="on_hand" class="text-end" %}
+        {% sort_header label="Vendor" asc="vendor" desc="-vendor" col="vendor" hidden=True %}
+        {% sort_header label="Received / prepared" asc="received" desc="-received" first="desc" col="received" hidden=True %}
+        {% sort_header label="Expires" asc="expires" desc="-expires" col="expires" %}
+        {% sort_header label="On hand" asc="on_hand" desc="-on_hand" first="desc" col="on_hand" class="text-end" %}
         <th scope="col" data-vr-col="unit" data-vr-col-label="Unit">Unit</th>
-        {% include "includes/sort_header.html" with label="Location" asc="location" desc="-location" col="location" %}
-        {% include "includes/sort_header.html" with label="Status" asc="status" desc="-status" col="status" %}
+        {% sort_header label="Location" asc="location" desc="-location" col="location" %}
+        {% sort_header label="Status" asc="status" desc="-status" col="status" %}
       </tr></thead>
       <tbody>
         {% for lot in page_obj %}
@@ -36,20 +37,12 @@
           <td class="text-end vr-nowrap">{{ lot.quantity_on_hand|qty }}</td>
           <td>{{ lot.unit }}</td>
           <td>{{ lot.storage_location }}</td>
-          <td>{% include "includes/status.html" with label=st.label tone=st.tone plain=True %}</td>
+          <td>{% status label=st.label tone=st.tone plain=True %}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
-  {% include "includes/pagination.html" with noun="lots" filtered=filtered %}
-  {% elif filter_form.errors %}
-  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above." clear_url=request.path %}
-  {% elif filtered %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No lots match these filters" body="Check the material or lot number, or clear the filters." clear_url=request.path %}
-  {% else %}
-  {% if can_use_stock %}{% url 'laboratory:lot-create' as create_url %}{% endif %}
-  {% include "includes/empty_state.html" with title="No lots recorded yet" body="Define a material, then record each lot received or prepared with its expiry and quantity." action_url=create_url action_label="New lot" %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}

@@ -1,4 +1,5 @@
 {% extends "account/base_entrance.html" %}
+{% load ui %}
 {% load i18n allauth account %}
 {% comment %}allauth emailed sign-in code request, worded for invitation-only lab accounts.{% endcomment %}
 {% block head_title %}{% trans "Sign In" %}{% endblock head_title %}
@@ -15,5 +16,5 @@
       {% element button type="submit" tags="prominent,login" %}{% trans "Send code" %}{% endelement %}
     {% endslot %}
   {% endelement %}
-  <p class="vr-entrance-alt"><a href="{{ login_url }}">{% include "includes/icon.html" with name="arrow-left" %}{% trans "Sign in with a password instead" %}</a></p>
+  <p class="vr-entrance-alt"><a href="{{ login_url }}">{% icon name="arrow-left" %}{% trans "Sign in with a password instead" %}</a></p>
 {% endblock content %}

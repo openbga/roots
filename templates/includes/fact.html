@@ -1,0 +1,20 @@
+{% comment %}
+One fact of a record (docs/ui-standards.md section 6, rule 2): a dt/dd row inside dl.vr-facts.
+Rendered by the {% fact %} tag ({% load ui %}): with value= it is a single tag; without, the
+tag's body up to {% endfact %} is the value (links, times, statuses).
+Parameters:
+  label   the dt
+  value   the dd; blank (None or only whitespace) shows "—", or the empty text
+  empty   optional muted text for a blank value, e.g. "Not recorded"
+  class   extra classes on the dd (vr-id, vr-nowrap)
+  wide    truthy for a long phrase (a name pair, an address, a note): the row spans two columns of
+          the facts grid, or the whole row when only one fits
+Parts (block form only): label, for a dt that needs markup or values, e.g.
+  {% fact %}{% fill label %}{{ name }} {% status label="Locked" tone="neutral" plain=True %}{% endfill %}{{ value }}{% endfact %}
+Usage:
+  <dl class="vr-facts">
+    {% fact label="Phone" value=client.phone class="vr-nowrap" %}
+    {% fact label="Email" %}{% if client.email %}<a href="mailto:{{ client.email }}">{{ client.email }}</a>{% endif %}{% endfact %}
+  </dl>
+{% endcomment %}
+<div{% if wide %} class="vr-fact-wide"{% endif %}><dt>{% if slots.label %}{{ slots.label }}{% else %}{{ label }}{% endif %}</dt><dd{% if class %} class="{{ class }}"{% endif %}>{% if value is None %}{% if empty %}<span class="vr-muted">{{ empty }}</span>{% else %}—{% endif %}{% else %}{{ value }}{% endif %}</dd></div>

@@ -6,6 +6,29 @@
   ],
   "title": "New or edit equipment",
   "purpose": "Register an asset or correct its descriptive identity and placement.",
+  "summary": "Register a new asset, or correct an existing asset's identity details and location. Only admin and reviewer roles can save.",
+  "tasks": [
+    {
+      "title": "Register an asset",
+      "steps": [
+        "Enter the [[Asset ID]], [[Name]] and [[Location]].",
+        "Optionally choose an [[Equipment type]] and add the manufacturer, model and serial number.",
+        "Save. The asset starts In service."
+      ]
+    },
+    {
+      "title": "Correct an asset's details",
+      "steps": [
+        "Change the details that are wrong.",
+        "Give a [[Reason]] and select [[Save changes]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Asset IDs are unique, ignoring upper and lower case.",
+    "Status is changed separately, with [[Change status]] on the asset.",
+    "An In service asset whose type contains the word thermometer is suggested in the Thermometer field when samples are received. The suggestion is free text and does not link the asset."
+  ],
   "sections": [
     {
       "title": "Access and variants",

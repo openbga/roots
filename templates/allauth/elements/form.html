@@ -1,5 +1,5 @@
-{% load allauth %}<form class="vr-form" method="{{ attrs.method }}"{% if attrs.action %} action="{{ attrs.action }}"{% endif %} novalidate>
-  {% if attrs.form %}{% include "includes/form_errors.html" with form=attrs.form %}{% endif %}
+{% load ui %}{% comment %}allauth form element: the shared error summary and action row (includes/form_actions.html) around allauth's fields.{% endcomment %}{% load allauth %}{% setvar actions_html %}{% slot actions %}{% endslot %}{% endsetvar %}<form class="vr-form" method="{{ attrs.method }}"{% if attrs.action %} action="{{ attrs.action }}"{% endif %} novalidate>
+  {% if attrs.form %}{% form_errors form=attrs.form %}{% endif %}
   {% slot body %}{% endslot %}
-  <div class="vr-form-actions">{% slot actions %}{% endslot %}</div>
+  {% form_actions no_submit=True %}{{ actions_html }}{% endform_actions %}
 </form>

@@ -6,6 +6,36 @@
   ],
   "title": "Prepare or edit a report",
   "purpose": "Choose the project, samples, title and narrative for the next issued version.",
+  "summary": "Choose the project, samples, title and case narrative for the next issued version of a report. Saving never issues a PDF or shows a draft to the client.",
+  "tasks": [
+    {
+      "title": "Prepare a report",
+      "steps": [
+        "Choose the project and select [[Choose samples]].",
+        "Check the samples to include. Use [[Show]] and [[Apply]] to narrow the list.",
+        "Check the title, add a [[Case narrative]] if needed, and select [[Prepare report]]."
+      ]
+    },
+    {
+      "title": "Change what the next version contains",
+      "steps": [
+        "From the report, select [[Edit]].",
+        "Change the samples, title or narrative and select [[Save changes]]."
+      ]
+    },
+    {
+      "title": "Select every sample on the page",
+      "steps": [
+        "Check [[Select all samples on this page]]. Samples on other pages keep their selection."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A report covers one project. Pick at most 100 samples.",
+    "Release checks every requested test of each selected sample, not just the ones already entered.",
+    "Editing an issued report never changes its PDFs. The next release needs an amendment reason.",
+    "If someone saved the report after you opened it, your save is refused. Reload and apply your changes again."
+  ],
   "sections": [
     {
       "title": "Access and record scope",

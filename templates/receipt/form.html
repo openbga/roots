@@ -1,25 +1,19 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 Create or edit form for a client or project. Context: page_title ("New client", "Edit Acme"),
 submit_label, form (a GroupedForm: its sections render through receipt/_grouped_fields.html),
 crumbs, cancel_url; edit adds object (the form includes the reason and a hidden expected_revision). Creating returns to the new client's page, or the project list;
 editing returns to the record, or the list where the record has no page.
 {% endcomment %}
-{% block breadcrumbs %}{% include "includes/breadcrumbs.html" with crumbs=crumbs %}{% endblock %}
-{% block page_meta %}{% if object.client %}<ul class="vr-page-meta"><li>Client: {{ object.client }} <span class="small">(fixed for an existing project)</span></li></ul>{% endif %}{% endblock %}
+{% block breadcrumbs %}{% breadcrumbs crumbs=crumbs %}{% endblock %}
+{% block page_meta %}{% if object.client %}{% page_meta %}<li>Client: {{ object.client }} <span class="small">(fixed for an existing project)</span></li>{% endpage_meta %}{% endif %}{% endblock %}
 {% block content %}
 {% comment %}Stored state comes from form.initial: a failed ModelForm validation has already copied submitted values onto object.{% endcomment %}
 {% if object and form.initial.is_active == False %}
-<div class="alert alert-secondary" role="status">{% include "includes/status.html" with label="Inactive" tone="neutral" plain=True %}<div>No new intake is accepted for this record. Its history stays readable.</div></div>
+{% notice tone="neutral" label="Inactive" %}No new intake is accepted for this record. Its history stays readable.{% endnotice %}
 {% endif %}
-<form class="vr-form" method="post" novalidate>
-  {% csrf_token %}
-  {% include "includes/form_errors.html" with form=form %}
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+{% form_page form=form cancel_url=cancel_url submit_label=submit_label|default:"Save changes" %}
   {% include "receipt/_grouped_fields.html" %}
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{{ cancel_url }}">Cancel</a>
-    <button class="btn btn-primary" type="submit">{{ submit_label|default:"Save changes" }}</button>
-  </div>
-</form>
+{% endform_page %}
 {% endblock %}

@@ -116,7 +116,8 @@ def test_role_menu_on_desktop_and_mobile(
     page.locator(".vr-topbar [data-vr-documentation-toggle]").click()
     panel = page.locator("#vr-documentation")
     expect(panel).to_be_visible()
-    expect(
-        panel.get_by_role("heading", name="Staff sidebar destinations", exact=True)
-    ).to_be_visible()
+    # The reference sits under the page's tasks, collapsed; its filter opens the matching section.
+    panel.get_by_role("searchbox", name="Find a field or action").fill("Every internal role")
+    expect(panel.locator("summary", has_text="Staff sidebar destinations")).to_be_visible()
+    expect(panel.get_by_role("term").filter(has_text="Every internal role").first).to_be_visible()
     assert page.console_errors == []

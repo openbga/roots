@@ -1,12 +1,11 @@
 {% extends "base.html" %}
-{% block breadcrumbs %}{% url 'analytical:import-profile-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Import mappings" section_url=list_url %}{% endblock %}
+{% load ui %}
+{% block breadcrumbs %}{% url 'analytical:import-profile-list' as list_url %}{% breadcrumbs section="Import mappings" section_url=list_url %}{% endblock %}
 {% block page_intro %}<p class="vr-page-intro">A mapping describes <em>your</em> file: which column holds the sample, analyte, result and so on.</p>{% endblock %}
 {% block content %}
-<form class="vr-form" method="post" novalidate>
-  {% csrf_token %}
+{% url 'analytical:import-profile-list' as list_url %}
+{% form_page form=form cancel_url=list_url submit_label=submit_label %}
   {% for field in form.hidden_fields %}{{ field }}{% endfor %}
-  {% include "includes/form_errors.html" with form=form %}
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
   <p class="vr-form-note">A mapping is not a validated instrument adapter, and no instrument vendor is claimed. Nothing is guessed from a header: an unmapped item is an error in the preview. Names are matched exactly. Result text is kept as exported, units are never converted, and a non-detect must be written ND.</p>
 
   <fieldset class="vr-form-section">
@@ -69,9 +68,5 @@
     {{ form.notes.as_field_group }}
   </fieldset>
 
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{% url 'analytical:import-profile-list' %}">Cancel</a>
-    <button class="btn btn-primary" type="submit">{{ submit_label }}</button>
-  </div>
-</form>
+{% endform_page %}
 {% endblock %}

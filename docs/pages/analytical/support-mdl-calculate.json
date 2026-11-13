@@ -5,6 +5,27 @@
   ],
   "title": "Calculate MDL",
   "purpose": "Keep a new numbered snapshot of current study observations, intermediate statistics and the calculation outcome for independent review.",
+  "summary": "Run an MDL calculation for the study and keep it as a numbered snapshot for independent review.",
+  "tasks": [
+    {
+      "title": "Calculate",
+      "steps": [
+        "Choose which [[Method blanks used]].",
+        "Select [[Calculate and keep the snapshot]]."
+      ]
+    },
+    {
+      "title": "Leave without calculating",
+      "steps": [
+        "Select [[Cancel]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A study that is not ready still produces a numbered Not evaluated calculation, with its reasons.",
+    "An included spike older than 24 months blocks the calculation. Spikes are not windowed out.",
+    "The result is not an MDL until a reviewer who did not enter the data or run it adopts it."
+  ],
   "sections": [
     {
       "title": "Context and choice",

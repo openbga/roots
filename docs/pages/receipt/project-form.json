@@ -6,11 +6,46 @@
   ],
   "title": "Project",
   "purpose": "Create a grouping for a client’s work or update its number, program, site, standing purchase order, manager, turnaround, instructions and intake availability. The owning client is chosen at creation and cannot later change.",
+  "summary": "A grouping for a client's work: number, program, site, standing purchase order, manager, turnaround and instructions for intake.",
+  "tasks": [
+    {
+      "title": "Create a project",
+      "steps": [
+        "Choose the [[Client]] and enter the [[Project name]]. The client cannot be changed later.",
+        "Set the [[Standard turnaround]] and, if known, the [[Laboratory project manager]].",
+        "Select [[Create project]]."
+      ]
+    },
+    {
+      "title": "Give the receivers instructions",
+      "steps": [
+        "Write them in [[Standing instructions]]. Custodians see them above the receipt form."
+      ]
+    },
+    {
+      "title": "Set a purchase order for all its work",
+      "steps": [
+        "Enter it in [[Purchase order]]. New chains of custody without their own take this one."
+      ]
+    },
+    {
+      "title": "Stop new intake on a project",
+      "steps": [
+        "Clear [[Active (accepts new intake)]], give the [[Reason for change]] and save."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Changing the standing purchase order does not change chains of custody already created.",
+    "Standard turnaround does not set any delivery target or holding deadline.",
+    "Regulatory program is a label. It does not assert eligibility, method requirements or compliance.",
+    "Work for a different client needs a new project."
+  ],
   "sections": [
     {
       "title": "Project",
       "paragraphs": [
-        "Project managers and administrators can save. The form is grouped into Project, Program and site, Intake, and, on edit only, Status and Change record. Client, Project name and Standard turnaround (days) are required; everything else is optional."
+        "Project managers and administrators can save. The form is grouped into Project, Program and site, Intake, and, on edit only, Status and Change record. Client, Project name and Standard turnaround are required; everything else is optional."
       ],
       "items": [
         {
@@ -30,8 +65,8 @@
           "description": "Optional list of active laboratory staff accounts shown by full name or username; Not assigned means none. Client portal accounts are never offered and are refused if submitted. When editing, the recorded manager stays selectable even if that account was later deactivated; a deactivated account cannot be newly assigned."
         },
         {
-          "label": "Standard turnaround (days)",
-          "description": "Required whole number of zero or more, initially 10. The agreed standard for the project. It is not an automatically calculated delivery or holding deadline and does not set a delivery target."
+          "label": "Standard turnaround",
+          "description": "Required whole number of zero or more, initially 10. The agreed standard for the project. It is not an automatically calculated delivery or holding deadline and does not set a delivery target. Entered in days (the field's unit)."
         }
       ]
     },

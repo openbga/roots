@@ -1,34 +1,26 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 Correct a chain of custody reference. Context: order, form (OrderReferenceForm), blocker (text when
 an issued report shows the reference), correction_events (AuditEvent with .changes).
 {% endcomment %}
-{% block breadcrumbs %}{% url 'receipt:order-list' as list_url %}{% url 'receipt:order-detail' order.pk as order_url %}{% include "includes/breadcrumbs.html" with section="Chains of custody" section_url=list_url record=order.coc_reference record_url=order_url %}{% endblock %}
+{% block breadcrumbs %}{% url 'receipt:order-list' as list_url %}{% url 'receipt:order-detail' order.pk as order_url %}{% breadcrumbs section="Chains of custody" section_url=list_url record=order.coc_reference record_url=order_url %}{% endblock %}
 {% block page_meta %}
-<ul class="vr-page-meta">
+{% page_meta %}
   <li>{{ order.project.client }} / {{ order.project.name }}</li>
-</ul>
+{% endpage_meta %}
 {% endblock %}
 {% block content %}
 {% if blocker %}
-<div class="alert alert-warning" role="alert">
-  {% include "includes/status.html" with label="Locked" tone="warning" plain=True %}
-  <div><p class="mb-0">{{ blocker }}</p></div>
-</div>
+{% notice tone="warning" label="Locked" blocking=True %}<p class="mb-0">{{ blocker }}</p>{% endnotice %}
 {% else %}
-<form class="vr-form" method="post" novalidate>
-  {% csrf_token %}
-  {% include "includes/form_errors.html" with form=form %}
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required. Corrects a mistyped reference for every sample on this chain of custody. A client submission keeps the reference exactly as the client entered it. The earlier reference stays in the history below; reprint labels or paperwork that show it.</p>
+{% url 'receipt:order-detail' order.pk as cancel_url %}
+{% form_page form=form cancel_url=cancel_url submit_label=page_title note="Corrects a mistyped reference for every sample on this chain of custody. A client submission keeps the reference exactly as the client entered it. The earlier reference stays in the history below; reprint labels or paperwork that show it." %}
   <fieldset class="vr-form-section">
     {% for field in form.visible_fields %}{{ field.as_field_group }}{% endfor %}
     {% for field in form.hidden_fields %}{{ field }}{% endfor %}
   </fieldset>
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{% url 'receipt:order-detail' order.pk %}">Cancel</a>
-    <button class="btn btn-primary" type="submit">{{ page_title }}</button>
-  </div>
-</form>
+{% endform_page %}
 {% endif %}
 <div class="vr-narrow">{% include "receipt/correction_history.html" with events=correction_events title="Reference corrected" %}</div>
 {% endblock %}

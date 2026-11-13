@@ -1,29 +1,34 @@
 {% extends "base.html" %}
-{% load catalog_extras laboratory_extras %}
+{% load catalog_extras laboratory_extras ui %}
 {% block title %}{{ batch.number }} · Batches &amp; QC · Smart Roots LIMS{% endblock %}
-{% block breadcrumbs %}{% url 'analytical:batch-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Batches & QC" section_url=list_url current=batch.number %}{% endblock %}
+{% block breadcrumbs %}{% url 'analytical:batch-list' as list_url %}{% breadcrumbs section="Batches & QC" section_url=list_url current=batch.number %}{% endblock %}
 {% block page_heading %}<span class="vr-id">{{ batch.number }}</span>{% endblock %}
-{% block page_meta %}
-<ul class="vr-page-meta">
-  <li>{% if open %}{% include "includes/status.html" with label=batch.get_status_display tone="info" %}{% else %}{% include "includes/status.html" with label=batch.get_status_display tone="neutral" %}{% endif %}</li>
+{% block page_meta %}{% page_meta %}
+  <li>{% if open %}{% status label=batch.get_status_display tone="info" %}{% else %}{% status label=batch.get_status_display tone="neutral" %}{% endif %}</li>
   <li>{{ batch.method }}</li>
-  <li>{{ batch.get_matrix_display }}</li>
-  <li title="Tests in this batch with an approved result">{{ approved_count }} of {{ total_count }} test{{ total_count|pluralize }} approved</li>
-</ul>
-{% endblock %}
+  <li>{% matrix_tag matrix=batch.matrix size="lg" %}</li>
+  <li title="Tests in this batch by result state"><strong>{{ draft_total }}</strong> entered · <strong>{{ returned_count }}</strong> returned · <strong>{{ approved_count }}</strong> of {{ total_count }} approved</li>
+{% endpage_meta %}{% endblock %}
 {% block page_actions %}
 {% if can_enter %}
 {% if open and total_count %}<button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#close-batch-dialog">Close batch</button>{% endif %}
-<a class="btn btn-outline-secondary" href="{% url 'analytical:batch-import' batch.pk %}">Import results</a>
-<a class="btn btn-outline-secondary" href="{% url 'analytical:batch-import-mapped' batch.pk %}">Import with a mapping</a>
+{% more_actions label="Import results" %}
+    <li><a class="dropdown-item" href="{% url 'analytical:batch-import' batch.pk %}">Standard CSV file</a></li>
+    <li><a class="dropdown-item" href="{% url 'analytical:batch-import-mapped' batch.pk %}">With a saved mapping</a></li>
+{% endmore_actions %}
 {% if enterable_count %}<a class="btn btn-primary" href="{% url 'analytical:batch-entry' batch.pk %}">Enter results ({{ enterable_count }})</a>{% endif %}
 {% endif %}
 {% endblock %}
 {% block content %}
+{% if returned_count %}
+{% notice tone="warning" label="Returned" %}
+    <p class="mb-1">{{ returned_count }} result{{ returned_count|pluralize }} {{ returned_count|pluralize:"was,were" }} returned by review and must be entered again with a reason:</p>
+    <ul class="mb-1 ps-3">{% for r in returned_results %}<li><a class="vr-id" href="{% url 'analytical:result-detail' r.pk %}">{{ r.requested_test.sample.lab_id }}</a> {{ r.requested_test.definition.analyte }}</li>{% endfor %}{% if returned_count > returned_results|length %}<li>the rest are in the table below (status Returned)</li>{% endif %}</ul>
+    {% if can_enter %}<p class="mb-0"><a href="{% url 'analytical:batch-entry' batch.pk %}">Enter results</a></p>{% endif %}
+{% endnotice %}
+{% endif %}
 {% if issues %}
-<div class="alert alert-warning" role="status">
-  {% include "includes/status.html" with label="QC holds approval" tone="warning" plain=True %}
-  <div>
+{% notice tone="warning" label="QC holds approval" %}
     <p class="mb-1">These QC findings keep results from being approved until a reviewer accepts them with a recorded corrective action.</p>
     <ul class="mb-0 ps-3">
       {% for issue in issues %}
@@ -34,81 +39,71 @@
       </li>
       {% endfor %}
     </ul>
-  </div>
-</div>
+{% endnotice %}
 {% endif %}
 
 {% if preparation_rules %}
-<div class="alert alert-warning" role="status">
-  {% include "includes/status.html" with label="Preparation time needed" tone="warning" plain=True %}
-  <div>Holding rule{{ preparation_rules|length|pluralize }} {% for r in preparation_rules %}<strong>{{ r.name }}</strong>{% if not forloop.last %}, {% endif %}{% endfor %} start{{ preparation_rules|length|pluralize:"s," }} or end{{ preparation_rules|length|pluralize:"s," }} at preparation, but no preparation time is recorded. Results entered now cannot be evaluated or submitted. <a href="#preparation">Set the preparation time</a> first.</div>
-</div>
+{% notice tone="warning" label="Preparation time needed" %}Holding rule{{ preparation_rules|length|pluralize }} {% for r in preparation_rules %}<strong>{{ r.name }}</strong>{% if not forloop.last %}, {% endif %}{% endfor %} start{{ preparation_rules|length|pluralize:"s," }} or end{{ preparation_rules|length|pluralize:"s," }} at preparation, but no preparation time is recorded. Results entered now cannot be evaluated or submitted. <a href="#preparation">Set the preparation time</a> first.{% endnotice %}
 {% endif %}
 
-<section class="card mb-3" aria-labelledby="batch-heading">
-  <div class="card-header"><h2 class="card-title" id="batch-heading">Batch details</h2></div>
-  <div class="card-body">
+{% panel title="Batch details" heading_id="batch-heading" class="mb-3" %}
     <dl class="vr-facts">
-      <div><dt>Equipment</dt><dd>{% if batch.equipment %}<a href="{% url 'laboratory:equipment-detail' batch.equipment_id %}">{{ batch.equipment.asset_id }}</a> {{ batch.equipment.name }}{% else %}Not recorded{% endif %}{% if can_enter %} <a href="#equipment">{% if batch.equipment %}Change{% else %}Set{% endif %}<span class="visually-hidden"> equipment</span></a>{% endif %}</dd></div>
-      <div><dt>Preparation start</dt><dd>{% if batch.prepared_at %}<time datetime="{{ batch.prepared_at|date:'c' }}" title="{{ batch.prepared_at|date:'Y-m-d H:i T' }}">{{ batch.prepared_at|date:"Y-m-d H:i" }}</time>{% else %}Not recorded{% endif %}{% if can_enter %} <a href="#preparation">{% if batch.prepared_at %}Change{% else %}Set{% endif %}<span class="visually-hidden"> preparation time</span></a>{% endif %}</dd></div>
-      <div><dt>Created</dt><dd><time datetime="{{ batch.created_at|date:'c' }}" title="{{ batch.created_at|date:'Y-m-d H:i T' }}">{{ batch.created_at|date:"Y-m-d H:i" }}</time> by {{ batch.created_by.get_username }}</dd></div>
-      {% if batch.closed_at %}<div><dt>Closed</dt><dd><time datetime="{{ batch.closed_at|date:'c' }}" title="{{ batch.closed_at|date:'Y-m-d H:i T' }}">{{ batch.closed_at|date:"Y-m-d H:i" }}</time> by {{ batch.closed_by.get_username }}</dd></div>{% endif %}
-      {% if batch.notes %}<div><dt>Notes</dt><dd>{{ batch.notes }}</dd></div>{% endif %}
+      {% fact label="Equipment" wide=True %}{% if batch.equipment %}<a href="{% url 'laboratory:equipment-detail' batch.equipment_id %}">{{ batch.equipment.asset_id }}</a> {{ batch.equipment.name }}{% else %}Not recorded{% endif %}{% if can_enter %} <a href="#equipment">{% if batch.equipment %}Change{% else %}Set{% endif %}<span class="visually-hidden"> equipment</span></a>{% endif %}{% endfact %}
+      {% fact label="Preparation start" %}{% if batch.prepared_at %}<time datetime="{{ batch.prepared_at|date:'c' }}" title="{{ batch.prepared_at|date:'Y-m-d H:i T' }}">{{ batch.prepared_at|date:"Y-m-d H:i" }}</time>{% else %}Not recorded{% endif %}{% if can_enter %} <a href="#preparation">{% if batch.prepared_at %}Change{% else %}Set{% endif %}<span class="visually-hidden"> preparation time</span></a>{% endif %}{% endfact %}
+      {% fact label="Created" %}<time datetime="{{ batch.created_at|date:'c' }}" title="{{ batch.created_at|date:'Y-m-d H:i T' }}">{{ batch.created_at|date:"Y-m-d H:i" }}</time> by {{ batch.created_by.get_username }}{% endfact %}
+      {% if batch.closed_at %}{% fact label="Closed" %}<time datetime="{{ batch.closed_at|date:'c' }}" title="{{ batch.closed_at|date:'Y-m-d H:i T' }}">{{ batch.closed_at|date:"Y-m-d H:i" }}</time> by {{ batch.closed_by.get_username }}{% endfact %}{% endif %}
+      {% if batch.notes %}{% fact label="Notes" wide=True value=batch.notes %}{% endif %}
     </dl>
-  </div>
-</section>
+{% endpanel %}
 
 {% if can_enter %}
-<details class="card mb-3" id="preparation" {% if preparation_rules %}open{% endif %}>
-  <summary class="card-header">Preparation time{% if batch.prepared_at %}: {{ batch.prepared_at|date:"Y-m-d H:i T" }}{% else %}: not recorded{% endif %}</summary>
-  <div class="card-body">
-    <form class="vr-form" method="post" action="{% url 'analytical:batch-preparation' batch.pk %}" data-vr-local-form="Save preparation time" data-vr-local-title="Record preparation time" novalidate>
-      {% csrf_token %}
-      <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
-      {{ prep_form }}
-      <div class="vr-form-actions"><button class="btn btn-outline-secondary" type="submit">Save preparation time</button></div>
+{% panel title="Preparation time" heading_id="preparation-heading" id="preparation" collapsible=True open=preparation_rules class="mb-3" %}
+  {% fill title %}Preparation time{% if batch.prepared_at %}: {{ batch.prepared_at|date:"Y-m-d H:i T" }}{% else %}: not recorded{% endif %}{% endfill %}
+    {% url 'analytical:batch-preparation' batch.pk as prep_action %}
+    {% form_page form=prep_form action=prep_action local=True title="Record preparation time" submit_label="Save preparation time" secondary=True %}
+      {% for field in prep_form.visible_fields %}{{ field.as_field_group }}{% endfor %}
+      {% for field in prep_form.hidden_fields %}{{ field }}{% endfor %}
       <p class="vr-form-note">Holding time is evaluated from the time recorded when each result is entered. It can be changed only while no result in the batch is submitted or approved; entered results must then be entered again before they can be submitted.</p>
-    </form>
-  </div>
-</details>
-<details class="card mb-3" id="equipment">
-  <summary class="card-header">Equipment{% if batch.equipment %}: {{ batch.equipment.asset_id }}{% else %}: not recorded{% endif %}</summary>
-  <div class="card-body">
-    <form class="vr-form" method="post" action="{% url 'analytical:batch-equipment' batch.pk %}" data-vr-local-form="Save equipment" data-vr-local-title="Record batch equipment" novalidate>
-      {% csrf_token %}
-      {{ equipment_form }}
-      <div class="vr-form-actions"><button class="btn btn-outline-secondary" type="submit">Save equipment</button></div>
+    {% endform_page %}
+{% endpanel %}
+{% panel title="Equipment" heading_id="equipment-heading" id="equipment" collapsible=True class="mb-3" %}
+  {% fill title %}Equipment{% if batch.equipment %}: {{ batch.equipment.asset_id }}{% else %}: not recorded{% endif %}{% endfill %}
+    {% url 'analytical:batch-equipment' batch.pk as equipment_action %}
+    {% form_page form=equipment_form action=equipment_action local=True title="Record batch equipment" submit_label="Save equipment" secondary=True no_required_note=True %}
+      {% for field in equipment_form.visible_fields %}{{ field.as_field_group }}{% endfor %}
+      {% for field in equipment_form.hidden_fields %}{{ field }}{% endfor %}
       <p class="vr-form-note">Recorded for information beside the results. It is not an approval or release condition, and each change is kept in the audit history.</p>
-    </form>
-  </div>
-</details>
+    {% endform_page %}
+{% endpanel %}
 {% endif %}
 
-<section class="card vr-table-card mb-3" aria-labelledby="results-heading">
-  <div class="card-header"><h2 class="card-title" id="results-heading">Samples and results</h2><span class="vr-count">{{ page_obj.paginator.count }}{% if filtered %} matching{% endif %} of {{ total_count }} test{{ total_count|pluralize }}</span>
-    {% if can_enter and open %}<a class="btn btn-outline-secondary btn-sm ms-auto" href="{% url 'analytical:batch-add-tests' batch.pk %}">{% include "includes/icon.html" with name="plus-lg" %}Add tests</a>{% endif %}</div>
+{% if can_enter and open %}{% url 'analytical:batch-add-tests' batch.pk as add_url %}{% endif %}
+{% panel title="Samples and results" heading_id="results-heading" table=True flush=True class="mb-3" %}
+  {% fill count %}{{ page_obj.paginator.count }}{% if filtered %} matching{% endif %} of {{ total_count }} test{{ total_count|pluralize }}{% endfill %}
+  {% fill actions %}{% if add_url %}<a class="btn btn-outline-secondary btn-sm" href="{{ add_url }}">{% icon name="plus-lg" %}Add tests</a>{% endif %}{% endfill %}
   {% if total_count %}
-  {% include "includes/grid_toolbar.html" with label="Filter results" grid=grid_key %}
+  {% grid_toolbar label="Filter results" grid=grid_key %}
   {% endif %}
-  {% if page_obj.paginator.count %}
+  {% list_results items=page_obj noun="results" filtered=filtered invalid=filter_form.errors clear_url=request.path no_results_title="No results match these filters" no_results_body="Clear the filters to see every test in this batch." empty_title="No tests in this batch" empty_body="Add received tests that match the batch method and matrix." action_url=add_url action_label="Add tests" %}
+  {# form: bulk-selection #}
   <form method="post" action="{% url 'analytical:batch-submit' batch.pk %}">
     {% csrf_token %}
     <input type="hidden" name="next" value="{{ request.get_full_path }}">
-    {% if can_enter and draft_total %}<p class="vr-form-note px-3 pt-2 mb-0"><span data-vr-select-count="revisions" aria-live="polite">0 selected</span>. The header checkbox selects the entered results on this page only{% if draft_total > page_drafts %} ({{ page_drafts }} of the {{ draft_total }} in this batch){% endif %}.</p>{% endif %}
+    {% if can_enter and draft_total %}{% panel_section %}<p class="vr-form-note"><span data-vr-select-count="revisions" aria-live="polite">0 selected</span>. The header checkbox selects the entered results on this page only{% if draft_total > page_drafts %} ({{ page_drafts }} of the {{ draft_total }} in this batch){% endif %}.</p>{% endpanel_section %}{% endif %}
     <div class="vr-table-wrap">
       <table class="table table-hover vr-table" data-vr-grid="analytical.batch_results" data-vr-grid-version="1" aria-labelledby="results-heading">
         <thead>
           <tr>
-            {% if can_enter %}<th scope="col" data-vr-col="select" data-vr-col-locked data-vr-col-label="Select">{% if draft_total %}{% include "includes/select_all.html" with name="revisions" label="Select all entered results on this page" %}{% else %}<span class="visually-hidden">Select</span>{% endif %}</th>{% endif %}
+            {% if can_enter %}<th scope="col" data-vr-col="select" data-vr-col-locked data-vr-col-label="Select">{% if draft_total %}{% select_all name="revisions" label="Select all entered results on this page" %}{% else %}<span class="visually-hidden">Select</span>{% endif %}</th>{% endif %}
             <th scope="col" data-vr-col="sample" data-vr-col-locked>Sample</th>
             <th scope="col" data-vr-col="status">Status</th>
             <th scope="col" data-vr-col="analyte">Analyte</th>
-            <th scope="col" data-vr-col="prepared_aliquot">Prepared aliquot</th>
+            <th scope="col" data-vr-col="prepared_aliquot" data-vr-col-priority="low">Prepared aliquot</th>
             <th scope="col" class="text-end" data-vr-col="result">Result</th>
             <th scope="col" data-vr-col="unit">Unit</th>
             <th scope="col" class="text-end" data-vr-col="reporting_limit">Reporting limit</th>
             <th scope="col" data-vr-col="qualifiers">Qualifiers</th>
-            <th scope="col" data-vr-col="holding">Holding</th>
+            <th scope="col" data-vr-col="holding" data-vr-col-priority="low">Holding</th>
             <th scope="col" data-vr-col="qc">QC</th>
             <th scope="col" class="text-end" data-vr-col="dilution" data-vr-col-hidden>Dilution</th>
             <th scope="col" data-vr-col="analysis_start" data-vr-col-hidden>Analysis start</th>
@@ -120,9 +115,9 @@
           {% for r in page_obj %}
           {% with rev=r.latest %}
           <tr>
-            {% if can_enter %}<td>{% if rev and rev.status == "draft" %}<input class="form-check-input" type="checkbox" name="revisions" value="{{ rev.pk }}" aria-label="Select {{ r.requested_test.sample.lab_id }} {{ r.requested_test.definition.analyte }}">{% endif %}</td>{% endif %}
+            {% if can_enter %}<td>{% if rev and rev.status == "draft" %}{% with analyte=r.requested_test.definition.analyte|stringformat:"s" %}{% row_select name="revisions" value=rev.pk label="Select "|add:r.requested_test.sample.lab_id|add:" "|add:analyte %}{% endwith %}{% endif %}</td>{% endif %}
             <th scope="row"><a class="vr-row-link vr-id" href="{% url 'analytical:result-detail' r.pk %}">{{ r.requested_test.sample.lab_id }}</a></th>
-            <td>{% include "includes/status.html" with label=r.status_label tone=r.tone plain=True %}{% if rev and rev.batch_id != batch.pk %}<div class="vr-muted small" title="This result was approved in another batch. It stays in force until a corrected revision is entered here and approved.">approved in <a href="{% url 'analytical:batch-detail' rev.batch_id %}">{{ rev.batch.number }}</a>; reanalysis</div>{% endif %}</td>
+            <td>{% status label=r.status_label tone=r.tone plain=True %}{% if rev and rev.batch_id != batch.pk %}<div class="vr-muted small" title="This result was approved in another batch. It stays in force until a corrected revision is entered here and approved.">approved in <a href="{% url 'analytical:batch-detail' rev.batch_id %}">{{ rev.batch.number }}</a>; reanalysis</div>{% endif %}</td>
             <td>{{ r.requested_test.definition.analyte }}</td>
             <td>{% if rev.prepared_aliquot_id %}<a class="vr-id" href="{% url 'analytical:prep-detail' rev.prepared_aliquot.batch_id %}">{{ rev.prepared_aliquot.batch.number }}</a><div class="small">Aliquot <span class="vr-id">{{ rev.prepared_aliquot.label }}</span></div>{% else %}<span class="vr-muted">Not linked</span>{% endif %}</td>
             {% if rev %}
@@ -136,7 +131,7 @@
             <td>{{ r.requested_test.definition.unit }}</td>
             <td class="text-end vr-muted">—</td><td></td><td class="vr-muted">—</td>
             {% endif %}
-            <td>{% if r.qc_blockers %}{% include "includes/status.html" with label="Held" tone="warning" plain=True title="Unresolved QC findings" %}{% else %}{% include "includes/status.html" with label="Clear" tone="success" plain=True %}{% endif %}</td>
+            <td>{% if r.qc_blockers %}{% status label="Held" tone="warning" plain=True title="Unresolved QC findings" %}{% else %}{% status label="Clear" tone="success" plain=True %}{% endif %}</td>
             {% if rev %}
             <td class="text-end">{{ rev.dilution_factor|plain_decimal }}</td>
             <td class="vr-nowrap"><time datetime="{{ rev.analysis_started_at|date:'c' }}" title="{{ rev.analysis_started_at|date:'Y-m-d H:i T' }}">{{ rev.analysis_started_at|date:"Y-m-d H:i" }}</time></td>
@@ -152,27 +147,21 @@
       </table>
     </div>
     {% if can_enter and draft_total %}
-    <div class="d-flex flex-wrap align-items-center gap-3 p-3 border-top">
+    {% panel_section rule=True class="d-flex flex-wrap align-items-center gap-3" %}
       <button class="btn btn-outline-secondary" type="submit">Submit selected for review</button>
       <span class="vr-form-note">Submitting records you as submitter; you cannot then review these results. {% if draft_total > page_drafts %}{{ draft_total }} entered result{{ draft_total|pluralize }} in this batch, {{ page_drafts }} on this page.{% endif %}</span>
-    </div>
+    {% endpanel_section %}
     {% endif %}
   </form>
-  {% include "includes/pagination.html" with noun="results" filtered=filtered %}
-  {% elif filtered %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No results match these filters" body="Clear the filters to see every test in this batch." clear_url=request.path %}
-  {% else %}
-  {% if can_enter and open %}{% url 'analytical:batch-add-tests' batch.pk as add_url %}{% endif %}
-  {% include "includes/empty_state.html" with title="No tests in this batch" body="Add received tests that match the batch method and matrix." action_url=add_url action_label="Add tests" %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 
-<section class="card vr-table-card mb-3" aria-labelledby="qc-heading">
-  <div class="card-header"><h2 class="card-title" id="qc-heading">Quality control</h2>
-    {% if can_enter and open %}<a class="btn btn-outline-secondary btn-sm ms-auto" href="{% url 'analytical:qc-sample-add' batch.pk %}">{% include "includes/icon.html" with name="plus-lg" %}Add QC sample</a>{% endif %}</div>
-  <div class="card-body">
+{% panel title="Quality control" heading_id="qc-heading" table=True flush=True class="mb-3" %}
+  {% fill actions %}{% if can_enter and open %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:qc-sample-add' batch.pk %}">{% icon name="plus-lg" %}Add QC sample</a>{% endif %}{% endfill %}
+  {% panel_section %}
     <h3 class="vr-section-title">Required for this method</h3>
-    {% if requirements %}
+    {% url 'analytical:qc-config' as config_url %}
+    {% list_results items=requirements empty_title="No QC requirements configured" empty_body="No QC requirements are configured for this method, so none are enforced. Review them under QC configuration." action_url=config_url action_label="QC configuration" %}
     <div class="vr-table-wrap">
       <table class="table vr-table">
         <thead><tr><th scope="col">QC type</th><th scope="col" class="text-end">Required</th><th scope="col" class="text-end">In batch</th><th scope="col">Status</th></tr></thead>
@@ -181,26 +170,23 @@
           <tr>
             <th scope="row">{{ row.requirement.get_qc_type_display }}</th>
             <td class="text-end">{{ row.need }}</td><td class="text-end">{{ row.have }}</td>
-            <td>{% if row.met %}{% include "includes/status.html" with label="Met" tone="success" plain=True %}{% else %}{% include "includes/status.html" with label="Short" tone="warning" plain=True %}{% endif %}</td>
+            <td>{% if row.met %}{% status label="Met" tone="success" plain=True %}{% else %}{% status label="Short" tone="warning" plain=True %}{% endif %}</td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
     <p class="vr-form-note">Frequencies come from the method's QC requirements configuration.</p>
-    {% else %}
-    {% url 'analytical:qc-config' as config_url %}
-    {% include "includes/empty_state.html" with title="No QC requirements configured" body="No QC requirements are configured for this method, so none are enforced. Review them under QC configuration." action_url=config_url action_label="QC configuration" %}
-    {% endif %}
-  </div>
+    {% endlist_results %}
+  {% endpanel_section %}
   {% for sample, measurements in qc_rows %}
-  <div class="card-body border-top">
+  {% panel_section rule=True %}
     <div class="d-flex justify-content-between align-items-baseline">
       <h3 class="vr-section-title mb-0"><span class="vr-id">{{ sample.label }}</span> · {{ sample.get_qc_type_display }}{% if sample.parent_sample %} · parent <a class="vr-id" href="{% url 'receipt:sample-detail' sample.parent_sample.pk %}">{{ sample.parent_sample.lab_id }}</a>{% endif %}</h3>
       {% if can_enter %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:qc-measure' sample.pk %}">Record measurements<span class="visually-hidden"> for {{ sample.label }}</span></a>{% endif %}
     </div>
-    {% if measurements %}
-    <div class="vr-table-wrap mt-2">
+    {% list_results items=measurements empty_title="No measurements recorded yet" %}
+    <div class="vr-table-wrap">
       <table class="table vr-table">
         <thead><tr><th scope="col">Analyte</th><th scope="col" class="text-end">Observed</th><th scope="col">Unit</th><th scope="col" class="text-end">Spike</th><th scope="col">Evaluation</th><th scope="col">Detail</th><th scope="col">Entered by</th></tr></thead>
         <tbody>
@@ -217,18 +203,18 @@
         </tbody>
       </table>
     </div>
-    {% else %}{% include "includes/empty_state.html" with title="No measurements recorded yet" %}{% endif %}
-  </div>
+    {% endlist_results %}
+  {% endpanel_section %}
   {% empty %}
-  <div class="card-body border-top">{% include "includes/empty_state.html" with title="No QC samples in this batch yet" %}</div>
+  {% panel_section rule=True %}{% empty_state title="No QC samples in this batch yet" %}{% endpanel_section %}
   {% endfor %}
-</section>
+{% endpanel %}
 
 {% laboratory_context request.user batch equipment=batch_equipment %}
 
 {% if can_enter and open and total_count %}
 {% url 'analytical:batch-close' batch.pk as close_url %}
-{% include "includes/confirm_dialog.html" with id="close-batch-dialog" label="Close batch" object=batch.number action=close_url body="Closing cannot be undone. Samples and QC samples can no longer be added or removed; entry, QC measurements and review continue." %}
+{% confirm_dialog id="close-batch-dialog" label="Close batch" object=batch.number action=close_url body="Closing cannot be undone. Samples and QC samples can no longer be added or removed; entry, QC measurements and review continue." %}
 {% endif %}
 {% endblock %}
-{% block record_foot %}{% include "includes/record_foot.html" with identifier=batch.number %}{% endblock %}
+{% block record_foot %}{% record_foot identifier=batch.number %}{% endblock %}

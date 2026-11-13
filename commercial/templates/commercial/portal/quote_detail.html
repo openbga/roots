@@ -1,29 +1,28 @@
 {% extends "layouts/portal.html" %}
-{% load commercial_extras %}
+{% load commercial_extras ui %}
 {% comment %}
 Client view of one quote (issued versions only). Context: quote, version, versions, lines, is_latest, can_decide,
 accept_form, decline_form. Accepting or declining applies to the version shown and is refused if reissued.
 {% endcomment %}
-{% block breadcrumbs %}{% url 'client_commercial:quote-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Quotes" section_url=list_url current=quote.number %}{% endblock %}
+{% block breadcrumbs %}{% url 'client_commercial:quote-list' as list_url %}{% breadcrumbs section="Quotes" section_url=list_url current=quote.number %}{% endblock %}
 {% block page_heading %}<span class="vr-id">{{ quote.number }}</span>{% endblock %}
-{% block page_meta %}<ul class="vr-page-meta"><li>{% include "commercial/_quote_status.html" with plain=True %}</li><li>{{ version.presented_title }}</li>{% if version.presented_project %}<li>{{ version.presented_project }}</li>{% endif %}<li>{{ versions|length }} version{{ versions|length|pluralize }}</li></ul>{% endblock %}
-{% block page_actions %}<button class="btn btn-outline-secondary" type="button" data-vr-print>{% include "includes/icon.html" with name="printer" %}Print</button>{% endblock %}
+{% block page_meta %}{% page_meta %}<li>{% include "commercial/_quote_status.html" with plain=True %}</li><li>{{ version.presented_title }}</li>{% if version.presented_project %}<li>{{ version.presented_project }}</li>{% endif %}<li>{{ versions|length }} version{{ versions|length|pluralize }}</li>{% endpage_meta %}{% endblock %}
+{% block page_actions %}<button class="btn btn-outline-secondary" type="button" data-vr-print>{% icon name="printer" %}Print</button>{% endblock %}
 {% block content %}
 {% if quote.status == "accepted" %}
-<div class="alert alert-success" role="status">{% include "includes/status.html" with label="Accepted" tone="success" plain=True %}<div>Version {{ quote.decision_version }} accepted on {{ quote.decided_at|date:"Y-m-d H:i" }}.{% if quote.client_reference %} Your reference: <strong>{{ quote.client_reference }}</strong>.{% endif %} You can now link your sample submissions to this quote.</div></div>
+{% notice tone="success" label="Decision" %}Version {{ quote.decision_version }} accepted on {{ quote.decided_at|date:"Y-m-d H:i" }}.{% if quote.client_reference %} Your reference: <strong>{{ quote.client_reference }}</strong>.{% endif %} You can now link your sample submissions to this quote.{% endnotice %}
 {% elif quote.status == "declined" %}
-<div class="alert alert-warning" role="status">{% include "includes/status.html" with label="Declined" tone="warning" plain=True %}<div>You declined version {{ quote.decision_version }} on {{ quote.decided_at|date:"Y-m-d" }}. The laboratory may send a revised quote.</div></div>
+{% notice tone="warning" label="Decision" %}You declined version {{ quote.decision_version }} on {{ quote.decided_at|date:"Y-m-d" }}. The laboratory may send a revised quote.{% endnotice %}
 {% elif quote.status == "revising" %}
-<div class="alert alert-info" role="status">{% include "includes/status.html" with label="Being revised" tone="info" plain=True %}<div>The laboratory is preparing a new version. You will be able to decide on it once it is issued.</div></div>
+{% notice tone="info" label="Being revised" %}The laboratory is preparing a new version. You will be able to decide on it once it is issued.{% endnotice %}
 {% elif quote.is_expired %}
-<div class="alert alert-warning" role="status">{% include "includes/status.html" with label="Expired" tone="warning" plain=True %}<div>This quote was valid until {{ version.valid_until|date:"Y-m-d" }}. Ask the laboratory to reissue it.</div></div>
+{% notice tone="warning" label="Expired" %}This quote was valid until {{ version.valid_until|date:"Y-m-d" }}. Ask the laboratory to reissue it.{% endnotice %}
 {% endif %}
 {% if not is_latest %}
-<div class="alert alert-info" role="status">{% include "includes/status.html" with label="Replaced" tone="info" plain=True %}<div>You are viewing version {{ version.number }}, which was replaced. <a href="{% url 'client_commercial:quote-detail' quote.pk %}">Show the current version</a>.</div></div>
+{% notice tone="info" label="Replaced" %}You are viewing version {{ version.number }}, which was replaced. <a href="{% url 'client_commercial:quote-detail' quote.pk %}">Show the current version</a>.{% endnotice %}
 {% endif %}
 {% include "commercial/_quote_document.html" %}
-<section class="card vr-table-card mt-3" aria-labelledby="versions-heading">
-  <div class="card-header"><h2 class="card-title" id="versions-heading">Versions</h2><span class="vr-count">{{ versions|length }}</span></div>
+{% panel title="Versions" heading_id="versions-heading" count=versions|length table=True flush=True class="mt-3" %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table">
       <caption class="visually-hidden">Versions of {{ quote.number }}</caption>
@@ -39,37 +38,25 @@ accept_form, decline_form. Accepting or declining applies to the version shown a
       </tbody>
     </table>
   </div>
-</section>
+{% endpanel %}
 {% if can_decide %}
-<section class="card mt-3" aria-labelledby="accept-heading">
-  <div class="card-header"><h2 class="card-title" id="accept-heading">Accept this version</h2></div>
-  <div class="card-body">
-    <form method="post" action="{% url 'client_commercial:quote-accept' quote.pk %}" data-vr-local-form="Accept version {{ version.number }}" data-vr-local-title="Accept quote version {{ version.number }}" class="vr-form" novalidate>
-      {% csrf_token %}{{ accept_form.version_number }}
-      {% include "includes/form_errors.html" with form=accept_form %}
-      <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+{% with version_number=version.number|stringformat:"s" %}
+{% panel title="Accept this version" heading_id="accept-heading" class="mt-3" %}
+    {% url 'client_commercial:quote-accept' quote.pk as local_action %}
+    {% form_page form=accept_form action=local_action local=True submit_label="Accept version "|add:version_number title="Accept quote version "|add:version_number %}
+      {{ accept_form.version_number }}
       {{ accept_form.client_reference.as_field_group }}
       {{ accept_form.confirm.as_field_group }}
-      <div class="vr-form-actions">
-        <button class="btn btn-primary" type="submit">Accept version {{ version.number }}</button>
-      </div>
-    </form>
-  </div>
-</section>
-<section class="card mt-3" aria-labelledby="decline-heading">
-  <div class="card-header"><h2 class="card-title" id="decline-heading">Decline this version</h2></div>
-  <div class="card-body">
-    <form method="post" action="{% url 'client_commercial:quote-decline' quote.pk %}" data-vr-local-form="Decline version {{ version.number }}" data-vr-local-title="Decline quote version {{ version.number }}" class="vr-form" novalidate>
-      {% csrf_token %}{{ decline_form.version_number }}
-      {% include "includes/form_errors.html" with form=decline_form %}
-      <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+    {% endform_page %}
+{% endpanel %}
+{% panel title="Decline this version" heading_id="decline-heading" class="mt-3" %}
+    {% url 'client_commercial:quote-decline' quote.pk as local_action %}
+    {% form_page form=decline_form action=local_action local=True submit_label="Decline version "|add:version_number title="Decline quote version "|add:version_number destructive=True %}
+      {{ decline_form.version_number }}
       {{ decline_form.reason.as_field_group }}
-      <div class="vr-form-actions">
-        <button class="btn btn-outline-danger" type="submit">Decline version {{ version.number }}</button>
-      </div>
-    </form>
-  </div>
-</section>
+    {% endform_page %}
+{% endpanel %}
+{% endwith %}
 {% endif %}
 {% endblock %}
-{% block record_foot %}{% include "includes/record_foot.html" with identifier=quote.number %}{% endblock %}
+{% block record_foot %}{% record_foot identifier=quote.number %}{% endblock %}

@@ -25,7 +25,7 @@ from reporting.models import Report, ReportVersion
 from reporting.pdf import ReportRenderError, render_html
 from reporting.services import StaleReport, release_report
 
-from .conftest import make_user
+from .conftest import make_user, texts
 from .test_release import release
 
 
@@ -200,7 +200,7 @@ def test_issued_report_keeps_its_identity_and_amendment_lists_the_change(
 
     # Only the laboratory identity differs: that is a valid amendment.
     amended = release(Report.objects.get(pk=report.pk), people["approver"], reason="New address")
-    assert amended.changes == [
+    assert texts(amended.changes) == [
         "Laboratory address changed.",
         "Laboratory logo changed.",
         "Laboratory certificates changed.",
@@ -216,7 +216,7 @@ def test_amendment_compares_identity_parts_present_on_either_side(world, admin, 
     assert describe_changes(legacy, deepcopy(legacy)) == []
     record_profile(admin, settings)
     current = assemble(world["report_a"]).content
-    assert describe_changes(legacy, current) == [
+    assert texts(describe_changes(legacy, current)) == [
         "Laboratory address changed.",
         "Laboratory phone changed.",
         "Laboratory email changed.",
@@ -225,7 +225,7 @@ def test_amendment_compares_identity_parts_present_on_either_side(world, admin, 
         "Laboratory certificates changed.",
         "Laboratory certificate statement changed.",
     ]
-    assert describe_changes(current, legacy)[0] == "Laboratory address changed."
+    assert texts(describe_changes(current, legacy))[0] == "Laboratory address changed."
 
 
 def test_laboratory_entered_markup_is_escaped(world, admin):

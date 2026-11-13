@@ -5,6 +5,27 @@
   ],
   "title": "User administration history",
   "purpose": "Read maintenance actions recorded by Django administration for this object.",
+  "summary": "Read the maintenance actions Django administration recorded for this user, oldest first.",
+  "tasks": [
+    {
+      "title": "Read what changed and who changed it",
+      "steps": [
+        "Read Date/time, User and Action for each entry.",
+        "Use the page numbers to move through older or newer entries."
+      ]
+    },
+    {
+      "title": "Go back to the user",
+      "steps": [
+        "Select the user in the breadcrumbs."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "This shows only actions taken in Django administration.",
+    "User and password changes also have their own audit events, without password values.",
+    "No change history does not mean nothing happened to the record."
+  ],
   "sections": [
     {
       "title": "Access and scope",

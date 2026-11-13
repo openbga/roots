@@ -65,3 +65,26 @@ class ReleaseForm(forms.Form):
             self.fields["reason"].required = True
         else:
             del self.fields["reason"]
+
+
+class PickerForm(forms.Form):
+    """The report scope's sample-picker filters, posted with the scope form and read by the view
+    from the raw data (reporting.queries.picker_samples); this form only renders them."""
+
+    pshow = forms.ChoiceField(
+        label="Show",
+        choices=[
+            ("all", "All samples (selected first)"),
+            ("selected", "Selected only"),
+            ("approved", "All tests approved"),
+            ("unreported", "Not in any issued report"),
+        ],
+        widget=forms.Select(attrs={"id": "picker-show"}),
+    )
+    pper = forms.TypedChoiceField(
+        label="Rows", coerce=int, widget=forms.Select(attrs={"id": "picker-per-page"})
+    )
+
+    def __init__(self, show, per_page, per_page_options, **kwargs):
+        super().__init__(initial={"pshow": show, "pper": per_page}, **kwargs)
+        self.fields["pper"].choices = [(n, str(n)) for n in per_page_options]

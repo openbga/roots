@@ -1,10 +1,10 @@
-{% comment %}Signed-in user dropdown for the top bar. Account links resolve with the non-raising url-as form, so an unmounted route just hides. Sign-out is a POST (allauth default). A shared demonstration account (user.credentials_locked) gets a note instead of the password and two-factor links; accounts.middleware refuses those pages.{% endcomment %}
+{% load ui %}{% comment %}Signed-in user dropdown for the top bar. Account links resolve with the non-raising url-as form, so an unmounted route just hides. Sign-out is a POST (allauth default). A shared demonstration account (user.credentials_locked) gets a note instead of the password and two-factor links; accounts.middleware refuses those pages.{% endcomment %}
 {% url 'account_logout' as logout_url %}
 {% url 'account_change_password' as password_url %}
 {% url 'mfa_index' as mfa_url %}
 <div class="dropdown">
   <button class="btn btn-sm vr-topbar-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-    {% include "includes/icon.html" with name="person-circle" %}<span class="d-none d-md-inline">{{ user.get_full_name|default:user.get_username }}</span><span class="visually-hidden d-md-none">Account</span>
+    {% icon name="person-circle" %}<span class="d-none d-md-inline">{{ user.get_full_name|default:user.get_username }}</span><span class="visually-hidden d-md-none">Account</span>{% icon name="chevron-down" class="vr-caret" %}
   </button>
   <div class="dropdown-menu dropdown-menu-end">
     <div class="px-2 py-2 mb-1 border-bottom">
@@ -15,13 +15,13 @@
     {% if user.credentials_locked %}
     <p class="dropdown-item-text vr-muted small mb-0">Shared demonstration account: its password and two-factor settings cannot be changed.</p>
     {% else %}
-    {% if password_url %}<a class="dropdown-item" href="{{ password_url }}">{% include "includes/icon.html" with name="key" %}Change password</a>{% endif %}
-    {% if mfa_url %}<a class="dropdown-item" href="{{ mfa_url }}">{% include "includes/icon.html" with name="lock" %}Two-factor authentication</a>{% endif %}
+    {% if password_url %}<a class="dropdown-item" href="{{ password_url }}">{% icon name="key" %}Change password</a>{% endif %}
+    {% if mfa_url %}<a class="dropdown-item" href="{{ mfa_url }}">{% icon name="lock" %}Two-factor authentication</a>{% endif %}
     {% endif %}
     {% if logout_url %}
     <form method="post" action="{{ logout_url }}">
       {% csrf_token %}
-      <button class="dropdown-item" type="submit">{% include "includes/icon.html" with name="box-arrow-right" %}Sign out</button>
+      <button class="dropdown-item" type="submit">{% icon name="box-arrow-right" %}Sign out</button>
     </form>
     {% endif %}
   </div>

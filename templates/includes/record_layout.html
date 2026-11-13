@@ -1,0 +1,24 @@
+{% comment %}
+A record page's layout (docs/ui-standards.md section 6, rule 5): the first panel with the side
+column beside it, then every other panel at full width. The side column holds the launch panel of
+the most frequent record action (Record custody transfer, Enter result, Release). It grows with its
+content up to the viewport height; longer content scrolls inside its own box, a keyboard-focusable
+region named by aside_label, with a visible scrollbar and a fade while more remains below. Below 1200px everything stacks in reading order: first panel, side column, the rest.
+Rendered by the {% record_layout %} block tag ({% load ui %}); the body is the full-width panels.
+Parameters:
+  aside_label   accessible name of the side column's scroll region (e.g. "Record custody transfer")
+Parts:
+  lead          the first panel (the record's key facts)
+  aside         the side column; omit it for a single column
+Usage:
+  {% record_layout aside_label="Record custody transfer" %}
+    {% fill lead %}{% panel title="Collection and receipt" %}...{% endpanel %}{% endfill %}
+    {% fill aside %}{% if can_receive %}{% panel title="Record custody transfer" id="transfer" %}...{% endpanel %}{% endif %}{% endfill %}
+    {% panel title="Requested tests" table=True %}...{% endpanel %}
+  {% endrecord_layout %}
+{% endcomment %}
+<div class="vr-record{% if slots.aside %} vr-record-has-aside{% endif %}">
+  <div class="vr-record-lead">{{ slots.lead }}</div>
+  {% if slots.aside %}<div class="vr-record-aside"><div class="vr-record-aside-scroll" tabindex="0" role="region" aria-label="{{ aside_label }}">{{ slots.aside }}</div></div>{% endif %}
+  {{ body }}
+</div>

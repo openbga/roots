@@ -12,6 +12,7 @@ from zoneinfo import ZoneInfo
 import pytest
 from django.contrib.auth.models import Group
 from django.utils import timezone
+from playwright.sync_api import Error as PlaywrightError
 from playwright.sync_api import Page, expect
 
 LAB_TZ = ZoneInfo("America/New_York")
@@ -23,21 +24,107 @@ def local_input(delta: timedelta) -> str:
 
 
 def field(scope, name: str):
-    """A form control by exact label text; the required-field marker may follow it."""
-    return scope.get_by_label(re.compile(rf"^{re.escape(name)}\s*\*?$"))
+    """A form control by exact label text; the required-field marker may follow it. An enhanced
+    select or suggestion input also labels its menu (listbox): the control comes first. Controls
+    behind an open dialog are inert and never match."""
+    page = scope if isinstance(scope, Page) else scope.page
+    labelled = scope.get_by_label(re.compile(rf"^{re.escape(name)}\s*\*?$"))
+    # form-dialog.js renames the ids of the inert page behind a dialog to "vr-background-…".
+    return labelled.and_(page.locator(":not([id^='vr-background-'])")).first
+
+
+def native_select(control):
+    """The element holding the value a form submits for a labelled control: the <select> behind
+    a Tom Select, the hidden server-format input of a date field (static/js/controls.js), or the
+    control itself. It first waits until controls.js has enhanced the field, because a labelled
+    locator finds the native element before that and the enhanced control after it: without the
+    wait the answer depends on how fast the page is (an HTMX error re-render, a slow CI runner).
+    The element is resolved now and marked, so a later locator for the label cannot drift."""
+    handle = control.first.element_handle()
+    control.page.wait_for_function(
+        """el => {
+            if (!el.isConnected || el.closest('.ts-wrapper')) return true;
+            const enhanced = el.classList.contains('tomselected');
+            if (el.matches('select:not([data-vr-native])')) return enhanced;
+            if (el.matches('input[data-vr-date]')) return Boolean(el.vrDateField);
+            if (el.matches('input[data-vr-suggest]')) return enhanced;
+            return true;
+        }""",
+        arg=handle,
+    )
+    mark = handle.evaluate(
+        """el => {
+            const wrapper = el.closest('.ts-wrapper');
+            const target = wrapper ? wrapper.previousElementSibling
+                : el.vrDateField ? el.vrDateField.hidden : el;
+            target.dataset.e2eNative = target.dataset.e2eNative || String(Math.random()).slice(2);
+            return target.dataset.e2eNative;
+        }"""
+    )
+    return control.page.locator(f"[data-e2e-native='{mark}']")
+
+
+def pick(control, value=None, *, label=None, index=None) -> None:
+    """Choose options the way a user does: open the select's menu, type into its search box when
+    it has one, and click the option. `control` is the labelled combobox (field(), get_by_label)
+    or the <select>; options are given as for select_option: value(s), label or index.
+    A form that re-renders meanwhile (a dependent field refreshing it) is found again once."""
+    try:
+        _pick(control, value, label, index, timeout=4_000)
+    except PlaywrightError:
+        _pick(control, value, label, index, timeout=None)
+
+
+def _pick(control, value, label, index, timeout) -> None:
+    select = native_select(control)
+    page = select.page
+    wrapper = select.locator("xpath=following-sibling::div[contains(@class, 'ts-wrapper')][1]")
+    try:  # static/js/controls.js enhances every select once its form is ready
+        expect(select).to_have_class(re.compile(r"\btomselected\b"))
+    except AssertionError:  # not enhanced: the browser's own select
+        select.select_option(value, label=label, index=index)
+        return
+    combobox = wrapper.locator("[role=combobox]").first
+    combobox.wait_for(timeout=timeout)
+    if label is not None:
+        labels = [label] if isinstance(label, str) else list(label)
+    else:
+        if index is not None:
+            options = [select.locator("option").nth(index)]
+        else:
+            values = [value] if isinstance(value, str) else list(value)
+            options = [select.locator(f"option[value='{v}']") for v in values]
+        labels = [" ".join(option.text_content().split()) for option in options]
+    menu = wrapper.locator(".ts-dropdown-content")
+    search = wrapper.locator("input.dropdown-input")
+    for text in labels:
+        if not menu.is_visible():
+            combobox.click(timeout=timeout)
+        words = text.split()[:1]  # the first word narrows the menu; the click picks the option
+        if search.count():
+            search.fill(" ".join(words))
+        elif combobox.evaluate("el => el.tagName === 'INPUT'"):
+            combobox.fill(" ".join(words))  # multi-select: its input filters the menu
+        menu.get_by_role("option", name=text, exact=True).click(timeout=timeout)
+    # Close a menu that stays open (multi-select) only while Tom Select still has it open, so the
+    # Escape never reaches the dialog around it.
+    if wrapper.evaluate("w => w.classList.contains('dropdown-active')"):
+        page.keyboard.press("Escape")
 
 
 def choose(select, value: str) -> None:
     """Enter `value` in a list-or-other control: a listed option, else "Other" with the text."""
+    select = native_select(select)
     if value in select.locator("option").all_text_contents():
-        select.select_option(label=value)
+        pick(select, label=value)
     else:
-        select.select_option(value="__other__")
+        pick(select, value="__other__")
         select.page.locator(f"#{select.get_attribute('id')}_other").fill(value)
 
 
 def expect_chosen(select, value: str) -> None:
     """The list-or-other control holds `value` ("" for nothing chosen)."""
+    select = native_select(select)
     if not value or value in select.locator("option").all_text_contents():
         expect(select).to_have_value(value)
     else:
@@ -583,3 +670,10 @@ def lcs_history(observed_texts=LCS_HISTORY):
             analysis_started_at=now - timedelta(days=len(observed_texts) - index, hours=1),
             spike_value="1.00",
         )
+
+
+def menu_item(page: Page, menu: str, item: str):
+    """An item of a header dropdown ({% more_actions %} "More", or a named menu such as "Import
+    results"): opens the menu and returns the item, ready to click."""
+    page.get_by_role("button", name=menu, exact=True).click()
+    return page.locator(".dropdown-menu.show").get_by_role("link", name=item, exact=True)

@@ -6,6 +6,35 @@
   ],
   "title": "Analyte",
   "purpose": "Create or correct a measured substance/property and its optional CAS identifier. The edit form is also its record page.",
+  "summary": "Create or correct a measured substance or property, its optional CAS number and its group. For an existing analyte this is also its record page. Only admins can save.",
+  "tasks": [
+    {
+      "title": "Add an analyte",
+      "steps": [
+        "Enter the name and, if it has one, the CAS number.",
+        "Optionally pick its group, then select [[Create analyte]]."
+      ]
+    },
+    {
+      "title": "Correct an analyte",
+      "steps": [
+        "Change the values that are not locked.",
+        "Explain the change in [[Reason for change]], then select [[Save changes]]."
+      ]
+    },
+    {
+      "title": "See the tests for this analyte",
+      "steps": [
+        "Select [[View tests for this analyte]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The name and CAS number lock once work refers to one of the analyte's tests. The group stays editable with a reason.",
+    "A checked CAS number has the right format and check digit. That does not prove it is the right chemical.",
+    "Availability for new work is set on tests and method versions, not on the analyte.",
+    "If someone saved the record after you opened it, your save is refused. Reload and compare before entering the change again."
+  ],
   "sections": [
     {
       "title": "Fields and related work",

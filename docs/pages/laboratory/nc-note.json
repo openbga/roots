@@ -5,6 +5,27 @@
   ],
   "title": "Add note or evidence",
   "purpose": "Append supporting information without changing nonconformance status or current findings.",
+  "summary": "Add a note, reference or file to a nonconformance's timeline without changing its status or findings. Any lab staff member can, even after closure.",
+  "tasks": [
+    {
+      "title": "Add a note or evidence",
+      "steps": [
+        "Enter a [[Note]], a [[Reference]], an [[Evidence file]], or any combination.",
+        "Select [[Add note or evidence]]."
+      ]
+    },
+    {
+      "title": "Correct an earlier note",
+      "steps": [
+        "Add a new note that clarifies it. Earlier notes cannot be edited or deleted."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "At least one of note, reference or file is needed.",
+    "The entry does not change the status, owner, due date or findings.",
+    "Files must be PDF, PNG, JPEG, TXT or CSV and no larger than 10 MiB."
+  ],
   "sections": [
     {
       "title": "Access and navigation",

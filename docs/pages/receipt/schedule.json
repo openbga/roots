@@ -5,6 +5,34 @@
   ],
   "title": "Delivery schedule",
   "purpose": "Prioritize requested tests by the explicit delivery target on their chain of custody. These operational commitments are separate from the holding clocks shown on the worklist.",
+  "summary": "Requested tests ordered by the delivery target on their chain of custody, so you can see what is due first.",
+  "tasks": [
+    {
+      "title": "See what is overdue or due today",
+      "steps": [
+        "Set [[Deadline]] to Overdue or Due today and select [[Apply]]."
+      ]
+    },
+    {
+      "title": "Plan the coming week",
+      "steps": [
+        "Set [[Deadline]] to Next seven days and select [[Apply]]. The earliest targets come first."
+      ]
+    },
+    {
+      "title": "Find where a test stands",
+      "steps": [
+        "Type a lab ID, client sample ID, reference, analyte or method in [[Search]] and select [[Apply]].",
+        "Read its Stage. Select the Lab ID to open the sample."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Delivery targets are commitments to the client. Holding clocks are on the worklist, not here.",
+    "Outstanding work hides reported and rejected tests. Choose All work to include them.",
+    "A test counts as Reported only when its latest result is on an issued report. A new correction reopens it.",
+    "Tests on orders with no delivery target sort last."
+  ],
   "sections": [
     {
       "title": "Search and filters",
@@ -50,7 +78,7 @@
         },
         {
           "label": "Delivery target",
-          "description": "Local date/time shared by all tests on the order, or Not set. Overdue is marked whenever target precedes now, including when All work shows a reported row. Default sort is earliest target first, with unset targets last."
+          "description": "Local date/time shared by all tests on the order, or Not set. A red “Overdue N d” pill marks a target that has passed (including on a reported row under All work); an amber “Due in N d” or “Due today” pill marks one within the next seven days. Default sort is earliest target first, with unset targets last."
         },
         {
           "label": "Analyte",
@@ -111,7 +139,7 @@
         },
         {
           "label": "Reset columns",
-          "description": "Restores this table’s default order and visibility in this browser."
+          "description": "Restores this table’s default order and visibility for your account."
         },
         {
           "label": "Done / Close",

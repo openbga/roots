@@ -19,6 +19,7 @@ from helpers import (
     grid_search,
     local_input,
     pdf_text,
+    pick,
     receive_water,
     sign_in,
     sign_out,
@@ -56,8 +57,9 @@ def enter_source(page: Page, *, result: str, reference: str, pdf: bytes, reason:
 
 def create_report(page: Page, lab_id: str, title: str) -> str:
     page.goto("/reports/new/")
-    page.get_by_label(re.compile(r"^Project")).select_option(
-        label="Example Utilities / Test Creek Outfall 001"
+    pick(
+        page.get_by_label(re.compile(r"^Project")),
+        label="Example Utilities / Test Creek Outfall 001",
     )
     page.get_by_role("button", name="Choose samples").click()
     page.get_by_label("Search").fill(lab_id)
@@ -148,7 +150,7 @@ def test_external_result_flows_to_a_report_correction_amendment_and_disposal(
     sign_in(page, "demo_reviewer", demo.password)
     page.goto(subcontract_url)
     page.get_by_role("link", name="Review external source").click()
-    page.get_by_label("Decision").select_option(label="Accepted source")
+    pick(page.get_by_label("Decision"), label="Accepted source")
     page.locator("#id_note").fill("Identity, transcription and units checked against the source.")
     page.get_by_role("button", name="Review external source").click()
     expect(page.get_by_text("This is separate from internal QC approval.")).to_be_visible()
@@ -247,7 +249,7 @@ def test_external_result_flows_to_a_report_correction_amendment_and_disposal(
         page.get_by_role("button", name="Record physical disposal").click()
 
     page.goto(f"/samples/{sample.pk}/storage/hold/")
-    field(page, "Disposal hold").select_option(label="Place hold")
+    pick(field(page, "Disposal hold"), label="Place hold")
     page.locator("#id_reason").fill("Client dispute pending")
     page.get_by_role("button", name="Change disposal hold").click()
     expect(page.locator("#vr-form-dialog")).to_be_hidden()
@@ -259,7 +261,7 @@ def test_external_result_flows_to_a_report_correction_amendment_and_disposal(
     page.get_by_role("button", name="Discard changes").click()
     expect(page.locator("#vr-form-dialog")).to_be_hidden()
     page.goto(f"/samples/{sample.pk}/storage/hold/")
-    field(page, "Disposal hold").select_option(label="Remove hold")
+    pick(field(page, "Disposal hold"), label="Remove hold")
     page.locator("#id_reason").fill("Dispute resolved")
     page.get_by_role("button", name="Change disposal hold").click()
     expect(page.locator("#vr-form-dialog")).to_be_hidden()
@@ -275,7 +277,7 @@ def test_external_result_flows_to_a_report_correction_amendment_and_disposal(
     sign_in(page, "demo_reviewer", demo.password)
     page.goto(subcontract_url)
     page.get_by_role("link", name="Review external source").click()
-    page.get_by_label("Decision").select_option(label="Accepted source")
+    pick(page.get_by_label("Decision"), label="Accepted source")
     page.locator("#id_note").fill("Corrected external source checked independently.")
     page.get_by_role("button", name="Review external source").click()
     expect(page.get_by_text("External source review recorded.")).to_be_visible()

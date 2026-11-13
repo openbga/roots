@@ -21,6 +21,7 @@ from helpers import (
     field,
     local_input,
     make_user,
+    pick,
     release_version,
     released_water_report,
     sign_in,
@@ -58,7 +59,9 @@ def fill_known_codes(page: Page) -> int:
             'form.vr-form input:not([type=hidden]):not([type=checkbox]), form.vr-form select,'
             + 'form.vr-form textarea')].map(el => ({
               id: el.id, tag: el.tagName.toLowerCase(), value: el.value,
-              label: (document.querySelector(`label[for="${el.id}"]`)?.textContent || '')
+              label: (document.querySelector(
+                     `label[for="${el.id}"], label[for="${el.id}-ts-control"]`
+                   )?.textContent || '')
                        .replace(/\\s+/g, ' ').trim()}))"""
     )
     when = local_input(timedelta(hours=-2))
@@ -71,7 +74,7 @@ def fill_known_codes(page: Page) -> int:
                 target = page.locator(f"#{control['id']}")
                 value = value.format(when=when)
                 if control["tag"] == "select":
-                    target.select_option(value=value)
+                    pick(target, value=value)
                 else:
                     target.fill(value)
                 filled += 1
@@ -180,7 +183,9 @@ def test_edd_is_blocked_until_export_facts_exist_then_frozen_per_version_and_cli
     export1 = EddExport.objects.get(version=v1)
     row = export_row(page)
     expect(row).to_contain_text(f"Sample_v5 {export1.row_counts['Sample_v5']}")
-    shown = row.locator("span[title^='SHA-256']").get_attribute("title").split()[-1]
+    # The hint is a Bootstrap tooltip (static/js/controls.js keeps its text here).
+    tip = row.locator("span[data-bs-original-title^='SHA-256']")
+    shown = tip.get_attribute("data-bs-original-title").split()[-1]
     assert shown == export1.sha256 == hashlib.sha256(bytes(export1.data)).hexdigest()
     target = tmp_path / "v1.zip"
     with page.expect_download() as download:

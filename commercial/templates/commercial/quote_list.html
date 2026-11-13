@@ -1,24 +1,24 @@
 {% extends "base.html" %}
-{% load commercial_extras %}
+{% load commercial_extras ui %}
 {% comment %}Quotes. Context: page_obj (quotes_with_latest), filter_form, q, sort, per_page, active_filters, filtered, can_edit.{% endcomment %}
-{% block page_actions %}{% if can_edit %}<a class="btn btn-primary" href="{% url 'commercial:quote-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New quote</a>{% endif %}{% endblock %}
+{% block page_actions %}{% if can_edit %}<a class="btn btn-primary" href="{% url 'commercial:quote-create' %}">{% icon name="plus-lg" %}New quote</a>{% endif %}{% endblock %}
 {% block content %}
-<section class="card vr-table-card" aria-labelledby="quotes-heading">
-  <h2 class="visually-hidden" id="quotes-heading">Quotes</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter quotes" placeholder="Number, title, client, project or PO" grid="commercial.quotes" %}
-  {% if page_obj.paginator.count %}
+{% if can_edit %}{% url 'commercial:quote-create' as create_url %}{% endif %}
+{% panel title="Quotes" heading_id="quotes-heading" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter quotes" placeholder="Number, title, client, project or PO" grid="commercial.quotes" invalid=filter_form.errors chips=active_filters sort=sort %}
+  {% list_results items=page_obj noun="quotes" filtered=filtered invalid=filter_form.errors clear_url=request.path error_body="Correct the highlighted filter above." no_results_title="No quotes match these filters" no_results_body="Check the number or client, or clear the filters." empty_title="No quotes yet" empty_body="Create a quote for a client, price its tests from a price list, and issue it." action_url=create_url action_label="New quote" %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table" data-vr-grid="commercial.quotes" data-vr-grid-version="1" aria-labelledby="quotes-heading">
       <thead><tr>
-        {% include "includes/sort_header.html" with label="Quote" asc="number" desc="-number" first="desc" col="number" locked=True %}
-        {% include "includes/sort_header.html" with label="Client" asc="client" desc="-client" col="client" %}
-        {% include "includes/sort_header.html" with label="Project" asc="project" desc="-project" col="project" hidden=True %}
-        {% include "includes/sort_header.html" with label="Title" asc="title" desc="-title" col="title" %}
-        {% include "includes/sort_header.html" with label="Status" asc="status" desc="-status" col="status" %}
+        {% sort_header label="Quote" asc="number" desc="-number" first="desc" col="number" locked=True %}
+        {% sort_header label="Client" asc="client" desc="-client" col="client" %}
+        {% sort_header label="Project" asc="project" desc="-project" col="project" hidden=True %}
+        {% sort_header label="Title" asc="title" desc="-title" col="title" %}
+        {% sort_header label="Status" asc="status" desc="-status" col="status" %}
         <th scope="col" class="text-end" data-vr-col="version">Version</th>
-        {% include "includes/sort_header.html" with label="Total (USD)" asc="total" desc="-total" first="desc" col="total" class="text-end" %}
-        {% include "includes/sort_header.html" with label="Valid until" asc="valid_until" desc="-valid_until" col="valid_until" %}
-        {% include "includes/sort_header.html" with label="Issued" asc="issued_at" desc="-issued_at" first="desc" col="issued_at" hidden=True %}
+        {% sort_header label="Total (USD)" asc="total" desc="-total" first="desc" col="total" class="text-end" %}
+        {% sort_header label="Valid until" asc="valid_until" desc="-valid_until" col="valid_until" %}
+        {% sort_header label="Issued" asc="issued_at" desc="-issued_at" first="desc" col="issued_at" hidden=True %}
         <th scope="col" data-vr-col="client_reference" data-vr-col-hidden>Client reference</th>
       </tr></thead>
       <tbody>
@@ -39,14 +39,6 @@
       </tbody>
     </table>
   </div>
-  {% include "includes/pagination.html" with noun="quotes" filtered=filtered %}
-  {% elif filter_form.errors %}
-  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above." clear_url=request.path %}
-  {% elif filtered %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No quotes match these filters" body="Check the number or client, or clear the filters." clear_url=request.path %}
-  {% else %}
-  {% if can_edit %}{% url 'commercial:quote-create' as create_url %}{% endif %}
-  {% include "includes/empty_state.html" with title="No quotes yet" body="Create a quote for a client, price its tests from a price list, and issue it." action_url=create_url action_label="New quote" %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}

@@ -1,15 +1,15 @@
-{% comment %}
+{% load ui %}{% comment %}
 Related table: nonconformances linked to the open record (docs/ui-standards.md section 6, rule 3).
 Parameters: nonconformances (list), link_param and link_pk (the new-nonconformance form is
 prefilled with ?<link_param>=<link_pk>, e.g. lot=12), heading_id.
 {% endcomment %}
-<section class="card vr-table-card" aria-labelledby="{{ heading_id }}">
-  <div class="card-header"><h2 class="card-title" id="{{ heading_id }}">Linked nonconformances</h2><span class="vr-count">{{ nonconformances|length }}</span><a class="btn btn-sm btn-outline-secondary ms-auto" href="{% url 'laboratory:nc-create' %}?{{ link_param }}={{ link_pk }}">Add nonconformance</a></div>
-  {% if nonconformances %}
+{% panel title="Linked nonconformances" heading_id=heading_id count=nonconformances|length table=True flush=True %}
+  {% fill actions %}<a class="btn btn-sm btn-outline-secondary" href="{% url 'laboratory:nc-create' %}?{{ link_param }}={{ link_pk }}">Add nonconformance</a>{% endfill %}
+  {% list_results items=nonconformances empty_title="No nonconformances linked" empty_body="Add one if something went wrong with this record." %}
   <div class="vr-table-wrap"><table class="table vr-table">
     <thead><tr><th scope="col">Number</th><th scope="col">Title</th><th scope="col">Status</th></tr></thead>
     <tbody>{% for nc in nonconformances %}
       <tr><th scope="row"><a class="vr-row-link vr-id" href="{% url 'laboratory:nc-detail' nc.pk %}">{{ nc.number }}</a></th><td>{{ nc.title }}</td><td>{% include "laboratory/_status.html" with kind="nc-status" value=nc.status label=nc.get_status_display plain=True %}</td></tr>{% endfor %}
     </tbody></table></div>
-  {% else %}{% include "includes/empty_state.html" with title="No nonconformances linked" body="Add one if something went wrong with this record." %}{% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}

@@ -5,6 +5,43 @@
   ],
   "title": "Client submission",
   "purpose": "Review what the client declared, accept or return the latest submitted version, and receive actual samples separately.",
+  "summary": "What the client declared for a shipment. Accept it into intake or return it for changes, then receive each sample as it arrives.",
+  "tasks": [
+    {
+      "title": "Accept a submission into intake",
+      "steps": [
+        "Review the shipment and Declared samples of the latest submitted version.",
+        "Select [[Accept into intake]]. A chain of custody order opens with no samples received yet."
+      ]
+    },
+    {
+      "title": "Return it to the client for changes",
+      "steps": [
+        "Write [[What the client should correct]] and select [[Return to client]].",
+        "The client edits and submits a new version. The returned version stays frozen."
+      ]
+    },
+    {
+      "title": "Receive a sample that arrived",
+      "steps": [
+        "Under Receive samples, select [[Receive]] on that sample and record the actual receipt."
+      ]
+    },
+    {
+      "title": "Cancel a shipment that will not arrive",
+      "steps": [
+        "Under Shipment not arriving, give the [[Reason]] and select [[Cancel expected shipment]].",
+        "This works only while no sample has been received. [[Reinstate]] undoes it, with a reason."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Acceptance records no physical receipt. Samples stay expected until each is received.",
+    "Receiving records what actually arrived. The client's original declaration is never changed.",
+    "Planned bottle labels say PLANNED and carry no lab ID. Printing them records nothing.",
+    "A linked quote does not prove it covers every test or sample declared.",
+    "If the client resubmitted after you opened the page, your decision is refused. Reload and review the latest version."
+  ],
   "sections": [
     {
       "title": "Access",
@@ -188,7 +225,7 @@
     "receipt/services.py",
     "commercial/templates/commercial/submission_detail.html",
     "commercial/templates/commercial/_snapshot.html",
-    "commercial/templates/commercial/_history.html",
+    "templates/includes/history_panel.html",
     "commercial/tests/test_submissions.py",
     "commercial/tests/test_cancellation.py",
     "commercial/tests/test_workflow.py",

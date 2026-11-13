@@ -9,6 +9,36 @@
   },
   "title": "Preparation requirement",
   "purpose": "Require an explicit independent preparation aliquot for new observations of one exact analytical test.",
+  "summary": "Add or edit the requirement that new results for one test name an independently prepared aliquot. Only administrators can save; other staff read these values on QC configuration.",
+  "tasks": [
+    {
+      "title": "Add a preparation requirement",
+      "steps": [
+        "Choose the [[Definition]] and the [[Required preparation method]].",
+        "Explain the source and applicability in [[Basis]].",
+        "Select [[Add preparation requirement]]."
+      ]
+    },
+    {
+      "title": "Change a preparation requirement",
+      "steps": [
+        "Open it from QC configuration and change the values.",
+        "Explain why in [[Reason for change]] and select [[Save changes]]."
+      ]
+    },
+    {
+      "title": "Stop using a preparation requirement without deleting it",
+      "steps": [
+        "Clear [[Is active]], give a reason and select [[Save changes]]. The row and its history stay."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "While active, new results for the test must name an aliquot prepared by exactly this method version.",
+    "A timestamp on an analytical batch is not a prepared aliquot.",
+    "No requirement does not mean physical preparation is unnecessary.",
+    "Only one requirement can exist per test. Edit the existing one."
+  ],
   "sections": [
     {
       "title": "Create, edit and access",

@@ -5,6 +5,28 @@
   ],
   "title": "Add QC sample",
   "purpose": "Create a labeled QC sample in an open analytical or preparation batch, then record observations for its analytes.",
+  "summary": "Add a labeled QC sample, such as a method blank, LCS, spike or duplicate, to an open batch. Only analysts and admins can add QC samples.",
+  "tasks": [
+    {
+      "title": "Add a QC sample",
+      "steps": [
+        "Choose the [[QC type]] and enter a [[Label]], for example MB-1.",
+        "For a spike or duplicate, choose the [[Parent sample]].",
+        "Select [[Add QC sample]], then record its measurements."
+      ]
+    },
+    {
+      "title": "Leave without adding",
+      "steps": [
+        "Select [[Cancel]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Adding a QC sample counts toward the required frequency, but it still needs its measurements.",
+    "Labels must be unique within the batch.",
+    "A closed batch cannot take more QC samples."
+  ],
   "sections": [
     {
       "title": "Access and relationship",

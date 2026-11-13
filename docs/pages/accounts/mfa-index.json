@@ -5,6 +5,39 @@
   ],
   "title": "Two-factor authentication",
   "purpose": "Manage the authenticator app and recovery codes used to protect your account.",
+  "summary": "Protect your own account with an authenticator app and recovery codes. Two-factor authentication is optional and never changes your roles.",
+  "tasks": [
+    {
+      "title": "Turn on two-factor authentication",
+      "steps": [
+        "Under [[Authenticator App]], select [[Activate]] and follow the setup."
+      ]
+    },
+    {
+      "title": "See or save your recovery codes",
+      "steps": [
+        "Under [[Recovery Codes]], select [[View]] or [[Download]]."
+      ]
+    },
+    {
+      "title": "Replace your recovery codes",
+      "steps": [
+        "Under [[Recovery Codes]], select [[Generate]] and confirm. The old codes stop working."
+      ]
+    },
+    {
+      "title": "Turn off the authenticator app",
+      "steps": [
+        "Under [[Authenticator App]], select [[Deactivate]] and confirm."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Setup is blocked while any email address on your account is unverified.",
+    "Viewing codes and the other actions here may ask you to confirm your password or a code first.",
+    "Each recovery code works once, as an alternative to an app code.",
+    "Security keys and passkeys are not offered."
+  ],
   "sections": [
     {
       "title": "Enabled factors and account boundary",

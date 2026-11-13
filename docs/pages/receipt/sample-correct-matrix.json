@@ -5,6 +5,28 @@
   ],
   "title": "Correct matrix",
   "purpose": "Replace a wrongly recorded matrix and all requested test definitions together before work begins.",
+  "summary": "Replace a wrongly recorded matrix and all of the sample's requested tests together, before any work starts.",
+  "tasks": [
+    {
+      "title": "Correct the matrix",
+      "steps": [
+        "Choose the right [[Matrix]].",
+        "Choose the [[Tests for the corrected matrix]]. They replace the current requests.",
+        "Give the [[Reason]] and select [[Correct matrix]]."
+      ]
+    },
+    {
+      "title": "Restore the sample source afterwards",
+      "steps": [
+        "If the source was cleared, set it again with Correct sample details."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Any analytical work, QC, preparation, external dispatch or issued report on the sample locks this correction.",
+    "The old tests are not mapped to the new matrix. Choose every test again.",
+    "A sample source that does not belong to the new matrix is cleared. Stormwater fits both Water and Wastewater."
+  ],
   "sections": [
     {
       "title": "Correction sections",

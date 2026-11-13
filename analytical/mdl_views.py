@@ -133,7 +133,7 @@ def mdl_create(request):
             "page_title": "New MDL study",
             "crumbs": [("MDL studies", reverse("analytical:mdl-list")), ("New MDL study", None)],
             "form": form,
-            "cancel_url": "analytical:mdl-list",
+            "cancel_url": reverse("analytical:mdl-list"),
             "submit_label": "Create study",
             "config_note": "An MDL is determined for one method, analyte and sample matrix "
             "(40 CFR 136 Appendix B). This record supports the laboratory's own documentation; "
@@ -272,8 +272,7 @@ def mdl_import_blanks(request, pk):
                 ("Import routine blanks", None),
             ],
             "form": form,
-            "cancel_url": "analytical:mdl-detail",
-            "cancel_arg": study.pk,
+            "cancel_url": reverse("analytical:mdl-detail", args=[study.pk]),
             "submit_label": "Import blanks",
             "config_note": "Copies this test's method-blank QC measurements with their original "
             "text, so a not-detected blank stays not detected. Where the batch has no recorded "
@@ -314,8 +313,7 @@ def mdl_exclude(request, pk):
                 ("Exclude observation", None),
             ],
             "form": form,
-            "cancel_url": "analytical:mdl-detail",
-            "cancel_arg": observation.study_id,
+            "cancel_url": reverse("analytical:mdl-detail", args=[observation.study_id]),
             "submit_label": "Exclude with this rationale",
             "config_note": f"{observation.get_kind_display()} {observation.supplied_text}: the "
             "rationale stays on file with the MDL. At least seven spiked samples and seven "

@@ -1,69 +1,60 @@
 {% extends "base.html" %}
-{% load catalog_extras %}
-{% block breadcrumbs %}{% url 'analytical:mdl-list' as list_url %}{% url 'analytical:mdl-detail' study.pk as study_url %}{% include "includes/breadcrumbs.html" with section="MDL studies" section_url=list_url record=study.number record_url=study_url %}{% endblock %}
-{% block page_meta %}
-<ul class="vr-page-meta">
-  <li>{% if calculation.status == "calculated" %}{% include "includes/status.html" with label="Calculated" tone="info" %}{% else %}{% include "includes/status.html" with label="Not evaluated" tone="warning" %}{% endif %}</li>
-  <li>{{ study.definition.analyte }} · {{ study.definition.method }} · {{ study.definition.get_matrix_display }}</li>
+{% load catalog_extras ui %}
+{% block breadcrumbs %}{% url 'analytical:mdl-list' as list_url %}{% url 'analytical:mdl-detail' study.pk as study_url %}{% breadcrumbs section="MDL studies" section_url=list_url record=study.number record_url=study_url %}{% endblock %}
+{% block page_meta %}{% page_meta %}
+  <li>{% if calculation.status == "calculated" %}{% status label="Calculated" tone="info" %}{% else %}{% status label="Not evaluated" tone="warning" %}{% endif %}</li>
+  <li>{{ study.definition.analyte }} · {{ study.definition.method }} · {% matrix_tag matrix=study.definition.matrix size="sm" %}</li>
   <li>Run <time datetime="{{ calculation.calculated_at|date:'c' }}">{{ calculation.calculated_at|date:"Y-m-d H:i T" }}</time> by {{ calculation.calculated_by.get_full_name|default:calculation.calculated_by.get_username }}</li>
-</ul>
-{% endblock %}
+{% endpage_meta %}{% endblock %}
 {% block content %}
 {% if calculation.status == "not_evaluated" %}
-<div class="alert alert-warning" role="status">{% include "includes/status.html" with label="Not evaluated" tone="warning" plain=True %}
-  <div><p class="mb-1">No MDL was produced because the data do not meet the procedure:</p>
-    <ul class="mb-0 ps-3">{% for reason in calculation.reasons %}<li>{{ reason }}</li>{% endfor %}</ul></div></div>
+{% notice tone="warning" label="Not evaluated" %}<p class="mb-1">No MDL was produced because the data do not meet the procedure:</p>
+    <ul class="mb-0 ps-3">{% for reason in calculation.reasons %}<li>{{ reason }}</li>{% endfor %}</ul>{% endnotice %}
 {% endif %}
 
-<section class="card mb-3" aria-labelledby="result-heading">
-  <div class="card-header"><h2 class="card-title" id="result-heading">Result ({{ calculation.unit }})</h2></div>
-  <div class="card-body">
+{% panel title="Result" heading_id="result-heading" class="mb-3" %}
+  {% fill title %}Result ({{ calculation.unit }}){% endfill %}
     <dl class="vr-facts">
-      <div><dt>Blanks by basis</dt><dd>{% if blank_basis_lines %}{% for label, n in blank_basis_lines %}{{ n }} {{ label }}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}<span class="vr-muted">Not recorded for this calculation. Nothing is inferred.</span>{% endif %}</dd></div>
+      {% fact label="Blanks by basis" wide=True %}{% if blank_basis_lines %}{% for label, n in blank_basis_lines %}{{ n }} {{ label }}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}<span class="vr-muted">Not recorded for this calculation. Nothing is inferred.</span>{% endif %}{% endfact %}
 
-      <div><dt>Spiked samples used</dt><dd>{{ calculation.spike_preparations }} preparation{{ calculation.spike_preparations|pluralize }}, {{ calculation.spike_n }} analys{{ calculation.spike_n|pluralize:"is,es" }} at {{ calculation.spike_level|plain_decimal|default:"—" }} {{ calculation.unit }}</dd></div>
+      {% fact label="Spiked samples used" wide=True %}{{ calculation.spike_preparations }} preparation{{ calculation.spike_preparations|pluralize }}, {{ calculation.spike_n }} analys{{ calculation.spike_n|pluralize:"is,es" }} at {{ calculation.spike_level|plain_decimal|default:"—" }} {{ calculation.unit }}{% endfact %}
       {% if calculation.spike_mean is not None %}
-      <div><dt>Mean spiked result / recovery</dt><dd>{{ calculation.spike_mean|plain_decimal }} {{ calculation.unit }} · {{ calculation.mean_recovery_pct|plain_decimal }}%</dd></div>
-      <div><dt>Standard deviation of spikes</dt><dd>{{ calculation.spike_sd|plain_decimal }}</dd></div>
-      <div><dt>Student t (n = {{ calculation.spike_n }})</dt><dd>{{ calculation.t_spike }} <span class="vr-muted small">{{ calculation.t_spike_source }}</span></dd></div>
-      <div><dt>MDL from spiked samples</dt><dd class="vr-id">{{ calculation.mdl_s|plain_decimal }}</dd></div>
-      <div><dt>Method blanks used</dt><dd>{{ calculation.blank_preparations }} preparation{{ calculation.blank_preparations|pluralize }}, {{ calculation.blank_n }} analys{{ calculation.blank_n|pluralize:"is,es" }} ({{ calculation.get_blank_window_display|default:calculation.blank_window }})</dd></div>
-      <div><dt>MDL from method blanks</dt><dd>{% if calculation.mdl_b is not None %}<span class="vr-id">{{ calculation.mdl_b|plain_decimal }}</span>{% else %}does not apply{% endif %} <span class="vr-muted small">{{ calculation.mdl_b_note }}</span></dd></div>
-      {% if calculation.blank_sd is not None %}<div><dt>Blank mean / standard deviation / t</dt><dd>{{ calculation.blank_mean|plain_decimal }} / {{ calculation.blank_sd|plain_decimal }} / {{ calculation.t_blank }} <span class="vr-muted small">{{ calculation.t_blank_source }}</span></dd></div>{% endif %}
-      <div><dt>Verified MDL (the greater of the two)</dt><dd class="vr-id"><strong>{{ calculation.verified_mdl|plain_decimal }} {{ calculation.unit }}</strong></dd></div>
+      {% fact label="Mean spiked result / recovery" %}{{ calculation.spike_mean|plain_decimal }} {{ calculation.unit }} · {{ calculation.mean_recovery_pct|plain_decimal }}%{% endfact %}
+      {% fact label="Standard deviation of spikes" %}{{ calculation.spike_sd|plain_decimal }}{% endfact %}
+      {% fact %}{% fill label %}Student t (n = {{ calculation.spike_n }}){% endfill %}{{ calculation.t_spike }} <span class="vr-muted small">{{ calculation.t_spike_source }}</span>{% endfact %}
+      {% fact label="MDL from spiked samples" class="vr-id" %}{{ calculation.mdl_s|plain_decimal }}{% endfact %}
+      {% fact label="Method blanks used" wide=True %}{{ calculation.blank_preparations }} preparation{{ calculation.blank_preparations|pluralize }}, {{ calculation.blank_n }} analys{{ calculation.blank_n|pluralize:"is,es" }} ({{ calculation.get_blank_window_display|default:calculation.blank_window }}){% endfact %}
+      {% fact label="MDL from method blanks" %}{% if calculation.mdl_b is not None %}<span class="vr-id">{{ calculation.mdl_b|plain_decimal }}</span>{% else %}does not apply{% endif %} <span class="vr-muted small">{{ calculation.mdl_b_note }}</span>{% endfact %}
+      {% if calculation.blank_sd is not None %}{% fact label="Blank mean / standard deviation / t" %}{{ calculation.blank_mean|plain_decimal }} / {{ calculation.blank_sd|plain_decimal }} / {{ calculation.t_blank }} <span class="vr-muted small">{{ calculation.t_blank_source }}</span>{% endfact %}{% endif %}
+      {% fact label="Verified MDL (the greater of the two)" class="vr-id" %}<strong>{{ calculation.verified_mdl|plain_decimal }} {{ calculation.unit }}</strong>{% endfact %}
       {% endif %}
       {% if calculation.existing_mdl is not None %}
-      <div><dt>Existing MDL</dt><dd>{{ calculation.existing_mdl|plain_decimal }} {{ calculation.unit }}{% if calculation.ratio_to_existing is not None %} · ratio {{ calculation.ratio_to_existing|plain_decimal }} · {{ calculation.blanks_above_existing }} blank{{ calculation.blanks_above_existing|pluralize }} above it{% endif %}</dd></div>
-      {% if calculation.retention_eligible is not None %}<div><dt>May the existing MDL be kept (II.4(f))</dt><dd>{% if calculation.retention_eligible %}Yes: within 0.5 to 2.0 times and under 3% of blanks above it{% else %}No{% endif %}</dd></div>{% endif %}
+      {% fact label="Existing MDL" %}{{ calculation.existing_mdl|plain_decimal }} {{ calculation.unit }}{% if calculation.ratio_to_existing is not None %} · ratio {{ calculation.ratio_to_existing|plain_decimal }} · {{ calculation.blanks_above_existing }} blank{{ calculation.blanks_above_existing|pluralize }} above it{% endif %}{% endfact %}
+      {% if calculation.retention_eligible is not None %}{% fact label="May the existing MDL be kept (II.4(f))" %}{% if calculation.retention_eligible %}Yes: within 0.5 to 2.0 times and under 3% of blanks above it{% else %}No{% endif %}{% endfact %}{% endif %}
       {% endif %}
     </dl>
-    <p class="vr-form-note mb-0">Calculated from the exact recorded decimals; stored to 10 places. Reporting precision is the laboratory's choice. This is a record for the laboratory's quality system, not a statement of compliance.</p>
-  </div>
-</section>
+    <p class="vr-form-note">Calculated from the exact recorded decimals; stored to 10 places. Reporting precision is the laboratory's choice. This is a record for the laboratory's quality system, not a statement of compliance.</p>
+{% endpanel %}
 
-<section class="card mb-3" aria-labelledby="review-heading">
-  <div class="card-header"><h2 class="card-title" id="review-heading">Independent review</h2></div>
-  <div class="card-body">
+{% panel title="Independent review" heading_id="review-heading" class="mb-3" %}
     {% if calculation.decision %}
-    <p class="mb-1"><strong>{{ calculation.get_decision_display }}</strong> by {{ calculation.reviewed_by.get_full_name|default:calculation.reviewed_by.get_username }} on {{ calculation.reviewed_at|date:"Y-m-d H:i T" }}{% if calculation.adopted_mdl is not None %} · adopted MDL <strong class="vr-id">{{ calculation.adopted_mdl|plain_decimal }} {{ calculation.unit }}</strong>{% endif %}</p>
-    {% if calculation.review_note %}<p class="mb-0">{{ calculation.review_note }}</p>{% endif %}
-    {% elif calculation.status != "calculated" %}<p class="vr-muted mb-0">A calculation that was not evaluated cannot be adopted.</p>
-    {% elif not can_review %}<p class="vr-muted mb-0">Awaiting review by a reviewer who did not enter the data or run the calculation.</p>
-    {% elif self_conflict %}<div class="alert alert-info mb-0" role="status">{% include "includes/status.html" with label="Your work" tone="neutral" plain=True %}<div>You analysed this. Another qualified reviewer must review it.{% for error in form.non_field_errors %} {{ error }}{% endfor %}</div></div>
+    <p><strong>{{ calculation.get_decision_display }}</strong> by {{ calculation.reviewed_by.get_full_name|default:calculation.reviewed_by.get_username }} on {{ calculation.reviewed_at|date:"Y-m-d H:i T" }}{% if calculation.adopted_mdl is not None %} · adopted MDL <strong class="vr-id">{{ calculation.adopted_mdl|plain_decimal }} {{ calculation.unit }}</strong>{% endif %}</p>
+    {% if calculation.review_note %}<p>{{ calculation.review_note }}</p>{% endif %}
+    {% elif calculation.status != "calculated" %}<p class="vr-muted">A calculation that was not evaluated cannot be adopted.</p>
+    {% elif not can_review %}<p class="vr-muted">Awaiting review by a reviewer who did not enter the data or run the calculation.</p>
+    {% elif self_conflict %}{% notice tone="neutral" label="Your work" class="mb-0" %}You analysed this. Another qualified reviewer must review it.{% for error in form.non_field_errors %} {{ error }}{% endfor %}{% endnotice %}
     {% elif can_decide %}
-    <form class="vr-form" method="post" novalidate data-vr-local-form="Record decision" data-vr-local-title="Review MDL calculation">{% csrf_token %}
-      <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
-      {{ form }}
-      <div class="vr-form-actions"><button class="btn btn-primary" type="submit">Record decision</button></div>
-    </form>
+    {% form_page form=form action=request.path local=True title="Review MDL calculation" submit_label="Record decision" %}
+      {% for field in form.visible_fields %}{{ field.as_field_group }}{% endfor %}
+      {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+    {% endform_page %}
     {% endif %}
-  </div>
-</section>
+{% endpanel %}
 
-<section class="card vr-table-card mb-3" aria-labelledby="inputs-heading">
-  <div class="card-header"><h2 class="card-title" id="inputs-heading">Inputs as calculated</h2><span class="vr-count">{{ spike_rows|length }} spikes · {{ blank_rows|length }} blanks</span>
-    <div class="ms-auto">{% include "includes/grid_columns_button.html" with grid="analytical.mdl_inputs" %}</div></div>
-  {% if spike_rows or blank_rows %}
+{% panel title="Inputs as calculated" heading_id="inputs-heading" table=True flush=True class="mb-3" %}
+  {% fill count %}{{ spike_rows|length }} spikes · {{ blank_rows|length }} blanks{% endfill %}
+  {% fill actions %}{% grid_columns_button grid="analytical.mdl_inputs" %}{% endfill %}
+  {% list_results items=spike_rows|add:blank_rows empty_title="No inputs recorded" %}
   <div class="vr-table-wrap"><table class="table vr-table" data-vr-grid="analytical.mdl_inputs" data-vr-grid-version="1" aria-labelledby="inputs-heading">
     <thead><tr><th scope="col" data-vr-col="type" data-vr-col-locked>Type</th><th scope="col" data-vr-col="result">Result as supplied ({{ calculation.unit }})</th><th scope="col" data-vr-col="prepared">Prepared</th><th scope="col" data-vr-col="analysed">Analysed</th><th scope="col" data-vr-col="batch">Batch / preparation</th><th scope="col" data-vr-col="instrument">Instrument</th><th scope="col" data-vr-col="entered_by">Entered by</th><th scope="col" data-vr-col="used">Used</th></tr></thead>
     <tbody>
@@ -71,7 +62,7 @@
       {% for r in blank_rows %}{% include "analytical/_mdl_input_row.html" with kind_label="Blank" %}{% endfor %}
     </tbody>
   </table></div>
-  {% else %}{% include "includes/empty_state.html" with title="No inputs recorded" %}{% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% include "analytical/_mdl_interpretations.html" %}
 {% endblock %}

@@ -5,6 +5,27 @@
   ],
   "title": "Reopen nonconformance",
   "purpose": "Reopen a closed issue while preserving its earlier closure and evidence.",
+  "summary": "Reopen a closed nonconformance. It returns to Investigating, and the earlier closure stays in the timeline.",
+  "tasks": [
+    {
+      "title": "Reopen the issue",
+      "steps": [
+        "Explain why in [[Reason]].",
+        "Select [[Reopen]]."
+      ]
+    },
+    {
+      "title": "Add information without reopening",
+      "steps": [
+        "Go back to the record and select [[Add note or evidence]]. A closed issue can take notes."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Reopening clears the current verification, closure note, closer and close time. The earlier closure stays in the timeline.",
+    "Root cause, disposition, corrective action, owner, due date and links are kept.",
+    "If the due date has passed, the reopened issue is past due again."
+  ],
   "sections": [
     {
       "title": "Who can change this record",

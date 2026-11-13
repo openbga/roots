@@ -5,6 +5,36 @@
   ],
   "title": "Lab overview",
   "purpose": "See laboratory attention counts and open operational lists.",
+  "summary": "See what needs attention in standards, equipment, nonconformances and training, and open the matching list from each count.",
+  "tasks": [
+    {
+      "title": "Check what needs attention",
+      "steps": [
+        "Read the four panels: standards and reagents, equipment, nonconformances and training records.",
+        "Select a measure, such as [[Expired, still on hand]] or [[Calibration or maintenance overdue]], to open the list it counts."
+      ]
+    },
+    {
+      "title": "Look further ahead",
+      "steps": [
+        "Choose a window in [[Look ahead]].",
+        "Select [[Apply]]. The expiring and due-soon counts and their links use that window."
+      ]
+    },
+    {
+      "title": "Find the nonconformances assigned to you",
+      "steps": [
+        "Select [[Assigned to me]] in the nonconformances panel."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The look-ahead window only changes what is highlighted. Expiry and due dates are the ones set on each record.",
+    "Choosing a window changes nothing until you select [[Apply]].",
+    "A due date or expiry of today is not yet past due or expired.",
+    "[[All staff: expiring or expired, not renewed]] appears only for admin, reviewer, approver and project manager roles.",
+    "Counts describe today's records. They are not a historical qualification or compliance check."
+  ],
   "sections": [
     {
       "title": "Access and navigation",

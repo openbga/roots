@@ -1,5 +1,8 @@
-/* The reference sheet shares the workspace's paper, ink and sage heading band. */
-:root { --vr-documentation-width: 400px; }
+/* The Help drawer (templates/documentation/panel.html, content.html): one edge only. The drawer is
+   set off by its own surface tone and a soft left shadow, never a border (a border beside the
+   resize grip read as a double line). The grip is a short pill shown on hover or focus.
+   Tokens: --vr-help-* in app.css. */
+:root { --vr-documentation-width: 27.5rem; --vr-help-measure: 36rem; --vr-help-step-size: 1.5rem; }
 .vr-documentation[hidden], .vr-documentation-toggle[hidden] { display: none !important; }
 .vr-documentation {
   position: fixed;
@@ -8,51 +11,148 @@
   display: flex;
   flex-direction: column;
   width: min(var(--vr-documentation-width), 100vw);
-  background: var(--vr-surface);
+  background: var(--vr-help-bg);
   color: var(--vr-text);
-  border-left: 1px solid var(--vr-border-strong);
+  box-shadow: var(--vr-help-shadow);
   text-align: left;
-  font-size: 0.875rem;
-  line-height: 1.55;
+  font-size: 0.90625rem;
+  line-height: 1.6;
 }
 .vr-documentation-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   flex: none;
-  gap: 1rem;
-  padding: 0.625rem 1.25rem;
-  background: var(--vr-band);
-  border-bottom: 1px solid var(--vr-border);
+  gap: var(--vr-space-2);
+  padding: var(--vr-space-3) var(--vr-space-3) var(--vr-space-3) var(--vr-space-6);
 }
-.vr-documentation-label { margin: 0; font-weight: 650; }
-.vr-documentation-content { overflow: auto; overscroll-behavior: contain; padding: 1.5rem; }
-.vr-documentation-page-title { margin: 0 0 0.75rem; font-size: 1.25rem; line-height: 1.3; }
-.vr-documentation-purpose { color: var(--vr-text-muted); }
-.vr-documentation-section { margin-top: 1.75rem; }
-.vr-documentation-section h3 { margin: 0 0 0.625rem; font-size: 1rem; font-weight: 650; }
-.vr-documentation-section p { margin-bottom: 0.75rem; }
-.vr-documentation :is(p, th, td, h2, h3) { overflow-wrap: anywhere; }
-.vr-documentation-table { width: 100%; table-layout: fixed; margin-bottom: 0; }
-.vr-documentation-table th:first-child { width: 35%; }
-.vr-documentation-table :is(th, td) { padding: 0.625rem 0.5rem; vertical-align: top; }
-.vr-documentation-table tbody th { font-weight: 600; }
+.vr-documentation-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vr-space-1-5);
+  margin: 0;
+  color: var(--vr-text-muted);
+  font-size: var(--vr-font-size-3);
+  font-weight: var(--vr-font-weight-semibold);
+}
+.vr-documentation-label .vr-icon { color: var(--vr-help-step); }
+.vr-documentation-header [data-vr-documentation-close] { margin-left: auto; }
+.vr-documentation-content {
+  flex: 1;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: var(--vr-space-1) var(--vr-space-6) var(--vr-space-10);
+}
+.vr-help > * { max-width: var(--vr-help-measure); }
+.vr-help :is(p, li, dt, dd, h2, h3, h4) { overflow-wrap: anywhere; }
+.vr-help-title { margin: 0; color: var(--vr-text-strong); font-size: var(--vr-font-size-8); font-weight: var(--vr-font-weight-black); letter-spacing: -0.015em; }
+.vr-help-summary { margin: var(--vr-space-2) 0 0; font-size: var(--vr-font-size-5); line-height: 1.55; }
+.vr-help-jump { display: flex; flex-wrap: wrap; gap: var(--vr-space-1-5); margin: var(--vr-space-4) 0 var(--vr-space-2); padding: 0; list-style: none; }
+.vr-help-jump a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vr-space-1);
+  padding: var(--vr-space-1) var(--vr-space-2-5);
+  border-radius: var(--vr-radius-pill);
+  background: var(--vr-help-label-bg);
+  color: var(--vr-text);
+  font-size: var(--vr-font-size-1);
+  font-weight: var(--vr-font-weight-bold);
+  text-decoration: none;
+}
+.vr-help-jump a:hover { background: var(--vr-surface-hover); }
+.vr-help-section { margin-top: var(--vr-space-8); scroll-margin-top: var(--vr-space-4); }
+.vr-help-section > h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--vr-space-2);
+  margin: 0 0 var(--vr-space-3);
+  color: var(--vr-text-muted);
+  font-size: var(--vr-font-size-1);
+  font-weight: var(--vr-font-weight-black);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.vr-help-section > h3 .vr-icon { color: var(--vr-help-step); }
+.vr-help-task + .vr-help-task { margin-top: var(--vr-space-5); }
+.vr-help-task h4 { margin: 0 0 var(--vr-space-2); color: var(--vr-text-strong); font-size: var(--vr-font-size-5); font-weight: var(--vr-font-weight-bold); }
+.vr-help-steps { margin: 0; padding: 0; list-style: none; counter-reset: step; }
+.vr-help-steps li { position: relative; padding: 0 0 var(--vr-space-2) calc(var(--vr-help-step-size) + var(--vr-space-3)); counter-increment: step; }
+.vr-help-steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0.0625rem;
+  display: grid;
+  place-items: center;
+  width: var(--vr-help-step-size);
+  height: var(--vr-help-step-size);
+  border-radius: 50%;
+  background: var(--vr-help-step);
+  color: var(--vr-on-help-step);
+  font-size: var(--vr-font-size-1);
+  font-weight: var(--vr-font-weight-black);
+}
+.vr-help-ui {
+  /* Inline (not inline-block) so a chip never wraps away from the punctuation after it. */
+  display: inline;
+  white-space: nowrap;
+  padding: var(--vr-space-0-5) var(--vr-space-1-5);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  border-radius: var(--vr-radius-tag);
+  background: var(--vr-help-label-bg);
+  color: var(--vr-text-strong);
+  font-weight: var(--vr-font-weight-bold);
+}
+.vr-help-tips { margin: 0; padding: var(--vr-space-3) var(--vr-space-4); list-style: none; border-radius: var(--vr-radius-xl); background: var(--vr-help-tip-bg); }
+.vr-help-tips li { display: flex; gap: var(--vr-space-2-5); padding: var(--vr-space-2) 0; }
+.vr-help-tips li + li { box-shadow: 0 -1px 0 var(--vr-help-bg); }
+.vr-help-tips .vr-icon { flex: none; margin-top: 0.25rem; color: var(--vr-help-step); }
+.vr-help-filter { margin-bottom: var(--vr-space-3); }
+.vr-help-ref { border-radius: var(--vr-radius-lg); }
+.vr-help-ref + .vr-help-ref { margin-top: var(--vr-space-1); }
+.vr-help-ref > summary:not(.card-header) {
+  /* The shared disclosure marker (app.css); the row spans the drawer so the count sits right. */
+  width: auto;
+  align-items: center;
+  gap: var(--vr-space-2);
+  padding: var(--vr-space-2) var(--vr-space-3);
+  border-radius: var(--vr-radius-lg);
+  font-weight: var(--vr-font-weight-bold);
+}
+.vr-help-ref > summary:hover { background: var(--vr-surface-hover); }
+.vr-help-ref[open] > summary { margin-bottom: 0; }
+.vr-help-count { margin-left: auto; color: var(--vr-text-muted); font-size: var(--vr-font-size-1); font-weight: var(--vr-font-weight-semibold); }
+.vr-help-ref-body { padding: var(--vr-space-1) var(--vr-space-3) var(--vr-space-3); }
+.vr-help-ref-body p { margin: 0 0 var(--vr-space-2); color: var(--vr-text-muted); }
+.vr-help-ref dl { margin: 0; }
+.vr-help-ref dl > div + div { margin-top: var(--vr-space-3); }
+.vr-help-ref dt { color: var(--vr-text-strong); font-weight: var(--vr-font-weight-bold); }
+.vr-help-ref dd { margin: var(--vr-space-0-5) 0 0; }
+.vr-help mark { padding: 0; border-radius: var(--vr-radius-xs); background: var(--vr-help-mark); color: inherit; }
+.vr-help-none { margin: var(--vr-space-2) var(--vr-space-3); }
 .vr-documentation-resize {
   position: absolute;
-  inset: 0 auto 0 -5px;
-  width: 10px;
+  inset: 0 auto 0 0;
+  width: var(--vr-space-2);
   cursor: ew-resize;
   touch-action: none;
 }
 .vr-documentation-resize::after {
   content: "";
   position: absolute;
-  inset: 0 auto 0 4px;
-  width: 2px;
-  background: transparent;
+  left: 0.1875rem;
+  top: 50%;
+  width: 0.25rem;
+  height: 2.5rem;
+  margin-top: -1.25rem;
+  border-radius: var(--vr-radius-pill);
+  background: var(--vr-border-strong);
+  opacity: 0;
+  transition: opacity var(--vr-motion-fast) ease-out;
 }
-.vr-documentation-resize:is(:hover, :focus-visible)::after { background: var(--vr-pen); }
-.vr-documentation-resize:focus-visible { outline: 2px solid var(--vr-focus, var(--vr-pen)); outline-offset: -2px; }
+.vr-documentation-resize:is(:hover, :focus-visible)::after { opacity: 1; }
+.vr-documentation-resize:focus-visible { outline: 2px solid var(--vr-focus); outline-offset: -2px; }
 .vr-documentation-resizing, .vr-documentation-resizing * { cursor: ew-resize !important; user-select: none !important; }
 .vr-entrance-page .vr-documentation { top: 0; }
 .vr-form-dialog > .modal-dialog { z-index: 0; }
@@ -65,7 +165,7 @@
 }
 @media (max-width: 991.98px) {
   .vr-documentation { width: min(var(--vr-documentation-width), calc(100vw - 2rem)); }
-  .vr-documentation-content { padding: 1rem; }
+  .vr-documentation-content { padding: var(--vr-space-1) var(--vr-space-4) var(--vr-space-8); }
 }
 /* The extra help control must fit beside the menu and account controls with
    wider system fonts too. Keep the controls whole; the brand can abbreviate. */

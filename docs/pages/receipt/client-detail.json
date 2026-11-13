@@ -5,6 +5,39 @@
   ],
   "title": "Client record",
   "purpose": "See one client’s account details, primary contact, mailing address, invoicing details, report instructions, additional people, projects, recent work and portal accounts in one place. All linked records belong to this client.",
+  "summary": "Everything about one client: account and invoicing details, report instructions, people, projects, recent work and portal accounts.",
+  "tasks": [
+    {
+      "title": "Update the client's details",
+      "steps": [
+        "Select [[Edit client]], make the change and give a reason. The reason is kept in the history."
+      ]
+    },
+    {
+      "title": "Add a person at the client",
+      "steps": [
+        "Select [[Add contact]]. Tick Receives reports if they should get reports."
+      ]
+    },
+    {
+      "title": "Start a project for this client",
+      "steps": [
+        "Select [[Add project]]. The client is already filled in."
+      ]
+    },
+    {
+      "title": "See all of the client's chains of custody",
+      "steps": [
+        "Select [[All chains of custody]]. The record shows only the newest eight."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Report instructions and Receives reports are information only. Nothing is sent automatically.",
+    "An inactive client cannot receive new intake. Its existing work stays readable.",
+    "Portal access is managed by administrators separately. A contact record is not a login.",
+    "Recent lists are previews. Use the project or chain of custody links for the full lists."
+  ],
   "sections": [
     {
       "title": "Access and actions",

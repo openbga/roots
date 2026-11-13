@@ -171,7 +171,7 @@ def training_edit(request, pk=None, mode="new"):
         request,
         form,
         title=title,
-        back_url=back,
+        cancel_url=back,
         submit="Create training record" if mode == "new" else title,
         crumbs=_crumbs(
             *([(base.title, back)] if base else []),

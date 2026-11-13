@@ -1,8 +1,12 @@
-{% comment %}
-Status label: text plus a tone glyph, so colour is never the only cue. Parameters:
+{% load ui %}{% comment %}
+Status label: text plus a tone glyph (a Bootstrap Icons sprite symbol through includes/icon.html),
+so colour is never the only cue. Glyph per tone: neutral circle, info circle-fill, progress
+circle-half, success check-circle-fill, warning exclamation-triangle-fill, danger x-circle-fill,
+hold pause-circle-fill.
+Parameters:
   label  visible text (e.g. sample.get_status_display)
   tone   neutral | info | progress | success | warning | danger | hold
   plain  truthy for the compact table-cell variant without the pill
   title  optional longer explanation (tooltip and accessible description)
 {% endcomment %}
-<span class="vr-status{% if plain %} vr-status-plain{% endif %}" data-tone="{{ tone|default:'neutral' }}"{% if title %} title="{{ title }}"{% endif %}>{{ label }}</span>
+{% with t=tone|default:"neutral" %}<span class="vr-status{% if plain %} vr-status-plain{% endif %}" data-tone="{{ t }}"{% if title %} title="{{ title }}"{% endif %}>{% if t == "success" %}{% icon name="check-circle-fill" class="vr-status-glyph" %}{% elif t == "warning" %}{% icon name="exclamation-triangle-fill" class="vr-status-glyph" %}{% elif t == "danger" %}{% icon name="x-circle-fill" class="vr-status-glyph" %}{% elif t == "hold" %}{% icon name="pause-circle-fill" class="vr-status-glyph" %}{% elif t == "info" %}{% icon name="circle-fill" class="vr-status-glyph" %}{% elif t == "progress" %}{% icon name="circle-half" class="vr-status-glyph" %}{% else %}{% icon name="circle" class="vr-status-glyph" %}{% endif %}{{ label }}</span>{% endwith %}

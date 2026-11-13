@@ -5,6 +5,33 @@
   ],
   "title": "Preparation batches",
   "purpose": "Find independent preparation batches, their labelled aliquots, actual preparation events and QC findings before analytical work.",
+  "summary": "Find preparation batches: the labelled aliquots prepared from samples before analysis, their actual start and completion, and any open QC findings.",
+  "tasks": [
+    {
+      "title": "Find a preparation batch",
+      "steps": [
+        "Type a method code, aliquot label, sample ID or P-number in [[Search]], then select [[Apply]].",
+        "Select the batch number to open it."
+      ]
+    },
+    {
+      "title": "Find aliquots not yet used in analysis",
+      "steps": [
+        "Open [[More filters]], set [[Attention]] to Aliquots not yet used, then select [[Apply]]."
+      ]
+    },
+    {
+      "title": "Start a preparation batch",
+      "steps": [
+        "Select [[New preparation batch]]. Only analysts and admins can create one."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Closing membership and completing preparation are separate. Neither fills in the other.",
+    "Counts include cancelled aliquots, because the work was still performed.",
+    "Zero open QC findings does not mean the analytical results are approved."
+  ],
   "sections": [
     {
       "title": "Access and navigation",

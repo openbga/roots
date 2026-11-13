@@ -1,4 +1,4 @@
-{% comment %}
+{% load ui %}{% comment %}
 The one mapping from a laboratory state to a status tone (docs/ui-standards.md section 8), so a list
 cell, a record header and a related table show the same state the same way. Parameters:
   kind    material | equipment | training | nc-status | nc-severity | outcome
@@ -7,10 +7,10 @@ cell, a record header and a related table show the same state the same way. Para
   plain   truthy for the compact table-cell variant
 Values without a tone of their own (a minor severity, an acceptable outcome) print the label as text.
 {% endcomment %}
-{% if kind == "material" %}{% if value == "active" %}{% include "includes/status.html" with label=label tone="success" plain=plain %}{% else %}{% include "includes/status.html" with label=label tone="neutral" plain=plain %}{% endif %}
-{% elif kind == "equipment" %}{% if value == "in_service" %}{% include "includes/status.html" with label=label tone="success" plain=plain %}{% elif value == "out_of_service" %}{% include "includes/status.html" with label=label tone="hold" plain=plain %}{% else %}{% include "includes/status.html" with label=label tone="neutral" plain=plain %}{% endif %}
-{% elif kind == "training" %}{% if value == "current" %}{% include "includes/status.html" with label=label tone="success" plain=plain %}{% elif value == "expired" or value == "not_acceptable" %}{% include "includes/status.html" with label=label tone="danger" plain=plain %}{% elif value == "pending" %}{% include "includes/status.html" with label=label tone="info" plain=plain %}{% else %}{% include "includes/status.html" with label=label tone="neutral" plain=plain %}{% endif %}
-{% elif kind == "nc-status" %}{% if value == "closed" %}{% include "includes/status.html" with label=label tone="success" plain=plain %}{% elif value == "open" %}{% include "includes/status.html" with label=label tone="info" plain=plain %}{% else %}{% include "includes/status.html" with label=label tone="progress" plain=plain %}{% endif %}
-{% elif kind == "nc-severity" %}{% if value == "critical" %}{% include "includes/status.html" with label=label tone="danger" plain=plain %}{% elif value == "major" %}{% include "includes/status.html" with label=label tone="warning" plain=plain %}{% else %}{{ label }}{% endif %}
-{% elif kind == "outcome" %}{% if value == "not_acceptable" %}{% include "includes/status.html" with label=label tone="danger" plain=plain %}{% else %}{{ label }}{% endif %}
+{% if kind == "material" %}{% if value == "active" %}{% status label=label tone="success" plain=plain %}{% else %}{% status label=label tone="neutral" plain=plain %}{% endif %}
+{% elif kind == "equipment" %}{% if value == "in_service" %}{% status label=label tone="success" plain=plain %}{% elif value == "out_of_service" %}{% status label=label tone="hold" plain=plain %}{% else %}{% status label=label tone="neutral" plain=plain %}{% endif %}
+{% elif kind == "training" %}{% if value == "current" %}{% status label=label tone="success" plain=plain %}{% elif value == "expired" or value == "not_acceptable" %}{% status label=label tone="danger" plain=plain %}{% elif value == "pending" %}{% status label=label tone="info" plain=plain %}{% else %}{% status label=label tone="neutral" plain=plain %}{% endif %}
+{% elif kind == "nc-status" %}{% if value == "closed" %}{% status label=label tone="success" plain=plain %}{% elif value == "open" %}{% status label=label tone="info" plain=plain %}{% else %}{% status label=label tone="progress" plain=plain %}{% endif %}
+{% elif kind == "nc-severity" %}{% if value == "critical" %}{% status label=label tone="danger" plain=plain %}{% elif value == "major" %}{% status label=label tone="warning" plain=plain %}{% else %}{{ label }}{% endif %}
+{% elif kind == "outcome" %}{% if value == "not_acceptable" %}{% status label=label tone="danger" plain=plain %}{% else %}{{ label }}{% endif %}
 {% endif %}

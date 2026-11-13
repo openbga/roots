@@ -1,9 +1,9 @@
-{% comment %}
+{% load ui %}{% comment %}
 Source status of a subcontracted test as a status label: the one place that maps it to a tone.
 Parameters: subcontract, decision (latest source review decision); plain (table-cell variant).
 {% endcomment %}
-{% if subcontract.cancelled_at %}{% include "includes/status.html" with label="Cancelled dispatch" tone="neutral" plain=plain %}
-{% elif not subcontract.latest_number %}{% include "includes/status.html" with label="Awaiting source result" tone="neutral" plain=plain %}
-{% elif decision == "accepted" %}{% include "includes/status.html" with label="Accepted source" tone="success" plain=plain %}
-{% elif decision == "rejected" %}{% include "includes/status.html" with label="Rejected source" tone="danger" plain=plain %}
-{% else %}{% include "includes/status.html" with label="Awaiting source review" tone="warning" plain=plain %}{% endif %}
+{% if subcontract.cancelled_at %}{% status label="Cancelled dispatch" tone="neutral" plain=plain %}
+{% elif not subcontract.latest_number %}{% status label="Awaiting source result" tone="neutral" plain=plain %}
+{% elif decision == "accepted" %}{% status label="Accepted source" tone="success" plain=plain %}
+{% elif decision == "rejected" %}{% status label="Rejected source" tone="danger" plain=plain %}
+{% else %}{% status label="Awaiting source review" tone="warning" plain=plain %}{% endif %}

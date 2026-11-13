@@ -6,6 +6,36 @@
   ],
   "title": "Price list",
   "purpose": "Create or edit staff pricing. Quote lines copy prices when saved; a list edit never changes already stored quote prices.",
+  "summary": "Name a price list and set a per-sample price for each catalog test. Quote lines copy the price when they are saved.",
+  "tasks": [
+    {
+      "title": "Set prices",
+      "steps": [
+        "Enter a [[Price (USD)]] on each test you offer, per sample.",
+        "Leave a price blank to not offer that test on this list. Zero is a real price."
+      ]
+    },
+    {
+      "title": "Create a price list",
+      "steps": [
+        "Enter a [[Name]] and, if useful, a staff-only [[Description]].",
+        "Select [[Create price list]]. The list reopens for editing; it may start empty."
+      ]
+    },
+    {
+      "title": "Change an existing list",
+      "steps": [
+        "Change details or prices and explain why in [[Reason for change]].",
+        "Select [[Save changes]]. The reason is kept in the history."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Editing a list never changes prices already stored on quotes.",
+    "Each method version can have its own price, so the same analyte may appear more than once.",
+    "Clearing a saved price removes that test from the list.",
+    "If the list changed after you opened it, saving is refused. Reload and review the current prices."
+  ],
   "sections": [
     {
       "title": "Access",
@@ -121,7 +151,7 @@
     "commercial/pricing.py",
     "commercial/selectors.py",
     "commercial/templates/commercial/price_list_form.html",
-    "commercial/templates/commercial/_history.html",
+    "templates/includes/history_panel.html",
     "commercial/tests/test_quotes.py",
     "core/form_surfaces.py",
     "templates/includes/form_dialog.html",

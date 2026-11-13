@@ -70,7 +70,11 @@ class ListOrOtherField(forms.CharField):
 
 
 class SuggestInput(forms.TextInput):
-    """Free text with suggestions. `suggestions` is a list or a callable evaluated at render."""
+    """Free text with suggestions. `suggestions` is a list or a callable evaluated at render.
+
+    Each suggestion is a value, or a (value, label) pair whose label describes the value in the
+    menu (a qualifier code and its meaning); choosing it still enters only the value.
+    """
 
     template_name = "django/forms/widgets/suggest_input.html"
 
@@ -82,7 +86,12 @@ class SuggestInput(forms.TextInput):
         context = super().get_context(name, value, attrs)
         widget = context["widget"]
         values = self.suggestions() if callable(self.suggestions) else self.suggestions
-        widget["suggestions"] = [v for v in dict.fromkeys(values) if v]
+        suggestions = {}
+        for item in values:
+            value, label = item if isinstance(item, (tuple, list)) else (item, "")
+            if value:
+                suggestions.setdefault(value, label)  # the first label of a repeated value
+        widget["suggestions"] = list(suggestions.items())
         if widget["suggestions"]:
             widget["attrs"]["list"] = f"{widget['attrs'].get('id', name)}_list"
         return context

@@ -1,28 +1,29 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 Projects. Context (receipt.lists.list_response): page_obj (Project), filter_form (ProjectFilter), q,
 sort, per_page, active_filters and the toolbar context. A project has no page of its own: its name
 links to the edit form for project managers and is plain text for everyone else.
 {% endcomment %}
-{% block page_actions %}{% if can_manage_clients %}<a class="btn btn-primary" href="{% url 'receipt:project-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New project</a>{% endif %}{% endblock %}
+{% block page_actions %}{% if can_manage_clients %}<a class="btn btn-primary" href="{% url 'receipt:project-create' %}">{% icon name="plus-lg" %}New project</a>{% endif %}{% endblock %}
 {% block content %}
-<section class="card vr-table-card" aria-labelledby="projects-heading">
-  <h2 class="visually-hidden" id="projects-heading">Projects</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter projects" grid="receipt.projects" %}
-  {% if page_obj.paginator.count %}
+{% if can_manage_clients %}{% url 'receipt:project-create' as create_url %}{% endif %}
+{% panel title="Projects" heading_id="projects-heading" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter projects" grid="receipt.projects" invalid=filter_form.errors chips=active_filters sort=sort %}
+  {% list_results items=page_obj noun="projects" filtered=active_filters|default:q invalid=filter_form.errors clear_url=request.path error_body="Correct the highlighted filter above. No projects are hidden by an invalid filter." no_results_title="No projects match these filters" empty_title="No projects yet" empty_body="Projects group a client's samples under one program, turnaround and report preference." action_url=create_url action_label="New project" %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table" data-vr-grid="receipt.projects" data-vr-grid-version="3" aria-labelledby="projects-heading">
       <thead>
         <tr>
-          {% include "includes/sort_header.html" with label="Project" asc="name" desc="-name" col="name" locked=True %}
-          {% include "includes/sort_header.html" with label="Number" asc="number" desc="-number" col="number" %}
-          {% include "includes/sort_header.html" with label="Client" asc="client" desc="-client" col="client" %}
-          {% include "includes/sort_header.html" with label="Program" asc="regulatory_program" desc="-regulatory_program" col="regulatory_program" %}
-          {% include "includes/sort_header.html" with label="Permit or program ID" asc="program" desc="-program" col="program" %}
+          {% sort_header label="Project" asc="name" desc="-name" col="name" locked=True %}
+          {% sort_header label="Number" asc="number" desc="-number" col="number" %}
+          {% sort_header label="Client" asc="client" desc="-client" col="client" %}
+          {% sort_header label="Program" asc="regulatory_program" desc="-regulatory_program" col="regulatory_program" %}
+          {% sort_header label="Permit or program ID" asc="program" desc="-program" col="program" %}
           <th scope="col" data-vr-col="site" data-vr-col-hidden>Site</th>
-          {% include "includes/sort_header.html" with label="Project manager" asc="project_manager" desc="-project_manager" col="project_manager" %}
-          {% include "includes/sort_header.html" with label="Turnaround (days)" asc="turnaround_days" desc="-turnaround_days" col="turnaround_days" class="text-end" %}
-          {% include "includes/sort_header.html" with label="Status" asc="is_active" desc="-is_active" col="is_active" %}
+          {% sort_header label="Project manager" asc="project_manager" desc="-project_manager" col="project_manager" %}
+          {% sort_header label="Turnaround (days)" asc="turnaround_days" desc="-turnaround_days" col="turnaround_days" class="text-end" %}
+          {% sort_header label="Status" asc="is_active" desc="-is_active" col="is_active" %}
         </tr>
       </thead>
       <tbody>
@@ -36,20 +37,12 @@ links to the edit form for project managers and is plain text for everyone else.
           <td>{{ project.site_address|default:"—" }}{% if project.site_state %} ({{ project.site_state }}){% endif %}</td>
           <td>{% if project.project_manager %}{{ project.project_manager.get_full_name|default:project.project_manager.get_username }}{% else %}—{% endif %}</td>
           <td class="text-end">{{ project.turnaround_days }}</td>
-          <td>{% if project.is_active == False %}{% include "includes/status.html" with label="Inactive" tone="neutral" plain=True title="No new intake; history stays readable" %}{% else %}{% include "includes/status.html" with label="Active" tone="success" plain=True %}{% endif %}</td>
+          <td>{% if project.is_active == False %}{% status label="Inactive" tone="neutral" plain=True title="No new intake; history stays readable" %}{% else %}{% status label="Active" tone="success" plain=True %}{% endif %}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
-  {% include "includes/pagination.html" with noun="projects" filtered=active_filters|default:q %}
-  {% elif filter_form.errors %}
-  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above. No projects are hidden by an invalid filter." clear_url=request.path %}
-  {% elif active_filters or q %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No projects match these filters" body="Check the spelling or clear the filters." clear_url=request.path %}
-  {% else %}
-  {% if can_manage_clients %}{% url 'receipt:project-create' as create_url %}{% endif %}
-  {% include "includes/empty_state.html" with title="No projects yet" body="Projects group a client's samples under one program, turnaround and report preference." action_url=create_url action_label="New project" %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}

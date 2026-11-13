@@ -6,6 +6,28 @@
   ],
   "title": "Verify two-factor authentication",
   "purpose": "Confirm a sign-in or sensitive account action with an enrolled factor.",
+  "summary": "Enter a code from your authenticator app, or a recovery code, to finish signing in or to confirm a sensitive account action.",
+  "tasks": [
+    {
+      "title": "Finish signing in",
+      "steps": [
+        "Type the six-digit code from your app, or an unused eight-digit recovery code, in [[Code]].",
+        "Select [[Sign In]]. To give up, select [[Cancel]]; you return to sign in."
+      ]
+    },
+    {
+      "title": "Confirm a sensitive action",
+      "steps": [
+        "Type the code in [[Code]] and select [[Confirm]]. The action you started then continues."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A recovery code works only once.",
+    "The same app code cannot be used twice. Wait for the next one if it was just accepted.",
+    "Wrong codes are rate limited.",
+    "A confirmed code counts as recent for five minutes."
+  ],
   "sections": [
     {
       "title": "Page variants",

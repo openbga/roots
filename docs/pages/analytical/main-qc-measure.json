@@ -5,6 +5,29 @@
   ],
   "title": "Record measurements",
   "purpose": "Record or correct per-analyte observations for one QC sample, preserving each earlier measurement and evaluating against the laboratory’s current configured limits.",
+  "summary": "Record or correct the measured values for one QC sample, analyte by analyte. Each value is evaluated against the lab's configured limits.",
+  "tasks": [
+    {
+      "title": "Record QC measurements",
+      "steps": [
+        "Enter the [[Analysis start]].",
+        "For each analyte, enter the observed value and the reporting limit, plus the spike, unspiked or reference values the QC type needs.",
+        "Select [[Record measurements]]."
+      ]
+    },
+    {
+      "title": "Correct a measurement",
+      "steps": [
+        "Enter the new value, give a [[Reason for correction]] and select [[Record measurements]]. The earlier value stays in history."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Leave an analyte's observed value blank to skip it.",
+    "Without a configured limit, a measurement is Not evaluated. It is never an assumed pass, and it holds approval.",
+    "For a matrix spike, enter the unspiked result. A blank is not zero; enter 0 only when that is your interpretation.",
+    "If any row has an error, nothing is saved. Your typed values are kept."
+  ],
   "sections": [
     {
       "title": "Access",

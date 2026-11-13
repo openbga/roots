@@ -1,57 +1,50 @@
 {% extends "base.html" %}
-{% load static %}
-{% block breadcrumbs %}{% url 'analytical:batch-list' as list_url %}{% url 'analytical:batch-detail' batch.pk as batch_url %}{% include "includes/breadcrumbs.html" with section="Batches & QC" section_url=list_url record=batch.number record_url=batch_url %}{% endblock %}
-{% block page_meta %}<ul class="vr-page-meta"><li>Batch <span class="vr-id">{{ batch.number }}</span></li><li>{{ batch.method }}</li><li>{{ batch.get_matrix_display }}</li>
-  <li>Preparation start: {% if batch.prepared_at %}{{ batch.prepared_at|date:"Y-m-d H:i T" }}{% else %}not recorded{% endif %}</li></ul>{% endblock %}
+{% load static ui %}
+{% block breadcrumbs %}{% url 'analytical:batch-list' as list_url %}{% url 'analytical:batch-detail' batch.pk as batch_url %}{% breadcrumbs section="Batches & QC" section_url=list_url record=batch.number record_url=batch_url %}{% endblock %}
+{% block page_meta %}{% page_meta %}<li>Batch <span class="vr-id">{{ batch.number }}</span></li><li>{{ batch.method }}</li><li>{% matrix_tag matrix=batch.matrix size="lg" %}</li>
+  <li>Preparation start: {% if batch.prepared_at %}{{ batch.prepared_at|date:"Y-m-d H:i T" }}{% else %}not recorded{% endif %}</li>{% endpage_meta %}{% endblock %}
 {% block content %}
-{% if not can_enter %}<div class="alert alert-info" role="status">{% include "includes/status.html" with label="Read only" tone="neutral" plain=True %}<div>Only analysts can enter results.</div></div>{% endif %}
+{% if not can_enter %}{% notice tone="neutral" label="Read only" %}Only analysts can enter results.{% endnotice %}{% endif %}
 {% if preparation_rules %}
-<div class="alert alert-warning" role="status">
-  {% include "includes/status.html" with label="Preparation time needed" tone="warning" plain=True %}
-  <div>Holding rule{{ preparation_rules|length|pluralize }} {% for r in preparation_rules %}<strong>{{ r.name }}</strong>{% if not forloop.last %}, {% endif %}{% endfor %} depend{{ preparation_rules|length|pluralize:"s," }} on preparation, and none is recorded. Results entered now cannot be submitted. <a href="{% url 'analytical:batch-detail' batch.pk %}#preparation">Set the preparation time on the batch page</a> first.</div>
-</div>
+{% notice tone="warning" label="Preparation time needed" %}Holding rule{{ preparation_rules|length|pluralize }} {% for r in preparation_rules %}<strong>{{ r.name }}</strong>{% if not forloop.last %}, {% endif %}{% endfor %} depend{{ preparation_rules|length|pluralize:"s," }} on preparation, and none is recorded. Results entered now cannot be submitted. <a href="{% url 'analytical:batch-detail' batch.pk %}#preparation">Set the preparation time on the batch page</a> first.{% endnotice %}
 {% endif %}
 {% if orphan_errors %}
-<div class="alert alert-danger" role="alert" id="grid-stale">
-  {% include "includes/status.html" with label="Error" tone="danger" plain=True %}
-  <div><p class="mb-1">Nothing was saved: a row on this page changed since you opened it.</p>
+{% notice tone="danger" blocking=True id="grid-stale" %}<p class="mb-1">Nothing was saved: a row on this page changed since you opened it.</p>
     <ul class="mb-0 ps-3">{% for message in orphan_errors %}<li>{{ message }}</li>{% endfor %}</ul>
-    <p class="mb-0">Reload the page, check the current rows, and enter again.</p></div>
-</div>
+    <p class="mb-0">Reload the page, check the current rows, and enter again.</p>{% endnotice %}
 {% endif %}
-<section class="card vr-table-card mb-3" aria-label="Rows to enter">
-  {% include "includes/grid_toolbar.html" with label="Filter rows to enter" %}
-</section>
-{% if rows %}
+{% url 'analytical:batch-add-tests' batch.pk as add_url %}
+{% panel title="Rows to enter" heading_id="rows-heading" table=True hidden_title=True class="mb-3" %}
+  {% grid_toolbar label="Filter rows to enter" %}
+{% endpanel %}
+{% list_results items=rows noun="rows needing entry" filtered=filtered invalid=filter_form.errors clear_url=request.path no_results_title="No rows match these filters" no_results_body="Clear the filters to see every row that still needs an entry." empty_title="Nothing to enter" empty_body="Every test in this batch is submitted or approved, or the batch has no tests. Returned results and corrections are entered from the result page." action_url=add_url action_label="Add tests" %}
+{# The pager sits above the entry form: it is a GET navigation with its own rows-per-page form, which
+cannot nest inside this POST form, and the form's sticky action row must stay last in the dialog. #}
+{% pagination noun="rows needing entry" filtered=filtered %}
+{# form: entry-grid #}
 <form class="vr-form" method="post" novalidate action="{{ request.get_full_path }}">
   {% csrf_token %}
-  {% include "includes/form_errors.html" with form=defaults %}
+  {% form_errors form=defaults %}
   {{ formset.management_form }}
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required for every row where you enter a result; a row with no result is skipped.</p>
-  <p class="vr-form-note">Type the result exactly as read: a number, or <strong>ND</strong> for a non-detect. Values are stored exactly; entries needing rounding are rejected. The reporting limit applied defaults to the method limit times the dilution; check it. Units come from the test and are not converted. Times are laboratory local time.</p>
+  {% required_note note="They apply to every row where you enter a result; a row with no result is skipped." %}
   <fieldset{% if not can_enter %} disabled{% endif %}>
   <legend class="visually-hidden">Result entry{% if not can_enter %} (read only: only analysts can enter results){% endif %}</legend>
   <div class="row g-3 mb-3"><div class="col-md-5">{{ defaults.default_analysis_started_at.as_field_group }}</div></div>
   <p class="vr-form-note" role="note"><strong>Saving covers the {{ rows|length }} row{{ rows|length|pluralize }} shown on this page{% if page_obj.paginator.num_pages > 1 %} (page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}){% endif %}.</strong> Rows on other pages are not changed. If any row here has an error, nothing on this page is saved and what you typed is kept. Reason is required only when a result already exists.</p>
   {% if batch.matrix == "soil" %}<p class="vr-form-note">Choose wet or dry weight for every soil result entered. Enter the final result and reporting limit on that basis; no conversion is performed. Percent solids and its source are optional and must come from an actual supplied measurement.</p>{% endif %}
-  {% if qualifiers %}
-  <details class="mb-3"><summary class="small">Qualifier codes you can use ({{ qualifiers|length }})</summary>
-    <ul class="small mb-0 mt-1">{% for q in qualifiers %}<li><strong class="vr-id">{{ q.code }}</strong> {{ q.description }}{% if q.indicates_holding_time %} <span class="vr-muted">(marks a holding-time exceedance)</span>{% endif %}</li>{% endfor %}</ul>
-    <datalist id="qualifier-codes">{% for q in qualifiers %}<option value="{{ q.code }}">{{ q.description }}</option>{% endfor %}</datalist>
+  <details class="mb-3"><summary>How to enter results</summary>
+    <p class="vr-form-note mt-2">Type the result exactly as read: a number, or <strong>ND</strong> for a non-detect. Values are stored exactly; entries needing rounding are rejected. The reporting limit applied defaults to the method limit times the dilution; check it. Units come from the test and are not converted. Times are laboratory local time.</p>
+    {% if qualifiers %}<p class="vr-form-note mb-1">Qualifier codes you can use ({{ qualifiers|length }}):</p>
+    <ul class="small mb-0">{% for q in qualifiers %}<li><strong class="vr-id">{{ q.code }}</strong> {{ q.description }}{% if q.indicates_holding_time %} <span class="vr-muted">(marks a holding-time exceedance)</span>{% endif %}</li>{% endfor %}</ul>{% endif %}
   </details>
-  {% endif %}
   {% if error_rows %}
-  <div class="alert alert-danger" role="alert" id="grid-errors" tabindex="-1">
-    {% include "includes/status.html" with label="Error" tone="danger" plain=True %}
-    <div>
+  {% notice tone="danger" blocking=True id="grid-errors" focus=True %}
       <p class="mb-1">{{ error_rows|length }} row{{ error_rows|length|pluralize }} need{{ error_rows|length|pluralize:"s," }} attention. Nothing was saved; your entries were kept.</p>
       <ul class="mb-0 ps-3">{% for form, item in error_rows %}<li><a href="#row-{{ form.prefix }}">{{ item.requested_test.sample.lab_id }} {{ item.requested_test.definition.analyte }}</a></li>{% endfor %}</ul>
-    </div>
-  </div>
+  {% endnotice %}
   {% endif %}
-  {% if formset.non_form_errors %}<div class="alert alert-danger" role="alert">{{ formset.non_form_errors }}</div>{% endif %}
-  <section class="card vr-table-card" aria-labelledby="grid-heading">
-    <h2 class="visually-hidden" id="grid-heading">Result entry grid</h2>
+  {% if formset.non_form_errors %}{% notice tone="danger" blocking=True %}{{ formset.non_form_errors }}{% endnotice %}{% endif %}
+  {% panel title="Result entry grid" heading_id="grid-heading" table=True hidden_title=True %}
     <div class="vr-table-wrap">
       <table class="table vr-table" id="entry-grid">
         <thead><tr>
@@ -82,33 +75,27 @@
             <td>{{ form.analysis_started_at }}</td>
             <td>{% if result.latest %}{{ form.reason }}{% else %}<span class="vr-muted">—</span>{% endif %}</td>
           </tr>
+          {% if result.status == "returned" %}
+          <tr><td colspan="{% if batch.matrix == 'soil' %}12{% else %}11{% endif %}" class="vr-subrow small"><div class="vr-subrow-content">{% status label="Returned" tone="warning" plain=True %} {% if result.latest.review_note %}{{ result.latest.review_note }}{% else %}<span class="vr-muted">No reason recorded</span>{% endif %}{% if result.latest.reviewed_by %}<span class="vr-muted"> · {{ result.latest.reviewed_by.get_full_name|default:result.latest.reviewed_by.get_username }}</span>{% endif %}</div></td></tr>
+          {% endif %}
           {% if form.errors %}
-          <tr class="table-danger"><td colspan="{% if batch.matrix == 'soil' %}12{% else %}11{% endif %}"><ul class="vr-field-errors mb-0" id="{{ form.prefix }}-errors">
+          <tr class="table-danger"><td colspan="{% if batch.matrix == 'soil' %}12{% else %}11{% endif %}" class="vr-subrow"><div class="vr-subrow-content"><ul class="vr-field-errors mb-0" id="{{ form.prefix }}-errors">
             {% for field in form %}{% for error in field.errors %}<li>{{ field.label }}: {{ error }}</li>{% endfor %}{% endfor %}
             {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
-          </ul></td></tr>
+          </ul></div></td></tr>
           {% endif %}
           {% endfor %}
         </tbody>
       </table>
     </div>
-  </section>
+  {% endpanel %}
   </fieldset>
   {% if can_enter %}
-  <div class="vr-form-actions">
-    <span class="vr-form-note me-auto">Save before changing page: what you typed on an unsaved page is lost. Saving keeps every earlier entry.</span>
-    <a class="btn btn-link" href="{% url 'analytical:batch-detail' batch.pk %}">Cancel</a>
-    <button class="btn btn-primary" type="submit">Save {{ rows|length }} row{{ rows|length|pluralize }} on this page as entered</button>
-  </div>
+  {% url 'analytical:batch-detail' batch.pk as batch_url %}{% with count=rows|length|stringformat:"s" plural=rows|length|pluralize %}
+  {% form_actions cancel_url=batch_url submit_label="Save "|add:count|add:" row"|add:plural|add:" on this page as entered" %}<span class="vr-form-note order-first me-auto">Save before changing page: what you typed on an unsaved page is lost. Saving keeps every earlier entry.</span>{% endform_actions %}{% endwith %}
   {% endif %}
 </form>
-{% include "includes/pagination.html" with noun="rows needing entry" filtered=filtered %}
-{% elif filtered %}
-{% include "includes/empty_state.html" with kind="no-results" title="No rows match these filters" body="Clear the filters to see every row that still needs an entry." clear_url=request.path %}
-{% else %}
-{% url 'analytical:batch-add-tests' batch.pk as add_url %}
-{% include "includes/empty_state.html" with title="Nothing to enter" body="Every test in this batch is submitted or approved, or the batch has no tests. Returned results and corrections are entered from the result page." action_url=add_url action_label="Add tests" %}
-{% endif %}
+{% endlist_results %}
 {% endblock %}
 {% block extra_js %}
 <script src="{% static 'analytical/entry_grid.js' %}"></script>

@@ -19,7 +19,7 @@ from core.lab_profile import withheld_certificates
 from receipt.models import Project, Sample
 
 from .content import assemble, describe_changes
-from .forms import ProjectChoiceForm, ReleaseForm, ReportForm
+from .forms import PickerForm, ProjectChoiceForm, ReleaseForm, ReportForm
 from .models import MAX_SAMPLES, EddExport, Report, ReportFile, ReportVersion
 from .pdf import ReportRenderError, render_pdf
 from .queries import (
@@ -181,8 +181,7 @@ def _scope_form(request, project, report=None):
             "picker_page": page,
             "picker_show": show,
             "picker_q": (data.get("pq") or "").strip(),
-            "picker_per_page": per_page(data.get("pper")),
-            "per_page_options": PER_PAGE,
+            "picker_form": PickerForm(show, per_page(data.get("pper")), PER_PAGE),
             "selected_ids": selected,
             "hidden_selected": sorted(selected - visible),
             "selected_count": len(selected),

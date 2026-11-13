@@ -5,16 +5,10 @@ Each is a notice (docs/ui-standards.md section 8): the tone label and the title 
 the message as plain text with its line breaks kept. Nothing renders when there are none. placement="aside"
 (sign-in page) makes the section a keyboard-focusable box that may scroll inside.
 {% endcomment %}
-{% if announcements %}
+{% load ui %}{% if announcements %}
 <section class="vr-announcements{% if placement == "aside" %} vr-announcements-aside{% endif %}" aria-label="Announcements"{% if placement == "aside" %} tabindex="0"{% endif %}>
   {% for item in announcements %}
-  <div class="alert alert-{{ item.tone }}" role="status">
-    <div class="vr-announcement-head">
-      {% include "includes/status.html" with label=item.get_tone_display tone=item.tone plain=True %}
-      <h2 class="vr-announcement-title">{{ item.title }}</h2>
-    </div>
-    <p class="vr-announcement-body">{{ item.body|linebreaksbr }}</p>
-  </div>
+  {% notice tone=item.tone label=item.get_tone_display heading=item.title %}{{ item.body|linebreaksbr }}{% endnotice %}
   {% endfor %}
 </section>
 {% endif %}

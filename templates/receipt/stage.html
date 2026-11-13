@@ -1,13 +1,13 @@
-{% comment %}
+{% load ui %}{% comment %}
 Work stage of a requested test as a compact status label: the one place that maps a stage to a
 tone. Parameter: item (stage, stage_label, optional external_subcontract_id for tests sent to an
 external laboratory).
 {% endcomment %}
 {% with s=item.stage label=item.stage_label %}
-{% if s == "returned" or s == "external_rejected" %}{% include "includes/status.html" with label=label tone="warning" plain=True %}
-{% elif s == "approved" or s == "external_accepted" %}{% include "includes/status.html" with label=label tone="success" plain=True %}
-{% elif s == "submitted" or s == "draft" or s == "external_sent" or s == "external_entered" %}{% include "includes/status.html" with label=label tone="progress" plain=True %}
-{% elif s == "awaiting" %}{% include "includes/status.html" with label=label tone="info" plain=True %}
-{% else %}{% include "includes/status.html" with label=label tone="neutral" plain=True %}{% endif %}
+{% if s == "returned" or s == "external_rejected" %}{% status label=label tone="warning" plain=True %}
+{% elif s == "approved" or s == "external_accepted" %}{% status label=label tone="success" plain=True %}
+{% elif s == "submitted" or s == "draft" or s == "external_sent" or s == "external_entered" %}{% status label=label tone="progress" plain=True %}
+{% elif s == "awaiting" %}{% status label=label tone="info" plain=True %}
+{% else %}{% status label=label tone="neutral" plain=True %}{% endif %}
 {% if item.external_subcontract_id %}{% url 'receipt:subcontract-detail' item.external_subcontract_id as ext_url %}{% if ext_url %} <a class="vr-id small" href="{{ ext_url }}">EXT-{{ item.external_subcontract_id|stringformat:"06d" }}</a>{% endif %}{% endif %}
 {% endwith %}

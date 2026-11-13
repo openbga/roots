@@ -5,6 +5,35 @@
   ],
   "title": "Result revisions and correction",
   "purpose": "Inspect one requested test’s complete result revision trail and enter an initial observation, correction or reanalysis without rewriting prior observations.",
+  "summary": "See every revision of one test's result, and enter a first result, a correction or a reanalysis. Earlier revisions are never changed.",
+  "tasks": [
+    {
+      "title": "Enter the first result",
+      "steps": [
+        "Fill in the result, reporting limit, dilution and analysis start.",
+        "Select [[Enter result]]. It is saved as entered; submit it for review from the batch."
+      ]
+    },
+    {
+      "title": "Correct a returned or approved result",
+      "steps": [
+        "Enter the new values.",
+        "Explain why in [[Reason for correction or reanalysis]] and select [[Correct result]]."
+      ]
+    },
+    {
+      "title": "Check the preservation evidence",
+      "steps": [
+        "Select [[Preservation findings and lab disposition]] in the header."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A correction adds a new revision. Approved and returned revisions stay as they were, and issued reports are not changed.",
+    "While the latest revision awaits review, it cannot be corrected. A reviewer must decide it first.",
+    "Each revision keeps the qualifiers, method and reporting limit it was entered with.",
+    "A sample held or rejected at receipt cannot take new results."
+  ],
   "sections": [
     {
       "title": "Access",
@@ -138,7 +167,7 @@
           "description": "For soil only: Wet weight or Dry weight is required. New soil observations cannot use Not applicable."
         },
         {
-          "label": "Percent solids (%)",
+          "label": "Percent solids",
           "description": "Optional exact supplied percentage from 0 through 100."
         },
         {

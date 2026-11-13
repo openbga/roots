@@ -6,6 +6,29 @@
   ],
   "title": "New or edit material",
   "purpose": "Create a stock definition or revise its details.",
+  "summary": "Create a material definition for stock lots, or revise one. Only admin and reviewer roles can save.",
+  "tasks": [
+    {
+      "title": "Define a material",
+      "steps": [
+        "Enter the [[Name]], choose the [[Kind]] and enter the [[Unit]] its lots are counted in.",
+        "Optionally add the CAS number, specification and storage requirements.",
+        "Select [[Create material]]."
+      ]
+    },
+    {
+      "title": "Stop new lots of a material",
+      "steps": [
+        "Clear [[Active (new lots allowed)]], give a [[Reason]] and select [[Save changes]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The unit is fixed once any lot exists. For another unit, define a new material.",
+    "Clearing Active keeps every existing lot and its history.",
+    "The CAS number is not looked up or checked.",
+    "Material names are unique, ignoring upper and lower case."
+  ],
   "sections": [
     {
       "title": "Access and variants",

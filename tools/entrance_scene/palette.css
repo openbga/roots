@@ -1,0 +1,75 @@
+/* Entrance scene palette: the --sc-* colours for morning (light) and night (dark), and the
+   classes the scene's shapes use. build.py embeds one theme's block plus the classes in each SVG. */
+
+/* theme: light */
+svg {
+  --sc-sky-top: #e3ebe2; --sc-sky-mid: #edf0e4; --sc-sky-low: #f6e9cc; --sc-glow: #fbd99c; --sc-sun: #fff5dc;
+  --sc-cloud: #fbf8ee; --sc-cloud-o: 0.85; --sc-day: 1; --sc-night: 0;
+  --sc-ridge1: #cdd6c4; --sc-ridge2: #b9c7ad; --sc-haze: #f1efe3;
+  --sc-hill1: #a9bd8e; --sc-field1a: #b8c99a; --sc-field1b: #98af7c; --sc-trees1: #7f9a66;
+  --sc-hill2: #8eaa6f; --sc-field2a: #9db67c; --sc-field2b: #7f9d62; --sc-trees2: #5f7f4a;
+  --sc-meadow-far: #86a465; --sc-meadow-near: #67884a; --sc-grass: #4c6d36; --sc-grasslit: #a9c17e; --sc-flower: #e8cf86;
+  --sc-fartree: #5d7c48; --sc-farbranch: #5a4632;
+  --sc-river-far: #e7ece0; --sc-river-near: #86b2b1; --sc-bank: #5f7d48; --sc-glint: #f7f6ea;
+  --sc-trunk: #4b3a28; --sc-trunklit: #8a6d48; --sc-branch: #4b3a28; --sc-treeshadow: #2f4a26;
+  --sc-leaf0: #2c4f30; --sc-leaf1: #3f6a3b; --sc-leaf2: #568444; --sc-leaf3: #739d55; --sc-leafrim: #9dbc72;
+  --sc-topsoil-a: #594330; --sc-topsoil-b: #463325; --sc-crumb: #6e5440;
+  --sc-clay-a: #a0703f; --sc-clay-b: #8a5d34; --sc-streak: #b98a58;
+  --sc-sand-a: #d2bc93; --sc-sand-b: #c2a97f; --sc-grain: #a68d66; --sc-pebble: #a8977a; --sc-pebblelit: #d8cbb0;
+  --sc-water-a: #6b9da0; --sc-water-b: #3f7678; --sc-ripple: #b9d6d2; --sc-drop: #a9cfcf;
+  --sc-root: #e2d3b6; --sc-rootshade: #6b5440; --sc-fineroot: #c9b796; --sc-lip: #a5bd7c;
+  --sc-ink: #1b140d; --sc-moon: #f1f3e6; --sc-star: #ffffff; --sc-grain-o: 0.16;
+  /* Headline */
+  --sc-headline: #1b2b1e; --sc-subline: #4a574a;
+}
+
+/* theme: dark */
+svg {
+  --sc-sky-top: #0a1611; --sc-sky-mid: #102119; --sc-sky-low: #1c3a33; --sc-glow: #2f5a50; --sc-sun: #f1f3e6;
+  --sc-cloud: #22362f; --sc-cloud-o: 0.55; --sc-day: 0; --sc-night: 1;
+  --sc-ridge1: #1d342d; --sc-ridge2: #1a2e25; --sc-haze: #1d3a33;
+  --sc-hill1: #182b20; --sc-field1a: #1d3226; --sc-field1b: #15271c; --sc-trees1: #0f1f16;
+  --sc-hill2: #15281d; --sc-field2a: #1a2f22; --sc-field2b: #122319; --sc-trees2: #0c1a12;
+  --sc-meadow-far: #17291d; --sc-meadow-near: #122217; --sc-grass: #0c1a10; --sc-grasslit: #3d5c3a; --sc-flower: #8c8a62;
+  --sc-fartree: #0d1b13; --sc-farbranch: #0d1b13;
+  --sc-river-far: #3a5d58; --sc-river-near: #29504f; --sc-bank: #0c1a10; --sc-glint: #a9cfc8;
+  --sc-trunk: #150f0a; --sc-trunklit: #3a2c1e; --sc-branch: #150f0a; --sc-treeshadow: #000000;
+  --sc-leaf0: #0b1710; --sc-leaf1: #112217; --sc-leaf2: #18301f; --sc-leaf3: #1f3a26; --sc-leafrim: #355a3c;
+  --sc-topsoil-a: #261c14; --sc-topsoil-b: #1b140e; --sc-crumb: #3a2c20;
+  --sc-clay-a: #43301f; --sc-clay-b: #382717; --sc-streak: #573f29;
+  --sc-sand-a: #4a3e2d; --sc-sand-b: #3f3426; --sc-grain: #2e261b; --sc-pebble: #54473a; --sc-pebblelit: #7a6b56;
+  --sc-water-a: #1d4549; --sc-water-b: #122f33; --sc-ripple: #4f8a88; --sc-drop: #4f8a88;
+  --sc-root: #9d8a6c; --sc-rootshade: #120d08; --sc-fineroot: #6e604b; --sc-lip: #2f4a33;
+  --sc-ink: #000000; --sc-moon: #eef2e4; --sc-star: #e9efe6; --sc-grain-o: 0.22;
+  --sc-headline: #edf2ea; --sc-subline: #aebcab;
+}
+
+
+/* Fill classes */
+.sc-s-sky-top { stop-color: var(--sc-sky-top); } .sc-s-sky-mid { stop-color: var(--sc-sky-mid); } .sc-s-sky-low { stop-color: var(--sc-sky-low); }
+.sc-s-glow { stop-color: var(--sc-glow); } .sc-s-haze { stop-color: var(--sc-haze); } .sc-s-moon { stop-color: var(--sc-moon); } .sc-s-ink { stop-color: var(--sc-ink); }
+.sc-s-meadow-far { stop-color: var(--sc-meadow-far); } .sc-s-meadow-near { stop-color: var(--sc-meadow-near); }
+.sc-s-river-far { stop-color: var(--sc-river-far); } .sc-s-river-near { stop-color: var(--sc-river-near); }
+.sc-s-topsoil-a { stop-color: var(--sc-topsoil-a); } .sc-s-topsoil-b { stop-color: var(--sc-topsoil-b); }
+.sc-s-clay-a { stop-color: var(--sc-clay-a); } .sc-s-clay-b { stop-color: var(--sc-clay-b); }
+.sc-s-sand-a { stop-color: var(--sc-sand-a); } .sc-s-sand-b { stop-color: var(--sc-sand-b); }
+.sc-s-water-a { stop-color: var(--sc-water-a); } .sc-s-water-b { stop-color: var(--sc-water-b); }
+.sc-day { opacity: var(--sc-day); } .sc-night { opacity: var(--sc-night); }
+.sc-sun { fill: var(--sc-sun); } .sc-moonface { fill: var(--sc-moon); } .sc-star { fill: var(--sc-star); }
+.sc-cloud { fill: var(--sc-cloud); opacity: var(--sc-cloud-o); }
+.sc-ridge1 { fill: var(--sc-ridge1); } .sc-ridge2 { fill: var(--sc-ridge2); }
+.sc-hill1 { fill: var(--sc-hill1); } .sc-field1a { fill: var(--sc-field1a); } .sc-field1b { fill: var(--sc-field1b); } .sc-trees1 { fill: var(--sc-trees1); }
+.sc-hill2 { fill: var(--sc-hill2); } .sc-field2a { fill: var(--sc-field2a); } .sc-field2b { fill: var(--sc-field2b); } .sc-trees2 { fill: var(--sc-trees2); }
+.sc-fartree { fill: var(--sc-fartree); } .sc-farbranch { fill: var(--sc-farbranch); }
+.sc-bank { fill: var(--sc-bank); opacity: 0.55; } .sc-glint { stroke: var(--sc-glint); stroke-width: 1.1; stroke-linecap: round; opacity: 0.55; }
+.sc-trunk { fill: var(--sc-trunk); } .sc-trunklit { stroke: var(--sc-trunklit); } .sc-branch { stroke: var(--sc-branch); }
+.sc-treeshadow { fill: var(--sc-treeshadow); opacity: 0.35; }
+.sc-leaf0 { fill: var(--sc-leaf0); } .sc-leaf1 { fill: var(--sc-leaf1); } .sc-leaf2 { fill: var(--sc-leaf2); } .sc-leaf3 { fill: var(--sc-leaf3); opacity: 0.85; } .sc-leafrim { fill: var(--sc-leafrim); opacity: 0.6; }
+.sc-grass { stroke: var(--sc-grass); stroke-width: 1.3; } .sc-grasslit { stroke: var(--sc-grasslit); stroke-width: 1.1; } .sc-flower { fill: var(--sc-flower); opacity: 0.8; }
+.sc-crumb { fill: var(--sc-crumb); opacity: 0.8; } .sc-streak { stroke: var(--sc-streak); stroke-width: 1.4; opacity: 0.55; }
+.sc-grain { fill: var(--sc-grain); opacity: 0.7; } .sc-pebble { fill: var(--sc-pebble); } .sc-pebblelit { fill: var(--sc-pebblelit); opacity: 0.8; }
+.sc-ripple { stroke: var(--sc-ripple); stroke-width: 1.2; opacity: 0.55; } .sc-drop { fill: var(--sc-drop); opacity: 0.75; }
+.sc-root { stroke: var(--sc-root); } .sc-rootshade { stroke: var(--sc-rootshade); opacity: 0.55; } .sc-fineroot { stroke: var(--sc-fineroot); opacity: 0.35; }
+.sc-lip { stroke: var(--sc-lip); opacity: 0.9; }
+.sc-grainlayer { opacity: var(--sc-grain-o); mix-blend-mode: soft-light; }
+

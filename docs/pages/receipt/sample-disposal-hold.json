@@ -5,6 +5,26 @@
   ],
   "title": "Change disposal hold",
   "purpose": "Place or remove an explicit physical disposal hold without changing the sample’s receipt decision or custody location.",
+  "summary": "Place or remove a hold that stops physical disposal of this sample. The receipt decision and location are not changed.",
+  "tasks": [
+    {
+      "title": "Hold a sample from disposal",
+      "steps": [
+        "Choose Place hold in [[Disposal hold]], give the [[Reason]] and select [[Change disposal hold]]."
+      ]
+    },
+    {
+      "title": "Remove the hold",
+      "steps": [
+        "Choose Remove hold, give the [[Reason]] and select [[Change disposal hold]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Removing the hold never disposes of the sample.",
+    "This hold is separate from a receipt Hold disposition. Clearing one does not clear the other.",
+    "A hold can be placed before a retention date is set."
+  ],
   "sections": [
     {
       "title": "Fields and actions",

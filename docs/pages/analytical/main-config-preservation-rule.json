@@ -9,6 +9,37 @@
   },
   "title": "Preservation rule",
   "purpose": "Configure recorded cooler-temperature screening and manual preservation requirements for one exact method version, analyte and matrix.",
+  "summary": "Add or edit the cooler-temperature screening and manual preservation checks for one exact test. Only administrators can save; other staff read these values on QC configuration.",
+  "tasks": [
+    {
+      "title": "Add a preservation rule",
+      "steps": [
+        "Choose the [[Definition]] and the [[Temperature mode]].",
+        "For a range, enter the minimum, the maximum or both in °C, and any manual requirements.",
+        "Record the method or SOP source in [[Basis]]. It prints on issued reports.",
+        "Select [[Add preservation rule]]."
+      ]
+    },
+    {
+      "title": "Change a preservation rule",
+      "steps": [
+        "Open it from QC configuration and change the values.",
+        "Explain why in [[Reason for change]] and select [[Save changes]]."
+      ]
+    },
+    {
+      "title": "Stop using a preservation rule without deleting it",
+      "steps": [
+        "Clear [[Is active]], give a reason and select [[Save changes]]. The row and its history stay."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Bounds are inclusive and compared with the exact recorded reading. Nothing is rounded or converted.",
+    "Within range says nothing about containers, chemical preservation or continuous cooling.",
+    "Editing the source text means earlier assessments no longer match, even if the bounds are unchanged.",
+    "An inactive rule counts as no rule, not as acceptance."
+  ],
   "sections": [
     {
       "title": "Create, edit and access",

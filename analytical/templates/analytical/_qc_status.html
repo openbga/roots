@@ -1,4 +1,4 @@
-{% comment %}QC evaluation label. Parameter: status (pass, fail, not_evaluated).{% endcomment %}
-{% if status == "pass" %}{% include "includes/status.html" with label="Pass" tone="success" plain=True %}
-{% elif status == "fail" %}{% include "includes/status.html" with label="Fail" tone="danger" plain=True %}
-{% else %}{% include "includes/status.html" with label="Not evaluated" tone="warning" plain=True title="Missing limit or input; this is never treated as a pass." %}{% endif %}
+{% load ui %}{% comment %}QC evaluation label. Parameter: status (pass, fail, not_evaluated).{% endcomment %}
+{% if status == "pass" %}{% status label="Pass" tone="success" plain=True %}
+{% elif status == "fail" %}{% status label="Fail" tone="danger" plain=True %}
+{% else %}{% status label="Not evaluated" tone="warning" plain=True title="Missing limit or input; this is never treated as a pass." %}{% endif %}

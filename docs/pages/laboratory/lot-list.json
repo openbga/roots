@@ -5,6 +5,35 @@
   ],
   "title": "Inventory: lots",
   "purpose": "Find purchased and prepared lots, exact balances, storage and expiry.",
+  "summary": "Find a purchased or lab-prepared lot of a standard, reagent or other material, with its exact balance, storage and expiry.",
+  "tasks": [
+    {
+      "title": "Find a lot",
+      "steps": [
+        "Type a lot number, material, vendor, reference, location or CAS number in [[Search]], then select [[Apply]].",
+        "Select the lot number to open its ledger."
+      ]
+    },
+    {
+      "title": "Find stock that has expired or expires soon",
+      "steps": [
+        "Set [[Stock]] to Expired, still on hand or Expiring soon.",
+        "For Expiring soon, optionally choose a window in [[Expiring within]], then select [[Apply]]."
+      ]
+    },
+    {
+      "title": "Add a new lot",
+      "steps": [
+        "Select [[New lot]]. Admin, analyst and reviewer roles can add lots."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "On hand comes from the movement ledger, so it is exact and current.",
+    "A lot is Expired only after its expiry date. On the expiry date itself it is still in date.",
+    "All lots, including retired and depleted ones, are listed unless you filter by [[Stock]].",
+    "The status highlight always uses 30 days, whatever window the filter uses."
+  ],
   "sections": [
     {
       "title": "Access and navigation",
@@ -112,7 +141,7 @@
         },
         {
           "label": "Active filters",
-          "description": "Remove a chip to clear that filter and return to page 1. Clear all restores the unfiltered list, default sort and 25 rows per page. The default 30-day window is not an active filter."
+          "description": "Remove a chip to clear that filter and return to page 1. Clear all restores the unfiltered list; your saved sort and rows per page stay. The default 30-day window is not an active filter."
         },
         {
           "label": "Column headings",
@@ -124,7 +153,7 @@
         },
         {
           "label": "Columns",
-          "description": "When table enhancement is available, check columns to show them or uncheck to hide them. Changes apply immediately and remain in this browser. Use Move … up or Move … down controls, or drag headings. The identity column is Always shown and cannot move or hide. Reset columns restores the initial layout. Close or Done closes the dialog. These preferences do not change records, filters, sorting or paging. If browser storage is blocked, the layout applies only to this page."
+          "description": "When table enhancement is available, check columns to show them or uncheck to hide them. Changes apply immediately and are saved for your account, on any workstation. Use Move … up or Move … down controls, or drag headings. The identity column is Always shown and cannot move or hide. Reset columns restores the initial layout. Close or Done closes the dialog. These preferences do not change records, filters, sorting or paging. If the change cannot be saved, the layout applies only to this page."
         }
       ]
     },

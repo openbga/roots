@@ -5,6 +5,26 @@
   ],
   "title": "NYSDEC qualifier mapping",
   "purpose": "Map one laboratory qualifier code to an interpreted NYSDEC qualifier for new exploratory exports.",
+  "summary": "Map one laboratory qualifier code to the NYSDEC interpreted qualifier used in new exports.",
+  "tasks": [
+    {
+      "title": "Map a qualifier",
+      "steps": [
+        "Enter the [[Interpreted qualifier]] code and select [[Save changes]]."
+      ]
+    },
+    {
+      "title": "Leave without saving",
+      "steps": [
+        "Select [[Cancel]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The mapping applies wherever this code appears in new exports, not only the report you came from.",
+    "Only presence and length are checked, not whether the recipient knows the code.",
+    "Existing exports keep the mapping they were generated with."
+  ],
   "sections": [
     {
       "title": "Access and scope",

@@ -5,6 +5,27 @@
   ],
   "title": "Recovery codes",
   "purpose": "Read the unused backup codes for your enrolled two-factor authentication.",
+  "summary": "See the unused recovery codes for your two-factor authentication. Each code signs you in once if you lose your app.",
+  "tasks": [
+    {
+      "title": "Save your recovery codes",
+      "steps": [
+        "Copy the unused codes, or select [[Download codes]] to save them as a text file.",
+        "Keep them somewhere private, outside laboratory records."
+      ]
+    },
+    {
+      "title": "Replace the codes",
+      "steps": [
+        "Select [[Generate new codes]] and confirm. The old codes stop working."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Each recovery code works once. The count shows how many of the ten are left.",
+    "You can view the codes again later; opening this page does not use one.",
+    "There is no automatic account recovery if you lose both the app and the codes."
+  ],
   "sections": [
     {
       "title": "Fields and actions",

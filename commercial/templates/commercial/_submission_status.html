@@ -1,1 +1,1 @@
-{% load commercial_extras %}{% include "includes/status.html" with label=submission.get_status_display tone=submission.status|tone plain=plain %}
+{% load ui %}{% load commercial_extras %}{% status label=submission.get_status_display tone=submission.status|tone plain=plain %}

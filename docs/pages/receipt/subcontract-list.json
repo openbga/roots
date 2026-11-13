@@ -5,6 +5,33 @@
   ],
   "title": "Subcontracted tests",
   "purpose": "Follow external handoffs and source acceptance for individual requested tests. Start a handoff from the received sample’s requested-test row.",
+  "summary": "Tests sent to an external laboratory, and where each one stands: waiting for the result, waiting for review, accepted or rejected.",
+  "tasks": [
+    {
+      "title": "Find results waiting for review",
+      "steps": [
+        "Set [[State]] to Awaiting source review and select [[Apply]].",
+        "Open the subcontract number and review the latest source."
+      ]
+    },
+    {
+      "title": "Chase results not yet back",
+      "steps": [
+        "Set [[State]] to Awaiting source result and select [[Apply]]. The oldest handoffs are at the end."
+      ]
+    },
+    {
+      "title": "Send a test out",
+      "steps": [
+        "Open the sample and select Send out on the requested test. There is no New button here."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Each subcontract covers one requested test, not the whole sample.",
+    "Search does not look at the external sample ID entered later, the analyte or the result.",
+    "Cancelled dispatches appear under All subcontracts and keep their history."
+  ],
   "sections": [
     {
       "title": "Search and filters",
@@ -87,7 +114,7 @@
         },
         {
           "label": "Reset columns",
-          "description": "Restores this table’s default order and visibility in this browser."
+          "description": "Restores this table’s default order and visibility for your account."
         },
         {
           "label": "Done / Close",

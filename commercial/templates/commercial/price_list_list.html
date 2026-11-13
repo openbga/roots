@@ -1,40 +1,33 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}Price lists. Context: page_obj (annotated item_count), filter_form, q, sort, per_page, active_filters, filtered.{% endcomment %}
-{% block page_actions %}<a class="btn btn-primary" href="{% url 'commercial:price-list-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New price list</a>{% endblock %}
+{% block page_actions %}<a class="btn btn-primary" href="{% url 'commercial:price-list-create' %}">{% icon name="plus-lg" %}New price list</a>{% endblock %}
 {% block page_intro %}<p class="vr-page-intro">A price list gives each catalog test a price in US dollars per sample; a quote copies the prices it uses, so later list edits never change an issued quote.</p>{% endblock %}
 {% block content %}
-<section class="card vr-table-card" aria-labelledby="lists-heading">
-  <h2 class="visually-hidden" id="lists-heading">Price lists</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter price lists" placeholder="List name or description" grid="commercial.price-lists" %}
-  {% if page_obj.paginator.count %}
+{% url 'commercial:price-list-create' as create_url %}
+{% panel title="Price lists" heading_id="lists-heading" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter price lists" placeholder="List name or description" grid="commercial.price-lists" invalid=filter_form.errors chips=active_filters sort=sort %}
+  {% list_results items=page_obj noun="price lists" filtered=filtered invalid=filter_form.errors clear_url=request.path no_results_title="No price lists match" no_results_body="Change or clear the filters." empty_title="No price lists yet" empty_body="Create a list and price the catalog tests you quote." action_url=create_url action_label="New price list" %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table" data-vr-grid="commercial.price-lists" data-vr-grid-version="1" aria-labelledby="lists-heading">
       <thead><tr>
-        {% include "includes/sort_header.html" with label="Name" asc="name" desc="-name" col="name" locked=True %}
-        {% include "includes/sort_header.html" with label="Priced tests" asc="items" desc="-items" first="desc" col="items" class="text-end" %}
-        {% include "includes/sort_header.html" with label="Status" asc="status" desc="-status" col="status" %}
-        {% include "includes/sort_header.html" with label="Created" asc="created_at" desc="-created_at" first="desc" col="created_at" %}
+        {% sort_header label="Name" asc="name" desc="-name" col="name" locked=True %}
+        {% sort_header label="Priced tests" asc="items" desc="-items" first="desc" col="items" class="text-end" %}
+        {% sort_header label="Status" asc="status" desc="-status" col="status" %}
+        {% sort_header label="Created" asc="created_at" desc="-created_at" first="desc" col="created_at" %}
       </tr></thead>
       <tbody>
         {% for pl in page_obj %}
         <tr>
-          <th scope="row"><a class="vr-row-link" href="{% url 'commercial:price-list-edit' pl.pk %}">{{ pl.name }}</a>{% if pl.description %}<div class="text-body-secondary small">{{ pl.description|truncatechars:90 }}</div>{% endif %}</th>
+          <th scope="row"><a class="vr-row-link" href="{% url 'commercial:price-list-edit' pl.pk %}">{{ pl.name }}</a>{% if pl.description %}<div class="vr-muted small">{{ pl.description|truncatechars:90 }}</div>{% endif %}</th>
           <td class="text-end">{{ pl.item_count }}</td>
-          <td>{% if pl.is_active %}{% include "includes/status.html" with label="Active" tone="success" plain=True %}{% else %}{% include "includes/status.html" with label="Inactive" tone="neutral" plain=True %}{% endif %}</td>
+          <td>{% if pl.is_active %}{% status label="Active" tone="success" plain=True %}{% else %}{% status label="Inactive" tone="neutral" plain=True %}{% endif %}</td>
           <td class="vr-nowrap"><time datetime="{{ pl.created_at|date:'c' }}">{{ pl.created_at|date:"Y-m-d H:i" }}</time></td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
-  {% include "includes/pagination.html" with noun="price lists" filtered=filtered %}
-  {% elif filter_form.errors %}
-  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above. No results are shown until every filter is valid." clear_url=request.path %}
-  {% elif filtered %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No price lists match" body="Change or clear the filters." clear_url=request.path %}
-  {% else %}
-  {% url 'commercial:price-list-create' as create_url %}
-  {% include "includes/empty_state.html" with title="No price lists yet" body="Create a list and price the catalog tests you quote." action_url=create_url action_label="New price list" %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}

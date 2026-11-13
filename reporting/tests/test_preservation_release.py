@@ -15,7 +15,7 @@ from reporting.content import assemble, describe_changes
 from reporting.models import ReportVersion
 from reporting.pdf import render_html
 
-from .conftest import make_user
+from .conftest import make_user, texts
 from .test_release import release
 from .test_release_serialization import assert_waiting, worker
 from .test_subcontract_release import accept, enter, subcontracted_sample
@@ -82,7 +82,7 @@ def test_legacy_unissued_and_new_amendments_need_current_assessment(world, peopl
         release(report, people["approver"], reason="Reassess preservation")
     decide(sample, people["reviewer"], reason="Reviewed new SOP and the recorded evidence")
     amended = release(report, people["approver"], reason="Reassess preservation")
-    assert any("preservation assessment changed" in change for change in amended.changes)
+    assert any("preservation assessment changed" in change for change in texts(amended.changes))
     first.refresh_from_db()
     assert first.file.snapshot == original and bytes(first.file.pdf) == pdf
     client.force_login(world["user_a"])
@@ -93,7 +93,7 @@ def test_legacy_unissued_and_new_amendments_need_current_assessment(world, peopl
     legacy = deepcopy(original)
     del legacy["content"]["samples"][0]["results"][0]["preservation"]
     assert "not recorded in this issued version" in render_html(legacy)
-    changes = describe_changes(legacy["content"], original["content"])
+    changes = texts(describe_changes(legacy["content"], original["content"]))
     assert len(changes) == 1
     assert "assessment added (not recorded in the prior version" in changes[0]
     assert "Not recorded → Rule not configured" in changes[0]

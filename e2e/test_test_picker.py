@@ -12,6 +12,8 @@ from helpers import (
     described_text,
     field,
     local_input,
+    native_select,
+    pick,
     picker_box,
     picker_options,
     theme_samples,
@@ -22,7 +24,7 @@ pytestmark = pytest.mark.django_db(transaction=True)
 
 
 def fill_rest_of_form(page: Page) -> None:
-    field(page, "Project").select_option(label="Example Utilities / Test Creek Outfall 001")
+    pick(field(page, "Project"), label="Example Utilities / Test Creek Outfall 001")
     field(page, "Chain of custody reference").fill("PICK-COC-1")
     field(page, "Client sample ID").fill("PICK-1")
     field(page, "Collected / composite ended at").fill(local_input(timedelta(hours=-3)))
@@ -30,8 +32,8 @@ def fill_rest_of_form(page: Page) -> None:
     field(page, "Collection location").fill("Synthetic Test Creek")
     field(page, "Received at").fill(local_input(timedelta(minutes=-20)))
     field(page, "Relinquished by").fill("Example Courier")
-    field(page, "Cooler temperature (°C)").fill("4.100")
-    field(page, "Coolant on arrival").select_option(label="Wet ice")
+    field(page, "Cooler temperature").fill("4.100")
+    pick(field(page, "Coolant on arrival"), label="Wet ice")
     choose(field(page, "Custody seal"), "Intact")
     choose(field(page, "Preservation check"), "Checked")
     field(page, "Storage location").fill("Receipt bench")
@@ -82,7 +84,7 @@ def test_picker_searches_scopes_to_matrix_and_never_silently_drops_mismatches(
 
     # The sample matrix limits what can be added.
     water = TestDefinition.objects.filter(matrix="water", is_active=True).count()
-    field(page, "Matrix").select_option(label="Water")
+    pick(field(page, "Matrix"), label="Water")
     expect(summary).to_contain_text(f"{water} Water tests available")
     box.click()
     box.fill("lead")
@@ -94,7 +96,7 @@ def test_picker_searches_scopes_to_matrix_and_never_silently_drops_mismatches(
     choose_test(page, "Lead")
     choose_test(page, "Copper")
     assert sorted(chosen_tests(page)) == ["Copper|water", "Lead|water"]
-    field(page, "Matrix").select_option(label="Soil")
+    pick(field(page, "Matrix"), label="Soil")
     assert sorted(chosen_tests(page)) == ["Copper|water", "Lead|water"]
     notice = page.locator(".vr-test-mismatch")
     expect(notice).to_be_visible()
@@ -129,7 +131,7 @@ def test_picker_searches_scopes_to_matrix_and_never_silently_drops_mismatches(
     assert "do not match Soil" in described_text(page, "id_tests-ts-control")
     assert sorted(chosen_tests(page)) == ["Copper|water", "Lead|water"]
     expect(field(page, "Client sample ID")).to_have_value("PICK-1")
-    expect(field(page, "Matrix")).to_have_value("soil")
+    expect(native_select(field(page, "Matrix"))).to_have_value("soil")
     expect(page.locator(".vr-test-mismatch")).to_contain_text("2 selected tests are not for Soil")
     assert Sample.objects.filter(client_sample_id="PICK-1").count() == 0
 

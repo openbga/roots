@@ -10,6 +10,7 @@ from django.utils import timezone
 from accounts.models import User
 from analytical.models import Batch
 from catalog.models import Method
+from core.lookups import RemoteSelect
 from core.widgets import ListOrOtherField
 from receipt.forms import StyledForm
 from receipt.models import Sample
@@ -93,6 +94,7 @@ class StaffChoiceField(forms.ModelChoiceField):
             "queryset",
             User.objects.filter(is_active=True, client__isnull=True).order_by("username"),
         )
+        kwargs.setdefault("widget", RemoteSelect("staff"))
         super().__init__(**kwargs)
 
     def label_from_instance(self, user):
@@ -761,9 +763,14 @@ class NonconformanceForm(GroupedForm, StyledForm, forms.Form):
     sample = SampleField(required=False)
     batch = BatchField(required=False, label="Analytical batch")
     lot = forms.ModelChoiceField(
-        MaterialLot.objects.none(), required=False, label="Standard / reagent lot"
+        MaterialLot.objects.none(),
+        required=False,
+        label="Standard / reagent lot",
+        widget=RemoteSelect("lots"),
     )
-    equipment = forms.ModelChoiceField(Equipment.objects.all(), required=False)
+    equipment = forms.ModelChoiceField(
+        Equipment.objects.all(), required=False, widget=RemoteSelect("equipment")
+    )
     reference = forms.CharField(
         max_length=160, required=False, help_text="Report, ticket or log reference."
     )
@@ -780,9 +787,6 @@ class NonconformanceForm(GroupedForm, StyledForm, forms.Form):
         self.fields["lot"].queryset = MaterialLot.objects.select_related("material").order_by(
             "material__name", "lot_number"
         )
-        self.fields["lot"].label_from_instance = lambda lot: (
-            f"{lot.material.name} · lot {lot.lot_number}"
-        )
         self.initial.setdefault("discovered_on", timezone.localdate())
 
 
@@ -795,9 +799,14 @@ class NonconformanceEditForm(GroupedForm, StyledForm, forms.Form):
     sample = SampleField(required=False)
     batch = BatchField(required=False, label="Analytical batch")
     lot = forms.ModelChoiceField(
-        MaterialLot.objects.none(), required=False, label="Standard / reagent lot"
+        MaterialLot.objects.none(),
+        required=False,
+        label="Standard / reagent lot",
+        widget=RemoteSelect("lots"),
     )
-    equipment = forms.ModelChoiceField(Equipment.objects.all(), required=False)
+    equipment = forms.ModelChoiceField(
+        Equipment.objects.all(), required=False, widget=RemoteSelect("equipment")
+    )
     disposition = forms.ChoiceField(
         required=False, choices=[("", "Not decided"), *Nonconformance.Disposition.choices]
     )
@@ -821,9 +830,6 @@ class NonconformanceEditForm(GroupedForm, StyledForm, forms.Form):
         super().__init__(*args, **kwargs)
         self.fields["lot"].queryset = MaterialLot.objects.select_related("material").order_by(
             "material__name", "lot_number"
-        )
-        self.fields["lot"].label_from_instance = lambda lot: (
-            f"{lot.material.name} · lot {lot.lot_number}"
         )
         if nc:
             self.initial.update(
@@ -926,3 +932,12 @@ class NoteForm(GroupedForm, StyledForm, forms.Form):
     note = forms.CharField(required=False, widget=forms.Textarea(attrs={"rows": 3}))
     reference = forms.CharField(max_length=160, required=False)
     evidence = EvidenceFileField()
+
+
+class LookAheadForm(forms.Form):
+    """Lab overview's look-ahead window: a display setting, not lab policy."""
+
+    days = forms.TypedChoiceField(label="Look ahead", choices=DAY_CHOICES, coerce=int)
+
+    def __init__(self, days, **kwargs):
+        super().__init__(auto_id="ov-%s", initial={"days": days}, **kwargs)

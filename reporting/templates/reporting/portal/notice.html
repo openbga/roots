@@ -1,1 +1,1 @@
-{% if synthetic_notice %}<div class="alert alert-warning" role="note"><strong>Demonstration:</strong> all clients, samples and results here are synthetic. They are not laboratory results and must not be used for regulatory or compliance purposes.</div>{% endif %}
+{% load ui %}{% if synthetic_notice %}{% notice tone="warning" label="Demonstration" %}All clients, samples and results here are synthetic. They are not laboratory results and must not be used for regulatory or compliance purposes.{% endnotice %}{% endif %}

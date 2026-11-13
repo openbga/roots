@@ -1,21 +1,22 @@
 {% extends "base.html" %}
+{% load ui %}
 {% block page_heading %}Catalog{% endblock %}
 {% block page_intro %}<p class="vr-page-intro">An analyte is a substance the lab measures; a test pairs it with a method version and a matrix.</p>{% endblock %}
-{% block page_actions %}{% if can_edit %}<a class="btn btn-primary" href="{% url 'catalog:analyte-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New analyte</a>{% endif %}{% endblock %}
+{% block page_actions %}{% if can_edit %}<a class="btn btn-primary" href="{% url 'catalog:analyte-create' %}">{% icon name="plus-lg" %}New analyte</a>{% endif %}{% endblock %}
 {% block content %}
 {% include "catalog/_tabs.html" %}
-<section class="card vr-table-card" aria-labelledby="analytes-heading">
-  <h2 class="visually-hidden" id="analytes-heading">Analytes</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter analytes" q=filter_form.q.value placeholder=filter_form.q.field.widget.attrs.placeholder inline=inline more=more more_open=more_open grid=grid_key %}
-  {% if page_obj.paginator.count %}
+{% if can_edit %}{% url 'catalog:analyte-create' as create_url %}{% endif %}
+{% panel title="Analytes" heading_id="analytes-heading" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter analytes" q=filter_form.q.value placeholder=filter_form.q.field.widget.attrs.placeholder inline=inline more=more more_open=more_open grid=grid_key %}
+  {% list_results items=page_obj noun="analytes" filtered=filtered invalid=filter_form.errors clear_url=request.path error_body="Correct the highlighted filter above." no_results_title="No analytes match these filters" no_results_body="Change or clear the filters." empty_title="No analytes defined yet" empty_body="Add the substances the lab measures, for example Lead or Total suspended solids." action_url=create_url action_label="New analyte" %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table" data-vr-grid="catalog.analytes" data-vr-grid-version="2" aria-labelledby="analytes-heading">
       <thead><tr>
-        {% include "includes/sort_header.html" with label="Analyte" asc="name" desc="-name" col="name" locked=True %}
-        {% include "includes/sort_header.html" with label="CAS number" asc="cas_number" desc="-cas_number" col="cas_number" %}
-        {% include "includes/sort_header.html" with label="Group" asc="group" desc="-group" col="group" %}
-        {% include "includes/sort_header.html" with label="Active tests" asc="active_tests" desc="-active_tests" class="text-end" col="active_tests" %}
-        {% include "includes/sort_header.html" with label="Requested on samples" asc="requested" desc="-requested" class="text-end" col="requested" hidden=True %}
+        {% sort_header label="Analyte" asc="name" desc="-name" col="name" locked=True %}
+        {% sort_header label="CAS number" asc="cas_number" desc="-cas_number" col="cas_number" %}
+        {% sort_header label="Group" asc="group" desc="-group" col="group" %}
+        {% sort_header label="Active tests" asc="active_tests" desc="-active_tests" class="text-end" col="active_tests" %}
+        {% sort_header label="Requested on samples" asc="requested" desc="-requested" class="text-end" col="requested" hidden=True %}
       </tr></thead>
       <tbody>
         {% for a in page_obj %}
@@ -23,21 +24,13 @@
           <th scope="row">{% if can_edit %}<a class="vr-row-link" href="{% url 'catalog:analyte-edit' a.pk %}">{{ a.name }}</a>{% else %}{{ a.name }}{% endif %}</th>
           <td class="vr-id">{{ a.cas_number|default:"—" }}</td>
           <td>{{ a.get_group_display|default:"—" }}</td>
-          <td class="text-end">{{ a.active_tests }}<span class="text-body-secondary"> of {{ a.test_total }}</span></td>
+          <td class="text-end">{{ a.active_tests }}<span class="vr-muted"> of {{ a.test_total }}</span></td>
           <td class="text-end">{{ a.requested }}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
-  {% include "includes/pagination.html" with noun="analytes" filtered=filtered %}
-  {% elif filter_form.errors %}
-  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above." clear_url=request.path %}
-  {% elif filtered %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No analytes match these filters" body="Change or clear the filters." clear_url=request.path %}
-  {% else %}
-  {% if can_edit %}{% url 'catalog:analyte-create' as create_url %}{% endif %}
-  {% include "includes/empty_state.html" with title="No analytes defined yet" body="Add the substances the lab measures, for example Lead or Total suspended solids." action_url=create_url action_label="New analyte" %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}

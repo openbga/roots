@@ -61,7 +61,7 @@ def test_theme_choice_persists_follows_system_and_stays_legible(page: Page, demo
     page.get_by_role("link", name="Dashboard", exact=True).click()
     dark = theme_samples(page)
 
-    # Printing from dark mode uses the light paper palette, without the ruled background.
+    # Printing from dark mode uses the light print palette, without a background image.
     page.emulate_media(media="print")
     printed = theme_samples(page)
     assert page.evaluate("getComputedStyle(document.body).backgroundImage") == "none"
@@ -83,7 +83,8 @@ def test_theme_choice_persists_follows_system_and_stays_legible(page: Page, demo
     assert light["scheme"] == "light" and dark["scheme"] == "dark"
     assert light["pairs"]["body text"]["candidates"] != dark["pairs"]["body text"]["candidates"]
     failures = contrast_failures(light) + contrast_failures(dark) + contrast_failures(printed)
-    assert printed["pairs"]["body text"]["candidates"] == [[[0, 0, 0], [255, 255, 255]]]
+    # Print uses the darkest Evergreen ink on white (docs/ui-standards.md section 12).
+    assert printed["pairs"]["body text"]["candidates"] == [[[23, 28, 22], [255, 255, 255]]]
 
     # List controls (filters) in both themes.
     page.get_by_role("link", name="Samples", exact=True).first.click()

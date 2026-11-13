@@ -5,6 +5,29 @@
   ],
   "title": "Review external source",
   "purpose": "Independently compare the entered observation, units, limits, dilution, qualifiers and provenance against the stored external report PDF before accepting or rejecting the latest source.",
+  "summary": "Check the entered external result against its source PDF, then accept or reject it. Someone other than the person who entered it must review it.",
+  "tasks": [
+    {
+      "title": "Review the result",
+      "steps": [
+        "Open the source PDF and compare the result, unit, limit, dilution, qualifiers and identity.",
+        "Choose the [[Decision]] and explain it in [[Note]].",
+        "Select [[Review external source]]."
+      ]
+    },
+    {
+      "title": "Handle a mistake you find",
+      "steps": [
+        "Reject the source with a note. The analyst then enters a corrected version for review."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "You cannot review a source you entered yourself, even as an administrator.",
+    "A decision cannot be edited. A correction creates a new version to review.",
+    "Unit differs means the report uses another unit. Accepting does not convert it.",
+    "Accepting a source is not internal QC approval, and it does not issue a report."
+  ],
   "sections": [
     {
       "title": "Source observation and evidence",

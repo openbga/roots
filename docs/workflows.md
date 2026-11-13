@@ -216,7 +216,8 @@ restriction, and no page removes it.
 ## Tables and page help
 
 Table search, filters, sorting and pagination run on the server. DataTables/ColReorder enhance
-column visibility and order; column preferences stay in this browser. Vendor versions and licenses
+column visibility and order. Column layout, rows per page and sort are saved per user on the server
+(`core/preferences.py`), never in the browser, because workstations are shared. Vendor versions and licenses
 are included under `static/vendor/datatables/`.
 
 The documentation icon at the top right opens help for the current page or form in a resizable
@@ -224,4 +225,4 @@ right panel. It explains the page's purpose, actions, fields and workflow rules.
 navigation and remembers its width and open/closed state for each account in this browser.
 Drag its left edge or focus the separator and use the arrow keys to resize; use its close button
 or Escape from inside the panel to close it. Contributors use the
-[`document-page` skill](../skills/document-page/SKILL.md) to update help with each page change.
+[`document-page` skill](../.agents/skills/document-page/SKILL.md) to update help with each page change.

@@ -24,7 +24,17 @@ from pathlib import Path
 
 import pytest
 from conftest import DESKTOP, NARROW, Lab
-from helpers import field, local_input, pdf_text, receive_water, save_download, sign_in, sign_out
+from helpers import (
+    field,
+    local_input,
+    native_select,
+    pdf_text,
+    pick,
+    receive_water,
+    save_download,
+    sign_in,
+    sign_out,
+)
 from playwright.sync_api import Page, expect
 
 pytestmark = pytest.mark.django_db(transaction=True)
@@ -116,8 +126,8 @@ def test_preparation_batch_aliquot_choice_analysis_and_frozen_report(
     # ---- admin: an explicit, configured requirement (clarity of what needs preparation, and why)
     sign_in(page, "demo_admin", demo.password)
     page.goto(reverse("analytical:config-new", kwargs={"kind": "preparation-requirement"}))
-    field(page, "Definition").select_option(value=str(definitions["Lead"].pk))
-    field(page, "Required preparation method").select_option(value=str(prep_method.pk))
+    pick(field(page, "Definition"), value=str(definitions["Lead"].pk))
+    pick(field(page, "Required preparation method"), value=str(prep_method.pk))
     field(page, "Basis").fill(BASIS)
     page.get_by_role("button", name="Add preparation requirement").click()
     expect(page.get_by_text("Preparation requirement saved.")).to_be_visible()
@@ -134,8 +144,8 @@ def test_preparation_batch_aliquot_choice_analysis_and_frozen_report(
     expect(page.get_by_role("heading", level=1, name="Preparation batches")).to_be_visible()
     shots("list-empty", narrow=True)
     page.get_by_role("link", name="New preparation batch").first.click()
-    field(page, "Preparation method").select_option(value=str(prep_method.pk))
-    field(page, "Matrix").select_option(label="Water")
+    pick(field(page, "Preparation method"), value=str(prep_method.pk))
+    pick(field(page, "Matrix"), label="Water")
     start = timedelta(minutes=-30)
     field(page, "Actual preparation start").fill(local_input(start))
     page.get_by_role("button", name="Create preparation batch").click()
@@ -147,7 +157,7 @@ def test_preparation_batch_aliquot_choice_analysis_and_frozen_report(
 
     # a label is required and the chosen sample survives the refusal
     page.get_by_role("link", name="Add aliquot").first.click()
-    field(page, "Sample").select_option(value=str(sample.pk))
+    pick(field(page, "Sample"), value=str(sample.pk))
     page.get_by_role("button", name="Load requested tests").click()
     page.locator(f'input[name="requested_tests"][value="{tests["Lead"].pk}"]').check()
     page.get_by_role("button", name="Add aliquot").click()
@@ -163,7 +173,7 @@ def test_preparation_batch_aliquot_choice_analysis_and_frozen_report(
     expect(page.get_by_text(f"Added aliquot {ALIQUOT}")).to_be_visible()
     # the same sample, one test, a second labelled vessel (will be cancelled before use)
     page.get_by_role("link", name="Add aliquot").first.click()
-    field(page, "Sample").select_option(value=str(sample.pk))
+    pick(field(page, "Sample"), value=str(sample.pk))
     page.get_by_role("button", name="Load requested tests").click()
     page.locator(f'input[name="requested_tests"][value="{tests["Lead"].pk}"]').check()
     field(page, "Aliquot label").fill(SPARE)
@@ -199,8 +209,9 @@ def test_preparation_batch_aliquot_choice_analysis_and_frozen_report(
     # ---- entry grid: the aliquot is an explicit choice; nothing is selected for the analyst
     page.goto(f"/analytical/batches/{batch.pk}/entry/")
     lead, copper = grid_row(page, "Lead"), grid_row(page, "Copper")
-    expect(lead.get_by_label("Prepared aliquot")).to_have_value("")  # three options, none chosen
-    expect(copper.get_by_label("Prepared aliquot")).to_have_value("")
+    # three options, none chosen
+    expect(native_select(lead.get_by_label("Prepared aliquot"))).to_have_value("")
+    expect(native_select(copper.get_by_label("Prepared aliquot"))).to_have_value("")
     after_prep = local_input(timedelta(minutes=-10))
     fill_result(lead, "5.2", after_prep)
     fill_result(copper, "3.1", after_prep)
@@ -216,8 +227,8 @@ def test_preparation_batch_aliquot_choice_analysis_and_frozen_report(
     shots("entry-aliquot-required", narrow=True)
     lead, copper = grid_row(page, "Lead"), grid_row(page, "Copper")
     expect(lead.get_by_role("textbox", name=re.compile("^Result"))).to_have_value("5.2")  # kept
-    lead.get_by_label("Prepared aliquot").select_option(value=str(main.pk))
-    copper.get_by_label("Prepared aliquot").select_option(value=str(main.pk))
+    pick(lead.get_by_label("Prepared aliquot"), value=str(main.pk))
+    pick(copper.get_by_label("Prepared aliquot"), value=str(main.pk))
     # an analysis that starts before the preparation is refused, with input kept
     lead.get_by_label(re.compile("^Analysis start")).fill(local_input(timedelta(minutes=-35)))
     save.click()
@@ -227,7 +238,7 @@ def test_preparation_batch_aliquot_choice_analysis_and_frozen_report(
     ).to_be_visible()
     assert not ResultRevision.objects.filter(result__batch=batch).exists()
     lead = grid_row(page, "Lead")
-    expect(lead.get_by_label("Prepared aliquot")).to_have_value(str(main.pk))
+    expect(native_select(lead.get_by_label("Prepared aliquot"))).to_have_value(str(main.pk))
     lead.get_by_label(re.compile("^Analysis start")).fill(after_prep)
     save.click()
     expect(page.get_by_text(re.compile(r"Saved 2 results"))).to_be_visible()
@@ -258,7 +269,8 @@ def test_preparation_batch_aliquot_choice_analysis_and_frozen_report(
     expect(used_row).to_contain_text("Used")
     expect(used_row.get_by_role("link", name=re.compile("^Cancel"))).to_have_count(0)
     expect(used_row.get_by_role("link", name=batch.number)).to_be_visible()
-    expect(page.get_by_text("Prepare again to create a new aliquot", exact=False)).to_be_visible()
+    note = "To use it again, select it during analytical result entry"
+    expect(page.get_by_text(note, exact=False)).to_be_visible()
     page.get_by_role("link", name=re.compile(rf"^Cancel aliquot {SPARE}")).click()
     page.get_by_role("button", name="Cancel aliquot").click()
     expect(field(page, "Reason")).to_have_attribute("aria-invalid", "true")
@@ -281,7 +293,7 @@ def test_preparation_batch_aliquot_choice_analysis_and_frozen_report(
     page.get_by_role("link", name=batch.number).click()
     for analyte in ("Lead", "Copper"):
         page.get_by_role("checkbox", name=re.compile(rf"Select {sample.lab_id} {analyte}")).check()
-    page.get_by_label(re.compile("^Action")).select_option(label="Approve")
+    pick(page.get_by_label(re.compile("^Action")), label="Approve")
     page.get_by_role("button", name=re.compile("^Apply decision")).click()
     expect(page.get_by_text("Approved 2 results.")).to_be_visible()
     sign_out(page, "^Demo")
@@ -296,6 +308,7 @@ def test_preparation_batch_aliquot_choice_analysis_and_frozen_report(
     sign_in(page, "demo_approver", demo.password)
     page.goto(reverse("reporting:report-preview", kwargs={"pk": report.pk}))
     expect(page.get_by_role("heading", name="Ready to release")).to_be_visible()
+    page.get_by_text("Receipt and preparation notes").first.click()  # collapsed once per sample
     for token in (prep.number, ALIQUOT, "DEMO-PREP-DIG"):
         expect(
             page.get_by_text(token, exact=False).first
@@ -309,6 +322,7 @@ def test_preparation_batch_aliquot_choice_analysis_and_frozen_report(
     # ---- client: portal and PDF carry the preparation identity; later config does not touch them
     sign_in(page, "demo_client", demo.password)
     page.goto(f"/portal/reports/{report.pk}/")
+    page.get_by_text("Receipt and preparation notes").first.click()
     for token in (prep.number, ALIQUOT, "DEMO-PREP-DIG"):
         expect(page.get_by_text(token, exact=False).first).to_be_visible()
     shots("portal-evidence", narrow=True)

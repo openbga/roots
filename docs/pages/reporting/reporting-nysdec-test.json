@@ -5,6 +5,28 @@
   ],
   "title": "NYSDEC test mapping",
   "purpose": "Map one catalog method version, analyte and matrix test definition to recipient codes without changing the analytical result.",
+  "summary": "Map one test (analyte, method version and matrix) to the NYSDEC codes its exported results need. The mapping never changes a result.",
+  "tasks": [
+    {
+      "title": "Map a test",
+      "steps": [
+        "Enter the NYSDEC method, fraction, preservative, chemical name and unit codes.",
+        "If the test has an independent preparation, enter its lab method code and version and the NYSDEC preparation method.",
+        "Select [[Save changes]]."
+      ]
+    },
+    {
+      "title": "Leave without saving",
+      "steps": [
+        "Select [[Cancel]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The unit code must match the quantity as reported. Values are never converted.",
+    "The mapped basis can't label a soil result whose basis was not recorded.",
+    "The mapping is reused for this test in every project and report."
+  ],
   "sections": [
     {
       "title": "Access and scope",

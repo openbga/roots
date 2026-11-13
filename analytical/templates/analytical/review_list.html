@@ -1,19 +1,19 @@
 {% extends "base.html" %}
+{% load ui %}
 {% block page_intro %}<p class="vr-page-intro">Batches with submitted results waiting for a reviewer other than the person who entered or submitted them.</p>{% endblock %}
 {% block content %}
-<section class="card vr-table-card" aria-labelledby="queue-heading">
-  <h2 class="visually-hidden" id="queue-heading">Batches awaiting review</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter batches awaiting review" grid=grid_key no_search=True %}
-  {% if page_obj.paginator.count %}
+{% panel title="Batches awaiting review" heading_id="queue-heading" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter batches awaiting review" grid=grid_key no_search=True %}
+  {% list_results items=page_obj noun="batches" filtered=filtered invalid=filter_form.errors clear_url=request.path no_results_title="No batches match these filters" no_results_body="Clear the filters to see every batch awaiting review." empty_title="Nothing is awaiting review" empty_body="Results appear here after an analyst submits them." %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table" data-vr-grid="analytical.review_queue" data-vr-grid-version="1" aria-labelledby="queue-heading">
       <caption class="visually-hidden">Batches with submitted results, oldest submission first by default. Open QC findings and holding issues are computed for the rows shown and cannot be sorted.</caption>
       <thead><tr>
-        {% include "includes/sort_header.html" with label="Batch" asc="batch" desc="-batch" col="batch" locked=True %}
+        {% sort_header label="Batch" asc="batch" desc="-batch" col="batch" locked=True %}
         <th scope="col" data-vr-col="method">Method</th><th scope="col" data-vr-col="matrix">Matrix</th>
-        {% include "includes/sort_header.html" with label="Awaiting review" asc="awaiting" desc="-awaiting" class="text-end" col="awaiting" %}
+        {% sort_header label="Awaiting review" asc="awaiting" desc="-awaiting" class="text-end" col="awaiting" %}
         <th scope="col" class="text-end" data-vr-col="reviewable">You may review</th>
-        {% include "includes/sort_header.html" with label="Oldest submitted" asc="oldest" desc="-oldest" col="oldest" %}
+        {% sort_header label="Oldest submitted" asc="oldest" desc="-oldest" col="oldest" %}
         <th scope="col" class="text-end" data-vr-col="open_qc">Open QC findings</th>
         <th scope="col" class="text-end" data-vr-col="holding">Holding issues</th>
       </tr></thead>
@@ -21,22 +21,17 @@
         {% for b in page_obj %}
         <tr>
           <th scope="row"><a class="vr-row-link vr-id" href="{% url 'analytical:review-batch' b.pk %}">{{ b.number }}</a></th>
-          <td>{{ b.method }}</td><td>{{ b.get_matrix_display }}</td>
+          <td>{{ b.method }}</td><td>{% matrix_tag matrix=b.matrix %}</td>
           <td class="text-end">{{ b.awaiting }}</td>
           <td class="text-end">{{ b.reviewable }}{% if b.own_count %} <span class="vr-muted small" title="You analysed this. Another qualified reviewer must review it.">({{ b.own_count }} yours)</span>{% endif %}</td>
           <td class="vr-nowrap"><time datetime="{{ b.oldest_submitted|date:'c' }}" title="{{ b.oldest_submitted|date:'Y-m-d H:i T' }}">{{ b.oldest_submitted|date:"Y-m-d H:i" }}</time></td>
-          <td class="text-end">{% if b.open_qc %}{% include "includes/status.html" with label=b.open_qc tone="warning" plain=True title="QC findings that hold approval" %}{% else %}<span class="vr-muted">0</span>{% endif %}</td>
-          <td class="text-end">{% if b.holding_issues %}{% include "includes/status.html" with label=b.holding_issues tone="warning" plain=True title="Submitted results with holding time exceeded or not evaluable" %}{% else %}<span class="vr-muted">0</span>{% endif %}</td>
+          <td class="text-end">{% if b.open_qc %}{% status label=b.open_qc tone="warning" plain=True title="QC findings that hold approval" %}{% else %}<span class="vr-muted">0</span>{% endif %}</td>
+          <td class="text-end">{% if b.holding_issues %}{% status label=b.holding_issues tone="warning" plain=True title="Submitted results with holding time exceeded or not evaluable" %}{% else %}<span class="vr-muted">0</span>{% endif %}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
-  {% include "includes/pagination.html" with noun="batches" filtered=filtered %}
-  {% elif filtered %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No batches match these filters" body="Clear the filters to see every batch awaiting review." clear_url=request.path %}
-  {% else %}
-  {% include "includes/empty_state.html" with title="Nothing is awaiting review" body="Results appear here after an analyst submits them." %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}

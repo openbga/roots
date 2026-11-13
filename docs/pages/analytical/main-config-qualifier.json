@@ -9,6 +9,36 @@
   },
   "title": "Qualifier",
   "purpose": "Add or edit a laboratory result qualifier and whether it identifies a holding-time exceedance.",
+  "summary": "Add or edit a result qualifier code, its meaning, and whether it marks a holding-time exceedance. Only administrators can save; other staff read these values on QC configuration.",
+  "tasks": [
+    {
+      "title": "Add a qualifier",
+      "steps": [
+        "Enter the [[Code]] and its [[Description]].",
+        "Check [[Indicates holding time]] if the code marks an exceeded holding time.",
+        "Select [[Add qualifier]]."
+      ]
+    },
+    {
+      "title": "Change a qualifier",
+      "steps": [
+        "Open it from QC configuration and change the values.",
+        "Explain why in [[Reason for change]] and select [[Save changes]]."
+      ]
+    },
+    {
+      "title": "Stop using a qualifier without deleting it",
+      "steps": [
+        "Clear [[Is active]], give a reason and select [[Save changes]]. The row and its history stay."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Codes are matched exactly, including upper and lower case.",
+    "Each result keeps the code and meaning it was entered with. Later edits do not change old results or reports.",
+    "A holding-time code allows an exceeded result to be submitted. It does not fix missing or impossible times.",
+    "Only active codes can be used on new results."
+  ],
   "sections": [
     {
       "title": "Create, edit and access",

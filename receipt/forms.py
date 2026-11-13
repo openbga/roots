@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 
 from catalog.models import TestDefinition
+from core.lookups import RemoteSelect
 from core.widgets import ListOrOtherField, SuggestInput
 
 from .models import Client, ClientContact, Order, Project, Sample
@@ -58,6 +59,7 @@ class StaffChoiceField(forms.ModelChoiceField):
             .order_by("first_name", "last_name", "username"),
         )
         kwargs.setdefault("empty_label", "Not assigned")
+        kwargs.setdefault("widget", RemoteSelect("staff"))
         super().__init__(**kwargs)
 
     def label_from_instance(self, user):
@@ -203,6 +205,8 @@ class ProjectForm(GroupedForm, StyledForm, forms.ModelForm):
         super().__init__(*args, **kwargs)
         if "client" in self.fields:
             self.fields["client"].queryset = Client.objects.filter(is_active=True)
+            self.fields["client"].widget = RemoteSelect("active-clients")
+            self.fields["client"].widget.choices = self.fields["client"].choices
         if self.instance.project_manager_id:
             # Keep the recorded manager selectable even if that account is now inactive.
             field = self.fields["project_manager"]
@@ -235,13 +239,16 @@ class ProjectForm(GroupedForm, StyledForm, forms.ModelForm):
         ]
         labels = {
             "name": "Project name",
-            "turnaround_days": "Standard turnaround (days)",
+            "turnaround_days": "Standard turnaround",
         }
         help_texts = {
             "program": "Permit number or program label, printed on reports.",
             "turnaround_days": "The agreed standard. It does not set a delivery target.",
         }
-        widgets = {"instructions": forms.Textarea(attrs={"rows": 3})}
+        widgets = {
+            "instructions": forms.Textarea(attrs={"rows": 3}),
+            "turnaround_days": forms.NumberInput(attrs={"unit": "days"}),
+        }
 
 
 SAMPLE_TESTS = (
@@ -258,7 +265,8 @@ class ReceiptForm(StyledForm, forms.ModelForm):
     project = forms.ModelChoiceField(
         queryset=Project.objects.filter(is_active=True, client__is_active=True).select_related(
             "client"
-        )
+        ),
+        widget=RemoteSelect("active-projects"),
     )
     coc_reference = forms.CharField(max_length=120, label="Chain of custody reference")
     source_type = forms.ChoiceField(
@@ -324,12 +332,13 @@ class ReceiptForm(StyledForm, forms.ModelForm):
             "remarks": forms.Textarea(attrs={"rows": 2}),
             "temperature_instrument": SuggestInput(suggestions=instrument_suggestions),
             "current_location": SuggestInput(suggestions=location_suggestions),
+            "cooler_temperature": forms.NumberInput(attrs={"unit": "°C"}),
         }
         labels = {
             "client_sample_id": "Client sample ID",
             "sample_type": "Sample type",
             "collection_started_at": "Composite started at",
-            "cooler_temperature": "Cooler temperature (°C)",
+            "cooler_temperature": "Cooler temperature",
             "collected_at": "Collected / composite ended at",
             "temperature_instrument": "Thermometer",
             "current_location": "Storage location",
@@ -468,6 +477,8 @@ class OrderForm(GroupedForm, StyledForm, forms.ModelForm):
         self.fields["project"].queryset = Project.objects.filter(
             is_active=True, client__is_active=True
         ).select_related("client")
+        self.fields["project"].widget = RemoteSelect("active-projects")
+        self.fields["project"].widget.choices = self.fields["project"].choices
         self.fields["delivery_method"].choices = [
             ("", "Not recorded"),
             *Order.DeliveryMethod.choices,
@@ -591,3 +602,25 @@ class ContactEditForm(ContactForm):
 class OrderActionForm(StyledForm, forms.Form):
     expected_revision = forms.IntegerField(widget=forms.HiddenInput)
     reason = forms.CharField(widget=forms.Textarea(attrs={"rows": 3}))
+
+
+class LabelOptionsForm(forms.Form):
+    """Choices of the label download menu (receipt/labels_menu.html); sample_labels checks them."""
+
+    kind = forms.ChoiceField(
+        label="Print labels for",
+        choices=[("containers", "Each container"), ("samples", "Each sample")],
+        initial="containers",
+        required=False,
+        widget=forms.RadioSelect,
+    )
+    copies = forms.IntegerField(
+        label="Copies of each",
+        min_value=1,
+        max_value=10,
+        initial=1,
+        required=False,
+        help_text="PDF of 4 × 2 in labels, one per page. Print at actual size. "
+        "Up to 200 labels per download.",
+        widget=forms.NumberInput(attrs={"step": 1, "inputmode": "numeric"}),
+    )

@@ -5,6 +5,28 @@
   ],
   "title": "NYSDEC data check",
   "purpose": "Run an optional read-only check of current next-version data before committing it to an issued report.",
+  "summary": "An optional, read-only check of a report's current data against the NYSDEC EDD format before it is issued. It saves nothing and never changes whether the PDF can be released.",
+  "tasks": [
+    {
+      "title": "Check a report before issue",
+      "steps": [
+        "Read the findings you can act on now and open each affected record.",
+        "Fix the source data or the NYSDEC codes, then reload this page."
+      ]
+    },
+    {
+      "title": "Go back to releasing the report",
+      "steps": [
+        "Select [[report preview]]. This check does not issue anything."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "No findings means only the checks possible now passed. It is not a guarantee the export will pass.",
+    "Subcontracted results can appear in the PDF but cannot be exported by this exporter.",
+    "Some values, like sample depths and QC dates, can only be entered after release.",
+    "Reference-table codes are not checked here. They need the recipient's own tools."
+  ],
   "sections": [
     {
       "title": "Access and scope",

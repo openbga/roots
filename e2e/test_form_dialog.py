@@ -8,7 +8,7 @@ import pytest
 from conftest import NARROW
 from django.urls import reverse
 from django.utils import timezone
-from helpers import LAB_TZ, field, local_input, receive_water
+from helpers import LAB_TZ, field, local_input, menu_item, native_select, pick, receive_water
 from playwright.sync_api import Locator, Page, expect
 
 pytestmark = pytest.mark.django_db(transaction=True)
@@ -127,14 +127,16 @@ def test_dirty_dialog_keeps_edits_until_discard_is_explicit(page: Page, sign_in_
     name = "E2E unsaved modal client"
     field(dialog, "Name").fill(name)
     dialog.locator("[data-vr-form-close]").click()
-    keep = dialog.locator("[data-vr-form-keep]")
-    expect(keep).to_be_visible()
+    confirm = page.get_by_role("dialog", name="Discard unsaved changes?")
+    keep = confirm.get_by_role("button", name="Keep editing", exact=True)
+    expect(keep).to_be_focused()  # the safe choice takes the focus
     keep.click()
+    expect(confirm).to_be_hidden()
     expect(field(dialog, "Name")).to_have_value(name)
     expect(dialog).to_be_visible()
 
     page.keyboard.press("Escape")
-    discard = dialog.locator("[data-vr-form-discard]")
+    discard = confirm.get_by_role("button", name="Discard changes", exact=True)
     expect(discard).to_be_visible()
     discard.click()
     expect(dialog).to_be_hidden()
@@ -248,7 +250,7 @@ def test_multipart_result_upload_previews_in_dialog_and_commits_original_text(
     batch_path = reverse("analytical:batch-detail", args=[batch.pk])
     page.goto(batch_path)
     origin = page.url
-    page.get_by_role("link", name="Import results", exact=True).click()
+    menu_item(page, "Import results", "Standard CSV file").click()
     dialog = page.locator("#vr-form-dialog")
     expect(dialog).to_be_visible()
     stamp = (timezone.now() - timedelta(minutes=15)).astimezone(LAB_TZ).isoformat()
@@ -295,7 +297,7 @@ def test_save_and_add_another_follows_form_redirect_without_closing_dialog(page:
     dialog = page.locator("#vr-form-dialog")
     expect(dialog).to_be_visible()
     field(dialog, "Result").fill("2.10")
-    field(dialog, "Qualitative identification met").select_option(label="Yes")
+    pick(field(dialog, "Qualitative identification met"), label="Yes")
     field(dialog, "Prepared").fill(local_input(timedelta(hours=-2)))
     field(dialog, "Analysed").fill(local_input(timedelta(hours=-1)))
     field(dialog, "Preparation batch").fill("E2E-MODAL-PREP")
@@ -310,7 +312,7 @@ def test_save_and_add_another_follows_form_redirect_without_closing_dialog(page:
     # The redirected form is fresh, so Escape closes without a discard prompt.
     page.keyboard.press("Escape")
     expect(dialog).to_be_hidden()
-    expect(page.locator("[data-vr-form-discard]")).to_be_hidden()
+    expect(page.get_by_role("dialog", name="Discard unsaved changes?")).to_be_hidden()
     assert page.console_errors == []
 
 
@@ -356,7 +358,9 @@ def test_local_custody_form_discards_edits_reopens_invalid_post_and_records_vali
     expect(dialog.locator("#vr-form-title")).to_have_text("Record custody transfer")
     field(dialog, "To location").fill("Unsaved synthetic location")
     dialog.get_by_role("button", name="Cancel", exact=True).click()
-    dialog.locator("[data-vr-form-discard]").click()
+    page.get_by_role("dialog", name="Discard unsaved changes?").get_by_role(
+        "button", name="Discard changes", exact=True
+    ).click()
     expect(dialog).to_be_hidden()
     expect(trigger).to_be_focused()
     trigger.click()
@@ -371,7 +375,7 @@ def test_local_custody_form_discards_edits_reopens_invalid_post_and_records_vali
     reason = field(dialog, "Reason")
     expect(reason).to_have_attribute("aria-invalid", "true")
     expect(reason).to_be_focused()
-    expect(field(dialog, "To location")).to_have_value("E2E synthetic cold room")
+    expect(native_select(field(dialog, "To location"))).to_have_value("E2E synthetic cold room")
     expect(field(dialog, "Received by")).to_have_value("Example Storage Custodian")
     assert sample.custody_events.count() == initial_events
 

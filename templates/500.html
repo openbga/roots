@@ -1,4 +1,4 @@
-{% load static documentation %}<!doctype html>
+{% load ui %}{% load static documentation %}<!doctype html>
 {% comment %}Rendered without a request context: no user, URL reversal or database access.{% endcomment %}
 <html lang="en" data-bs-theme="light">
 <head>
@@ -16,13 +16,13 @@
   <main class="vr-entrance" id="main">
     <div class="vr-entrance-body">
       <div class="vr-entrance-theme">{% include "documentation/button.html" %}</div>
-      {% include "includes/brand.html" with variant="entrance" %}
+      {% brand variant="entrance" %}
       <div class="vr-entrance-panel">
         <h1 class="vr-page-title mb-2">Something went wrong</h1>
         <p>The server could not complete the request. If you were saving, check whether the change was recorded before trying again.</p>
         <a class="btn btn-primary" href="/">Go to your home page</a>
       </div>
-      {% include "includes/source_footer.html" with css="vr-app-foot-centered" %}
+      {% source_footer css="vr-app-foot-centered" %}
     </div>
   </main>
   {% page_help "documentation:unavailable" as error_help %}

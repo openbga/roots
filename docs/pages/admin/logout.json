@@ -5,6 +5,26 @@
   ],
   "title": "Administration signed out",
   "purpose": "Confirm that the administration session has ended.",
+  "summary": "You have signed out of administration.",
+  "tasks": [
+    {
+      "title": "Sign in again",
+      "steps": [
+        "Select [[Log in again]]. You go to the application sign-in page."
+      ]
+    },
+    {
+      "title": "Go to administration home",
+      "steps": [
+        "Select [[Home]] in the breadcrumbs. Signed out, it leads to the sign-in page."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Log out signs out at once; there is no confirmation step.",
+    "The sign-out is the same as signing out from the application's account menu.",
+    "The sign-out is recorded in the application logs."
+  ],
   "sections": [
     {
       "title": "State",

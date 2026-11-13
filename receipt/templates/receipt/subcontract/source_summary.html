@@ -1,16 +1,16 @@
 {% comment %}Facts of one external source version. Parameter: source (SubcontractResult).{% endcomment %}
-{% load catalog_extras %}
+{% load catalog_extras ui %}
 <dl class="vr-facts">
-  <div><dt>Exact reported result</dt><dd>{{ source.observed_text }} {{ source.unit }}</dd></div>
-  <div><dt>Catalog unit</dt><dd>{{ source.catalog_unit }}{% if source.unit_differs %} {% include "includes/status.html" with label="Unit differs" tone="warning" plain=True %} <strong>The source reports {{ source.unit }}; it is recorded and reported as supplied, never converted.</strong>{% endif %}</dd></div>
-  <div><dt>Reporting limit / dilution</dt><dd>{{ source.reporting_limit|plain_decimal }} {{ source.unit }} / {{ source.dilution|plain_decimal }}</dd></div>
-  <div><dt>External method and version</dt><dd>{{ source.external_method }}</dd></div>
-  <div><dt>External analyst / analysis time</dt><dd>{{ source.external_analyst }} / {{ source.analyzed_at|date:"Y-m-d H:i T" }}</dd></div>
-  <div><dt>External laboratory / sample ID</dt><dd>{{ source.source_snapshot.external_lab }} / {{ source.source_snapshot.external_sample_id }}</dd></div>
-  <div><dt>External report reference</dt><dd>{{ source.external_report_reference }}</dd></div>
-  <div><dt>External qualifiers and meanings</dt><dd>{{ source.qualifier_text|default:"None recorded"|linebreaksbr }}</dd></div>
-  <div><dt>Entered by</dt><dd>{{ source.entered_by.get_full_name|default:source.entered_by.get_username }} at {{ source.entered_at|date:"Y-m-d H:i T" }}</dd></div>
-  <div><dt>Correction reason / source note</dt><dd>{{ source.reason|default:"Initial external source entry" }}</dd></div>
-  <div><dt>Source PDF</dt><dd><a href="{% url 'receipt:subcontract-source-download' source.pk %}">Download staff-only source {{ source.number }}</a> ({{ source.source_size|filesizeformat }})<div class="small text-break">SHA-256: {{ source.source_sha256 }}</div></dd></div>
-  <div><dt>Source review</dt><dd>{% if source.review_decision %}{{ source.get_review_decision_display }} by {{ source.reviewed_by.get_full_name|default:source.reviewed_by.get_username }} at {{ source.reviewed_at|date:"Y-m-d H:i T" }}<div>{{ source.review_note }}</div>{% else %}Awaiting independent source review{% endif %}</dd></div>
+  {% fact label="Exact reported result" %}{{ source.observed_text }} {{ source.unit }}{% endfact %}
+  {% fact label="Catalog unit" %}{{ source.catalog_unit }}{% if source.unit_differs %} {% status label="Unit differs" tone="warning" plain=True %} <strong>The source reports {{ source.unit }}; it is recorded and reported as supplied, never converted.</strong>{% endif %}{% endfact %}
+  {% fact label="Reporting limit / dilution" %}{{ source.reporting_limit|plain_decimal }} {{ source.unit }} / {{ source.dilution|plain_decimal }}{% endfact %}
+  {% fact label="External method and version" %}{{ source.external_method }}{% endfact %}
+  {% fact label="External analyst / analysis time" %}{{ source.external_analyst }} / {{ source.analyzed_at|date:"Y-m-d H:i T" }}{% endfact %}
+  {% fact label="External laboratory / sample ID" %}{{ source.source_snapshot.external_lab }} / {{ source.source_snapshot.external_sample_id }}{% endfact %}
+  {% fact label="External report reference" %}{{ source.external_report_reference }}{% endfact %}
+  {% fact label="External qualifiers and meanings" %}{{ source.qualifier_text|default:"None recorded"|linebreaksbr }}{% endfact %}
+  {% fact label="Entered by" %}{{ source.entered_by.get_full_name|default:source.entered_by.get_username }} at {{ source.entered_at|date:"Y-m-d H:i T" }}{% endfact %}
+  {% fact label="Correction reason / source note" %}{{ source.reason|default:"Initial external source entry" }}{% endfact %}
+  {% fact label="Source PDF" %}<a href="{% url 'receipt:subcontract-source-download' source.pk %}">Download staff-only source {{ source.number }}</a> ({{ source.source_size|filesizeformat }})<div class="small text-break">SHA-256: {{ source.source_sha256 }}</div>{% endfact %}
+  {% fact label="Source review" %}{% if source.review_decision %}{{ source.get_review_decision_display }} by {{ source.reviewed_by.get_full_name|default:source.reviewed_by.get_username }} at {{ source.reviewed_at|date:"Y-m-d H:i T" }}<div>{{ source.review_note }}</div>{% else %}Awaiting independent source review{% endif %}{% endfact %}
 </dl>

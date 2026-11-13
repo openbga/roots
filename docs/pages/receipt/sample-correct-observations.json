@@ -5,6 +5,29 @@
   ],
   "title": "Correct receipt observations",
   "purpose": "Correct a mistyped receipt observation while preserving the original exact reading and prior values in audit history.",
+  "summary": "Correct a mistyped receipt observation: temperature, thermometer, coolant, custody seal, preservation check or discrepancy.",
+  "tasks": [
+    {
+      "title": "Correct the cooler temperature",
+      "steps": [
+        "Enter the reading exactly as read in [[Cooler temperature, as read]].",
+        "Give the [[Reason]] and select [[Correct receipt observations]]."
+      ]
+    },
+    {
+      "title": "Record a discrepancy found later",
+      "steps": [
+        "Make sure the sample already has a disposition note. If not, use Change disposition first.",
+        "Describe it in [[Discrepancy]], give the [[Reason]] and save."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Once the sample is on an issued report, observations can no longer be corrected here.",
+    "Approved results may depend on these values. The page warns you, and affected screening or review must be repeated.",
+    "An earlier Hold or Reject can keep blocking work until it is reassessed.",
+    "The original reading and earlier values stay in the history."
+  ],
   "sections": [
     {
       "title": "Correction sections",
@@ -39,8 +62,8 @@
       "paragraphs": [],
       "items": [
         {
-          "label": "Cooler temperature (°C), as read",
-          "description": "Required finite exact decimal, up to three places in a seven-digit field. Entered text is retained alongside the numeric value and must represent the same value; no universal acceptance threshold is imposed here."
+          "label": "Cooler temperature, as read",
+          "description": "Required finite exact decimal, up to three places in a seven-digit field. Entered text is retained alongside the numeric value and must represent the same value; no universal acceptance threshold is imposed here. Entered in °C (the field's unit)."
         },
         {
           "label": "Thermometer",

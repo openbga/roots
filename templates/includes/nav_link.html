@@ -1,4 +1,4 @@
-{% comment %}
+{% load ui %}{% comment %}
 One navigation item, rendered by the {% nav_item %} and {% portal_nav_item %} tags
 (core/templatetags/navigation.py), which declare every item and the routes that mark it current.
 Parameters:
@@ -16,10 +16,10 @@ Usage: {% load navigation %}<ul class="vr-nav-list">{% nav_item "samples" %}</ul
 <li>
   {% if url %}
   <a class="vr-navlink" href="{{ url }}"{% if current %} aria-current="page"{% endif %}>
-    {% if icon %}{% include "includes/icon.html" with name=icon %}{% endif %}<span>{{ label }}</span>{% if count %}<span class="vr-navlink-count">{{ count }}</span>{% endif %}
+    {% if icon %}{% icon name=icon %}{% endif %}<span>{{ label }}</span>{% if count %}<span class="vr-navlink-count">{{ count }}</span>{% endif %}
   </a>
   {% else %}
-  <span class="vr-navlink is-unavailable">{% if icon %}{% include "includes/icon.html" with name=icon %}{% endif %}<span>{{ label }}</span> <span class="vr-navlink-note">Planned</span></span>
+  <span class="vr-navlink is-unavailable">{% if icon %}{% icon name=icon %}{% endif %}<span>{{ label }}</span> <span class="vr-navlink-note">Planned</span></span>
   {% endif %}
 </li>
 {% endif %}

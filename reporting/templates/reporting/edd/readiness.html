@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 Optional early NYSDEC EDD check of a draft report (read-only). Runs the versioned-format rules of the
 released-version preview on the content a release would freeze. Context: report, assembly, findings /
@@ -6,38 +7,29 @@ later / unsupported (grouped causes), counts, fix_summary, checked_results, inco
 incomplete_samples, can_configure, format_name/version, reference_values, tables.
 {% endcomment %}
 {% block title %}NYSDEC data check · {{ report.number }} · Smart Roots LIMS{% endblock %}
-{% block breadcrumbs %}{% url 'reporting:report-list' as list_url %}{% url 'reporting:report-detail' report.pk as record_url %}{% include "includes/breadcrumbs.html" with section="Reports" section_url=list_url record=report.number record_url=record_url current="NYSDEC data check" %}{% endblock %}
+{% block breadcrumbs %}{% url 'reporting:report-list' as list_url %}{% url 'reporting:report-detail' report.pk as record_url %}{% breadcrumbs section="Reports" section_url=list_url record=report.number record_url=record_url current="NYSDEC data check" %}{% endblock %}
 {% block page_heading %}NYSDEC data check for <span class="vr-id">{{ report.number }}</span>{% endblock %}
-{% block page_meta %}
-<ul class="vr-page-meta">
+{% block page_meta %}{% page_meta %}
   <li>{{ format_name }} format {{ format_version }} · reference values {{ reference_values }}</li>
   <li>{{ report.project.client }} / {{ report.project.name }}</li>
-</ul>
-{% endblock %}
+{% endpage_meta %}{% endblock %}
 {% block content %}
-<div class="alert alert-info" role="status">{% include "includes/status.html" with label="Note" tone="info" plain=True %}<div><strong>Optional, for an exploratory NYSDEC EDD.</strong> Check draft data against the NYSDEC format limits before issuing the report. Findings identify corrections or decisions needed before export. It does not affect the PDF report or receipt, and no recipient has validated it. Back to the <a href="{% url 'reporting:report-preview' report.pk %}">report preview</a>.</div></div>
+{% notice tone="info" label="Note" %}<strong>Optional, for an exploratory NYSDEC EDD.</strong> Check draft data against the NYSDEC format limits before issuing the report. Findings identify corrections or decisions needed before export. It does not affect the PDF report or receipt, and no recipient has validated it. Back to the <a href="{% url 'reporting:report-preview' report.pk %}">report preview</a>.{% endnotice %}
 
-<section class="card mb-3" aria-labelledby="scope-heading">
-  <div class="card-header"><h2 class="card-title" id="scope-heading">Checked now</h2></div>
-  <div class="card-body">
+{% panel title="Checked now" heading_id="scope-heading" class="mb-3" %}
     <dl class="vr-facts">
-      <div><dt>Samples in report</dt><dd>{{ assembly.samples|length }}</dd></div>
-      <div><dt>Approved results checked</dt><dd>{{ checked_results }}</dd></div>
-      <div><dt>Not yet checkable</dt><dd>{{ incomplete_tests|add:incomplete_samples }}</dd></div>
-      {% for section, total in tables %}<div><dt>{{ section }}</dt><dd>{{ total }} row{{ total|pluralize }}</dd></div>{% endfor %}
+      {% fact label="Samples in report" value=assembly.samples|length %}
+      {% fact label="Approved results checked" value=checked_results %}
+      {% fact label="Not yet checkable" value=incomplete_tests|add:incomplete_samples %}
+      {% for section, total in tables %}{% fact label=section %}{{ total }} row{{ total|pluralize }}{% endfact %}{% endfor %}
     </dl>
-  </div>
-</section>
+{% endpanel %}
 
-<section class="card mb-3" aria-labelledby="summary-heading">
-      <div class="card-header">
-        <h2 class="card-title" id="summary-heading">What the check found</h2>
-        {% if finding_count %}{% include "includes/status.html" with label=finding_label tone="warning" %}{% else %}{% include "includes/status.html" with label="No findings in the checks possible now" tone="info" title="Not a confirmation that the data is ready" %}{% endif %}
-      </div>
-      <div class="card-body">
+{% panel title="What the check found" heading_id="summary-heading" class="mb-3" %}
+      {% fill count %}{% if finding_count %}{% status label=finding_label tone="warning" %}{% else %}{% status label="No findings in the checks possible now" tone="info" title="Not a confirmation that the data is ready" %}{% endif %}{% endfill %}
         {% if fix_summary %}
         <p class="vr-form-note">Fix findings where they are recorded, then reload this page. Findings marked not correctable here need a decision outside this application.</p>
-        <ul class="list-unstyled mb-3">
+        <ul class="list-unstyled">
           {% for fix in fix_summary %}
           <li class="d-flex flex-wrap align-items-baseline gap-2 py-1 border-bottom">
             <span class="fw-semibold">{% if fix.url %}<a href="{{ fix.url }}">{{ fix.label }}</a>{% else %}{{ fix.label }}{% endif %}</span>
@@ -52,25 +44,24 @@ incomplete_samples, can_configure, format_name/version, reference_values, tables
         <p>No approved result can be checked yet, so no data limits were tested.</p>
         {% endif %}
         <h3 class="h6">Not verified by this check</h3>
-        <ul class="mb-0 ps-3">
+        <ul class="ps-3">
           <li>Reference-table codes (company, method, analyte, unit, matrix, fraction, preservative, qualifier): only EQuIS EDP can check them.</li>
           <li>Values entered per released version (location code, depth, retest type, lab QC date and dilution){% if later_count %}: {{ later_count }} still to enter, see below{% endif %}.</li>
           {% if incomplete_tests or incomplete_samples %}<li>{{ incomplete_tests }} test{{ incomplete_tests|pluralize }} and {{ incomplete_samples }} sample-level blocker{{ incomplete_samples|pluralize }} without an approved result: nothing about them was checked, so findings may still appear when they are approved.</li>{% endif %}
           {% if unsupported_count %}<li>{{ unsupported_count }} subcontracted result{{ unsupported_count|pluralize }}: not supported by this export yet.</li>{% endif %}
         </ul>
-      </div>
-</section>
+{% endpanel %}
 
 {% if findings %}
-<section class="card vr-table-card mb-3" aria-labelledby="findings-heading">
-  <div class="card-header"><h2 class="card-title" id="findings-heading">Findings you can act on now</h2><span class="vr-count">{{ findings|length }} cause{{ findings|length|pluralize }}; every affected record is listed</span></div>
+{% panel title="Findings you can act on now" heading_id="findings-heading" table=True flush=True class="mb-3" %}
+  {% fill count %}{{ findings|length }} cause{{ findings|length|pluralize }}; every affected record is listed{% endfill %}
   <div class="vr-table-wrap">
       <table class="table vr-table">
         <thead><tr><th scope="col">Finding</th><th scope="col">Field</th><th scope="col" class="text-end">Affected</th><th scope="col">Records</th><th scope="col">Fix in</th></tr></thead>
         <tbody>
           {% for g in findings %}
           <tr{% ifchanged g.kind %} id="fix-{{ g.kind }}"{% endifchanged %}>
-            <th scope="row" class="vr-wrap fw-normal">{% include "includes/status.html" with label="Finding" tone="warning" plain=True %} {{ g.message }}</th>
+            <th scope="row" class="vr-wrap fw-normal">{% status label="Finding" tone="warning" plain=True %} {{ g.message }}</th>
             <td class="vr-id">{{ g.field|default:"—" }}</td>
             <td class="text-end">{{ g.records|length }}</td>
             <td class="vr-wrap">{% if g.records|length == 1 %}{{ g.records.0 }}{% else %}<details><summary>{{ g.records.0 }} and {{ g.records|length|add:"-1" }} more</summary><ul class="small mb-0 ps-3">{% for r in g.records %}<li>{{ r }}</li>{% endfor %}</ul></details>{% endif %}</td>
@@ -80,12 +71,12 @@ incomplete_samples, can_configure, format_name/version, reference_values, tables
         </tbody>
       </table>
   </div>
-</section>
+{% endpanel %}
 {% endif %}
 
 {% if unsupported %}
-<section class="card vr-table-card mb-3" aria-labelledby="unsupported-heading">
-  <div class="card-header"><h2 class="card-title" id="unsupported-heading">Subcontracted results</h2><span class="vr-count">{{ unsupported_count }} result{{ unsupported_count|pluralize }}; NYSDEC export of these is not supported yet</span></div>
+{% panel title="Subcontracted results" heading_id="unsupported-heading" table=True flush=True class="mb-3" %}
+  {% fill count %}{{ unsupported_count }} result{{ unsupported_count|pluralize }}; NYSDEC export of these is not supported yet{% endfill %}
   <div class="vr-table-wrap">
       <table class="table vr-table">
         <thead><tr><th scope="col">Why it cannot be exported</th><th scope="col">Records</th></tr></thead>
@@ -99,13 +90,12 @@ incomplete_samples, can_configure, format_name/version, reference_values, tables
         </tbody>
       </table>
   </div>
-</section>
+{% endpanel %}
 {% endif %}
 
 {% if later %}
-<section class="card vr-table-card mb-3" aria-labelledby="later-heading">
-  <div class="card-header"><h2 class="card-title" id="later-heading">Needed after release</h2><span class="vr-count">{{ later_count }} value{{ later_count|pluralize }} still to enter; not findings</span></div>
-  <div class="card-body">
+{% panel title="Needed after release" heading_id="later-heading" table=True class="mb-3" %}
+  {% fill count %}{{ later_count }} value{{ later_count|pluralize }} still to enter; not findings{% endfill %}
     <p class="vr-form-note">These facts belong to a released version and are entered in its export context page. They cannot be checked or entered before release.</p>
     <div class="vr-table-wrap">
       <table class="table vr-table">
@@ -121,14 +111,12 @@ incomplete_samples, can_configure, format_name/version, reference_values, tables
         </tbody>
       </table>
     </div>
-  </div>
-</section>
+{% endpanel %}
 {% endif %}
 
 {% if incomplete_tests or incomplete_samples %}
-<section class="card vr-table-card mb-3" aria-labelledby="incomplete-heading">
-  <div class="card-header"><h2 class="card-title" id="incomplete-heading">Results not yet checkable</h2><span class="vr-count">These block release of the report itself</span></div>
+{% panel title="Results not yet checkable" heading_id="incomplete-heading" count="These block release of the report itself" table=True flush=True class="mb-3" %}
   {% include "reporting/readiness_table.html" with samples=assembly.samples only_blocked=True %}
-</section>
+{% endpanel %}
 {% endif %}
 {% endblock %}

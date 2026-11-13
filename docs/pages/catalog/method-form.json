@@ -6,6 +6,34 @@
   ],
   "title": "Method version",
   "purpose": "Create a laboratory method version or edit an existing version. Editing adds usage facts, lock explanations and history.",
+  "summary": "Create a method version or edit an existing one. For an existing version the page also shows what uses it, which values are locked and its history. Only admins can save.",
+  "tasks": [
+    {
+      "title": "Add a method",
+      "steps": [
+        "Enter the method code, the lab's version text and the title.",
+        "Optionally add the source or SOP reference, reference source and technique, then select [[Create method]]."
+      ]
+    },
+    {
+      "title": "Retire a version for new work",
+      "steps": [
+        "Uncheck availability for new work, give a [[Reason for change]] and select [[Save changes]]. Existing work keeps its reference."
+      ]
+    },
+    {
+      "title": "See the tests for this version",
+      "steps": [
+        "Select [[View this version's tests]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Code, version, title and source reference lock once work depends on the version. Start a new version instead.",
+    "Versions are not numbered automatically. Use the lab's own revision, edition or year.",
+    "Reference source and technique describe the record only. They are not printed on reports.",
+    "If someone saved the record after you opened it, your save is refused. Reload and compare before entering the change again."
+  ],
   "sections": [
     {
       "title": "Fields and related work",

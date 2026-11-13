@@ -1,2 +1,2 @@
-{% comment %}Client-facing sample status. Parameters: sample (with status_label, status_tone), plain.{% endcomment %}
-{% include "includes/status.html" with label=sample.status_label tone=sample.status_tone plain=plain %}
+{% load ui %}{% comment %}Client-facing sample status. Parameters: sample (with status_label, status_tone), plain.{% endcomment %}
+{% status label=sample.status_label tone=sample.status_tone plain=plain %}

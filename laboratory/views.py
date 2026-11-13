@@ -12,6 +12,7 @@ from accounts.roles import has_role
 
 from . import training as training_service
 from .evidence import download_response
+from .forms import LookAheadForm
 from .models import (
     EquipmentEvent,
     MaterialLot,
@@ -59,7 +60,7 @@ def form_page(
     form,
     *,
     title,
-    back_url,
+    cancel_url,
     submit,
     crumbs=(),
     notes=(),
@@ -77,7 +78,7 @@ def form_page(
         {
             "page_title": title,
             "form": form,
-            "back_url": back_url,
+            "cancel_url": cancel_url,
             "submit_label": submit,
             "crumbs": crumbs,
             "notes": notes,
@@ -141,7 +142,7 @@ def overview(request):
             "page_title": "Lab overview",
             "cards": cards,
             "days": days,
-            "day_choices": DAY_CHOICES,
+            "days_form": LookAheadForm(days),
             **role_flags(user),
         },
     )

@@ -1,0 +1,45 @@
+{% comment %}
+The form shell of a form or action page (docs/ui-standards.md section 7): form.vr-form, CSRF,
+the error summary (includes/form_errors.html), one required-fields note
+(includes/required_note.html), the sections, and the action row (includes/form_actions.html).
+Rendered by the {% form_page %} block tag ({% load ui %}). The tag's body is the sections: one or
+more fieldset.vr-form-section, including the form's hidden fields. An empty body renders every
+field of the form in one section. Do not put {{ form }} in the body: it repeats the error summary.
+Parameters:
+  form            the bound form (required)
+  formset, formset_label   child rows, passed to the error summary
+  action          target URL (default: this page)
+  method          "get" for a step that only chooses what the next page shows (no CSRF token,
+                  nothing is changed); default post
+  multipart       truthy for a file upload
+  note, times     appended to the required-fields note (includes/required_note.html)
+  no_required_note  truthy to leave out the note (a form without required fields, a read-only state)
+  cancel_url      where Cancel returns: the record when editing, the list when creating
+  submit_label, destructive, secondary, no_submit   the action row (includes/form_actions.html)
+  local           truthy for an action form inside a record page's panel (Cancel, Withdraw,
+                  Return, Record transfer): app.js opens it in the shared dialog, named by
+                  submit_label, with title as the dialog's heading (default submit_label); give
+                  action (its POST route) and no cancel_url
+  id, class       optional id and extra classes on the form (e.g. vr-narrow)
+Parts ({% fill name %} ... {% endfill %}):
+  note            the note's extra sentences when they need tags or values (instead of note=)
+  actions         further buttons in the action row, shown before the primary
+Usage:
+  {% form_page form=form cancel_url=cancel_url submit_label="Create client" %}...{% endform_page %}
+  {% form_page form=withdraw_form action=withdraw_url local=True submit_label="Withdraw quote" destructive=True %}
+    {{ withdraw_form.expected_revision }}{{ withdraw_form.reason.as_field_group }}
+  {% endform_page %}
+  {% form_page form=form cancel_url=cancel_url submit_label="Create client" %}{% include "receipt/_grouped_fields.html" %}{% endform_page %}
+{% endcomment %}
+{% load ui %}<form class="vr-form{% if class %} {{ class }}{% endif %}"{% if id %} id="{{ id }}"{% endif %} method="{% if method == "get" %}get{% else %}post{% endif %}"{% if action %} action="{{ action }}"{% endif %}{% if local %} data-vr-local-form="{{ submit_label }}" data-vr-local-title="{% firstof title submit_label %}"{% endif %} novalidate{% if multipart %} enctype="multipart/form-data"{% endif %}>
+  {% if method != "get" %}{% csrf_token %}{% endif %}
+  {% form_errors form=form formset=formset formset_label=formset_label %}
+  {% if not no_required_note %}{% if slots.note %}{% required_note note=slots.note times=times %}{% else %}{% required_note note=note times=times %}{% endif %}{% endif %}
+  {% if body %}{{ body }}{% else %}
+  <fieldset class="vr-form-section">
+    {% for field in form.visible_fields %}{{ field.as_field_group }}{% endfor %}
+    {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+  </fieldset>
+  {% endif %}
+  {% form_actions cancel_url=cancel_url submit_label=submit_label destructive=destructive secondary=secondary no_submit=no_submit %}{{ slots.actions }}{% endform_actions %}
+</form>

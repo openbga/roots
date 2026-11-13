@@ -4,10 +4,13 @@ Replaces a table or panel body when there is nothing to show. Parameters:
   title, body   one short heading, one or two sentences of guidance
   action_url, action_label   next step (e.g. create the first record)
   clear_url     for no-results: URL without filters; renders "Clear filters"
-A no-results state whose page has an invalid filter_form is shown as the error state: the lists
-force an empty result for an invalid filter, so "nothing matches" would be misleading.
+  invalid       for no-results: truthy when a filter is invalid (filter_form.errors); the state is
+                then shown as the error state, because the lists force an empty result for an
+                invalid filter and "nothing matches" would be misleading. When not given, the
+                page's filter_form is read (a documented read); pass invalid=False to opt out.
+Lists use {% list_results %} (includes/list_results.html), which picks the state and passes it.
 {% endcomment %}
-{% if kind == "no-results" and filter_form.errors %}
+{% if kind == "no-results" and invalid or kind == "no-results" and invalid == "" and filter_form.errors %}
 <div class="vr-empty" data-kind="error" role="alert">
   <p class="vr-empty-title">These filters cannot be applied</p>
   <p class="vr-empty-body">Correct the highlighted filter above. No results are shown until every filter is valid.</p>

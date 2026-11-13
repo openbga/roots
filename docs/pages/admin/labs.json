@@ -5,6 +5,26 @@
   ],
   "title": "Laboratory setup record",
   "purpose": "Open the deployment’s laboratory retention statement.",
+  "summary": "Open the laboratory's setup record to maintain its record-retention statement.",
+  "tasks": [
+    {
+      "title": "Change the retention statement",
+      "steps": [
+        "Select the laboratory's name to open its retention form."
+      ]
+    },
+    {
+      "title": "Change what reports print about the laboratory",
+      "steps": [
+        "Use Setup → Laboratory profile in the application. Address, logo and certificates are not edited here."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Only a superuser who also has the laboratory admin role can open this.",
+    "There is one setup record, and it cannot be added or deleted here.",
+    "The retention revision goes up with every saved change."
+  ],
   "sections": [
     {
       "title": "Access and columns",

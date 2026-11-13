@@ -5,6 +5,28 @@
   ],
   "title": "NYSDEC EDD preview",
   "purpose": "Validate one released version with current recipient mappings and generate immutable exploratory export files.",
+  "summary": "Check one released report version against the NYSDEC EDD format with the current codes and context, and generate an exploratory export file from it.",
+  "tasks": [
+    {
+      "title": "Generate an export",
+      "steps": [
+        "Resolve every item under [[Checks before export]], following the Fix in links.",
+        "Select [[Generate export]] when no blocking issues remain."
+      ]
+    },
+    {
+      "title": "Download an earlier export",
+      "steps": [
+        "Select [[Download ZIP]] in its row under the generated exports."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The data comes from this frozen issue. Fixing a result needs a new issued version, not just a source edit.",
+    "Every export is kept as generated. Changing codes or context later never alters it.",
+    "Generation checks again with the current settings, so it can fail even after a clear preview.",
+    "Passing these checks is not a claim that the recipient will accept the file."
+  ],
   "sections": [
     {
       "title": "Access and data boundaries",

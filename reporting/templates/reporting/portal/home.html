@@ -1,15 +1,15 @@
 {% extends "layouts/portal.html" %}
-{% load announcements %}
-{% block page_meta %}<ul class="vr-page-meta"><li>{{ client.name }}</li><li>{{ project_count }} project{{ project_count|pluralize }}</li><li>{{ open_count }} sample{{ open_count|pluralize }} in progress</li></ul>{% endblock %}
+{% load announcements ui %}
+{% block page_meta %}{% page_meta %}<li>{{ client.name }}</li><li>{{ project_count }} project{{ project_count|pluralize }}</li><li>{{ open_count }} sample{{ open_count|pluralize }} in progress</li>{% endpage_meta %}{% endblock %}
 {% block page_intro %}<p class="vr-page-intro">Your latest reports and where your samples stand.</p>{% endblock %}
 {% block content %}
 {% include "reporting/portal/notice.html" %}
 {% announcements %}
 <div class="row g-3">
   <div class="col-lg-7">
-    <section class="card vr-table-card" aria-labelledby="recent-reports-heading">
-      <div class="card-header"><h2 class="card-title" id="recent-reports-heading">Latest reports</h2><a class="btn btn-sm btn-outline-secondary" href="{% url 'portal:report-list' %}">All reports</a></div>
-      {% if recent_reports %}
+    {% panel title="Latest reports" heading_id="recent-reports-heading" table=True flush=True %}
+      {% fill actions %}<a class="btn btn-sm btn-outline-secondary" href="{% url 'portal:report-list' %}">All reports</a>{% endfill %}
+      {% list_results items=recent_reports empty_title="No reports issued yet" empty_body="Reports appear here as soon as the laboratory releases them." %}
         <div class="vr-table-wrap">
           <table class="table table-hover vr-table">
             <thead><tr><th scope="col">Report</th><th scope="col">Project</th><th scope="col">Version</th><th scope="col">Released</th><th scope="col" class="text-end"><span class="visually-hidden">Actions</span></th></tr></thead>
@@ -26,38 +26,33 @@
             </tbody>
           </table>
         </div>
-      {% else %}
-      {% include "includes/empty_state.html" with title="No reports issued yet" body="Reports appear here as soon as the laboratory releases them." %}
-      {% endif %}
-    </section>
+      {% endlist_results %}
+    {% endpanel %}
   </div>
   <div class="col-lg-5">
-    <section class="card vr-table-card mb-3" aria-labelledby="status-heading">
-      <div class="card-header"><h2 class="card-title" id="status-heading">Samples by status</h2><a class="btn btn-sm btn-outline-secondary" href="{% url 'portal:sample-list' %}">All samples</a></div>
+    {% panel title="Samples by status" heading_id="status-heading" table=True flush=True class="mb-3" %}
+      {% fill actions %}<a class="btn btn-sm btn-outline-secondary" href="{% url 'portal:sample-list' %}">All samples</a>{% endfill %}
       <div class="vr-table-wrap">
         <table class="table vr-table">
           <caption class="visually-hidden">Number of your samples in each status</caption>
           <thead class="visually-hidden"><tr><th scope="col">Status</th><th scope="col" class="text-end">Samples</th></tr></thead>
           <tbody>
             {% for key, label, tone, count in status_counts %}
-            <tr><th scope="row">{% if count %}<a class="vr-row-link" href="{% url 'portal:sample-list' %}?status={{ key }}">{% include "includes/status.html" with label=label tone=tone plain=True %}</a>{% else %}{% include "includes/status.html" with label=label tone=tone plain=True %}{% endif %}</th><td class="text-end">{{ count }}</td></tr>
+            <tr><th scope="row">{% if count %}<a class="vr-row-link" href="{% url 'portal:sample-list' %}?status={{ key }}">{% status label=label tone=tone plain=True %}</a>{% else %}<span class="vr-muted">{{ label }}</span>{% endif %}</th><td class="text-end">{% if count %}{{ count }}{% else %}<span class="vr-muted">0</span>{% endif %}</td></tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
-    </section>
+    {% endpanel %}
     {% if attention %}
-    <section class="card" aria-labelledby="attention-heading">
-      <div class="card-header"><h2 class="card-title" id="attention-heading">Needs your attention</h2></div>
-      <div class="card-body">
-        <ul class="list-unstyled mb-0">
+    {% panel title="Needs your attention" heading_id="attention-heading" %}
+        <ul class="list-unstyled">
           {% for sample in attention %}
           <li class="mb-2">{% include "reporting/portal/sample_status.html" with plain=True %} <span class="vr-id">{{ sample.client_sample_id }}</span> ({{ sample.lab_id }}){% if sample.disposition_note %}<div class="vr-muted small">{{ sample.disposition_note }}</div>{% endif %}</li>
           {% endfor %}
         </ul>
-        <p class="vr-form-note mt-2 mb-0">Contact the laboratory about held or rejected samples.</p>
-      </div>
-    </section>
+        <p class="vr-form-note">Contact the laboratory about held or rejected samples.</p>
+    {% endpanel %}
     {% endif %}
   </div>
 </div>

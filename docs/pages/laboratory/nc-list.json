@@ -5,6 +5,34 @@
   ],
   "title": "Nonconformances",
   "purpose": "Find issues, assignments, due dates and corrective action status.",
+  "summary": "Find nonconformances: the issues the lab is investigating or has closed, who owns them, when they are due and where they stand.",
+  "tasks": [
+    {
+      "title": "Find a nonconformance",
+      "steps": [
+        "Type an NC number, title, sample ID, asset ID, lot number or material in [[Search]], then select [[Apply]].",
+        "Select the number to open the record."
+      ]
+    },
+    {
+      "title": "See the open issues assigned to you",
+      "steps": [
+        "Set [[Status]] to Not closed and [[Owner]] to Assigned to me, then select [[Apply]]."
+      ]
+    },
+    {
+      "title": "Report a new issue",
+      "steps": [
+        "Select [[New nonconformance]]. Any lab staff member can report one."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Closed records are listed too unless you set [[Status]] to Not closed.",
+    "Past due means not closed and due before today. A due date of today is not past due.",
+    "Severity is the choice recorded on the issue. The application does not assign it.",
+    "Owner, category, corrective action and notes are not searched."
+  ],
   "sections": [
     {
       "title": "Access and navigation",
@@ -100,7 +128,7 @@
         },
         {
           "label": "Active filters",
-          "description": "Remove a chip to clear that filter and return to page 1. Clear all restores the unfiltered list, default sort and 25 rows per page. The default 30-day window is not an active filter."
+          "description": "Remove a chip to clear that filter and return to page 1. Clear all restores the unfiltered list; your saved sort and rows per page stay. The default 30-day window is not an active filter."
         },
         {
           "label": "Column headings",
@@ -112,7 +140,7 @@
         },
         {
           "label": "Columns",
-          "description": "When table enhancement is available, check columns to show them or uncheck to hide them. Changes apply immediately and remain in this browser. Use Move … up or Move … down controls, or drag headings. The identity column is Always shown and cannot move or hide. Reset columns restores the initial layout. Close or Done closes the dialog. These preferences do not change records, filters, sorting or paging. If browser storage is blocked, the layout applies only to this page."
+          "description": "When table enhancement is available, check columns to show them or uncheck to hide them. Changes apply immediately and are saved for your account, on any workstation. Use Move … up or Move … down controls, or drag headings. The identity column is Always shown and cannot move or hide. Reset columns restores the initial layout. Close or Done closes the dialog. These preferences do not change records, filters, sorting or paging. If the change cannot be saved, the layout applies only to this page."
         }
       ]
     },

@@ -3,15 +3,6 @@ History panel of receipt corrections, newest last (docs/ui-standards.md section 
 events (AuditEvent with .changes = [(label, before, after), ...], reason, actor, occurred_at),
 title (what each entry says; default "Corrected"). Used by the order and the two correction pages.
 {% endcomment %}
-<section class="card mt-3" aria-labelledby="correction-history-heading">
-  <div class="card-header"><h2 class="card-title" id="correction-history-heading">History</h2></div>
-  <div class="card-body">
-    {% if events %}
-    <ol class="vr-timeline">
-      {% for event in events|dictsort:"occurred_at" %}{% include "includes/history_item.html" with title=title|default:"Corrected" at=event.occurred_at actor=event.actor by="Recorded by" reason=event.reason changes=event.changes %}{% endfor %}
-    </ol>
-    {% else %}
-    {% include "includes/empty_state.html" with title="No corrections recorded" body="Custody events and issued reports are never rewritten by a correction." %}
-    {% endif %}
-  </div>
-</section>
+{% load ui %}{% history_panel events=events heading_id="correction-history-heading" class="mt-3" empty_title="No corrections recorded" empty_body="Custody events and issued reports are never rewritten by a correction." %}
+  {% for event in events|dictsort:"occurred_at" %}{% history_item title=title|default:"Corrected" at=event.occurred_at actor=event.actor by="Recorded by" reason=event.reason changes=event.changes %}{% endfor %}
+{% endhistory_panel %}

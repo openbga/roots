@@ -5,6 +5,43 @@
   ],
   "title": "Analytical batch",
   "purpose": "Manage one analytical batch’s membership, current results, QC and supporting equipment and preparation information.",
+  "summary": "Work one analytical batch: its tests and current results, QC samples and findings, preparation time and equipment. Submit entered results for review from here.",
+  "tasks": [
+    {
+      "title": "Enter or import results",
+      "steps": [
+        "Select [[Enter results]] to type them in the grid.",
+        "Or open [[Import results]] and choose a standard CSV file or a saved mapping."
+      ]
+    },
+    {
+      "title": "Submit entered results for review",
+      "steps": [
+        "Check the results, or check the box in the column heading to select every entered result on this page.",
+        "Select [[Submit selected for review]]. You cannot then review those results yourself."
+      ]
+    },
+    {
+      "title": "Record QC",
+      "steps": [
+        "Select [[Add QC sample]] to add a blank, LCS, spike or duplicate.",
+        "Select [[Record measurements]] beside a QC sample to enter its values."
+      ]
+    },
+    {
+      "title": "Resolve a QC finding",
+      "steps": [
+        "In the QC holds approval notice, select [[Record disposition]] for the finding."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Closing a batch only freezes which samples and QC samples are in it. Entry, QC and review continue.",
+    "An exceeded holding time needs a holding-time qualifier before the result can be submitted.",
+    "Failing, missing or unevaluated QC holds approval until it is resolved or independently accepted.",
+    "Returned results must be entered again with a reason before they can be submitted.",
+    "The laboratory records panel shows today's records for information. It does not allow or block any work."
+  ],
   "sections": [
     {
       "title": "Access",
@@ -17,7 +54,11 @@
       "items": [
         {
           "label": "Batch",
-          "description": "The number, Open/Closed state, exact method/version, matrix and approved/current-test count identify the batch. Approved count requires the latest approved revision to belong to this batch."
+          "description": "The number, Open/Closed state, exact method/version and matrix identify the batch. The progress fact counts tests whose current result is entered (not yet submitted), returned by review, and approved, out of all tests in the batch. Approved count requires the latest approved revision to belong to this batch."
+        },
+        {
+          "label": "Returned notice",
+          "description": "Shown while results in this batch are returned by review. It names up to ten returned results with links to each result and, for analysts, links to Enter results; every returned result must be entered again with a reason before it can be resubmitted."
         },
         {
           "label": "Equipment",
@@ -50,11 +91,7 @@
         },
         {
           "label": "Import results",
-          "description": "Open the standard CSV validation and preview flow."
-        },
-        {
-          "label": "Import with a mapping",
-          "description": "Open profile-mapped CSV/TSV import."
+          "description": "A menu with the two import paths: Standard CSV file opens the standard CSV validation and preview flow; With a saved mapping opens profile-mapped CSV/TSV import."
         },
         {
           "label": "Enter results",
@@ -267,7 +304,7 @@
         },
         {
           "label": "Columns",
-          "description": "Show or hide optional columns and change their order using movement controls or header dragging. Changes apply immediately and are saved for this table in this browser. Locked columns stay available."
+          "description": "Show or hide optional columns and change their order using movement controls or header dragging. Changes apply immediately and are saved for this table in your account, on any workstation. Locked columns stay available."
         },
         {
           "label": "Reset columns",

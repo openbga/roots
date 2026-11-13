@@ -5,6 +5,34 @@
   ],
   "title": "Training record details",
   "purpose": "Read one immutable training or demonstration record, its evidence and related records.",
+  "summary": "Read one training or demonstration record: who, what, when it is effective and expires, who reviewed it, and its evidence.",
+  "tasks": [
+    {
+      "title": "Renew the record",
+      "steps": [
+        "Select [[Renew record]].",
+        "Enter the new dates, outcome and evidence, then save. A new record is added and this one stays unchanged."
+      ]
+    },
+    {
+      "title": "Correct a mistake",
+      "steps": [
+        "Select [[Correct record]], fix the values and give a correction reason. The original stays as history, marked Corrected."
+      ]
+    },
+    {
+      "title": "Download the evidence",
+      "steps": [
+        "Select the file name under Evidence."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Records are never edited. Renewals and corrections are new records.",
+    "A corrected record cannot be renewed. Open its correction and renew that.",
+    "The expiry pill is not shown on a record that is renewed or corrected.",
+    "This record documents training only. It does not grant an application role or the report-release permission."
+  ],
   "sections": [
     {
       "title": "Training access",
@@ -17,7 +45,7 @@
       "items": [
         {
           "label": "Subject, State, Staff and Type",
-          "description": "Header identifies the topic, computed state, separate renewed marker, trainee and record type."
+          "description": "Header identifies the topic, computed state, separate renewed marker, trainee and record type, then the expiry date (or No expiry set). On a record that is neither renewed nor corrected, the expiry carries a Due today or Due in … d pill within 30 days and an Overdue … d pill once it has passed."
         },
         {
           "label": "Correct record",
@@ -139,6 +167,6 @@
     "templates/includes/record_foot.html",
     "laboratory/common.py",
     "core/models.py",
-    "laboratory/templates/laboratory/_history.html"
+    "templates/includes/history_panel.html"
   ]
 }

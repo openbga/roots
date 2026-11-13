@@ -20,8 +20,11 @@ from helpers import (
     grid_search,
     local_input,
     make_user,
+    menu_item,
+    native_select,
     pdf_pages,
     pdf_text,
+    pick,
     sign_in,
     sign_out,
 )
@@ -73,8 +76,8 @@ def test_planned_quote_and_coc_become_an_actual_receipt_schedule_and_labels(
     page.get_by_role("link", name=re.compile("^(New|Start|Create)")).first.click()
     page.get_by_role("button", name="Create submission").click()
     expect(page.locator("#id_coc_reference")).to_have_attribute("aria-invalid", "true")
-    field(page, "Project").select_option(index=1)
-    page.get_by_label("Accepted quote").select_option(index=1)
+    pick(field(page, "Project"), index=1)
+    pick(page.get_by_label("Accepted quote"), index=1)
     page.locator("#id_coc_reference").fill(COC)
     field(page, "Carrier / tracking").fill("Example Courier")
     field(page, "Number of coolers / packages").fill("1")
@@ -83,7 +86,7 @@ def test_planned_quote_and_coc_become_an_actual_receipt_schedule_and_labels(
 
     page.get_by_role("link", name=re.compile("^Add sample")).first.click()
     field(page, "Your sample ID").fill(CLIENT_SAMPLE)
-    field(page, "Matrix").select_option(label="Water")
+    pick(field(page, "Matrix"), label="Water")
     # Bottles are being prepared: no collection time, only a planned date.
     field(page, "Planned collection date").fill((local_input(timedelta(days=2)))[:10])
     field(page, "Collection location").fill("Synthetic Test Creek outfall 001")
@@ -133,12 +136,12 @@ def test_planned_quote_and_coc_become_an_actual_receipt_schedule_and_labels(
     field(page, "Collected / composite ended at").fill(local_input(timedelta(hours=-5)))
     field(page, "Received at").fill(local_input(timedelta(minutes=-20)))
     field(page, "Relinquished by").fill("Example Courier")
-    field(page, "Cooler temperature (°C)").fill("3.900")
-    field(page, "Coolant on arrival").select_option(label="Wet ice")
+    field(page, "Cooler temperature").fill("3.900")
+    pick(field(page, "Coolant on arrival"), label="Wet ice")
     choose(field(page, "Custody seal"), "Intact")
     choose(field(page, "Preservation check"), "Checked on receipt")
     field(page, "Storage location").fill("Receipt bench")
-    field(page, "Disposition").select_option(label="Proceed")
+    pick(field(page, "Disposition"), label="Proceed")
     for number in (1, 2):  # two declared bottles, each inspected at the bench
         bottle = page.get_by_role("group", name=f"Container {number}", exact=True)
         expect_chosen(field(bottle, "Container type"), "500 mL HDPE bottle")
@@ -150,22 +153,22 @@ def test_planned_quote_and_coc_become_an_actual_receipt_schedule_and_labels(
 
     # ---- staff: delivery target needs a reason and is kept in history
     page.goto(order_path)
-    page.get_by_role("link", name="Change delivery target").click()
+    menu_item(page, "More", "Change delivery target").click()
     target = local_input(timedelta(days=7))
     field(page, "Delivery target").fill(target)
     page.get_by_role("button", name="Change delivery target").click()
     expect(page.locator("#id_reason")).to_have_attribute("aria-invalid", "true")
-    expect(field(page, "Delivery target")).to_have_value(target)  # input preserved
+    # Input preserved: the submitted value in the server's format, and the same value as shown.
+    expect(native_select(field(page, "Delivery target"))).to_have_value(target)
+    expect(field(page, "Delivery target")).to_have_value(target.replace("T", " "))
     page.locator("#id_reason").fill("Agreed with the client at receipt")
     page.get_by_role("button", name="Change delivery target").click()
     expect(
         page.get_by_text("Delivery target updated; prior target retained in history.")
     ).to_be_visible()
-    page.get_by_role("link", name="Change delivery target").click()
-    expect(page.get_by_text("Agreed with the client at receipt")).to_be_visible()  # history
-
-    page.get_by_role("button", name="Close form", exact=True).click()
-    expect(page.locator("#vr-form-dialog")).to_be_hidden()
+    # History: the full schedule page lists it (form dialogs leave history panels out).
+    schedule = page.request.get(f"{order_path}schedule/")
+    assert "Agreed with the client at receipt" in schedule.text()
     page.get_by_role("link", name="Delivery schedule").click()
     grid_search(page, "Filter the delivery schedule").fill(lab_id)
     page.get_by_role("button", name="Apply").click()

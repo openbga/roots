@@ -149,7 +149,7 @@ def _lot_form_view(request, form, *, title, lot, submit, service, success, destr
         request,
         form,
         title=title,
-        back_url=_lot_url(lot),
+        cancel_url=_lot_url(lot),
         submit=submit,
         crumbs=_crumbs("Lots", (lot.lot_number, _lot_url(lot)), (title, None)),
         meta=[lot.material.name, f"On hand: {lot.quantity_on_hand.normalize():f} {lot.unit}"],
@@ -185,7 +185,7 @@ def lot_create(request):
         request,
         form,
         title="New lot",
-        back_url=reverse("laboratory:lot-list"),
+        cancel_url=reverse("laboratory:lot-list"),
         submit="Create lot",
         crumbs=_crumbs("Lots", ("New lot", None)),
         notes=[
@@ -379,7 +379,7 @@ def material_edit(request, pk=None):
         request,
         form,
         title=f"Edit {material.name}" if material else "New material",
-        back_url=_material_url(material) if material else reverse("laboratory:material-list"),
+        cancel_url=_material_url(material) if material else reverse("laboratory:material-list"),
         submit="Save changes" if material else "Create material",
         crumbs=_crumbs(
             "Materials",

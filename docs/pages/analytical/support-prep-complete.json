@@ -5,6 +5,27 @@
   ],
   "title": "Record actual preparation completion",
   "purpose": "Record or correct actual completion separately from membership closure.",
+  "summary": "Record or correct the actual time preparation was completed. This is separate from closing membership.",
+  "tasks": [
+    {
+      "title": "Record completion",
+      "steps": [
+        "Enter the actual completion in laboratory local time. Record the start first.",
+        "Select [[Save preparation completion]]."
+      ]
+    },
+    {
+      "title": "Leave without saving",
+      "steps": [
+        "Select [[Cancel]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Saving completion does not close membership, and closing membership does not fill in completion.",
+    "Analysis cannot be timed before the recorded completion.",
+    "Once a submitted or approved result relies on this preparation, completion cannot change."
+  ],
   "sections": [
     {
       "title": "Context and field",

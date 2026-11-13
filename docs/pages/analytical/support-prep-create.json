@@ -5,6 +5,28 @@
   ],
   "title": "New preparation batch",
   "purpose": "Create a separate preparation record for physical aliquots; it does not create analytical results or assign tests.",
+  "summary": "Create a preparation batch for one preparation method and matrix. It holds physical aliquots; it does not create results or assign tests to analysis.",
+  "tasks": [
+    {
+      "title": "Create a preparation batch",
+      "steps": [
+        "Choose the [[Preparation method]] and the [[Matrix]].",
+        "Optionally record the actual start, the equipment and notes.",
+        "Select [[Create preparation batch]], then add aliquots."
+      ]
+    },
+    {
+      "title": "Leave without creating a batch",
+      "steps": [
+        "Select [[Cancel]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Only methods with an active preparation requirement are offered.",
+    "Leave the start blank until preparation actually starts. Times are laboratory local time.",
+    "Recording completion does not close membership."
+  ],
   "sections": [
     {
       "title": "Access and fields",

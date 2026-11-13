@@ -18,7 +18,15 @@ from reporting.models import Report, ReportFile, ReportVersion
 from reporting.pdf import ReportRenderError, render_html
 from reporting.services import StaleReport, release_report, update_report
 
-from .conftest import accept_qc, approve, build_world, fake_pdf, make_sample, make_user
+from .conftest import (
+    accept_qc,
+    approve,
+    build_world,
+    fake_pdf,
+    make_sample,
+    make_user,
+    texts,
+)
 
 
 def release(report, actor, reason=""):
@@ -169,7 +177,7 @@ def test_amendment_preserves_original_and_records_changes(world, people, client)
 
     v2 = release(report, people["approver2"], reason="Corrected lead result")
     assert (v2.number, v2.amends_id, v2.amendment_reason) == (2, v1.pk, "Corrected lead result")
-    assert any("0.050 mg/L" in c and "0.048 mg/L" in c for c in v2.changes)
+    assert any("0.050 mg/L" in c and "0.048 mg/L" in c for c in texts(v2.changes))
     snapshot = v2.file.snapshot
     assert snapshot["release"]["amends"]["version"] == 1
     assert snapshot["content"]["samples"][0]["results"][0]["revision"] == 2
@@ -336,7 +344,7 @@ def test_amendment_diff_treats_fields_missing_from_old_snapshots_as_blank(world)
     assert new["samples"][0]["collection_location"] == "Test Creek outfall weir (synthetic)"
     legacy = deepcopy(new)
     del legacy["samples"][0]["collection_location"]  # snapshot issued before the field existed
-    assert describe_changes(legacy, new) == ["Sample VR-A1: collection location changed."]
+    assert texts(describe_changes(legacy, new)) == ["Sample VR-A1: collection location changed."]
     new["samples"][0]["collection_location"] = ""
     assert describe_changes(legacy, new) == []
 
@@ -388,7 +396,7 @@ def test_identity_only_amendment_can_be_issued_without_changing_results(world, p
         expected = "Client email changed."
     amended = release(report, people["approver"], reason="Correct report identity")
     assert amended.amends_id == original.pk
-    assert expected in amended.changes
+    assert expected in texts(amended.changes)
     assert amended.file.snapshot["content"]["samples"] == snapshot["content"]["samples"]
     original.refresh_from_db()
     assert original.file.snapshot == snapshot

@@ -20,6 +20,24 @@
         ],
         "createdAt": "2026-11-11T15:56:18.763Z",
         "reason": "Agent verified in Chromium: section padding is 72px desktop and 48px mobile; the detector overlooks padding-block. Only the hosting path has changed."
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "staticfiles/admin/css/changelists.59465e72d1ef.css"
+        ],
+        "createdAt": "2026-11-13T11:36:33.437Z",
+        "reason": "controls agent: Django admin's own stylesheet copied by collectstatic into ignored build output; not project CSS"
+      },
+      {
+        "rule": "flat-type-hierarchy",
+        "value": "*",
+        "files": [
+          "reporting/templates/reporting/pdf/report.html"
+        ],
+        "createdAt": "2026-11-13T12:19:52.891Z",
+        "reason": "reports agent: print template whose scale lives in reporting/static/reporting/report.css (h1 17pt, identity 12pt, h2 10.5pt, body 8.4pt); designer-reviewed Evergreen PDF spec"
       }
     ]
   }

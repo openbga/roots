@@ -5,6 +5,26 @@
   ],
   "title": "Authentication email address",
   "purpose": "Review one account email address and its verification state.",
+  "summary": "Review one account's sign-in email address and whether it is verified and primary.",
+  "tasks": [
+    {
+      "title": "Go back to the list",
+      "steps": [
+        "Select [[Close]]. Nothing is changed."
+      ]
+    },
+    {
+      "title": "Help the owner change or verify it",
+      "steps": [
+        "Ask them to use their own Email addresses page."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The record is read only.",
+    "Sign-in addresses are separate from client contacts and report recipients.",
+    "Addresses are stored in lowercase."
+  ],
   "sections": [
     {
       "title": "Access",

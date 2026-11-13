@@ -6,6 +6,35 @@
   ],
   "title": "Preview and release a report",
   "purpose": "Inspect the proposed first issue or next amendment, resolve blockers and explicitly authorize immutable release.",
+  "summary": "Review the proposed first issue or next amendment, resolve anything blocking it, and authorize release of exactly this content. Release needs the explicit release permission.",
+  "tasks": [
+    {
+      "title": "Release a report",
+      "steps": [
+        "Review the results and select [[Open PDF preview]] to read the PDF.",
+        "For an amendment, explain why it replaces the previous issue in [[Amendment reason]].",
+        "Check [[I authorize release of exactly the content previewed above.]] and select the Release version button."
+      ]
+    },
+    {
+      "title": "Resolve what blocks release",
+      "steps": [
+        "Follow the Fix in link beside each blocking issue, correct the work, then reload this page."
+      ]
+    },
+    {
+      "title": "Run the optional NYSDEC data check first",
+      "steps": [
+        "Select [[run the NYSDEC data check]] under the release section. Its findings don't block the PDF release."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Release stores the PDF and its snapshot for good. Earlier versions stay available unchanged.",
+    "If records changed since you opened the preview, nothing is released. Review the refreshed preview and confirm again.",
+    "Results show exactly as entered, without report rounding. ND means not detected at the applied limit, not zero.",
+    "Release does not send email."
+  ],
   "sections": [
     {
       "title": "Access and navigation",
@@ -40,7 +69,7 @@
         },
         {
           "label": "Changes from version N",
-          "description": "Amendment comparison includes additions/removals, result and preparation/preservation evidence, QC, narrative, client/project identity and laboratory identity (name, address, contact details, logo, certificates and certificate statement) changes. Identical content cannot be amended."
+          "description": "Amendment comparison includes additions/removals, result and preparation/preservation evidence, QC, narrative, client/project identity and laboratory identity (name, address, contact details, logo, certificates and certificate statement) changes. Identical content cannot be amended. In versions released from this update on, a changed result or a changed single-line identity value (laboratory name, time zone, phone, email or website; report title; client name, contact or email; project name or program) shows the earlier value struck through, then the new value. Earlier versions show their changes as they were recorded."
         },
         {
           "label": "Ready to release",
@@ -117,7 +146,7 @@
       ]
     },
     {
-      "title": "Evidence below each result",
+      "title": "Receipt and preparation notes",
       "items": [
         {
           "label": "Receipt preservation screening",
@@ -127,6 +156,9 @@
           "label": "Preparation",
           "description": "Independent batch, aliquot label, method/version, start/completion, batch recorder and equipment when linked. Missing completion/equipment is explicit; preparation QC is in the PDF batch summary. A legacy analytical-batch preparation timestamp does not imply independent preparation identity."
         }
+      ],
+      "paragraphs": [
+        "Collapsed once under each sample's results table, one line per result, so the results read without repeated text. Open it to read each result's screening and preparation record."
       ]
     },
     {
@@ -224,6 +256,7 @@
     "e2e/test_content_security_policy.py",
     "core/lab_profile.py",
     "reporting/templates/reporting/certificate_notice.html",
-    "reporting/tests/test_lab_identity.py"
+    "reporting/tests/test_lab_identity.py",
+    "reporting/templates/reporting/_change.html"
   ]
 }

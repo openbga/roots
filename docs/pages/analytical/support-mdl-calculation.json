@@ -5,6 +5,29 @@
   ],
   "title": "MDL calculation and review",
   "purpose": "Inspect a fixed calculation snapshot, its calculation basis and every original input, then record one independent review decision.",
+  "summary": "Read one MDL calculation snapshot with every input it used, and record the independent review decision.",
+  "tasks": [
+    {
+      "title": "Review the calculation",
+      "steps": [
+        "Check the result and the inputs as calculated.",
+        "Choose the [[Decision]] and add a [[Reason or note]]. A reason is required to keep the existing MDL or reject.",
+        "Select [[Record decision]]."
+      ]
+    },
+    {
+      "title": "Check how Appendix B is read",
+      "steps": [
+        "Expand the note on how this system reads Appendix B for the assumptions it makes."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "You cannot review a calculation you ran, or one using inputs you entered or excluded.",
+    "Only the study's latest calculation can be reviewed, and only once.",
+    "Keeping the existing MDL is offered only for an ongoing verification that meets the stated eligibility.",
+    "Adopting an MDL does not change any configured reporting limit."
+  ],
   "sections": [
     {
       "title": "Access and snapshot",

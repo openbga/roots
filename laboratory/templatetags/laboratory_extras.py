@@ -26,8 +26,10 @@ def lot_status(lot, today=None):
     return {"label": label, "tone": tone}
 
 
-@register.simple_tag
-def due_status(due, today=None, label_prefix=""):
+@register.simple_tag(name="due_state")
+def due_state_tag(due, today=None):
+    """{kind, label, tone} of a due date, for template logic (e.g. an overdue notice). To show
+    the state, use the shared {% due_pill %} component instead."""
     kind, label = due_state(due, today)
     tone = {"overdue": "danger", "soon": "warning", "ok": "success", "none": "neutral"}[kind]
     return {"kind": kind, "label": label, "tone": tone}

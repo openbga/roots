@@ -11,6 +11,7 @@ from django.utils import timezone
 from analytical.models import ResultRevision
 from catalog.models import Method
 from core.grids import GridRequest, active_filters
+from core.lookups import RemoteSelect
 
 from .filters import SearchFilter
 from .forms import StyledForm
@@ -48,7 +49,10 @@ COLUMNS = {
 
 class ScheduleFilter(SearchFilter):
     client = forms.ModelChoiceField(
-        queryset=Client.objects.all(), required=False, empty_label="Any client"
+        queryset=Client.objects.all(),
+        required=False,
+        empty_label="Any client",
+        widget=RemoteSelect("clients"),
     )
     method = forms.ModelChoiceField(
         queryset=Method.objects.all(), required=False, empty_label="Any method"

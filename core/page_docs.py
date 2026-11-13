@@ -6,6 +6,7 @@ by its named URL arguments, such as a correction section or configuration kind.
 """
 
 import json
+import re
 from functools import lru_cache
 from pathlib import Path
 
@@ -13,6 +14,74 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
 CONTENT_ROOT = Path(__file__).resolve().parent.parent / "docs" / "pages"
+
+# The friendly layer (summary, common tasks, good to know): optional, but all or none. Limits are
+# the writing guide's (.agents/skills/document-page); [[Label]] marks an exact on-screen label.
+FRIENDLY_FIELDS = ("summary", "tasks", "good_to_know")
+SUMMARY_MAX = 240
+TASKS = (2, 5)
+TASK_TITLE_MAX = 80
+STEPS = (1, 4)
+STEP_MAX = 200
+TIPS = (3, 5)
+TIP_MAX = 200
+LABEL = re.compile(r"\[\[([^\[\]]+)\]\]")
+
+
+def label_problem(text):
+    """Why text's [[Label]] markers are malformed, or None: no nesting, every [[ closed."""
+    rest = LABEL.sub("", text)
+    if "[[" in rest or "]]" in rest:
+        return "a [[ needs its closing ]] (labels cannot nest)"
+    return None
+
+
+def _check_text(path, where, value, limit):
+    if not isinstance(value, str) or not value.strip():
+        raise ImproperlyConfigured(f"{path}: {where} must be non-blank text")
+    if len(value) > limit:
+        raise ImproperlyConfigured(f"{path}: {where} is over {limit} characters")
+    problem = label_problem(value)
+    if problem:
+        raise ImproperlyConfigured(f"{path}: {where}: {problem}")
+
+
+def check_friendly(path, document):
+    """The summary / tasks / good-to-know layer: all three or none, within the guide's limits."""
+    present = [key for key in FRIENDLY_FIELDS if key in document]
+    if not present:
+        return
+    if len(present) != len(FRIENDLY_FIELDS):
+        missing = ", ".join(key for key in FRIENDLY_FIELDS if key not in document)
+        raise ImproperlyConfigured(
+            f"{path}: summary, tasks and good_to_know come together; missing {missing}"
+        )
+    summary = document["summary"]
+    if not isinstance(summary, str) or not summary.strip() or len(summary) > SUMMARY_MAX:
+        raise ImproperlyConfigured(f"{path}: summary must be 1-{SUMMARY_MAX} characters")
+    if "[[" in summary or "]]" in summary:
+        raise ImproperlyConfigured(f"{path}: summary is plain text, without [[labels]]")
+    tasks = document["tasks"]
+    if not isinstance(tasks, list) or not TASKS[0] <= len(tasks) <= TASKS[1]:
+        raise ImproperlyConfigured(f"{path}: tasks needs {TASKS[0]}-{TASKS[1]} items")
+    for number, task in enumerate(tasks, 1):
+        if not isinstance(task, dict):
+            raise ImproperlyConfigured(f"{path}: task {number} must be an object")
+        title = task.get("title")
+        if not isinstance(title, str) or not title.strip() or len(title) > TASK_TITLE_MAX:
+            raise ImproperlyConfigured(
+                f"{path}: task {number} needs a title of 1-{TASK_TITLE_MAX} characters"
+            )
+        steps = task.get("steps")
+        if not isinstance(steps, list) or not STEPS[0] <= len(steps) <= STEPS[1]:
+            raise ImproperlyConfigured(f"{path}: task {number} needs {STEPS[0]}-{STEPS[1]} steps")
+        for index, step in enumerate(steps, 1):
+            _check_text(path, f"task {number} step {index}", step, STEP_MAX)
+    tips = document["good_to_know"]
+    if not isinstance(tips, list) or not TIPS[0] <= len(tips) <= TIPS[1]:
+        raise ImproperlyConfigured(f"{path}: good_to_know needs {TIPS[0]}-{TIPS[1]} items")
+    for index, tip in enumerate(tips, 1):
+        _check_text(path, f"good_to_know item {index}", tip, TIP_MAX)
 
 
 def read_documents():
@@ -54,6 +123,7 @@ def read_documents():
                     isinstance(item.get(k), str) and item[k] for k in ("label", "description")
                 ):
                     raise ImproperlyConfigured(f"{path}: each item needs a label and description")
+        check_friendly(path, document)
         if not document.get("sources"):
             raise ImproperlyConfigured(f"{path}: documentation needs source evidence")
         documents.append(document)
@@ -92,7 +162,8 @@ def documentation_for_route(route, kwargs=None):
     if shared and page["id"] != shared["id"]:
         sections.extend(shared["sections"])
     # Source evidence and route metadata are authoring data, not operator content.
-    return {key: page[key] for key in ("id", "title", "purpose")} | {"sections": sections}
+    fields = ("id", "title", "purpose", *FRIENDLY_FIELDS)
+    return {key: page[key] for key in fields if key in page} | {"sections": sections}
 
 
 def documentation_for_request(request):

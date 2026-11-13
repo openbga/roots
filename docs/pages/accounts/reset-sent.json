@@ -5,11 +5,31 @@
   ],
   "title": "Password reset requested",
   "purpose": "Check your email for recovery instructions.",
+  "summary": "Your reset request was received. If an account matches, check your email for the reset link.",
+  "tasks": [
+    {
+      "title": "Reset the password",
+      "steps": [
+        "Open the email and follow the reset link. Check your spam folder if it has not arrived."
+      ]
+    },
+    {
+      "title": "Go back to sign in",
+      "steps": [
+        "Select the Smart Roots name at the top."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "This page does not confirm that an account exists.",
+    "No password has changed yet.",
+    "Contact the laboratory if no email arrives; delivery depends on the deployment's mail."
+  ],
   "sections": [
     {
       "title": "State and next action",
       "paragraphs": [
-        "The Password Reset page acknowledges a request without confirming that an eligible account exists. Check the mailbox and spam folder; contact the laboratory if delivery is unavailable. No password has changed, and no editable fields, resend button or dedicated Sign in link appear on this acknowledgement. Use the brand to return to the application. Signed-in visitors also see the current-account reminder. Actual email delivery depends on deployment mail configuration; the committed fallback writes outgoing mail to the console."
+        "The Reset password page acknowledges a request without confirming that an eligible account exists. Check the mailbox and spam folder; contact the laboratory if delivery is unavailable. No password has changed, and no editable fields, resend button or dedicated Sign in link appear on this acknowledgement. Use the brand to return to the application. Signed-in visitors also see the current-account reminder. Actual email delivery depends on deployment mail configuration; the committed fallback writes outgoing mail to the console."
       ]
     }
   ],

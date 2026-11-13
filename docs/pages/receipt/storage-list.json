@@ -5,6 +5,33 @@
   ],
   "title": "Sample storage",
   "purpose": "Find physical samples, their locations, chosen retention dates and disposal holds. Electronic receipt, analytical and report retention are separate.",
+  "summary": "Physical samples with their location, retention date, disposal holds and disposal status.",
+  "tasks": [
+    {
+      "title": "Find samples whose retention date has passed",
+      "steps": [
+        "Set [[State]] to Retention date elapsed and select [[Apply]].",
+        "Open each sample to check it can be disposed of."
+      ]
+    },
+    {
+      "title": "Find samples without a retention date",
+      "steps": [
+        "Set [[State]] to Retention date not set and select [[Apply]]."
+      ]
+    },
+    {
+      "title": "Find where a sample is",
+      "steps": [
+        "Type a lab ID, client sample ID, location or client in [[Search]] and select [[Apply]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Physical sample status is a display. It never authorizes disposal.",
+    "Samples under a disposal hold or a receipt Hold are shown as blocked, even after their date passes.",
+    "This covers physical samples only. Electronic records follow a separate retention statement."
+  ],
   "sections": [
     {
       "title": "Search and filters",
@@ -109,7 +136,7 @@
         },
         {
           "label": "Reset columns",
-          "description": "Restores this table’s default order and visibility in this browser."
+          "description": "Restores this table’s default order and visibility for your account."
         },
         {
           "label": "Done / Close",

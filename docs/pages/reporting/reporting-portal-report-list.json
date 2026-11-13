@@ -5,6 +5,33 @@
   ],
   "title": "Client reports",
   "purpose": "Find your issued report scopes and download their latest immutable PDFs.",
+  "summary": "Find the reports the laboratory has issued to you and download their latest PDFs.",
+  "tasks": [
+    {
+      "title": "Find a report",
+      "steps": [
+        "Type a title, project or RPT number in the search box.",
+        "Optionally pick a [[Project]], then select [[Apply]]."
+      ]
+    },
+    {
+      "title": "Download the latest PDF",
+      "steps": [
+        "Select [[Download PDF]] in the report's row."
+      ]
+    },
+    {
+      "title": "Get an earlier version",
+      "steps": [
+        "Select the RPT number and download it from the version history."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Each row is one report. Its downloaded PDF is the latest issued version.",
+    "The title shown can differ from the PDF while the laboratory prepares an amendment.",
+    "If a download is refused, the stored file failed its integrity check. Contact the laboratory."
+  ],
   "sections": [
     {
       "title": "Access and navigation",
@@ -114,7 +141,7 @@
         },
         {
           "label": "Columns",
-          "description": "With browser enhancement, change optional column visibility and order using the dialog’s move controls or by dragging headings. Changes apply immediately and are saved in this browser only. Locked identity/action columns stay visible and fixed. Reset columns restores defaults; Done or Close closes the dialog. Presentation settings do not change records, filters or exports."
+          "description": "With browser enhancement, change optional column visibility and order using the dialog’s move controls or by dragging headings. Changes apply immediately and are saved for your account, on any workstation. Locked identity/action columns stay visible and fixed. Reset columns restores defaults; Done or Close closes the dialog. Presentation settings do not change records, filters or exports."
         }
       ]
     },

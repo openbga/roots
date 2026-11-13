@@ -5,6 +5,28 @@
   ],
   "title": "Change equipment status",
   "purpose": "Record an attributed change in the operational status of an asset.",
+  "summary": "Change an asset's operational status (In service, Out of service or Retired), with a reason kept in its history. Only admin and reviewer roles can do this.",
+  "tasks": [
+    {
+      "title": "Change the status",
+      "steps": [
+        "Choose the new [[Status]].",
+        "Explain why in [[Reason]] and select [[Change status]]."
+      ]
+    },
+    {
+      "title": "Return a retired asset to service",
+      "steps": [
+        "Choose In service or Out of service in [[Status]], give a reason and select [[Change status]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Saving the status the asset already has is refused.",
+    "Retired assets cannot take new events or corrections, and they drop out of the due-date attention filters.",
+    "Out of service assets can still have calibration and maintenance recorded.",
+    "Changing status keeps every earlier event and due date."
+  ],
   "sections": [
     {
       "title": "Access and status effects",

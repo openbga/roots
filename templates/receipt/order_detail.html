@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 One chain of custody and the samples received against it. Context: order (due_at; optional reverse
 order.submission from commercial intake), samples, has_submission, action_form (OrderActionForm),
@@ -6,75 +7,62 @@ correction_events, detail_events (order.details_updated audit events, oldest fir
 their errors return as messages on this page.
 {% endcomment %}
 {% block title %}{{ order.coc_reference }} · Chains of custody · Smart Roots LIMS{% endblock %}
-{% block breadcrumbs %}{% url 'receipt:order-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Chains of custody" section_url=list_url current=order.coc_reference %}{% endblock %}
+{% block breadcrumbs %}{% url 'receipt:order-list' as list_url %}{% breadcrumbs section="Chains of custody" section_url=list_url current=order.coc_reference %}{% endblock %}
 {% block page_heading %}<span class="vr-id">{{ order.coc_reference }}</span>{% endblock %}
-{% block page_meta %}
-<ul class="vr-page-meta">
-  {% if order.is_cancelled %}<li>{% include "includes/status.html" with label="Cancelled" tone="neutral" plain=True %}</li>{% endif %}
-  {% if order.is_rush %}<li>{% include "includes/status.html" with label="Rush" tone="warning" plain=True %}</li>{% endif %}
+{% block page_meta %}{% page_meta %}
+  {% if order.is_cancelled %}<li>{% status label="Cancelled" tone="neutral" plain=True %}</li>{% endif %}
+  <li>{% if not order.is_cancelled %}{% due_pill due=order.due_at soon_days=7 plain=True %} {% endif %}Delivery target {% if order.due_at %}<time datetime="{{ order.due_at|date:'c' }}">{{ order.due_at|date:"Y-m-d H:i T" }}</time>{% else %}not set{% endif %}</li>
+  {% if order.is_rush %}<li>{% status label="Rush" tone="warning" plain=True %}</li>{% endif %}
   <li><a href="{% url 'receipt:client-detail' order.project.client.pk %}">{{ order.project.client }}</a> / {{ order.project.name }}</li>
-  <li>Delivery target {% if order.due_at %}<time datetime="{{ order.due_at|date:'c' }}">{{ order.due_at|date:"Y-m-d H:i T" }}</time>{% else %}not set{% endif %}</li>
+  <li>{{ samples|length }} sample{{ samples|length|pluralize }} received</li>
   <li>Created <time datetime="{{ order.created_at|date:'c' }}">{{ order.created_at|date:"Y-m-d H:i T" }}</time> by {{ order.created_by.get_full_name|default:order.created_by.get_username }}</li>
   {% if order.submission %}<li>From client submission {% if can_receive %}<a class="vr-id" href="{% url 'commercial:submission-detail' order.submission.pk %}">{{ order.submission.number }}</a>{% else %}<span class="vr-id">{{ order.submission.number }}</span>{% endif %}</li>{% endif %}
-</ul>
-{% endblock %}
+{% endpage_meta %}{% endblock %}
 {% block page_actions %}
-{% if samples %}{% url 'receipt:order-labels' order.pk as labels_url %}{% include "receipt/labels_menu.html" with url=labels_url %}{% endif %}
+{% if samples %}{% url 'receipt:order-labels' order.pk as labels_url %}{% include "receipt/labels_menu.html" with url=labels_url form=label_form %}{% endif %}
 {% if can_receive and not order.is_cancelled %}
 <a class="btn btn-outline-secondary" href="{% url 'receipt:order-edit' order.pk %}">Edit details</a>
-<a class="btn btn-outline-secondary" href="{% url 'receipt:order-schedule' order.pk %}">Change delivery target</a>
-<a class="btn btn-outline-secondary" href="{% url 'receipt:order-correct-reference' order.pk %}">Correct reference</a>
-<a class="btn btn-primary" href="{% url 'receipt:order-add-sample' order.pk %}">{% include "includes/icon.html" with name="plus-lg" %}{% if samples %}Receive next sample{% else %}Receive first sample{% endif %}</a>
+{% more_actions %}<li><a class="dropdown-item" href="{% url 'receipt:order-schedule' order.pk %}">Change delivery target</a></li><li><a class="dropdown-item" href="{% url 'receipt:order-correct-reference' order.pk %}">Correct reference</a></li>{% endmore_actions %}
+<a class="btn btn-primary" href="{% url 'receipt:order-add-sample' order.pk %}">{% icon name="plus-lg" %}{% if samples %}Receive next sample{% else %}Receive first sample{% endif %}</a>
 {% endif %}
 {% endblock %}
 {% block content %}
 {% if order.is_cancelled %}
-<div class="alert alert-secondary" role="status">
-  {% include "includes/status.html" with label="Cancelled" tone="neutral" plain=True %}
-  <div>
+{% notice tone="neutral" label="Cancelled" %}
     <p class="mb-1">Cancelled {{ order.cancelled_at|date:"Y-m-d H:i T" }} by {{ order.cancelled_by.get_full_name|default:order.cancelled_by.get_username }}: {{ order.cancel_reason }}</p>
     {% if can_receive %}
     {% if has_submission %}<p class="mb-0">Reinstate it from <a href="{% url 'commercial:submission-detail' order.submission.pk %}">client submission {{ order.submission.number }}</a>.</p>
     {% else %}
-    <form method="post" action="{% url 'receipt:order-reinstate' order.pk %}" data-vr-local-form="Reinstate chain of custody" data-vr-local-title="Reinstate chain of custody" class="vr-form mt-2">
-      {% csrf_token %}{{ action_form.expected_revision }}
-      <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+    {% url 'receipt:order-reinstate' order.pk as local_action %}
+    {% form_page form=action_form action=local_action local=True submit_label="Reinstate chain of custody" class="mt-2" %}
+      {{ action_form.expected_revision }}
       {{ action_form.reason.as_field_group }}
-      <div class="vr-form-actions">
-        <button class="btn btn-primary" type="submit">Reinstate chain of custody</button>
-      </div>
-    </form>
+    {% endform_page %}
     {% endif %}
     {% endif %}
-  </div>
-</div>
+{% endnotice %}
 {% endif %}
 {% if order.project.client.po_required and not order.po_number and not order.is_cancelled %}
-<div class="alert alert-warning" role="status">{% include "includes/status.html" with label="Purchase order missing" tone="warning" plain=True %}<div>{{ order.project.client }} requires a purchase order on each chain of custody.{% if can_receive %} Add it with Edit details.{% endif %}</div></div>
+{% notice tone="warning" label="Purchase order missing" %}{{ order.project.client }} requires a purchase order on each chain of custody.{% if can_receive %} Add it with Edit details.{% endif %}{% endnotice %}
 {% endif %}
-<section class="card mb-3" aria-labelledby="order-details-heading">
-  <div class="card-header"><h2 class="card-title" id="order-details-heading">Order details</h2></div>
-  <div class="card-body">
+{% panel title="Order details" heading_id="order-details-heading" class="mb-3" %}
     <dl class="vr-facts">
-      <div><dt>Turnaround</dt><dd>{{ order.get_priority_display }}{% if order.project.turnaround_days %} <span class="vr-muted small">project standard {{ order.project.turnaround_days }} days</span>{% endif %}</dd></div>
-      <div><dt>Purchase order</dt><dd class="vr-id">{{ order.po_number|default:"—" }}</dd></div>
-      <div><dt>Project number</dt><dd class="vr-id">{{ order.project.number|default:"—" }}</dd></div>
-      <div><dt>Program</dt><dd>{{ order.project.get_regulatory_program_display|default:"—" }}{% if order.project.program %} <span class="vr-muted small">{{ order.project.program }}</span>{% endif %}</dd></div>
-      <div><dt>Delivery</dt><dd>{{ order.get_delivery_method_display|default:"—" }}{% if order.carrier_tracking %}<div class="small vr-muted">{{ order.carrier_tracking }}</div>{% endif %}</dd></div>
-      <div><dt>Coolers / packages</dt><dd>{{ order.cooler_count|default_if_none:"—" }}</dd></div>
-      <div><dt>Special instructions</dt><dd>{{ order.instructions|default:"—"|linebreaksbr }}</dd></div>
-      {% if order.project.instructions %}<div><dt>Project standing instructions</dt><dd>{{ order.project.instructions|linebreaksbr }}</dd></div>{% endif %}
+      {% fact label="Turnaround" %}{{ order.get_priority_display }}{% if order.project.turnaround_days %} <span class="vr-muted small">project standard {{ order.project.turnaround_days }} days</span>{% endif %}{% endfact %}
+      {% fact label="Purchase order" value=order.po_number class="vr-id" %}
+      {% fact label="Project number" value=order.project.number class="vr-id" %}
+      {% fact label="Program" wide=True %}{{ order.project.get_regulatory_program_display|default:"—" }}{% if order.project.program %} <span class="vr-muted small">{{ order.project.program }}</span>{% endif %}{% endfact %}
+      {% fact label="Delivery" %}{{ order.get_delivery_method_display|default:"—" }}{% if order.carrier_tracking %}<div class="small vr-muted">{{ order.carrier_tracking }}</div>{% endif %}{% endfact %}
+      {% fact label="Coolers / packages" value=order.cooler_count %}
+      {% fact label="Special instructions" wide=True value=order.instructions|linebreaksbr %}
+      {% if order.project.instructions %}{% fact label="Project standing instructions" wide=True value=order.project.instructions|linebreaksbr %}{% endif %}
     </dl>
-  </div>
-</section>
-<section class="card vr-table-card mb-3" aria-labelledby="order-samples-heading">
-  <div class="card-header"><h2 class="card-title" id="order-samples-heading">Samples on this chain of custody</h2><span class="vr-count">{{ samples|length }}</span></div>
-  <div class="card-body">
-    {% if samples %}
+{% endpanel %}
+{% panel title="Samples on this chain of custody" heading_id="order-samples-heading" count=samples|length table=True class="mb-3" %}
+    {% list_results items=samples empty_title="No samples received on this chain of custody yet" empty_body="Receive each sample listed on the chain of custody; its project and reference carry over." %}
     <div class="vr-table-wrap">
       <table class="table table-hover vr-table">
         <thead>
-          <tr><th scope="col">Lab ID</th><th scope="col">Client sample ID</th><th scope="col">Type</th><th scope="col">Matrix</th><th scope="col">Collected</th><th scope="col">Received</th><th scope="col" class="text-end">Containers</th><th scope="col">Disposition</th><th scope="col">Location</th></tr>
+          <tr><th scope="col">Lab ID</th><th scope="col">Client sample ID</th><th scope="col" data-vr-col-priority="low">Type</th><th scope="col">Matrix</th><th scope="col">Collected</th><th scope="col">Received</th><th scope="col" class="text-end" data-vr-col-priority="low">Containers</th><th scope="col">Disposition</th><th scope="col">Location</th></tr>
         </thead>
         <tbody>
           {% for sample in samples %}
@@ -82,7 +70,7 @@ their errors return as messages on this page.
             <th scope="row"><a class="vr-row-link vr-id" href="{% url 'receipt:sample-detail' sample.pk %}">{{ sample.lab_id }}</a></th>
             <td class="vr-id">{{ sample.client_sample_id }}</td>
             <td>{{ sample.get_sample_type_display }}</td>
-            <td>{{ sample.get_matrix_display }}{% if sample.source_type %}<div class="small vr-muted">{{ sample.get_source_type_display }}</div>{% endif %}</td>
+            <td>{% matrix_tag matrix=sample.matrix source=sample.get_source_type_display %}</td>
             <td class="vr-nowrap"><time datetime="{{ sample.collected_at|date:'c' }}" title="{{ sample.collected_at|date:'Y-m-d H:i T' }}">{{ sample.collected_at|date:"Y-m-d H:i" }}</time></td>
             <td class="vr-nowrap"><time datetime="{{ sample.received_at|date:'c' }}" title="{{ sample.received_at|date:'Y-m-d H:i T' }}">{{ sample.received_at|date:"Y-m-d H:i" }}</time></td>
             <td class="text-end">{{ sample.containers.all|length }}</td>
@@ -93,36 +81,22 @@ their errors return as messages on this page.
         </tbody>
       </table>
     </div>
-    {% else %}
-    {% include "includes/empty_state.html" with title="No samples received on this chain of custody yet" body="Receive each sample listed on the chain of custody; its project and reference carry over." %}
-    {% endif %}
-  </div>
-</section>
+    {% endlist_results %}
+{% endpanel %}
 {% if can_receive and not order.is_cancelled and not samples and not has_submission %}
-<section class="card mb-3" aria-labelledby="cancel-heading">
-  <div class="card-header"><h2 class="card-title" id="cancel-heading">Cancel chain of custody</h2></div>
-  <div class="card-body">
-    <form method="post" action="{% url 'receipt:order-cancel' order.pk %}" data-vr-local-form="Cancel chain of custody" data-vr-local-title="Cancel chain of custody" class="vr-form">
-      {% csrf_token %}{{ action_form.expected_revision }}
-      <p class="vr-form-note">Use this when no sample will arrive for this chain of custody. Nothing is deleted, and it can be reinstated with a reason. Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+{% panel title="Cancel chain of custody" heading_id="cancel-heading" class="mb-3" %}
+    {% url 'receipt:order-cancel' order.pk as local_action %}
+    {% form_page form=action_form action=local_action local=True submit_label="Cancel chain of custody" destructive=True note="Use this when no sample will arrive for this chain of custody. Nothing is deleted, and it can be reinstated with a reason." %}
+      {{ action_form.expected_revision }}
       {{ action_form.reason.as_field_group }}
-      <div class="vr-form-actions">
-        <button class="btn btn-outline-danger vr-form-actions-start" type="submit">Cancel chain of custody</button>
-      </div>
-    </form>
-  </div>
-</section>
+    {% endform_page %}
+{% endpanel %}
 {% endif %}
 {% include "receipt/correction_history.html" with events=correction_events title="Reference corrected" %}
 {% if detail_events %}
-<section class="card mt-3" aria-labelledby="detail-history-heading">
-  <div class="card-header"><h2 class="card-title" id="detail-history-heading">Detail changes</h2></div>
-  <div class="card-body">
-    <ol class="vr-timeline">
-      {% for event in detail_events %}{% include "includes/history_item.html" with title="Details updated" at=event.occurred_at actor=event.actor reason=event.reason %}{% endfor %}
-    </ol>
-  </div>
-</section>
+{% history_panel events=detail_events title="Detail changes" heading_id="detail-history-heading" class="mt-3" %}
+  {% for event in detail_events %}{% history_item title="Details updated" at=event.occurred_at actor=event.actor reason=event.reason %}{% endfor %}
+{% endhistory_panel %}
 {% endif %}
 {% endblock %}
-{% block record_foot %}{% include "includes/record_foot.html" with identifier=order.coc_reference %}{% endblock %}
+{% block record_foot %}{% record_foot identifier=order.coc_reference %}{% endblock %}

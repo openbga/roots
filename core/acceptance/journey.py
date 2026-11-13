@@ -28,6 +28,7 @@ from catalog.models import Method, TestDefinition
 from core.models import AuditEvent, Lab
 from receipt import services as receipt
 from receipt.models import Client, ClientContact, CustodyEvent, Order, Project, Sample
+from reporting.content import change_text
 from reporting.models import Report, ReportFile, ReportVersion
 from reporting.services import create_report
 
@@ -627,6 +628,24 @@ def receipt_inspection(run):
     run["sample_a2"], run["sample_a3"], run["sample_a4"] = a2, a3, a4
 
 
+CLOCK_FLAG = re.compile(
+    r'data-vr-clock="(at_risk|expired)">\s*<span[^>]*data-tone="(warning|danger)"[^>]*>.*?</svg>'
+    r"\s*(At risk|Expired) ·",
+    re.S,
+)
+CLOCK_FLAGS = {("at_risk", "warning", "At risk"), ("expired", "danger", "Expired")}
+
+
+def shown_clock_flags(html):
+    """The holding-clock flags a page shows: the clock pill's stable hook (data-vr-clock) whose
+    visible status pill has the matching tone and opens with the matching label."""
+    return {
+        label
+        for hook, tone, label in CLOCK_FLAG.findall(html)
+        if (hook, tone, label) in CLOCK_FLAGS
+    }
+
+
 @step(
     "O04",
     "Holding-time clocks computed from the rules",
@@ -654,9 +673,7 @@ def holding_clocks(run):
         page = browser.get(f"/samples/{sample.pk}/")
         html = page.content.decode("utf-8", "replace")
         shown = f'datetime="{deadline.isoformat()}"' in html
-        flagged = {
-            flag for flag in ("At risk", "Expired") if f">{flag}<" in html or f"> {flag}" in html
-        }
+        flagged = shown_clock_flags(html)
         run.check(
             page.status_code == 200 and shown,
             f"{sample.lab_id}: page shows deadline {deadline.isoformat()} = collection "
@@ -1029,7 +1046,7 @@ def amendment(run):
         + (f"; page said: {form_errors(response)}" if response.status_code != 302 else ""),
     )
     v1 = ReportVersion.objects.get(report=report, number=1)
-    changes = " | ".join(v2.changes)
+    changes = " | ".join(change_text(c) for c in v2.changes)
     run.check(
         v2.amends_id == v1.pk
         and v2.amendment_reason == reason

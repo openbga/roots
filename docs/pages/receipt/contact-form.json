@@ -6,6 +6,27 @@
   ],
   "title": "Additional client contact",
   "purpose": "Add or update a person at this client besides its primary contact. This record does not create a portal account.",
+  "summary": "A person at this client besides the primary contact, such as a report recipient, sampler or billing contact.",
+  "tasks": [
+    {
+      "title": "Add a person",
+      "steps": [
+        "Enter the [[Name]] and at least an [[Email]] or a [[Phone]].",
+        "Choose a [[Role]] and tick [[Receives reports]] if they should get reports, then save."
+      ]
+    },
+    {
+      "title": "Record that someone has left",
+      "steps": [
+        "Clear [[Is active]], give the [[Reason]] and save. Their record and history stay."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A contact is not a portal account and grants no access. The role is only a label.",
+    "Receives reports is information only. Nothing is emailed.",
+    "Deactivate people who have left rather than deleting them."
+  ],
   "sections": [
     {
       "title": "Fields",

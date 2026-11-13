@@ -1,0 +1,14 @@
+{% comment %}
+One of several stacked bodies of a panel (a requirements section, then one section per QC
+sample): a .card-body, ruled off from the one above. Rendered by the {% panel_section %} block
+tag ({% load ui %}) inside {% panel ... flush=True %}, whose own body wrapper it replaces.
+Parameters:
+  rule    truthy for a rule above it (every section after the first)
+  class   extra classes on the .card-body
+Usage:
+  {% panel title="Quality control" flush=True %}
+    {% panel_section %}requirements{% endpanel_section %}
+    {% for qc in qc_samples %}{% panel_section rule=True %}...{% endpanel_section %}{% endfor %}
+  {% endpanel %}
+{% endcomment %}
+<div class="card-body vr-panel-body{% if rule %} border-top{% endif %}{% if class %} {{ class }}{% endif %}">{{ body }}</div>

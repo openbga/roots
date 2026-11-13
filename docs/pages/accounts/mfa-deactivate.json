@@ -5,6 +5,26 @@
   ],
   "title": "Deactivate authenticator app",
   "purpose": "Remove the app-based second factor from your account.",
+  "summary": "Remove the authenticator app from your account, so sign-in no longer asks for its code.",
+  "tasks": [
+    {
+      "title": "Remove the authenticator app",
+      "steps": [
+        "Select [[Deactivate]]. You return to Two-factor authentication."
+      ]
+    },
+    {
+      "title": "Keep the app",
+      "steps": [
+        "Leave with the normal account navigation without selecting Deactivate."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Your recovery codes are deleted too when no other authenticator remains.",
+    "Removing the app does not change your password or laboratory roles.",
+    "You may be asked to confirm your password or a code first."
+  ],
   "sections": [
     {
       "title": "Action and effect",

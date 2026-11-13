@@ -1,3 +1,3 @@
-{% load commercial_extras %}{% comment %}Quote status. Parameters: quote (annotated with is_expired when listed). Expired is derived from the valid-until date, never stored.{% endcomment %}
-{% if quote.is_expired %}{% include "includes/status.html" with label="Expired" tone="warning" plain=plain title="The valid-until date has passed. Ask the laboratory to reissue." %}
-{% else %}{% include "includes/status.html" with label=quote.get_status_display tone=quote.status|tone plain=plain %}{% endif %}
+{% load ui %}{% load commercial_extras %}{% comment %}Quote status. Parameters: quote (annotated with is_expired when listed). Expired is derived from the valid-until date, never stored.{% endcomment %}
+{% if quote.is_expired %}{% status label="Expired" tone="warning" plain=plain title="The valid-until date has passed. Ask the laboratory to reissue." %}
+{% else %}{% status label=quote.get_status_display tone=quote.status|tone plain=plain %}{% endif %}

@@ -5,6 +5,27 @@
   ],
   "title": "Technical review",
   "purpose": "Find batches containing submitted results and see which work is independent of your own entry/submission.",
+  "summary": "Find the batches with results submitted for review, and see how many of them you may review yourself.",
+  "tasks": [
+    {
+      "title": "Review a batch",
+      "steps": [
+        "Find a batch with work in You may review. The oldest submission is listed first.",
+        "Select the batch number to open its review page."
+      ]
+    },
+    {
+      "title": "Narrow the queue",
+      "steps": [
+        "Choose a [[Method]] or [[Matrix]], then select [[Apply]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "You cannot review results you entered or submitted. The yours count shows them.",
+    "You may review counts independence only. It does not mean QC, holding time or preservation are ready.",
+    "A batch stays in the queue while its results wait, even if all of them are yours. Another reviewer must decide them."
+  ],
   "sections": [
     {
       "title": "Access",
@@ -88,7 +109,7 @@
         },
         {
           "label": "Columns",
-          "description": "Show or hide optional columns and change their order using movement controls or header dragging. Changes apply immediately and are saved for this table in this browser. Locked columns stay available."
+          "description": "Show or hide optional columns and change their order using movement controls or header dragging. Changes apply immediately and are saved for this table in your account, on any workstation. Locked columns stay available."
         },
         {
           "label": "Reset columns",

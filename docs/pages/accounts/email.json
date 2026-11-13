@@ -5,6 +5,35 @@
   ],
   "title": "Email addresses",
   "purpose": "Manage the email addresses associated with your own account.",
+  "summary": "Manage the email addresses of your own account: which one is primary, which are verified, and which to add or remove. These are not report recipients.",
+  "tasks": [
+    {
+      "title": "Add an email address",
+      "steps": [
+        "Type the address in [[Email]] under Add Email Address.",
+        "Select [[Add Email]]. A verification link is sent to that address."
+      ]
+    },
+    {
+      "title": "Make an address primary",
+      "steps": [
+        "Select the address in the list.",
+        "Select [[Make Primary]]. If you have a verified address, the new primary must be verified too."
+      ]
+    },
+    {
+      "title": "Verify or remove an address",
+      "steps": [
+        "Select the address, then [[Re-send Verification]] to get a new link, or [[Remove]] to delete it."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Re-sending a link does not verify the address. Only following the link does.",
+    "You cannot remove the primary address while other addresses remain. Make another one primary first.",
+    "Two-factor authentication needs every address on the account verified, and it blocks adding addresses while it is on.",
+    "Changes here affect only your sign-in account, never who receives reports."
+  ],
   "sections": [
     {
       "title": "Records and selection",

@@ -5,6 +5,35 @@
   ],
   "title": "Import with a mapping",
   "purpose": "Validate an exported results file against one analytical batch and save all valid rows as entered revisions only after confirming the preview.",
+  "summary": "Import an instrument or LIMS export into this batch using a saved mapping that says which column holds what. Check the preview; nothing is saved until you confirm.",
+  "tasks": [
+    {
+      "title": "Import with a saved mapping",
+      "steps": [
+        "Choose the [[Mapping profile]] and the results file.",
+        "Select [[Validate and preview]] and check What will be recorded and the preview rows.",
+        "Confirm the import. Every result is saved as entered, or none."
+      ]
+    },
+    {
+      "title": "Fix a file or mapping that has errors",
+      "steps": [
+        "Correct the source file or the mapping, then select [[Preview again]]."
+      ]
+    },
+    {
+      "title": "Create a mapping first",
+      "steps": [
+        "If no mapping is offered, select [[New mapping]] and describe your file's columns."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A blank cell in a wide file is skipped. It is not ND and does not change an existing result.",
+    "The unit must be given in the file and must match the test unit exactly. Nothing is converted.",
+    "The same file with the same mapping cannot be imported twice into this batch.",
+    "The uploaded file is not kept. Keep your source file; its digest identifies it."
+  ],
   "sections": [
     {
       "title": "Access, context and tabs",

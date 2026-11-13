@@ -6,6 +6,29 @@
   ],
   "title": "Certificate",
   "purpose": "Record a certificate your laboratory holds (Add certificate), or change one already listed (Edit). The certificate is printed as recorded; results are never checked against it.",
+  "summary": "Record a certificate your laboratory holds, or change one already listed. Reports print it as you record it.",
+  "tasks": [
+    {
+      "title": "Record a certificate",
+      "steps": [
+        "Enter the [[Issuing authority]] and the [[Certificate or laboratory ID]].",
+        "Add the [[Valid from]] and [[Valid until]] dates if the certificate has them.",
+        "Tick [[Print on reports]] if reports should list it, and save."
+      ]
+    },
+    {
+      "title": "Change the order on reports",
+      "steps": [
+        "Set [[List position]]. Lower numbers are listed first."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A certificate marked for printing is left off reports issued outside its validity dates.",
+    "Results are never checked against a certificate. It is printed as recorded.",
+    "Remove a certificate from the Laboratory profile, not from this form.",
+    "A laboratory can list at most 50 certificates."
+  ],
   "sections": [
     {
       "title": "Fields",

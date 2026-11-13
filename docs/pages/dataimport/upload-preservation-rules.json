@@ -8,6 +8,39 @@
   },
   "title": "Import preservation rules",
   "purpose": "Create or change preservation rules from one CSV file: check every row in a preview, then save all rows or none.",
+  "summary": "Create or change preservation rules from one CSV file. You check every row in a preview first, then all rows are saved or none. Only admins can import preservation rules.",
+  "tasks": [
+    {
+      "title": "Import a file of preservation rules",
+      "steps": [
+        "Download [[preservation-rules-template.csv]] and add one row per record below the header. Open [[Columns]] to see what each column needs.",
+        "Save the sheet as CSV (UTF-8), choose it in [[CSV file (UTF-8)]], and select [[Check file]].",
+        "Read the preview. When it says Ready, select the Import button, which names the number of rows."
+      ]
+    },
+    {
+      "title": "Change existing preservation rules",
+      "steps": [
+        "Identify each rule by its test: method version, analyte and matrix.",
+        "Leave out the columns you don't want to change. A blank cell clears an optional value.",
+        "Check the file, fill in [[Reason for changing existing records]], and import it."
+      ]
+    },
+    {
+      "title": "Fix a file with errors",
+      "steps": [
+        "Read the Errors column. Each error names its line and column, and rows with errors are listed first.",
+        "Correct the file, select [[Upload a corrected file]], and check it again. Nothing was saved."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Nothing is saved until you import the checked preview, and any error blocks the whole file.",
+    "A row finds its rule by test (method version, analyte and matrix). A test has at most one rule.",
+    "An import never creates records of another type. The tests the rules name must exist first.",
+    "The basis column is printed on issued reports. Changing a rule invalidates earlier matching preservation assessments.",
+    "The uploaded file is not kept. History records its file name and SHA-256 digest, so keep your copy."
+  ],
   "sections": [
     {
       "title": "Access",
@@ -43,7 +76,7 @@
     {
       "title": "Columns",
       "paragraphs": [
-        "The Columns table on the page lists the same information. Text is stripped of surrounding spaces and otherwise kept exactly. Values are not converted: numbers are plain decimals (digits 0-9 with an optional point and sign; no exponent, thousands separator, unit or symbol, and no more digits than the field holds), choices are the listed codes exactly as written, and yes/no columns accept yes, no, true or false. A value that does not fit is an error naming its line and column, never a guess."
+        "The Columns section under the file field (collapsed; open it to see the table) lists the same information. Text is stripped of surrounding spaces and otherwise kept exactly. Values are not converted: numbers are plain decimals (digits 0-9 with an optional point and sign; no exponent, thousands separator, unit or symbol, and no more digits than the field holds), choices are the listed codes exactly as written, and yes/no columns accept yes, no, true or false. A value that does not fit is an error naming its line and column, never a guess."
       ],
       "items": [
         {

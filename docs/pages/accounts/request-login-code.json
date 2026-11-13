@@ -5,6 +5,28 @@
   ],
   "title": "Request a sign-in code",
   "purpose": "Request a one-time email code to sign in to an account your laboratory has already issued, without entering its password.",
+  "summary": "Sign in without your password: get a one-time code by email for an account your laboratory has issued.",
+  "tasks": [
+    {
+      "title": "Get a sign-in code",
+      "steps": [
+        "Type the email on your laboratory account in [[Email]]. A username does not work here.",
+        "Select [[Send code]] and keep this browser window open.",
+        "Type the code from the email within five minutes."
+      ]
+    },
+    {
+      "title": "Sign in with your password",
+      "steps": [
+        "Select [[Sign in with a password instead]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The next page looks the same for unknown or inactive accounts, so it does not prove an account exists.",
+    "Requests are rate limited. Wait before trying again if you hit the limit.",
+    "A code does not change your roles or client access. A second factor is still asked for when you have one."
+  ],
   "sections": [
     {
       "title": "Fields and actions",

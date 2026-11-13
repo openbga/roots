@@ -1,60 +1,48 @@
 {% extends "base.html" %}
-{% block breadcrumbs %}{% url 'analytical:batch-list' as list_url %}{% url 'analytical:batch-detail' batch.pk as batch_url %}{% include "includes/breadcrumbs.html" with section="Batches & QC" section_url=list_url record=batch.number record_url=batch_url %}{% endblock %}
-{% block page_meta %}<ul class="vr-page-meta"><li>Batch <span class="vr-id">{{ batch.number }}</span></li><li>{{ batch.method }}</li><li>{{ batch.get_matrix_display }}</li></ul>{% endblock %}
+{% load ui %}
+{% block breadcrumbs %}{% url 'analytical:batch-list' as list_url %}{% url 'analytical:batch-detail' batch.pk as batch_url %}{% breadcrumbs section="Batches & QC" section_url=list_url record=batch.number record_url=batch_url %}{% endblock %}
+{% block page_meta %}{% page_meta %}<li>Batch <span class="vr-id">{{ batch.number }}</span></li><li>{{ batch.method }}</li><li>{% matrix_tag matrix=batch.matrix size="lg" %}</li>{% endpage_meta %}{% endblock %}
 {% block content %}
 {% include "includes/section_tabs.html" with tabs=section_tabs label="Import method" %}
 {% if not preview %}
 {% if profiles_exist %}
 {% if can_enter %}
-<form class="vr-form" method="post" enctype="multipart/form-data" novalidate>
-  {% csrf_token %}
+{% url 'analytical:batch-detail' batch.pk as batch_url %}
+{% form_page form=upload multipart=True cancel_url=batch_url submit_label="Validate and preview" %}
   <input type="hidden" name="step" value="preview">
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
   <fieldset class="vr-form-section">
   <legend class="visually-hidden">Results file and mapping</legend>
-  {{ upload }}
+  {% for field in upload.visible_fields %}{{ field.as_field_group }}{% endfor %}
+  {% for field in upload.hidden_fields %}{{ field }}{% endfor %}
   <p class="vr-form-note">One file imports into {{ batch.number }}. Up to {{ max_kib }} KiB and {{ max_rows }} results, comma or tab delimited UTF-8 as the mapping says. Rows must name a sample and analyte already in this batch. Nothing is saved until you confirm the preview, and any error blocks the whole file. Results are saved as entered, with the file name, row and mapping recorded. The uploaded file itself is not stored: keep your source file.</p>
   </fieldset>
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{% url 'analytical:batch-detail' batch.pk %}">Cancel</a>
-    <button class="btn btn-primary" type="submit">Validate and preview</button>
-  </div>
-</form>
+{% endform_page %}
 {% else %}
-<div class="alert alert-info" role="status">{% include "includes/status.html" with label="Read only" tone="neutral" plain=True %}<div>Only analysts can import results.</div></div>
+{% notice tone="neutral" label="Read only" %}Only analysts can import results.{% endnotice %}
 {% endif %}
 {% else %}
 {% url 'analytical:import-profile-create' as create_url %}
-{% include "includes/empty_state.html" with title="No active import mapping" body="Describe the columns of your long or wide results file first, then import it here." action_url=create_url action_label="New mapping" %}
+{% empty_state title="No active import mapping" body="Describe the columns of your long or wide results file first, then import it here." action_url=create_url action_label="New mapping" %}
 {% endif %}
 {% else %}
-<div class="alert alert-{% if preview.ok %}success{% else %}danger{% endif %}" role="{% if preview.ok %}status{% else %}alert{% endif %}">
-  {% if preview.ok %}{% include "includes/status.html" with label="Valid" tone="success" plain=True %}
-  <div><strong>{{ preview.filename }}</strong>: {{ preview.rows|length }} result(s) passed validation. Nothing is saved yet.</div>
-  {% else %}{% include "includes/status.html" with label="Errors" tone="danger" plain=True %}
-  <div><strong>{{ preview.filename }}</strong> has {{ preview.error_count }} error(s). Fix the file or the mapping and preview again. Nothing was saved.
-    {% if preview.file_errors %}<ul class="mb-0 ps-3">{% for e in preview.file_errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
-  {% endif %}
-</div>
-<section class="card mb-3" aria-labelledby="source-heading">
-  <div class="card-header"><h2 class="card-title" id="source-heading">What will be recorded</h2></div>
-  <div class="card-body">
+{% if preview.ok %}{% notice tone="success" label="Valid" %}<strong>{{ preview.filename }}</strong>: {{ preview.rows|length }} result(s) passed validation. Nothing is saved yet.{% endnotice %}
+{% else %}{% notice tone="danger" label="Errors" blocking=True %}<strong>{{ preview.filename }}</strong> has {{ preview.error_count }} error(s). Fix the file or the mapping and preview again. Nothing was saved.
+    {% if preview.file_errors %}<ul class="mb-0 ps-3">{% for e in preview.file_errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}{% endnotice %}{% endif %}
+{% panel title="What will be recorded" heading_id="source-heading" class="mb-3" %}
     <dl class="vr-facts">
-      <div><dt>Mapping</dt><dd>{{ preview.profile.name }} <span class="vr-muted">({{ preview.profile.get_layout_display }}; {{ preview.profile.get_delimiter_display|lower }}-delimited)</span></dd></div>
-      <div><dt>Mapping SHA-256</dt><dd class="vr-id"><span title="{{ preview.mapping_hash }}">{{ preview.mapping_hash|slice:":16" }}…</span></dd></div>
-      <div><dt>File SHA-256 (uploaded bytes)</dt><dd class="vr-id"><span title="{{ preview.file_hash }}">{{ preview.file_hash|slice:":16" }}…</span></dd></div>
-      <div><dt>Results</dt><dd>{{ shown.new }} new · {{ shown.revisions }} new revision{{ shown.revisions|pluralize }} of an existing result</dd></div>
-      <div><dt>Original file</dt><dd><strong>Not stored by this application.</strong> It keeps the imported results as parsed, the mapping snapshot and the digest above. Keep the source file in the laboratory's own records.</dd></div>
-      <div><dt>How the file is read</dt><dd>As UTF-8 text; a leading byte order mark is ignored and line endings are read as uploaded. The digest covers the file exactly as uploaded.</dd></div>
-      {% if preview.preamble_rows %}<div><dt>Rows above the header</dt><dd>{{ preview.preamble_rows }} ignored</dd></div>{% endif %}
-      <div><dt>Columns not mapped</dt><dd>{% if preview.unused_columns %}{{ preview.unused_columns|join:", " }} <span class="vr-muted">(not read)</span>{% else %}none{% endif %}</dd></div>
-      <div><dt>Blank cells</dt><dd>{{ preview.blanks|length }}{% if preview.blanks %} <span class="vr-muted">(wide layout; nothing is imported for a blank cell, the result stays as it is)</span>{% endif %}</dd></div>
+      {% fact label="Mapping" wide=True %}{{ preview.profile.name }} <span class="vr-muted">({{ preview.profile.get_layout_display }}; {{ preview.profile.get_delimiter_display|lower }}-delimited)</span>{% endfact %}
+      {% fact label="Mapping SHA-256" class="vr-id" %}<span title="{{ preview.mapping_hash }}">{{ preview.mapping_hash|slice:":16" }}…</span>{% endfact %}
+      {% fact label="File SHA-256 (uploaded bytes)" class="vr-id" %}<span title="{{ preview.file_hash }}">{{ preview.file_hash|slice:":16" }}…</span>{% endfact %}
+      {% fact label="Results" %}{{ shown.new }} new · {{ shown.revisions }} new revision{{ shown.revisions|pluralize }} of an existing result{% endfact %}
+      {% fact label="Original file" wide=True %}<strong>Not stored by this application.</strong> It keeps the imported results as parsed, the mapping snapshot and the digest above. Keep the source file in the laboratory's own records.{% endfact %}
+      {% fact label="How the file is read" wide=True %}As UTF-8 text; a leading byte order mark is ignored and line endings are read as uploaded. The digest covers the file exactly as uploaded.{% endfact %}
+      {% if preview.preamble_rows %}{% fact label="Rows above the header" %}{{ preview.preamble_rows }} ignored{% endfact %}{% endif %}
+      {% fact label="Columns not mapped" wide=True %}{% if preview.unused_columns %}{{ preview.unused_columns|join:", " }} <span class="vr-muted">(not read)</span>{% else %}none{% endif %}{% endfact %}
+      {% fact label="Blank cells" %}{{ preview.blanks|length }}{% if preview.blanks %} <span class="vr-muted">(wide layout; nothing is imported for a blank cell, the result stays as it is)</span>{% endif %}{% endfact %}
     </dl>
-  </div>
-</section>
+{% endpanel %}
 {% if shown.rows %}
-<section class="card vr-table-card mb-3" aria-labelledby="preview-heading">
-  <div class="card-header"><h2 class="card-title" id="preview-heading">Preview</h2><span class="vr-count">rows with errors first</span></div>
+{% panel title="Preview" heading_id="preview-heading" count="rows with errors first" table=True flush=True class="mb-3" %}
   <div class="vr-table-wrap">
     <table class="table vr-table">
       <thead><tr><th scope="col">Source</th><th scope="col">Sample</th><th scope="col">Analyte</th><th scope="col" class="text-end">Result as supplied</th><th scope="col">Unit</th><th scope="col" class="text-end">Reporting limit</th><th scope="col" class="text-end">Dilution</th><th scope="col">Analysis start</th><th scope="col">What will change</th></tr></thead>
@@ -74,36 +62,29 @@
       </tbody>
     </table>
   </div>
-  {% if shown.hidden_ok %}<p class="vr-form-note p-3 mb-0">{{ shown.hidden_ok }} more valid result(s) not shown.</p>{% endif %}
-</section>
+  {% if shown.hidden_ok %}{% panel_section rule=True %}<p class="vr-form-note">{{ shown.hidden_ok }} more valid result(s) not shown.</p>{% endpanel_section %}{% endif %}
+{% endpanel %}
 {% endif %}
 {% if shown.blanks %}
-<section class="card vr-table-card mb-3" aria-labelledby="blanks-heading">
-  <div class="card-header"><h2 class="card-title" id="blanks-heading">Blank cells (nothing imported)</h2></div>
+{% panel title="Blank cells (nothing imported)" heading_id="blanks-heading" table=True flush=True class="mb-3" %}
   <div class="vr-table-wrap"><table class="table vr-table">
     <thead><tr><th scope="col">Row</th><th scope="col">Sample</th><th scope="col">Column</th></tr></thead>
     <tbody>{% for line, sample, column in shown.blanks %}<tr><td>{{ line }}</td><td class="vr-id">{{ sample }}</td><td>{{ column }}</td></tr>{% endfor %}</tbody>
   </table></div>
-  {% if shown.hidden_blanks %}<p class="vr-form-note p-3 mb-0">{{ shown.hidden_blanks }} more blank cell(s) not shown.</p>{% endif %}
-</section>
+  {% if shown.hidden_blanks %}{% panel_section rule=True %}<p class="vr-form-note">{{ shown.hidden_blanks }} more blank cell(s) not shown.</p>{% endpanel_section %}{% endif %}
+{% endpanel %}
 {% endif %}
 {% if preview.ok and commit_form %}
-<form class="vr-form" method="post" novalidate>
-  {% csrf_token %}
+{% url 'analytical:batch-detail' batch.pk as batch_url %}{% with count=preview.rows|length|stringformat:"s" %}
+{% form_page form=commit_form cancel_url=batch_url submit_label="Import "|add:count|add:" result(s) as entered" no_submit=can_enter|yesno:",True" no_required_note=True %}
+  {% fill actions %}<a class="btn btn-link" href="{% url 'analytical:batch-import-mapped' batch.pk %}">Start over</a>{% endfill %}
   <input type="hidden" name="step" value="commit">
-  {{ commit_form }}
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{% url 'analytical:batch-detail' batch.pk %}">Cancel</a>
-    <a class="btn btn-link" href="{% url 'analytical:batch-import-mapped' batch.pk %}">Start over</a>
-    {% if can_enter %}<button class="btn btn-primary" type="submit">Import {{ preview.rows|length }} result(s) as entered</button>{% endif %}
-  </div>
+  {% for field in commit_form %}{{ field }}{% endfor %}
   <p class="vr-form-note">The file is checked again when you confirm, and the import is refused if the mapping changed or a result was entered since this preview. Imported results are saved as entered; submit them for review from the batch page.</p>
-</form>
+{% endform_page %}{% endwith %}
 {% else %}
-<div class="vr-form-actions">
-  <a class="btn btn-link" href="{% url 'analytical:batch-detail' batch.pk %}">Cancel</a>
-  <a class="btn btn-primary" href="{% url 'analytical:batch-import-mapped' batch.pk %}">Preview again</a>
-</div>
+{% url 'analytical:batch-detail' batch.pk as batch_url %}
+{% form_actions cancel_url=batch_url no_submit=True %}<a class="btn btn-primary" href="{% url 'analytical:batch-import-mapped' batch.pk %}">Preview again</a>{% endform_actions %}
 {% endif %}
 {% endif %}
 {% endblock %}

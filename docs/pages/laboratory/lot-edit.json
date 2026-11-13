@@ -5,6 +5,27 @@
   ],
   "title": "Edit lot",
   "purpose": "Correct descriptive, expiry and storage details without rewriting the ledger.",
+  "summary": "Correct a lot's vendor, reference, stated concentration, expiry and storage. Balances change only through stock movements.",
+  "tasks": [
+    {
+      "title": "Correct a lot's details",
+      "steps": [
+        "Change the details that are wrong, such as [[Expires on]] or [[Storage location]].",
+        "Give a [[Reason]] and select [[Save changes]]."
+      ]
+    },
+    {
+      "title": "Change the quantity instead",
+      "steps": [
+        "Go back to the lot and use [[Record receipt]], [[Record use]] or [[Record adjustment]]. This form cannot change quantities."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Material, lot number, source, dates of origin, parent, unit and opening quantity cannot be changed here.",
+    "Changing the expiry does not change earlier movements or their Used after expiry flags.",
+    "Expiry cannot be earlier than the received or prepared date."
+  ],
   "sections": [
     {
       "title": "Access and fixed information",

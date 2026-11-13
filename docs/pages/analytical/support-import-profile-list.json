@@ -5,6 +5,27 @@
   ],
   "title": "Import mappings",
   "purpose": "Find reusable descriptions of long or wide comma/tab-delimited result files before previewing them against an analytical batch.",
+  "summary": "Find the saved mappings that describe your results files, column by column, for import into an analytical batch.",
+  "tasks": [
+    {
+      "title": "Find a mapping",
+      "steps": [
+        "Type a name or note text in [[Search]], or choose a [[Layout]], then select [[Apply]].",
+        "Select the name to edit it. Only analysts and admins can edit mappings."
+      ]
+    },
+    {
+      "title": "Create a mapping",
+      "steps": [
+        "Select [[New mapping]] and describe your file's columns."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A mapping describes a file. It is not a validated instrument adapter.",
+    "Each import keeps the mapping it used, so later edits never change earlier imports.",
+    "Only active mappings can be chosen for an import. Inactive ones stay listed."
+  ],
   "sections": [
     {
       "title": "Access and navigation",
@@ -26,7 +47,7 @@
     {
       "title": "Search, filters and sorting",
       "paragraphs": [
-        "Apply searches and filters the complete server query and returns to page 1. Active chips remove individual filters, and Clear all resets the query. Invalid filters show errors and no rows. Rows per page is 25, 50 or 100, initially 25; other sizes are refused. First, Previous, Next and Last preserve the query. Sortable headings reverse direction. Columns changes local visibility/order with reset and keyboard controls, without changing which records qualify.",
+        "Apply searches and filters the complete server query and returns to page 1. Active chips remove individual filters, and Clear all resets the query. Invalid filters show errors and no rows. Rows per page is 25, 50 or 100, initially 25, then the size you last chose on this list, saved for your account; other sizes are refused. First, Previous, Next and Last preserve the query. Sortable headings reverse direction. Columns changes your saved visibility/order with reset and keyboard controls, without changing which records qualify.",
         "Default order is Name. Name, Layout, Last changed and Created support sorting. Both active and inactive mappings appear unless State restricts them."
       ],
       "items": [

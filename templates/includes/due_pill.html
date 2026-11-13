@@ -1,0 +1,14 @@
+{% comment %}
+"Time is running out" for a dated obligation that is not a holding clock: a danger pill once it is
+overdue ("Overdue 5 d"), a warning pill inside its window ("Due in 25 d", "Due today"), nothing
+otherwise; show the date itself beside it as text. The rule is core.due.due_state, one place for
+training expiry, nonconformance due dates, lot expiry, equipment calibration and maintenance and
+delivery targets. Rendered by the {% due_pill %} tag ({% load ui %}).
+Parameters:
+  due        a date, or a date and time (a delivery target: overdue once that moment passes)
+  soon_days  the warning window in days (default 30; delivery targets use 7, as the delivery
+             schedule's "Due this week" filter does)
+  today      optional reference date (a list computes it once)
+  plain      truthy for the compact table-cell form
+Usage: {{ order.due_at|date:"Y-m-d H:i T" }} {% due_pill due=order.due_at soon_days=7 %}
+{% endcomment %}{% load ui %}{% if kind == "overdue" or kind == "soon" %}{% status label=label tone=tone plain=plain %}{% endif %}

@@ -6,21 +6,30 @@ Parameters: id; label (verb plus object, e.g. "Close batch"); object (optional i
 to the label: "Close batch B-0001"); title (optional; default the label as a question, "Close batch
 B-0001?"); body (one or two sentences on what it means); action (POST URL); optional hidden_name
 and hidden_value (one hidden input, e.g. the record revision the change was based on).
+Scripted form, for a choice a script acts on instead of a POST (the form dialog's "Discard unsaved
+changes?"): give confirm_hook instead of action. Both buttons are type="button" and carry
+data-<confirm_hook> / data-<cancel_hook>; cancel_label names the safe choice (default "Cancel"),
+which is then the primary button and takes the focus when the dialog opens.
 Without JavaScript the opening button does nothing; pages using this dialog already need it.
 {% endcomment %}
-<div class="modal fade" id="{{ id }}" tabindex="-1" aria-labelledby="{{ id }}-title" aria-hidden="true">
-  <div class="modal-dialog">
-    <form class="modal-content" method="post" action="{{ action }}">
-      {% csrf_token %}{% if hidden_name %}<input type="hidden" name="{{ hidden_name }}" value="{{ hidden_value }}">{% endif %}
+<div class="modal fade vr-confirm-dialog" id="{{ id }}" tabindex="-1" aria-labelledby="{{ id }}-title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    {% if confirm_hook %}<div class="modal-content">{% else %}<form class="modal-content" method="post" action="{{ action }}">
+      {% csrf_token %}{% if hidden_name %}<input type="hidden" name="{{ hidden_name }}" value="{{ hidden_value }}">{% endif %}{% endif %}
       <div class="modal-header">
         <h2 class="modal-title h5" id="{{ id }}-title">{% if title %}{{ title }}{% else %}{{ label }}{% if object %} {{ object }}{% endif %}?{% endif %}</h2>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cancel"></button>
+        <button type="button" class="btn-close"{% if cancel_hook %} data-{{ cancel_hook }}{% else %} data-bs-dismiss="modal"{% endif %} aria-label="Close"></button>
       </div>
       <div class="modal-body"><p class="mb-0">{{ body }}</p></div>
       <div class="modal-footer">
+        {% if confirm_hook %}
+        <button type="button" class="btn btn-outline-danger me-auto" data-{{ confirm_hook }}>{{ label }}{% if object %} {{ object }}{% endif %}</button>
+        <button type="button" class="btn btn-primary"{% if cancel_hook %} data-{{ cancel_hook }}{% else %} data-bs-dismiss="modal"{% endif %} autofocus>{% firstof cancel_label "Cancel" %}</button>
+        {% else %}
         <button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancel</button>
         <button type="submit" class="btn btn-outline-danger">{{ label }}{% if object %} {{ object }}{% endif %}</button>
+        {% endif %}
       </div>
-    </form>
+    {% if confirm_hook %}</div>{% else %}</form>{% endif %}
   </div>
 </div>

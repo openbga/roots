@@ -5,6 +5,29 @@
   ],
   "title": "Activate authenticator app",
   "purpose": "Enroll a time-based authenticator for future sign-in verification.",
+  "summary": "Set up an authenticator app as a second step when you sign in to your own account.",
+  "tasks": [
+    {
+      "title": "Set up the authenticator app",
+      "steps": [
+        "Scan the QR code with your authenticator app, or enter the [[Authenticator secret]] by hand.",
+        "Type the current six-digit code from the app in [[Authenticator code]].",
+        "Select [[Activate]]. The first time, ten recovery codes are created and shown next."
+      ]
+    },
+    {
+      "title": "Give up the setup",
+      "steps": [
+        "Leave with the normal account navigation. Nothing is activated until you select Activate."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Reloading this page creates new setup details. Use the QR code shown now.",
+    "Setup is blocked while any email address on your account is unverified.",
+    "Keep the recovery codes somewhere private. They let you sign in if you lose the app.",
+    "An authenticator app does not change your laboratory roles."
+  ],
   "sections": [
     {
       "title": "Fields and actions",

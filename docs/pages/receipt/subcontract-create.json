@@ -5,6 +5,28 @@
   ],
   "title": "Record external handoff",
   "purpose": "Record a completed transfer of selected containers for one requested test to an actual external laboratory, preserving the internal sample’s separate location and custody.",
+  "summary": "Record that containers for one requested test were handed to an external laboratory. The sample's own location and custody are not changed.",
+  "tasks": [
+    {
+      "title": "Record the handoff",
+      "steps": [
+        "Enter the [[External laboratory]] and the [[External order / dispatch reference]].",
+        "Enter when it happened in [[Completed handoff at]] and the [[Receiving custodian / courier]].",
+        "Tick the [[Containers handed over]], give the [[Reason]] and select [[Record external handoff]]."
+      ]
+    },
+    {
+      "title": "Add the external sample ID later",
+      "steps": [
+        "Leave [[External sample ID]] blank if it is not assigned yet. Enter it with the source result."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Record a handoff that has happened. A planned shipment is not enough.",
+    "A test already in a batch, with any result history or with preparation cannot be sent out.",
+    "Held, rejected or disposed samples cannot be sent out, and each test can have only one active subcontract."
+  ],
   "sections": [
     {
       "title": "Record context",

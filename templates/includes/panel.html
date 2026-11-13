@@ -1,0 +1,39 @@
+{% comment %}
+A panel: one titled section of a page (docs/ui-standards.md sections 5 and 6). Rendered by the
+{% panel %} block tag ({% load ui %}); the tag's body is the panel's content.
+Parameters:
+  title         the h2 (required)
+  heading_id    id of the h2, which labels the section; default "<slugified title or title part>-heading"
+  count         optional text after the title (a row count, "3 of 12", a short qualifier); 0 shows
+  table         truthy for a table card (section.card.vr-table-card): the body is flush, so a
+                .vr-table-wrap, toolbar, list state or pagination fills the card's width
+  flush         truthy to leave out the .card-body wrapper (a table card whose list fills the card)
+  hidden_title  truthy for a list page's single table card: the h2 is visually hidden and there is
+                no header row, so the toolbar opens the card
+  collapsible   truthy for a panel that opens and closes: details.card with the header as its
+                summary (no header actions there); open: truthy to render it open
+  class         extra classes on the section (spacing such as mb-3, h-100, vr-narrow)
+  id            optional id of the section;  body_class: extra classes on .card-body
+Parts ({% fill name %} ... {% endfill %} inside the tag):
+  title         the h2's content when it needs markup (vr-id spans); give heading_id when the
+                text alone is not unique on the page
+  actions       header controls at the right: the card's "Add <thing>" button (btn-sm
+                btn-outline-secondary) or a link to the full list
+  count         the count text when it needs markup or several values ("{{ shown }} of {{ total }}")
+  footer        a .card-footer under the body
+Usage:
+  {% panel title="Projects" heading_id="projects-heading" count=projects|length table=True class="mb-3" %}
+    {% fill actions %}{% if can_manage_clients %}<a class="btn btn-sm btn-outline-secondary" href="{{ add_url }}">Add project</a>{% endif %}{% endfill %}
+    {% list_results items=projects empty_title="No projects yet" %}<div class="vr-table-wrap">...</div>{% endlist_results %}
+  {% endpanel %}
+Stacked bodies: flush=True with {% panel_section %} (includes/panel_section.html).
+{% endcomment %}
+{% if collapsible %}<details{% else %}<section{% endif %} class="card{% if table %} vr-table-card{% endif %}{% if class %} {{ class }}{% endif %}"{% if id %} id="{{ id }}"{% endif %} aria-labelledby="{{ heading_id }}"{% if collapsible and open %} open{% endif %}>
+  {% if hidden_title %}<h2 class="visually-hidden" id="{{ heading_id }}">{{ title }}</h2>{% elif collapsible %}
+  <summary class="card-header"><h2 class="card-title d-inline" id="{{ heading_id }}">{% if slots.title %}{{ slots.title }}{% else %}{{ title }}{% endif %}</h2>{% if slots.count %} <span class="vr-count">{{ slots.count }}</span>{% elif count is not None and count != "" %} <span class="vr-count">{{ count }}</span>{% endif %}</summary>
+  {% else %}
+  <div class="card-header"><h2 class="card-title" id="{{ heading_id }}">{% if slots.title %}{{ slots.title }}{% else %}{{ title }}{% endif %}</h2>{% if slots.count %}<span class="vr-count">{{ slots.count }}</span>{% elif count is not None and count != "" %}<span class="vr-count">{{ count }}</span>{% endif %}{% if slots.actions %}<div class="ms-auto d-flex flex-wrap align-items-center gap-2">{{ slots.actions }}</div>{% endif %}</div>
+  {% endif %}
+  {% if flush or hidden_title %}{{ body }}{% else %}<div class="card-body {% if table %}vr-table-body{% else %}vr-panel-body{% endif %}{% if body_class %} {{ body_class }}{% endif %}">{{ body }}</div>{% endif %}
+  {% if slots.footer %}<div class="card-footer">{{ slots.footer }}</div>{% endif %}
+{% if collapsible %}</details>{% else %}</section>{% endif %}

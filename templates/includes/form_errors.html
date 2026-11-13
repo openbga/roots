@@ -3,16 +3,15 @@ Form-level summary: non-field errors in full, plus a count of field errors so ke
 screen-reader users know to look below. Parameters: form; optionally formset (child rows such as
 containers or quote lines) and formset_label (plural noun for its rows, default "rows"). A formset
 adds one sentence pointing at its rows; its own messages stay beside the rows they concern.
+An include sees the page's context: on a page whose context has a "formset", pass formset=formset
+(or formset=None to leave its rows out) rather than relying on it.
 {% endcomment %}
-{% if form.errors or formset.total_error_count %}
-<div class="alert alert-danger" role="alert">
-  {% include "includes/status.html" with label="Error" tone="danger" plain=True %}
-  <div>
+{% load ui %}{% if form.errors or formset.total_error_count %}
+{% notice tone="danger" blocking=True %}
     {% if form.non_field_errors %}
     <ul class="mb-1 ps-3">{% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}</ul>
     {% endif %}
     {% with count=form.errors|length %}{% if form.errors and not form.non_field_errors or count > 1 or formset.total_error_count %}<p class="mb-0">{% if form.errors and not form.non_field_errors or count > 1 %}Check the highlighted field{{ count|pluralize }} below. {% endif %}{% if formset.total_error_count %}Check the {{ formset_label|default:"rows" }} below. {% endif %}Your entries were kept.</p>{% endif %}{% endwith %}
     {% for field in form.hidden_fields %}{% for error in field.errors %}<p class="mb-0">{{ field.label }}: {{ error }}</p>{% endfor %}{% endfor %}
-  </div>
-</div>
+{% endnotice %}
 {% endif %}

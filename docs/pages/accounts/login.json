@@ -5,6 +5,36 @@
   ],
   "title": "Sign in",
   "purpose": "Start a session using the account issued by your laboratory.",
+  "summary": "Sign in with the account your laboratory issued. Staff and client accounts use this same page.",
+  "tasks": [
+    {
+      "title": "Sign in with your password",
+      "steps": [
+        "Type your username or email in [[Login]] and your [[Password]].",
+        "Check [[Remember me]] to stay signed in after closing the browser.",
+        "Select [[Sign in]]. If you have an authenticator app, you are asked for its code next."
+      ]
+    },
+    {
+      "title": "Sign in with an emailed code",
+      "steps": [
+        "Select [[Email me a sign-in code]] and enter the email on your account.",
+        "Type the code from the email in the same browser within five minutes."
+      ]
+    },
+    {
+      "title": "Recover a forgotten password",
+      "steps": [
+        "Select [[Forgot your password?]] and follow the emailed link."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Accounts are issued by the laboratory. There is no public sign-up.",
+    "Notices beside the form come from the laboratory and are the same for everyone who opens this page.",
+    "Failed attempts are rate limited. Signing in never adds roles or access to another client's records.",
+    "The administration site has no separate sign-in: it uses this page and the same second factor."
+  ],
   "sections": [
     {
       "title": "Announcements",
@@ -23,10 +53,10 @@
         },
         {
           "label": "Password",
-          "description": "Required account password. Use Forgot your password? beneath this field for the email-based recovery form."
+          "description": "Required account password. Use Forgot your password?, on the row under this field beside Remember me, for the email-based recovery form."
         },
         {
-          "label": "Remember Me",
+          "label": "Remember me",
           "description": "Optional, initially unchecked. Checked requests the normal persistent session lifetime; unchecked expires the session cookie when the browser session ends. The committed session lifetime is Django’s default two weeks."
         },
         {

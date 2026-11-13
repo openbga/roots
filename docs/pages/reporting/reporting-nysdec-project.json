@@ -5,6 +5,28 @@
   ],
   "title": "NYSDEC project codes",
   "purpose": "Map a client project and its field/laboratory QC matrices to explicit NYSDEC recipient codes.",
+  "summary": "Map a client project and its sample and laboratory QC matrices to the NYSDEC codes its exports need. The codes are reused for every export of the project's released reports.",
+  "tasks": [
+    {
+      "title": "Set a project's NYSDEC codes",
+      "steps": [
+        "Enter the registered company, laboratory and task codes.",
+        "Enter the matrix codes for normal samples and for laboratory QC.",
+        "Select [[Save changes]]."
+      ]
+    },
+    {
+      "title": "Leave without saving",
+      "steps": [
+        "Select [[Cancel]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "You can save blank fields. The export check tells you which codes the actual data needs.",
+    "New codes don't change existing exports or issued reports. Generate a new export to use them.",
+    "The codes are not checked against the recipient's reference tables."
+  ],
   "sections": [
     {
       "title": "Access and scope",

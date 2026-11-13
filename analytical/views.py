@@ -21,6 +21,7 @@ from catalog.models import TestDefinition
 from core.concurrency import protect_form
 from core.grids import GridRequest, active_filters
 from core.models import AuditEvent
+from core.widgets import SuggestInput
 
 from . import forms as f
 from . import holding, importing, selectors, services
@@ -45,6 +46,7 @@ PAGE_SIZE = 25
 
 
 ENTERABLE_STATUSES = ("awaiting", "draft", "returned")
+RETURNED_SHOWN = 10  # returned results named in the batch page notice; the table lists them all
 
 
 def _grid(request, sorts=None, default_sort="order"):
@@ -223,7 +225,7 @@ def worklist(request):
             **ctx,
             "page_obj": page,
             "sort": grid.sort,
-            "open_batches": open_batches,
+            "batch_form": f.AddToBatchForm(open_batches),
             "filtered": ctx["active"],
             "selectable_count": sum(
                 1
@@ -330,7 +332,7 @@ def batch_create(request):
             "page_title": "New batch",
             "crumbs": [("Batches & QC", reverse("analytical:batch-list")), ("New batch", None)],
             "form": form,
-            "cancel_url": "analytical:batch-list",
+            "cancel_url": reverse("analytical:batch-list"),
             "submit_label": "Create batch",
         },
     )
@@ -384,6 +386,7 @@ def batch_detail(request, pk):
     totals = Result.objects.filter(batch=batch).aggregate(
         total=Count("pk", distinct=True),
         drafts=Count("pk", filter=Q(status="draft"), distinct=True),
+        returned=Count("pk", filter=Q(status="returned"), distinct=True),
         enterable=Count("pk", filter=Q(status__in=ENTERABLE_STATUSES), distinct=True),
         approved=Count(
             "pk",
@@ -410,6 +413,12 @@ def batch_detail(request, pk):
             "approved_count": totals["approved"],
             "total_count": totals["total"],
             "draft_total": totals["drafts"],
+            "returned_count": totals["returned"],
+            "returned_results": Result.objects.filter(batch=batch, status="returned")
+            .select_related("requested_test__sample", "requested_test__definition__analyte")
+            .order_by(
+                "requested_test__sample__lab_id", "requested_test__definition__analyte__name"
+            )[:RETURNED_SHOWN],
             "page_drafts": sum(1 for r in results if r.latest and r.latest.status == "draft"),
             "page_title": batch.number,
             "batch": batch,
@@ -606,8 +615,7 @@ def qc_sample_add(request, pk):
             ],
             "form": form,
             "batch": batch,
-            "cancel_url": _batch_page(batch),
-            "cancel_arg": batch.pk,
+            "cancel_url": reverse(_batch_page(batch), args=[batch.pk]),
             "submit_label": "Add QC sample",
             "nav_item": _batch_nav(batch),
         },
@@ -855,6 +863,8 @@ def batch_entry(request, pk):
             )
         formset = f.RowFormSet(initial=initial)
         _entry_aliquot_choices(formset, by_id)
+    qualifiers = Qualifier.objects.filter(is_active=True)
+    qualifier_codes = [(q.code, q.description) for q in qualifiers]
     rows = []
     orphan_errors = []  # posted rows that are no longer current candidates cannot be shown
     for form in formset:
@@ -879,7 +889,9 @@ def batch_entry(request, pk):
                 "solids_reference": "Solids source reference",
             },
         )
-        form.fields["qualifiers"].widget.attrs["list"] = "qualifier-codes"
+        form.fields["qualifiers"].widget = SuggestInput(
+            attrs=form.fields["qualifiers"].widget.attrs, suggestions=qualifier_codes
+        )
         if d.reporting_limit is not None:
             limit_widget = form.fields["reporting_limit_applied"].widget
             limit_widget.attrs["data-base-limit"] = trim(d.reporting_limit)
@@ -897,7 +909,7 @@ def batch_entry(request, pk):
             "error_rows": [(form, result) for form, result, _ in rows if form.errors],
             "orphan_errors": orphan_errors,
             "page_obj": page,
-            "qualifiers": Qualifier.objects.filter(is_active=True),
+            "qualifiers": qualifiers,
             "preparation_rules": selectors.preparation_rules_missing(batch),
             **ctx,
             "filtered": ctx["active"],
@@ -1288,6 +1300,8 @@ def review_batch(request, pk):
             }
         )
     total_awaiting = len(items)
+    ready_total = sum(1 for i in items if i["ready"])
+    held_by_qc = sum(1 for i in items if i["qc_count"])
     q = (data.get("q") or "").strip().lower()
     if q:
         items = [
@@ -1326,8 +1340,11 @@ def review_batch(request, pk):
             "ready_on_page": sum(1 for i in page if i["ready"]),
             "selectable_on_page": sum(1 for i in page if not i["own"]),
             "total_awaiting": total_awaiting,
+            "ready_total": ready_total,
+            "held_by_qc": held_by_qc,
             "form": form,
             "qc_rows": qc_rows,
+            "qc_attention": [(s, m) for s, m in qc_rows if m.evaluation.status != "pass"],
             "open_issues": open_issues,
             "shortfalls": [
                 {"requirement": r, "need": n, "have": h} for r, n, h in qc.shortfalls() if h < n
@@ -1492,7 +1509,7 @@ def config_edit(request, kind, pk=None):
                 (heading, None),
             ],
             "form": form,
-            "cancel_url": "analytical:qc-config",
+            "cancel_url": reverse("analytical:qc-config"),
             "submit_label": "Save changes" if instance else heading,
             "history": history,
             "config_note": "Changes are audited with before and after values. These values are "

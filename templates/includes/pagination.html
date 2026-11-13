@@ -5,68 +5,43 @@ filters apply). Keeps every other query parameter; changing rows per page return
 Post mode, for a picker inside a larger POST form (the report scope's sample picker): post_name
 (e.g. "ppage") renders the pager as submit buttons name=post_name value=<page> with formnovalidate,
 so the surrounding form keeps its entries; no rows-per-page form (the picker has its own).
+Rows per page is core.grids.PageSizeForm's field ({% page_size_field %}, core/templatetags/ui.py).
 {% endcomment %}
-{% with paginator=page_obj.paginator %}
+{% load ui %}{% with paginator=page_obj.paginator %}
 <div class="vr-table-footer vr-pagination">
   <p class="vr-count">
     Showing <strong>{{ page_obj.start_index|floatformat:"0g" }}–{{ page_obj.end_index|floatformat:"0g" }}</strong>
     of <strong>{{ paginator.count|floatformat:"0g" }}</strong> {{ noun|default:"records" }}{% if filtered %} matching filters{% endif %}
   </p>
   <div class="d-flex flex-wrap align-items-center gap-3">
-    {% if post_name %}
-    {% if paginator.num_pages > 1 %}
-    <nav aria-label="{{ noun|default:'Records'|capfirst }} pages">
-      <ul class="pagination pagination-sm mb-0">
-        {% if page_obj.has_previous %}
-        <li class="page-item"><button class="page-link" type="submit" name="{{ post_name }}" value="1" formnovalidate aria-label="First page">{% include "includes/icon.html" with name="chevron-double-left" %}</button></li>
-        <li class="page-item"><button class="page-link" type="submit" name="{{ post_name }}" value="{{ page_obj.previous_page_number }}" formnovalidate aria-label="Previous page">{% include "includes/icon.html" with name="chevron-left" %}</button></li>
-        {% else %}
-        <li class="page-item disabled"><span class="page-link" aria-hidden="true">{% include "includes/icon.html" with name="chevron-double-left" %}</span></li>
-        <li class="page-item disabled"><span class="page-link" aria-hidden="true">{% include "includes/icon.html" with name="chevron-left" %}</span></li>
-        {% endif %}
-        <li class="page-item active" aria-current="page"><span class="page-link">Page {{ page_obj.number }} of {{ paginator.num_pages }}</span></li>
-        {% if page_obj.has_next %}
-        <li class="page-item"><button class="page-link" type="submit" name="{{ post_name }}" value="{{ page_obj.next_page_number }}" formnovalidate aria-label="Next page">{% include "includes/icon.html" with name="chevron-right" %}</button></li>
-        <li class="page-item"><button class="page-link" type="submit" name="{{ post_name }}" value="{{ paginator.num_pages }}" formnovalidate aria-label="Last page">{% include "includes/icon.html" with name="chevron-double-right" %}</button></li>
-        {% else %}
-        <li class="page-item disabled"><span class="page-link" aria-hidden="true">{% include "includes/icon.html" with name="chevron-right" %}</span></li>
-        <li class="page-item disabled"><span class="page-link" aria-hidden="true">{% include "includes/icon.html" with name="chevron-double-right" %}</span></li>
-        {% endif %}
-      </ul>
-    </nav>
-    {% endif %}
-    {% else %}
+    {% if not post_name %}
     <form class="d-flex align-items-center gap-2" method="get" action="{{ request.path }}">
       {% for key, values in request.GET.lists %}{% if key != "page" and key != "per_page" %}{% for value in values %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endfor %}{% endif %}{% endfor %}
       <label class="vr-count text-nowrap" for="per-page-{{ noun|default:'records'|slugify }}">Rows per page</label>
-      <select class="form-select form-select-sm w-auto" id="per-page-{{ noun|default:'records'|slugify }}" name="per_page">
-        <option value="25"{% if paginator.per_page == 25 %} selected{% endif %}>25</option>
-        <option value="50"{% if paginator.per_page == 50 %} selected{% endif %}>50</option>
-        <option value="100"{% if paginator.per_page == 100 %} selected{% endif %}>100</option>
-      </select>
+      {% page_size_field paginator.per_page noun as page_size %}{{ page_size }}
       <button class="btn btn-sm btn-outline-secondary" type="submit">Show</button>
     </form>
+    {% endif %}
     {% if paginator.num_pages > 1 %}
     <nav aria-label="{{ noun|default:'Records'|capfirst }} pages">
       <ul class="pagination pagination-sm mb-0">
         {% if page_obj.has_previous %}
-        <li class="page-item"><a class="page-link" href="{% querystring page=1 %}" aria-label="First page">{% include "includes/icon.html" with name="chevron-double-left" %}</a></li>
-        <li class="page-item"><a class="page-link" href="{% querystring page=page_obj.previous_page_number %}" rel="prev" aria-label="Previous page">{% include "includes/icon.html" with name="chevron-left" %}</a></li>
+        <li class="page-item">{% if post_name %}<button class="page-link" type="submit" name="{{ post_name }}" value="1" formnovalidate{% else %}<a class="page-link" href="{% querystring page=1 %}"{% endif %} aria-label="First page">{% icon name="chevron-double-left" %}{% if post_name %}</button>{% else %}</a>{% endif %}</li>
+        <li class="page-item">{% if post_name %}<button class="page-link" type="submit" name="{{ post_name }}" value="{{ page_obj.previous_page_number }}" formnovalidate{% else %}<a class="page-link" href="{% querystring page=page_obj.previous_page_number %}" rel="prev"{% endif %} aria-label="Previous page">{% icon name="chevron-left" %}{% if post_name %}</button>{% else %}</a>{% endif %}</li>
         {% else %}
-        <li class="page-item disabled"><span class="page-link" aria-hidden="true">{% include "includes/icon.html" with name="chevron-double-left" %}</span></li>
-        <li class="page-item disabled"><span class="page-link" aria-hidden="true">{% include "includes/icon.html" with name="chevron-left" %}</span></li>
+        <li class="page-item disabled"><span class="page-link" aria-hidden="true">{% icon name="chevron-double-left" %}</span></li>
+        <li class="page-item disabled"><span class="page-link" aria-hidden="true">{% icon name="chevron-left" %}</span></li>
         {% endif %}
         <li class="page-item active" aria-current="page"><span class="page-link">Page {{ page_obj.number }} of {{ paginator.num_pages }}</span></li>
         {% if page_obj.has_next %}
-        <li class="page-item"><a class="page-link" href="{% querystring page=page_obj.next_page_number %}" rel="next" aria-label="Next page">{% include "includes/icon.html" with name="chevron-right" %}</a></li>
-        <li class="page-item"><a class="page-link" href="{% querystring page=paginator.num_pages %}" aria-label="Last page">{% include "includes/icon.html" with name="chevron-double-right" %}</a></li>
+        <li class="page-item">{% if post_name %}<button class="page-link" type="submit" name="{{ post_name }}" value="{{ page_obj.next_page_number }}" formnovalidate{% else %}<a class="page-link" href="{% querystring page=page_obj.next_page_number %}" rel="next"{% endif %} aria-label="Next page">{% icon name="chevron-right" %}{% if post_name %}</button>{% else %}</a>{% endif %}</li>
+        <li class="page-item">{% if post_name %}<button class="page-link" type="submit" name="{{ post_name }}" value="{{ paginator.num_pages }}" formnovalidate{% else %}<a class="page-link" href="{% querystring page=paginator.num_pages %}"{% endif %} aria-label="Last page">{% icon name="chevron-double-right" %}{% if post_name %}</button>{% else %}</a>{% endif %}</li>
         {% else %}
-        <li class="page-item disabled"><span class="page-link" aria-hidden="true">{% include "includes/icon.html" with name="chevron-right" %}</span></li>
-        <li class="page-item disabled"><span class="page-link" aria-hidden="true">{% include "includes/icon.html" with name="chevron-double-right" %}</span></li>
+        <li class="page-item disabled"><span class="page-link" aria-hidden="true">{% icon name="chevron-right" %}</span></li>
+        <li class="page-item disabled"><span class="page-link" aria-hidden="true">{% icon name="chevron-double-right" %}</span></li>
         {% endif %}
       </ul>
     </nav>
-    {% endif %}
     {% endif %}
   </div>
 </div>

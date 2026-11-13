@@ -5,6 +5,27 @@
   ],
   "title": "Record adjustment",
   "purpose": "Record a signed stock correction without editing earlier movements.",
+  "summary": "Record a signed correction to a lot's balance without editing earlier movements. Only admin and reviewer roles can adjust stock.",
+  "tasks": [
+    {
+      "title": "Correct the balance",
+      "steps": [
+        "Enter the [[Change in quantity]]: positive to add, negative to remove, for example -2.5.",
+        "Check [[Effective at]], explain why in [[Reason]] and select [[Record adjustment]]."
+      ]
+    },
+    {
+      "title": "Undo one specific movement instead",
+      "steps": [
+        "Go back to the lot and select [[Reverse]] on that movement's row."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Earlier receipts and uses stay as they were. The adjustment is a new row in the ledger.",
+    "An adjustment cannot leave the balance below zero.",
+    "A backdated adjustment does not recalculate the balances shown on earlier rows."
+  ],
   "sections": [
     {
       "title": "Access",

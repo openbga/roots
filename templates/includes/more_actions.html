@@ -1,0 +1,13 @@
+{% comment %}
+The page header's "More" menu (docs/ui-standards.md section 4): actions beyond the one primary and
+three secondary buttons, as a Bootstrap dropdown. Rendered by the {% more_actions %} block tag
+({% load ui %}); the body is the menu's items, each <li><a class="dropdown-item" href="...">.
+An empty body renders nothing.
+Parameters:
+  label   the toggle's words (default "More")
+Usage:
+  {% more_actions %}<li><a class="dropdown-item" href="{{ url }}">Correct reference</a></li>{% endmore_actions %}
+{% endcomment %}{% load ui %}{% if body %}<div class="dropdown">
+  <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">{% firstof label "More" %}{% icon name="chevron-down" class="vr-caret" %}</button>
+  <ul class="dropdown-menu dropdown-menu-end">{{ body }}</ul>
+</div>{% endif %}

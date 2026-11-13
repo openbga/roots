@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 Subcontracted tests: external handoffs and source acceptance. Context
 (receipt.subcontract_views.subcontract_list): page_obj (Subcontract with latest_decision),
@@ -7,21 +8,21 @@ Tests are sent out from the sample page, so this list has no New button.
 {% endcomment %}
 {% block page_intro %}<p class="vr-page-intro">Follow external handoffs and source acceptance; send a test out from its sample page.</p>{% endblock %}
 {% block content %}
-<section class="card vr-table-card" aria-labelledby="subcontracts-heading">
-  <h2 class="visually-hidden" id="subcontracts-heading">Subcontracted requested tests</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter subcontracted tests" grid="receipt.subcontracts" %}
-  {% if page_obj.paginator.count %}
+{% url 'receipt:sample-list' as samples_url %}
+{% panel title="Subcontracted requested tests" heading_id="subcontracts-heading" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter subcontracted tests" grid="receipt.subcontracts" invalid=filter_form.errors chips=active_filters sort=sort %}
+  {% list_results items=page_obj noun="subcontracted tests" filtered=active_filters|default:q invalid=filter_form.errors clear_url=request.path error_body="Correct the highlighted filter above. No subcontracted tests are hidden by an invalid filter." no_results_title="No subcontracted tests match these filters" no_results_body="Change the search or clear the filters to see all handoffs." empty_title="No external handoffs recorded" empty_body="Open a received sample and select a requested test to record its external handoff." action_url=samples_url action_label="Find a sample" %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table" data-vr-grid="receipt.subcontracts" data-vr-grid-version="2" aria-labelledby="subcontracts-heading">
       <thead>
         <tr>
-          {% include "includes/sort_header.html" with label="Subcontract" asc="number" desc="-number" col="number" locked=True %}
+          {% sort_header label="Subcontract" asc="number" desc="-number" col="number" locked=True %}
           <th scope="col" data-vr-col="source_status" data-vr-col-label="Source status">Source status</th>
-          {% include "includes/sort_header.html" with label="Lab ID" asc="lab_id" desc="-lab_id" col="lab_id" %}
-          {% include "includes/sort_header.html" with label="Analyte" asc="analyte" desc="-analyte" col="analyte" %}
-          {% include "includes/sort_header.html" with label="External laboratory" asc="external_lab" desc="-external_lab" col="external_lab" %}
-          {% include "includes/sort_header.html" with label="External reference" asc="external_reference" desc="-external_reference" col="external_reference" %}
-          {% include "includes/sort_header.html" with label="Handed over" asc="dispatched_at" desc="-dispatched_at" first="desc" col="dispatched_at" %}
+          {% sort_header label="Lab ID" asc="lab_id" desc="-lab_id" col="lab_id" %}
+          {% sort_header label="Analyte" asc="analyte" desc="-analyte" col="analyte" %}
+          {% sort_header label="External laboratory" asc="external_lab" desc="-external_lab" col="external_lab" %}
+          {% sort_header label="External reference" asc="external_reference" desc="-external_reference" col="external_reference" %}
+          {% sort_header label="Handed over" asc="dispatched_at" desc="-dispatched_at" first="desc" col="dispatched_at" %}
         </tr>
       </thead>
       <tbody>
@@ -39,14 +40,6 @@ Tests are sent out from the sample page, so this list has no New button.
       </tbody>
     </table>
   </div>
-  {% include "includes/pagination.html" with noun="subcontracted tests" filtered=active_filters|default:q %}
-  {% elif filter_form.errors %}
-  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above. No subcontracted tests are hidden by an invalid filter." clear_url=request.path %}
-  {% elif active_filters or q %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No subcontracted tests match these filters" body="Change the search or clear the filters to see all handoffs." clear_url=request.path %}
-  {% else %}
-  {% url 'receipt:sample-list' as samples_url %}
-  {% include "includes/empty_state.html" with title="No external handoffs recorded" body="Open a received sample and select a requested test to record its external handoff." action_url=samples_url action_label="Find a sample" %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}

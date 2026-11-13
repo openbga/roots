@@ -3,7 +3,7 @@
 import re
 
 import pytest
-from helpers import field, receive_water, submit_fresh_batch
+from helpers import field, pick, receive_water, submit_fresh_batch
 from playwright.sync_api import Page, expect
 
 pytestmark = pytest.mark.django_db(transaction=True)
@@ -85,10 +85,10 @@ def test_theme_choice_returns_keyboard_focus(page: Page, sign_in_as):
 def test_selects_wait_for_explicit_submission(page: Page, sign_in_as, path, label, value, submit):
     sign_in_as("custodian")
     page.goto(path)
-    control = page.get_by_label(label, exact=True)
+    control = page.get_by_role("combobox", name=label, exact=True)
     control.focus()
     before = page.url
-    control.select_option(value)
+    pick(control, value)
     # A frame boundary allows change handlers and navigation to settle.
     page.evaluate(
         "() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))"
@@ -211,8 +211,9 @@ def test_entry_grid_focus_clears_sticky_sample_column(page: Page, sign_in_as):
     grid = page.locator("#entry-grid")
     first, second = grid.locator("tbody tr").all()
     # Move across the first row, then tab to the second row's first editable field.
-    first.locator('input[name$="analysis_started_at"]').focus()
-    select = second.get_by_label("Prepared aliquot", exact=True)
+    # The date field's visible input; its name is on the hidden submitted value beside it.
+    first.locator('.vr-date-input:has(input[name$="analysis_started_at"]) .vr-date-text').focus()
+    select = second.get_by_label("Prepared aliquot", exact=True).first
     # Chromium exposes separate date/time segments as consecutive keyboard stops.
     for _ in range(10):
         page.keyboard.press("Tab")
@@ -225,6 +226,9 @@ def test_entry_grid_focus_clears_sticky_sample_column(page: Page, sign_in_as):
         const wrap = el.closest('.vr-table-wrap');
         return {left: r.left, stickyRight: sticky.right, scroll: wrap.scrollLeft,
             padding: getComputedStyle(wrap).scrollPaddingInlineStart,
-            hit: document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2).tagName}; }"""
+            hit: el.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2)),
+        }; }"""
     )
-    assert bounds["left"] >= bounds["stickyRight"] and bounds["hit"] == "SELECT", bounds
+    assert bounds["left"] >= bounds["stickyRight"] and bounds["hit"], (
+        bounds
+    )  # the select, uncovered

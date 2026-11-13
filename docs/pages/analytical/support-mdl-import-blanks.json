@@ -5,6 +5,29 @@
   ],
   "title": "Import routine method blanks",
   "purpose": "Copy current routine method-blank QC measurements into one open MDL study without losing non-detects or source context.",
+  "summary": "Copy routine method-blank QC measurements for this test into the MDL study. Non-detects and their source context are kept.",
+  "tasks": [
+    {
+      "title": "Import routine blanks",
+      "steps": [
+        "Set the From and To analysis dates.",
+        "Choose the [[Routine blank source basis]].",
+        "Select [[Import blanks]]."
+      ]
+    },
+    {
+      "title": "Use the other source basis",
+      "steps": [
+        "Choose it and explain the full-procedure evidence. The reason is kept with every copied blank."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Blanks already imported into this study are skipped.",
+    "Non-detects stay non-detects. Nothing is changed to zero.",
+    "Where the source had no preparation time, the analysis time is used and marked assumed.",
+    "A later QC correction does not change blanks already copied."
+  ],
   "sections": [
     {
       "title": "Access and fields",

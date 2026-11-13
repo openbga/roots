@@ -1,19 +1,19 @@
 {% extends "base.html" %}
-{% load catalog_extras %}
+{% load catalog_extras ui %}
 {% comment %}QC configuration: six reference tables on one overview. A table's identifier opens its edit form
 for administrators and is plain text for everyone else (the rules have no page of their own).
 Context: filter_form (method), the six lists, limits (a Page), can_configure, filtered.{% endcomment %}
 {% block page_intro %}<p class="vr-page-intro">Holding-time rules, QC frequencies and limits are the laboratory's own policy, not regulatory defaults; changes need a reason and are audited.</p>{% endblock %}
 {% block content %}
-<section class="card vr-table-card mb-3" aria-label="Filter configuration by method">
-  {% include "includes/grid_toolbar.html" with label="Filter configuration by method" no_search=True %}
-</section>
+{% panel title="Filter configuration by method" heading_id="config-filter-heading" table=True hidden_title=True class="mb-3" %}
+  {% grid_toolbar label="Filter configuration by method" no_search=True %}
+{% endpanel %}
 
-<section class="card vr-table-card mb-3" aria-labelledby="preservation-heading">
-  <div class="card-header"><h2 class="card-title" id="preservation-heading">Preservation rules</h2><span class="vr-count">{{ preservation_rules|length }}</span>
-    <div class="ms-auto d-flex flex-wrap gap-2">{% if can_configure %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:config-new' 'preservation-rule' %}">{% include "includes/icon.html" with name="plus-lg" %}Add preservation rule</a>{% endif %}{% include "includes/grid_columns_button.html" with grid="analytical.config_preservation" %}</div></div>
-  <div class="card-body"><p class="mb-0">Each rule applies to one exact method version, analyte and matrix. Temperature screening uses the recorded cooler reading; chemical and container requirements remain manual.</p></div>
-  {% if preservation_rules %}
+{% if can_configure %}{% url 'analytical:config-new' 'preservation-rule' as add_url %}{% endif %}
+{% panel title="Preservation rules" heading_id="preservation-heading" count=preservation_rules|length table=True flush=True class="mb-3" %}
+  {% fill actions %}{% if can_configure %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:config-new' 'preservation-rule' %}">{% icon name="plus-lg" %}Add preservation rule</a>{% endif %}{% grid_columns_button grid="analytical.config_preservation" %}{% endfill %}
+  {% panel_section %}<p>Each rule applies to one exact method version, analyte and matrix. Temperature screening uses the recorded cooler reading; chemical and container requirements remain manual.</p>{% endpanel_section %}
+  {% list_results items=preservation_rules filtered=filtered invalid=filter_form.errors clear_url=request.path no_results_title="No preservation rules for these filters" no_results_body="Clear the method filter to see all of them." empty_title="No preservation rules configured" empty_body="This does not imply acceptance." action_url=add_url action_label="Add preservation rule" %}
   <div class="vr-table-wrap"><table class="table table-hover vr-table" data-vr-grid="analytical.config_preservation" data-vr-grid-version="1" aria-labelledby="preservation-heading">
     <thead><tr><th scope="col" data-vr-col="test" data-vr-col-locked>Test</th><th scope="col" data-vr-col="temperature">Temperature</th><th scope="col" data-vr-col="basis">Source / applicability</th><th scope="col" data-vr-col="active">Active</th></tr></thead>
     <tbody>
@@ -24,14 +24,13 @@ Context: filter_form (method), the six lists, limits (a Page), can_configure, fi
       <td>{% include "analytical/_active_status.html" with active=r.is_active %}</td>
     </tr>{% endfor %}
     </tbody></table></div>
-  {% elif filtered %}{% include "includes/empty_state.html" with kind="no-results" title="No preservation rules for these filters" clear_url=request.path %}
-  {% else %}{% if can_configure %}{% url 'analytical:config-new' 'preservation-rule' as add_url %}{% endif %}{% include "includes/empty_state.html" with title="No preservation rules configured" body="This does not imply acceptance." action_url=add_url action_label="Add preservation rule" %}{% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 
-<section class="card vr-table-card mb-3" aria-labelledby="preparation-heading">
-  <div class="card-header"><h2 class="card-title" id="preparation-heading">Independent preparation requirements</h2><span class="vr-count">{{ preparation_requirements|length }}</span>
-    <div class="ms-auto d-flex flex-wrap gap-2">{% if can_configure %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:config-new' 'preparation-requirement' %}">{% include "includes/icon.html" with name="plus-lg" %}Add preparation requirement</a>{% endif %}{% include "includes/grid_columns_button.html" with grid="analytical.config_preparation" %}</div></div>
-  {% if preparation_requirements %}
+{% if can_configure %}{% url 'analytical:config-new' 'preparation-requirement' as add_url %}{% endif %}
+{% panel title="Independent preparation requirements" heading_id="preparation-heading" count=preparation_requirements|length table=True flush=True class="mb-3" %}
+  {% fill actions %}{% if can_configure %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:config-new' 'preparation-requirement' %}">{% icon name="plus-lg" %}Add preparation requirement</a>{% endif %}{% grid_columns_button grid="analytical.config_preparation" %}{% endfill %}
+  {% list_results items=preparation_requirements filtered=filtered invalid=filter_form.errors clear_url=request.path no_results_title="No preparation requirements for these filters" no_results_body="Clear the method filter to see all of them." empty_title="No independent preparation requirements configured" empty_body="This does not establish that preparation is unnecessary." action_url=add_url action_label="Add preparation requirement" %}
   <div class="vr-table-wrap"><table class="table table-hover vr-table" data-vr-grid="analytical.config_preparation" data-vr-grid-version="1" aria-labelledby="preparation-heading">
     <thead><tr><th scope="col" data-vr-col="test" data-vr-col-locked>Test</th><th scope="col" data-vr-col="preparation_method">Preparation method</th><th scope="col" data-vr-col="basis">Source / applicability</th><th scope="col" data-vr-col="active">Active</th></tr></thead>
     <tbody>
@@ -41,33 +40,31 @@ Context: filter_form (method), the six lists, limits (a Page), can_configure, fi
       <td>{% include "analytical/_active_status.html" with active=r.is_active %}</td>
     </tr>{% endfor %}
     </tbody></table></div>
-  {% elif filtered %}{% include "includes/empty_state.html" with kind="no-results" title="No preparation requirements for these filters" clear_url=request.path %}
-  {% else %}{% if can_configure %}{% url 'analytical:config-new' 'preparation-requirement' as add_url %}{% endif %}{% include "includes/empty_state.html" with title="No independent preparation requirements configured" body="This does not establish that preparation is unnecessary." action_url=add_url action_label="Add preparation requirement" %}{% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 
-<section class="card vr-table-card mb-3" aria-labelledby="holding-heading">
-  <div class="card-header"><h2 class="card-title" id="holding-heading">Holding-time rules</h2><span class="vr-count">{{ holding_rules|length }}</span>
-    <div class="ms-auto d-flex flex-wrap gap-2">{% if can_configure %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:config-new' 'holding-rule' %}">{% include "includes/icon.html" with name="plus-lg" %}Add holding-time rule</a>{% endif %}{% include "includes/grid_columns_button.html" with grid="analytical.config_holding" %}</div></div>
-  {% if holding_rules %}
+{% if can_configure %}{% url 'analytical:config-new' 'holding-rule' as add_url %}{% endif %}
+{% panel title="Holding-time rules" heading_id="holding-heading" count=holding_rules|length table=True flush=True class="mb-3" %}
+  {% fill actions %}{% if can_configure %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:config-new' 'holding-rule' %}">{% icon name="plus-lg" %}Add holding-time rule</a>{% endif %}{% grid_columns_button grid="analytical.config_holding" %}{% endfill %}
+  {% list_results items=holding_rules filtered=filtered invalid=filter_form.errors clear_url=request.path no_results_title="No holding-time rules for these filters" no_results_body="Clear the method filter to see all of them." empty_title="No holding-time rules" empty_body="Holding time is shown as not evaluated." action_url=add_url action_label="Add holding-time rule" %}
   <div class="vr-table-wrap"><table class="table table-hover vr-table" data-vr-grid="analytical.config_holding" data-vr-grid-version="1" aria-labelledby="holding-heading">
     <thead><tr><th scope="col" data-vr-col="rule" data-vr-col-locked>Rule</th><th scope="col" data-vr-col="method">Method</th><th scope="col" data-vr-col="matrix">Matrix</th><th scope="col" data-vr-col="from_to">From → to</th><th scope="col" class="text-end" data-vr-col="maximum">Maximum</th><th scope="col" data-vr-col="active">Active</th></tr></thead>
     <tbody>
     {% for r in holding_rules %}<tr>
       <th scope="row">{% if can_configure %}<a class="vr-row-link" href="{% url 'analytical:config-edit' 'holding-rule' r.pk %}">{{ r.name }}</a>{% else %}{{ r.name }}{% endif %}</th>
-      <td>{{ r.method }}</td><td>{{ r.get_matrix_display }}</td>
+      <td>{{ r.method }}</td><td>{% matrix_tag matrix=r.matrix %}</td>
       <td>{{ r.get_start_event_display }} → {{ r.get_end_event_display }}</td>
       <td class="text-end vr-nowrap">{{ r.duration_text }}{% if r.warning_text %}<div class="vr-muted small">warns at {{ r.warning_text }} left</div>{% endif %}</td>
       <td>{% include "analytical/_active_status.html" with active=r.is_active %}</td>
     </tr>{% endfor %}
     </tbody></table></div>
-  {% elif filtered %}{% include "includes/empty_state.html" with kind="no-results" title="No holding-time rules for these filters" clear_url=request.path %}
-  {% else %}{% if can_configure %}{% url 'analytical:config-new' 'holding-rule' as add_url %}{% endif %}{% include "includes/empty_state.html" with title="No holding-time rules" body="Holding time is shown as not evaluated." action_url=add_url action_label="Add holding-time rule" %}{% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 
-<section class="card vr-table-card mb-3" aria-labelledby="req-heading">
-  <div class="card-header"><h2 class="card-title" id="req-heading">QC requirements</h2><span class="vr-count">{{ requirements|length }}</span>
-    <div class="ms-auto d-flex flex-wrap gap-2">{% if can_configure %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:config-new' 'qc-requirement' %}">{% include "includes/icon.html" with name="plus-lg" %}Add QC requirement</a>{% endif %}{% include "includes/grid_columns_button.html" with grid="analytical.config_requirements" %}</div></div>
-  {% if requirements %}
+{% if can_configure %}{% url 'analytical:config-new' 'qc-requirement' as add_url %}{% endif %}
+{% panel title="QC requirements" heading_id="req-heading" count=requirements|length table=True flush=True class="mb-3" %}
+  {% fill actions %}{% if can_configure %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:config-new' 'qc-requirement' %}">{% icon name="plus-lg" %}Add QC requirement</a>{% endif %}{% grid_columns_button grid="analytical.config_requirements" %}{% endfill %}
+  {% list_results items=requirements filtered=filtered invalid=filter_form.errors clear_url=request.path no_results_title="No QC requirements for these filters" no_results_body="Clear the method filter to see all of them." empty_title="No QC requirements" empty_body="No QC samples are required for approval." action_url=add_url action_label="Add QC requirement" %}
   <div class="vr-table-wrap"><table class="table table-hover vr-table" data-vr-grid="analytical.config_requirements" data-vr-grid-version="1" aria-labelledby="req-heading">
     <thead><tr><th scope="col" data-vr-col="method" data-vr-col-locked>Method</th><th scope="col" data-vr-col="qc_type">QC type</th><th scope="col" class="text-end" data-vr-col="minimum">Minimum per batch</th><th scope="col" class="text-end" data-vr-col="every_n">One per N samples</th><th scope="col" data-vr-col="active">Active</th></tr></thead>
     <tbody>
@@ -78,14 +75,13 @@ Context: filter_form (method), the six lists, limits (a Page), can_configure, fi
       <td>{% include "analytical/_active_status.html" with active=r.is_active %}</td>
     </tr>{% endfor %}
     </tbody></table></div>
-  {% elif filtered %}{% include "includes/empty_state.html" with kind="no-results" title="No QC requirements for these filters" clear_url=request.path %}
-  {% else %}{% if can_configure %}{% url 'analytical:config-new' 'qc-requirement' as add_url %}{% endif %}{% include "includes/empty_state.html" with title="No QC requirements" body="No QC samples are required for approval." action_url=add_url action_label="Add QC requirement" %}{% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 
-<section class="card vr-table-card mb-3" aria-labelledby="limits-heading">
-  <div class="card-header"><h2 class="card-title" id="limits-heading">QC limits</h2><span class="vr-count">{{ limits.paginator.count }}</span>
-    <div class="ms-auto d-flex flex-wrap gap-2">{% if can_configure %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:config-new' 'qc-limit' %}">{% include "includes/icon.html" with name="plus-lg" %}Add QC limit</a>{% endif %}{% include "includes/grid_columns_button.html" with grid="analytical.config_limits" %}</div></div>
-  {% if limits.paginator.count %}
+{% if can_configure %}{% url 'analytical:config-new' 'qc-limit' as add_url %}{% endif %}
+{% panel title="QC limits" heading_id="limits-heading" count=limits.paginator.count table=True flush=True class="mb-3" %}
+  {% fill actions %}{% if can_configure %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:config-new' 'qc-limit' %}">{% icon name="plus-lg" %}Add QC limit</a>{% endif %}{% grid_columns_button grid="analytical.config_limits" %}{% endfill %}
+  {% list_results items=limits noun="limits" filtered=filtered invalid=filter_form.errors clear_url=request.path no_results_title="No QC limits for these filters" no_results_body="Clear the method filter to see all of them." empty_title="No QC limits" empty_body="QC measurements are recorded as not evaluated and hold approval." action_url=add_url action_label="Add QC limit" %}
   <div class="vr-table-wrap"><table class="table table-hover vr-table" data-vr-grid="analytical.config_limits" data-vr-grid-version="1" aria-labelledby="limits-heading">
     <thead><tr><th scope="col" data-vr-col="test" data-vr-col-locked>Test</th><th scope="col" data-vr-col="qc_type">QC type</th><th scope="col" data-vr-col="measure">Measure</th><th scope="col" class="text-end" data-vr-col="lower">Lower</th><th scope="col" class="text-end" data-vr-col="upper">Upper</th><th scope="col" data-vr-col="active">Active</th></tr></thead>
     <tbody>
@@ -96,15 +92,13 @@ Context: filter_form (method), the six lists, limits (a Page), can_configure, fi
       <td>{% include "analytical/_active_status.html" with active=l.is_active %}</td>
     </tr>{% endfor %}
     </tbody></table></div>
-  {% include "includes/pagination.html" with page_obj=limits noun="limits" filtered=filtered %}
-  {% elif filtered %}{% include "includes/empty_state.html" with kind="no-results" title="No QC limits for these filters" clear_url=request.path %}
-  {% else %}{% if can_configure %}{% url 'analytical:config-new' 'qc-limit' as add_url %}{% endif %}{% include "includes/empty_state.html" with title="No QC limits" body="QC measurements are recorded as not evaluated and hold approval." action_url=add_url action_label="Add QC limit" %}{% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 
-<section class="card vr-table-card mb-3" aria-labelledby="qualifier-heading">
-  <div class="card-header"><h2 class="card-title" id="qualifier-heading">Result qualifiers</h2><span class="vr-count">{{ qualifiers|length }}</span>
-    <div class="ms-auto d-flex flex-wrap gap-2">{% if can_configure %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:config-new' 'qualifier' %}">{% include "includes/icon.html" with name="plus-lg" %}Add qualifier</a>{% endif %}{% include "includes/grid_columns_button.html" with grid="analytical.config_qualifiers" %}</div></div>
-  {% if qualifiers %}
+{% if can_configure %}{% url 'analytical:config-new' 'qualifier' as add_url %}{% endif %}
+{% panel title="Result qualifiers" heading_id="qualifier-heading" count=qualifiers|length table=True flush=True class="mb-3" %}
+  {% fill actions %}{% if can_configure %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:config-new' 'qualifier' %}">{% icon name="plus-lg" %}Add qualifier</a>{% endif %}{% grid_columns_button grid="analytical.config_qualifiers" %}{% endfill %}
+  {% list_results items=qualifiers empty_title="No qualifiers defined" action_url=add_url action_label="Add qualifier" %}
   <div class="vr-table-wrap"><table class="table table-hover vr-table" data-vr-grid="analytical.config_qualifiers" data-vr-grid-version="1" aria-labelledby="qualifier-heading">
     <thead><tr><th scope="col" data-vr-col="code" data-vr-col-locked>Code</th><th scope="col" data-vr-col="description">Description</th><th scope="col" data-vr-col="holding_time">Marks holding-time exceedance</th><th scope="col" data-vr-col="active">Active</th></tr></thead>
     <tbody>
@@ -114,7 +108,7 @@ Context: filter_form (method), the six lists, limits (a Page), can_configure, fi
       <td>{% include "analytical/_active_status.html" with active=q.is_active %}</td>
     </tr>{% endfor %}
     </tbody></table></div>
-  {% else %}{% if can_configure %}{% url 'analytical:config-new' 'qualifier' as add_url %}{% endif %}{% include "includes/empty_state.html" with title="No qualifiers defined" action_url=add_url action_label="Add qualifier" %}{% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 <p class="vr-form-note">Nothing here is a regulatory default. The demonstration seed is synthetic and not validated.</p>
 {% endblock %}

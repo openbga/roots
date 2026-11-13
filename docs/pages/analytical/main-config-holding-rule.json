@@ -9,6 +9,36 @@
   },
   "title": "Holding-time rule",
   "purpose": "Add or edit a laboratory holding-time clock for one exact method version, matrix and start/end event pair.",
+  "summary": "Add or edit a holding-time clock for one method version and matrix. Only administrators can save; other staff read these values on QC configuration.",
+  "tasks": [
+    {
+      "title": "Add a holding-time rule",
+      "steps": [
+        "Choose the [[Method]], [[Matrix]], [[Start event]] and [[End event]], and give the rule a [[Name]].",
+        "Enter the [[Maximum time]] in hours and, optionally, [[Warn when remaining]].",
+        "Select [[Add holding-time rule]]."
+      ]
+    },
+    {
+      "title": "Change a holding-time rule",
+      "steps": [
+        "Open it from QC configuration and change the values.",
+        "Explain why in [[Reason for change]] and select [[Save changes]]."
+      ]
+    },
+    {
+      "title": "Stop using a holding-time rule without deleting it",
+      "steps": [
+        "Clear [[Is active]], give a reason and select [[Save changes]]. The row and its history stay."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Hours are decimal: 0.25 is 15 minutes, 48 is two days.",
+    "An end exactly at the deadline meets the rule. Later exceeds it.",
+    "Changing a rule does not change holding evaluations already recorded on results or reports.",
+    "Only one rule can exist for each method, matrix and start and end pair. Edit the existing one."
+  ],
   "sections": [
     {
       "title": "Create, edit and access",
@@ -40,11 +70,11 @@
           "description": "Required Preparation start or Analysis start. Preparation-start clocks may end only at Analysis start. Collection may end at either event."
         },
         {
-          "label": "Maximum time (hours)",
-          "description": "Required positive decimal hours, minimum 0.01, at most two decimal places and nine total digits. The form converts hours to seconds; 0.25 is 15 minutes, 48 is two days, and 672 is 28 days. This is a configured limit, not an observed time."
+          "label": "Maximum time",
+          "description": "Required positive decimal hours (the unit shown beside the box), minimum 0.01, at most two decimal places and nine total digits. The form converts hours to seconds; 0.25 is 15 minutes, 48 is two days, and 672 is 28 days. This is a configured limit, not an observed time."
         },
         {
-          "label": "Warn when remaining (hours)",
+          "label": "Warn when remaining",
           "description": "Optional positive decimal hours, minimum 0.01, with at most two decimal places and nine total digits. A running clock is At risk when this much or less remains; blank gives no warning window."
         },
         {

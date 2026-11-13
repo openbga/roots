@@ -1,17 +1,15 @@
 {% extends "base.html" %}
-{% load reporting %}
+{% load reporting ui %}
 {% comment %}
 Export-time context for one released version: per-sample depth and NYSDEC location code, and the
 NYSDEC test type of corrected results. Saved separately from the release snapshot (never changes it).
 Context: version, report, form (VersionContextForm), back.
 {% endcomment %}
-{% block breadcrumbs %}{% url 'reporting:report-list' as list_url %}{% url 'reporting:report-detail' report.pk as record_url %}{% with number=version.number|stringformat:"s" %}{% include "includes/breadcrumbs.html" with section="Reports" section_url=list_url record=report.number record_url=record_url child="NYSDEC EDD v"|add:number child_url=back current="Export context" %}{% endwith %}{% endblock %}
-{% block page_meta %}<ul class="vr-page-meta"><li>{% include "includes/status.html" with label="Exploratory export settings" tone="warning" %}</li><li>{{ report.project.client }} / {{ report.project.name }}</li></ul>{% endblock %}
+{% block breadcrumbs %}{% url 'reporting:report-list' as list_url %}{% url 'reporting:report-detail' report.pk as record_url %}{% with number=version.number|stringformat:"s" %}{% breadcrumbs section="Reports" section_url=list_url record=report.number record_url=record_url child="NYSDEC EDD v"|add:number child_url=back current="Export context" %}{% endwith %}{% endblock %}
+{% block page_meta %}{% page_meta %}<li>{% status label="Exploratory export settings" tone="warning" %}</li><li>{{ report.project.client }} / {{ report.project.name }}</li>{% endpage_meta %}{% endblock %}
 {% block page_intro %}<p class="vr-page-intro">Facts NYSDEC needs that the released report does not hold; they apply only to exports of version {{ version.number }}, are recorded with your name, and never change the released report.</p>{% endblock %}
 {% block content %}
-<form class="vr-form" method="post" novalidate>
-  {% csrf_token %}
-  {% include "includes/form_errors.html" with form=form %}
+{% form_page form=form cancel_url=back submit_label="Save changes" no_required_note=True %}
   <p class="vr-form-note">Every field is optional. Leave blank what you do not know; the export check says what is required.</p>
   <fieldset class="vr-form-section">
     <legend>Sample depth and location</legend>
@@ -59,12 +57,8 @@ Context: version, report, form (VersionContextForm), back.
   <fieldset class="vr-form-section">
     <legend>Test type of corrected results</legend>
     <p class="vr-form-note">These results were corrected with a different analysis start than the first entry. Record whether that was a reanalysis, re-extraction or dilution run as the NYSDEC test type.</p>
-    {% for r, field in form.result_rows %}{% include "includes/field.html" with field=field %}{% endfor %}
+    {% for r, field in form.result_rows %}{% field field=field %}{% endfor %}
   </fieldset>
   {% endif %}
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{{ back }}">Cancel</a>
-    <button class="btn btn-primary" type="submit">Save changes</button>
-  </div>
-</form>
+{% endform_page %}
 {% endblock %}

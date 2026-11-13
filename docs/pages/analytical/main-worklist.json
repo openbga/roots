@@ -5,6 +5,36 @@
   ],
   "title": "Worklist",
   "purpose": "Prioritize requested tests and assign eligible work to an existing open analytical batch. Each row represents one sample’s requested test.",
+  "summary": "See every requested test that is not yet approved, most urgent holding deadline first, and add eligible tests to an open analytical batch.",
+  "tasks": [
+    {
+      "title": "Find the most urgent work",
+      "steps": [
+        "Read the list from the top. It starts with the earliest holding deadline.",
+        "To see only urgent work, set [[Holding time]] to At risk or expired and select [[Apply]]."
+      ]
+    },
+    {
+      "title": "Add tests to a batch",
+      "steps": [
+        "Check the tests to add. Rows that cannot be added say why.",
+        "Under Add selected tests to batch, choose the batch.",
+        "Select [[Add selected to batch]]."
+      ]
+    },
+    {
+      "title": "Start a new batch",
+      "steps": [
+        "Select [[New batch]], choose the method and matrix, then add tests from the batch."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A deadline shows a pill only when it is at risk or expired. Otherwise the time left is quiet text.",
+    "This deadline counts from collection. Clocks that start at preparation are checked when results are entered.",
+    "If any checked test cannot go into the chosen batch, none are added.",
+    "Samples on hold or rejected at receipt cannot be added. Approved work is moved for reanalysis from the batch's Add tests page."
+  ],
   "sections": [
     {
       "title": "Access",
@@ -78,7 +108,7 @@
         },
         {
           "label": "Hold deadline",
-          "description": "Earliest deadline from active collection-start rules for the requested method and matrix. Composite collection uses its recorded end. Running work shows time left/overdue and warning status. Preparation-based clocks are not represented by this queue deadline; result entry evaluates applicable clocks."
+          "description": "Earliest deadline from active collection-start rules for the requested method and matrix. Composite collection uses its recorded end. Running work shows the time left as quiet text; inside the rule's warning window it becomes an At risk pill with the time left, and past the deadline an Expired pill with how long ago. Preparation-based clocks are not represented by this queue deadline; result entry evaluates applicable clocks."
         },
         {
           "label": "Batch",
@@ -136,7 +166,7 @@
         },
         {
           "label": "Columns",
-          "description": "Show or hide optional columns and change their order using movement controls or header dragging. Changes apply immediately and are saved for this table in this browser. Locked columns stay available."
+          "description": "Show or hide optional columns and change their order using movement controls or header dragging. Changes apply immediately and are saved for this table in your account, on any workstation. Locked columns stay available."
         },
         {
           "label": "Reset columns",

@@ -6,6 +6,42 @@
   ],
   "title": "User account",
   "purpose": "Create or maintain a staff or client account while preserving attributed laboratory history.",
+  "summary": "Create or change one staff or client account: identity, client link, role groups, permissions and active state.",
+  "tasks": [
+    {
+      "title": "Create an account",
+      "steps": [
+        "Enter [[Username]] and [[Email address]], then set a password or turn off password-based authentication.",
+        "For a client user, choose the [[Client]]. For staff, leave it blank and choose [[Groups]].",
+        "Select [[Save]]. The form reopens with the remaining options."
+      ]
+    },
+    {
+      "title": "Give or remove a role",
+      "steps": [
+        "Move groups between Available groups and Chosen groups under [[Groups]], then select [[Save]]."
+      ]
+    },
+    {
+      "title": "Grant release permission",
+      "steps": [
+        "Under [[User permissions]], choose the authorize_release permission, or add a group that grants it. Then save."
+      ]
+    },
+    {
+      "title": "Stop someone from signing in",
+      "steps": [
+        "Clear [[Active]] and save. Accounts are never deleted."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Staff status and Superuser status grant no laboratory role and no release authority.",
+    "Clear the client link before giving an account staff flags, groups or permissions.",
+    "You cannot demote or deactivate the last active superuser.",
+    "There is no protection against another administrator's save: a later save replaces earlier values.",
+    "Account and role changes are recorded in the audit history, without password values."
+  ],
   "sections": [
     {
       "title": "Access and page variants",

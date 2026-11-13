@@ -1,9 +1,9 @@
-{% comment %}
+{% load ui %}{% comment %}
 Physical-sample storage state as a status label: the one place that maps a state to a tone.
 Parameters: storage (SampleStorage or None), sample, today; plain (compact table-cell variant).
 {% endcomment %}
-{% if storage.disposed_at %}{% include "includes/status.html" with label="Physically disposed" tone="neutral" plain=plain %}
-{% elif storage.disposal_hold or sample.disposition == "hold" %}{% include "includes/status.html" with label="Disposal blocked by hold" tone="warning" plain=plain %}
-{% elif not storage.retention_until %}{% include "includes/status.html" with label="Retention date not set" tone="neutral" plain=plain %}
-{% elif storage.retention_until < today %}{% include "includes/status.html" with label="Retention date elapsed" tone="info" plain=plain %}
-{% else %}{% include "includes/status.html" with label="Within retention date" tone="neutral" plain=plain %}{% endif %}
+{% if storage.disposed_at %}{% status label="Physically disposed" tone="neutral" plain=plain %}
+{% elif storage.disposal_hold or sample.disposition == "hold" %}{% status label="Disposal blocked by hold" tone="warning" plain=plain %}
+{% elif not storage.retention_until %}{% status label="Retention date not set" tone="neutral" plain=plain %}
+{% elif storage.retention_until < today %}{% status label="Retention date elapsed" tone="info" plain=plain %}
+{% else %}{% status label="Within retention date" tone="neutral" plain=plain %}{% endif %}

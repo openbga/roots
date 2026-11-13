@@ -1,0 +1,12 @@
+{% load ui %}{% comment %}
+The top bar's sample lookup: a GET search that opens the samples list filtered by lab or client
+sample ID. The list view authorizes and filters; nothing here decides access. No parameters.
+{% endcomment %}
+{% url 'receipt:sample-list' as sample_list_url %}
+{% if sample_list_url %}
+<form class="vr-lookup d-none d-sm-block" action="{{ sample_list_url }}" method="get" role="search">
+  <label class="visually-hidden" for="vr-lookup-q">Find a sample by lab or client ID</label>
+  {% icon name="search" %}
+  <input class="form-control form-control-sm" type="search" id="vr-lookup-q" name="q" placeholder="Find sample ID" autocomplete="off" spellcheck="false">
+</form>
+{% endif %}

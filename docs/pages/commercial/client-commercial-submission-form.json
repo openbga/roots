@@ -6,6 +6,35 @@
   ],
   "title": "Submission details",
   "purpose": "Create or edit shipment and project information before sending a declaration to the laboratory. Samples are added on the submission page.",
+  "summary": "The project and shipment details of a sample submission. You add the samples on the submission page afterwards.",
+  "tasks": [
+    {
+      "title": "Start a submission",
+      "steps": [
+        "Choose the [[Project]] and enter the [[Chain of custody reference]] printed on your field paperwork.",
+        "Add the expected arrival, carrier and contact if you know them.",
+        "Select [[Create submission]]. It is saved as a Draft; nothing is sent yet."
+      ]
+    },
+    {
+      "title": "Link the work to an accepted quote",
+      "steps": [
+        "Choose the quote in [[Accepted quote]]. Pick the one that actually covers this work."
+      ]
+    },
+    {
+      "title": "Correct the details",
+      "steps": [
+        "Change the fields and select [[Save changes]]. Saving does not submit."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "You can edit only while the submission is Draft or Returned for changes.",
+    "Writing a rush request or limits in Special instructions does not approve or configure them. The laboratory reads the note.",
+    "Expected arrival is your plan, not a receipt or a delivery commitment.",
+    "If the submission changed after you opened it, saving is refused. Reload and review it."
+  ],
   "sections": [
     {
       "title": "Access",

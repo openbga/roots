@@ -5,7 +5,73 @@
   ],
   "title": "Sample record",
   "purpose": "Follow one received physical sample from its collection and receipt through containers, test work, preservation decisions, custody and issued report versions.",
+  "summary": "Everything about one received sample: where it came from, how it arrived, which tests it needs, how far the work has got, and every custody step since receipt.",
+  "tasks": [
+    {
+      "title": "Decide on a sample that is on hold",
+      "steps": [
+        "Read the highlighted receipt discrepancy and the disposition note at the top.",
+        "Select [[Change disposition]], choose the new disposition and give the reason.",
+        "Nothing else can proceed while the sample is on Hold, so this is the page's main action until it is decided."
+      ]
+    },
+    {
+      "title": "Record that the sample moved",
+      "steps": [
+        "Under Record custody transfer, fill in [[To location]], [[Relinquished by]], [[Received by]], [[Occurred at]] and [[Reason]].",
+        "Select [[Record transfer]]. The new location appears, and the move is added to History; earlier events are never changed."
+      ]
+    },
+    {
+      "title": "Fix a mistake in the sample details",
+      "steps": [
+        "Select [[Correct sample details]] and open the tab you need: identity, collection, observations, requested tests or matrix.",
+        "A section that later work depends on can be locked; the tab tells you."
+      ]
+    },
+    {
+      "title": "Print labels",
+      "steps": [
+        "Select [[Labels]], choose Each container or Each sample, and set [[Copies of each]] (1 to 10).",
+        "Select [[Download PDF]] and print at actual size, one 4 × 2 inch label per page."
+      ]
+    },
+    {
+      "title": "Send a test to an external laboratory",
+      "steps": [
+        "In Requested tests, find a test shown as Not in a batch and select [[Send out]].",
+        "The submission rechecks the sample before dispatch, so the link alone does not guarantee it can go."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The progress route under the title only summarises the statuses further down. It never decides or changes anything.",
+    "The delivery target is the date agreed for the chain of custody. It is not a holding deadline; holding deadlines are per test, with the nearest one in the header.",
+    "Once a result exists, its holding status (Met, Exceeded, Not evaluable) is frozen. It is not recalculated from today's clock.",
+    "Preservation screens the cooler temperature against each test's rule. It says nothing about the container or chemical preservation.",
+    "A custody transfer cannot be dated in the future or before the latest custody event, and a physically disposed sample cannot be transferred."
+  ],
   "sections": [
+    {
+      "title": "Progress route",
+      "paragraphs": [
+        "Under the title, six stops summarise where the sample stands: Received, Disposition, In a batch, Results entered, Reviewed and Reported. It summarises the statuses shown further down the page; it decides nothing and changes nothing."
+      ],
+      "items": [
+        {
+          "label": "Received",
+          "description": "Always done; shows the receipt time."
+        },
+        {
+          "label": "Disposition",
+          "description": "Done with the disposition (Proceed or Qualify). On Hold it is the current stop, marked “Hold: decide before work starts”; on Reject, “Rejected at receipt”. The later stops then wait."
+        },
+        {
+          "label": "In a batch / Results entered / Reviewed / Reported",
+          "description": "Each shows how many of the sample’s requested tests have reached it: batched or sent to an external laboratory; with a result entered; approved; contained in an issued report version. A stop is done when every test has reached it. The first stop not reached by every test is the current one. With no requested tests the stops read “No tests requested”."
+        }
+      ]
+    },
     {
       "title": "Access and header",
       "paragraphs": [
@@ -17,16 +83,20 @@
           "description": "Stable laboratory accession, client identifier, and the recorded matrix with the sample source after a dot when one is recorded."
         },
         {
+          "label": "Matrix",
+          "description": "The sample’s matrix tag (Water, Wastewater or Soil, with its icon) and the sample source, right after the disposition."
+        },
+        {
           "label": "Sample type / Rush",
           "description": "The sample type is shown in the header when it is not an ordinary Field sample (Field duplicate, Field blank, Trip blank or Equipment / rinsate blank). A Rush marker appears when the chain of custody’s turnaround is Rush."
         },
         {
           "label": "Client / Project / Delivery target",
-          "description": "Ownership and explicit target inherited from the chain of custody; the target is not an analytical holding deadline."
+          "description": "Ownership and explicit target inherited from the chain of custody; the target is not an analytical holding deadline. Once the target has passed it carries a red “Overdue N d” pill (just “Overdue” on the day itself); within the seven days before it, an amber “Due in N d” or “Due today” pill. Otherwise the date stands alone."
         },
         {
           "label": "Change disposition",
-          "description": "Custodians, project managers and administrators open a reasoned decision change."
+          "description": "Custodians, project managers and administrators open a reasoned decision change. While the sample is on Hold it is the page’s primary action, because nothing else can proceed until the disposition is decided."
         },
         {
           "label": "Correct sample details",
@@ -35,6 +105,10 @@
         {
           "label": "Labels",
           "description": "Any authorized staff member opens identity-label options. Each container is the default; Each sample prints sample identity. Copies of each is 1–10, initially 1. Download PDF opens one 4 × 2 inch label per page, maximum 200 total, for printing at actual size. No sample/custody state changes; reprint when displayed identity facts are corrected."
+        },
+        {
+          "label": "Next holding deadline",
+          "description": "The requested test whose collection-based holding deadline comes first among the tests still waiting for analysis, with the deadline and the time left. When that test’s clock is at risk the time left is an amber pill; once expired, a red “Expired … ago” pill. It is absent when no waiting test has a holding rule. The Requested tests table shows every test’s clock."
         }
       ]
     },

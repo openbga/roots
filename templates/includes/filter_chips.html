@@ -1,8 +1,11 @@
-{% comment %}Active filters as removable chips. Context: active_filters = [{label, value, remove_url}] (technical-lead helper). Renders nothing when empty.{% endcomment %}
-{% if active_filters %}
+{% load ui %}{% comment %}
+Active filters as removable chips, under the list toolbar (includes/grid_toolbar.html).
+Parameters: chips = [{label, value, remove_url}] (the view's active_filters). Renders nothing when empty.
+{% endcomment %}
+{% if chips %}
 <ul class="vr-chips" aria-label="Active filters">
-  {% for chip in active_filters %}
-  <li class="vr-chip"><span><span class="vr-muted">{{ chip.label }}:</span> {{ chip.value }}</span><a href="{{ chip.remove_url }}" aria-label="Remove filter {{ chip.label }}: {{ chip.value }}">{% include "includes/icon.html" with name="x" %}</a></li>
+  {% for chip in chips %}
+  <li class="vr-chip"><span><span class="vr-muted">{{ chip.label }}:</span> {{ chip.value }}</span><a href="{{ chip.remove_url }}" aria-label="Remove filter {{ chip.label }}: {{ chip.value }}">{% icon name="x" %}</a></li>
   {% endfor %}
 </ul>
 {% endif %}

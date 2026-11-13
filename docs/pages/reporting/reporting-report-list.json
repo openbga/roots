@@ -5,6 +5,35 @@
   ],
   "title": "Reports",
   "purpose": "Find report scopes, distinguish drafts from issued versions and identify work needing attention.",
+  "summary": "Find report scopes, tell drafts from issued versions and spot reports that need attention. Project managers, approvers and staff with release authority can prepare reports.",
+  "tasks": [
+    {
+      "title": "Find a report",
+      "steps": [
+        "Type a title, project, client or RPT number in [[Search]].",
+        "Optionally pick a [[Status]] or [[Client]], then select [[Apply]].",
+        "Select the RPT number to open the report."
+      ]
+    },
+    {
+      "title": "Find reports that need attention",
+      "steps": [
+        "Pick an option in [[Needs attention]] and select [[Apply]]: results or samples changed since issue, or drafts with unapproved tests."
+      ]
+    },
+    {
+      "title": "Prepare a new report",
+      "steps": [
+        "Select [[Prepare report]] and choose the project."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Draft means the report was never issued. Editing an issued report changes only the next version.",
+    "Title shows the current editable title, which can differ from an issued PDF.",
+    "The Results column is an indicator, not a readiness check. The preview makes the exact comparison.",
+    "Admin alone does not let you release. Release needs the explicit report release permission."
+  ],
   "sections": [
     {
       "title": "Access and navigation",
@@ -121,7 +150,7 @@
         },
         {
           "label": "Columns",
-          "description": "With browser enhancement, change optional column visibility and order using the dialog’s move controls or by dragging headings. Changes apply immediately and are saved in this browser only. Locked identity/action columns stay visible and fixed. Reset columns restores defaults; Done or Close closes the dialog. Presentation settings do not change records, filters or exports."
+          "description": "With browser enhancement, change optional column visibility and order using the dialog’s move controls or by dragging headings. Changes apply immediately and are saved for your account, on any workstation. Locked identity/action columns stay visible and fixed. Reset columns restores defaults; Done or Close closes the dialog. Presentation settings do not change records, filters or exports."
         }
       ]
     },

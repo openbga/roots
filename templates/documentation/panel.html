@@ -1,9 +1,9 @@
-<template data-vr-documentation-source>{% include "documentation/content.html" %}</template>
+{% load ui %}<template data-vr-documentation-source>{% include "documentation/content.html" %}</template>
 <aside class="vr-documentation" id="vr-documentation" data-vr-user="{{ user.pk|default:'anonymous' }}" aria-label="Page documentation" hidden>
-  <div class="vr-documentation-resize" role="separator" tabindex="0" aria-label="Documentation panel width" aria-orientation="vertical" aria-controls="vr-documentation" aria-valuemin="320" aria-valuemax="680" aria-valuenow="400" aria-valuetext="400 pixels" aria-describedby="vr-documentation-resize-help"></div>
+  <div class="vr-documentation-resize" role="separator" tabindex="0" aria-label="Documentation panel width" aria-orientation="vertical" aria-controls="vr-documentation" aria-valuemin="320" aria-valuemax="680" aria-valuenow="440" aria-valuetext="440 pixels" aria-describedby="vr-documentation-resize-help"></div>
   <div class="vr-documentation-header">
-    <p class="vr-documentation-label">Documentation</p>
-    <button class="btn btn-sm vr-topbar-btn" type="button" data-vr-documentation-close aria-label="Close documentation" title="Close documentation">{% include "includes/icon.html" with name="x-lg" %}</button>
+    <p class="vr-documentation-label">{% icon name="journal-text" %}Help</p>
+    <button class="btn btn-sm btn-outline-secondary vr-btn-icon" type="button" data-vr-documentation-close aria-label="Close documentation" title="Close documentation">{% icon name="x-lg" %}</button>
   </div>
   <p class="visually-hidden" id="vr-documentation-resize-help">Use Left and Right arrows to resize. Shift changes the width faster. Home sets the minimum width; End sets the maximum. Escape closes documentation.</p>
   <div class="vr-documentation-content" data-vr-documentation-content></div>

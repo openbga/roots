@@ -5,6 +5,34 @@
   ],
   "title": "QC control chart",
   "purpose": "Inspect exact current QC values, configured-limit status and descriptive statistical bands for one test, QC category, measure and phase.",
+  "summary": "See one QC series as a control chart and a table: each value, whether it passes the lab's configured limits, and descriptive statistical bands.",
+  "tasks": [
+    {
+      "title": "Change the baseline for the bands",
+      "steps": [
+        "Choose a [[Statistical baseline]], such as the most recent 20 or 50 points.",
+        "Select [[Apply chart settings]]."
+      ]
+    },
+    {
+      "title": "Check individual points",
+      "steps": [
+        "Read the data points table under the chart. It lists every point, newest first, with its exact value."
+      ]
+    },
+    {
+      "title": "Switch to preparation QC",
+      "steps": [
+        "Set [[QC phase]] to Preparation QC and select [[Apply chart settings]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Only the configured limits decide QC status. The 2 SD and 3 SD bands are descriptive and never accept or reject QC.",
+    "Bands appear only with at least 20 baseline points. That is a display threshold, not a lab rule.",
+    "Non-detects are not plotted and are never treated as zero.",
+    "Every view uses today's measurements and limits. It is not a frozen historical record."
+  ],
   "sections": [
     {
       "title": "Access and identity",
@@ -74,7 +102,7 @@
     {
       "title": "Data points table",
       "paragraphs": [
-        "The table lists all computable points newest first with exact decimal text, rather than only the newest 100 drawn. Rows per page is 25, 50 or 100, initially 25. First, Previous, Next and Last preserve the chart settings. Columns changes local visibility/order with reset and keyboard controls. There is no point search or user-selected sort."
+        "The table lists all computable points newest first with exact decimal text, rather than only the newest 100 drawn. Rows per page is 25, 50 or 100, initially 25. First, Previous, Next and Last preserve the chart settings. Columns changes your saved visibility/order with reset and keyboard controls. There is no point search or user-selected sort."
       ],
       "items": [
         {

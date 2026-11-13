@@ -1,0 +1,28 @@
+{% comment %}
+A form's action row (docs/ui-standards.md section 7, rule 5): destructive action first, then
+Cancel (btn-link), then the one primary button last. {% form_page %} renders it; a form built by
+hand (an action form inside a record page's panel) includes it at the end of the form.
+Parameters:
+  submit_label  the submit button's words (default "Save changes")
+  cancel_url    where Cancel returns (the record when editing, the list when creating);
+                for no Cancel link (a form inside a panel of the record it
+                changes): pass it explicitly, since an include sees the page's context
+  destructive   truthy when the submit ends or voids something: btn-outline-danger, at the start
+                of the row
+  secondary     truthy for a btn-outline-secondary submit (an action panel on a record page that
+                already has its primary in the header)
+  no_submit     truthy to leave out the submit (a read-only state of the form)
+  extra         optional further buttons, e.g. "Save and add another" (html, from {% form_page %}'s
+                actions part). The primary stays first in the markup, so Enter submits it, and is
+                shown last (order-last)
+Usage: {% form_actions cancel_url=cancel_url submit_label="Create client" %}{% endform_actions %}
+Further buttons or links with markup: the {% form_actions %} block tag ({% load ui %}) takes the
+same parameters and renders this row with its body as extra:
+  {% form_actions cancel_url=batch_url submit_label=label %}<a class="btn btn-link" href="...">Start over</a>{% endform_actions %}
+{% endcomment %}
+<div class="vr-form-actions">
+  {% if destructive and not no_submit %}<button class="btn btn-outline-danger vr-form-actions-start" type="submit">{{ submit_label|default:"Save changes" }}</button>{% endif %}
+  {% if cancel_url %}<a class="btn btn-link" href="{{ cancel_url }}">Cancel</a>{% endif %}
+  {% if not destructive and not no_submit %}<button class="btn {% if secondary %}btn-outline-secondary{% else %}btn-primary{% endif %}{% if extra %} order-last{% endif %}" type="submit">{{ submit_label|default:"Save changes" }}</button>{% endif %}
+  {% if extra %}{{ extra }}{% endif %}
+</div>

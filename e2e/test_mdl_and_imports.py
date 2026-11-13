@@ -15,7 +15,17 @@ from decimal import Decimal
 import pytest
 from conftest import Lab
 from django.utils import timezone
-from helpers import LAB_TZ, field, grid_search, lcs_history, local_input, sign_in, sign_out
+from helpers import (
+    LAB_TZ,
+    field,
+    grid_search,
+    lcs_history,
+    local_input,
+    native_select,
+    pick,
+    sign_in,
+    sign_out,
+)
 from playwright.sync_api import Page, expect
 
 pytestmark = pytest.mark.django_db(transaction=True)
@@ -40,15 +50,12 @@ def test_mdl_study_is_reviewed_independently_and_charts_keep_limit_kinds_apart(
     page.get_by_role("link", name="New MDL study").first.click()
     page.get_by_role("button", name="Create study").click()
     expect(page.locator("#id_definition")).to_have_attribute("aria-invalid", "true")
-    option = (
-        page.get_by_label(re.compile(r"^Test \(method"))
-        .locator("option")
-        .filter(has_text=re.compile(r"^Lead · DEMO-METALS-AQ.* · Water$"))
+    test_select = native_select(page.get_by_role("combobox", name=re.compile(r"^Test \(method")))
+    option = test_select.locator("option").filter(
+        has_text=re.compile(r"^Lead · DEMO-METALS-AQ.* · Water$")
     )
-    page.get_by_label(re.compile(r"^Test \(method")).select_option(
-        value=option.first.get_attribute("value")
-    )
-    field(page, "Kind").select_option(label="Initial determination")
+    pick(test_select, value=option.first.get_attribute("value"))
+    pick(field(page, "Kind"), label="Initial determination")
     field(page, "Spiking level").fill("2.00")
     page.get_by_role("button", name="Create study").click()
     expect(page.get_by_text(re.compile(r"Created \S+\. Add spiked samples"))).to_be_visible()
@@ -57,9 +64,9 @@ def test_mdl_study_is_reviewed_independently_and_charts_keep_limit_kinds_apart(
     page.get_by_role("link", name="Add observation").click()
     for index, text in enumerate([*SPIKES, GROSS_FAILURE]):
         analysed = local_input(timedelta(days=-(10 - index)))
-        field(page, "Sample type").select_option(label="Spiked sample")
+        pick(field(page, "Sample type"), label="Spiked sample")
         field(page, "Result").fill(text)
-        field(page, "Qualitative identification met").select_option(label="Yes")
+        pick(field(page, "Qualitative identification met"), label="Yes")
         field(page, "Prepared").fill(local_input(timedelta(days=-(10 - index), hours=-1)))
         field(page, "Analysed").fill(analysed)
         field(page, "Preparation batch").fill(f"SB-{index % 3 + 1}")
@@ -130,10 +137,10 @@ def test_mdl_study_is_reviewed_independently_and_charts_keep_limit_kinds_apart(
         expect(page.get_by_text(text, exact=True).first).to_be_visible()
     page.get_by_role("button", name="Record decision", exact=True).click()
     expect(page.locator("#vr-form-title")).to_have_text("Review MDL calculation")
-    page.get_by_label("Decision").select_option(label="Reject this calculation")
+    pick(page.get_by_label("Decision"), label="Reject this calculation")
     page.locator("#vr-form-dialog").get_by_role("button", name="Record decision").click()
     assert MDLCalculation.objects.get().decision == ""
-    page.get_by_label("Decision").select_option(label="Adopt the verified MDL")
+    pick(page.get_by_label("Decision"), label="Adopt the verified MDL")
     page.locator("#vr-form-dialog").get_by_role("button", name="Record decision").click()
     expect(page.get_by_text("Decision recorded.")).to_be_visible()
     calc.refresh_from_db()
@@ -158,7 +165,7 @@ def test_mdl_study_is_reviewed_independently_and_charts_keep_limit_kinds_apart(
     points = page.get_by_role("row").filter(has_text=re.compile(r"LCS-1"))
     expect(points.first).to_be_visible()
     assert page.get_by_text("1.30").count() >= 1  # exact observed text kept in the data table
-    page.locator("#id_baseline").select_option(label="Most recent 20 points")
+    pick(page.locator("#id_baseline"), label="Most recent 20 points")
     page.get_by_role("button", name="Apply chart settings").click()
     expect(page.locator("dl.vr-facts").first).to_contain_text("Baseline")
     assert page.console_errors == []
@@ -178,7 +185,7 @@ WIDE = (
 
 
 def upload(page: Page, name: str, text: str, profile: str):
-    page.get_by_label("Mapping profile").select_option(label=profile)
+    pick(page.get_by_label("Mapping profile"), label=profile)
     page.get_by_label(re.compile("^Results file")).set_input_files(
         files=[{"name": name, "mimeType": "text/plain", "buffer": text.encode()}]
     )
@@ -227,10 +234,10 @@ def test_mapped_imports_preview_first_and_keep_exact_text_and_provenance(page: P
     page.get_by_role("button", name="Create mapping").click()
     expect(page.locator("#id_name")).to_have_attribute("aria-invalid", "true")
     field(page, "Profile name").fill("E2E long layout")
-    field(page, "Layout").select_option(value="long")
-    field(page, "Delimiter").select_option(value="comma")
+    pick(field(page, "Layout"), value="long")
+    pick(field(page, "Delimiter"), value="comma")
     field(page, "Header row").fill("2")
-    field(page, "Date format in the file").select_option(value="iso")
+    pick(field(page, "Date format in the file"), value="iso")
     field(page, "Sample ID column").fill("Sample Name")
     field(page, "Analysis start column").fill("Run Time")
     field(page, "Analyte column").fill("Element")
@@ -244,10 +251,10 @@ def test_mapped_imports_preview_first_and_keep_exact_text_and_provenance(page: P
 
     page.get_by_role("link", name="New mapping").first.click()
     field(page, "Profile name").fill("E2E wide layout")
-    field(page, "Layout").select_option(value="wide")
-    field(page, "Delimiter").select_option(value="tab")
+    pick(field(page, "Layout"), value="wide")
+    pick(field(page, "Delimiter"), value="tab")
     field(page, "Header row").fill("2")
-    field(page, "Date format in the file").select_option(value="iso")
+    pick(field(page, "Date format in the file"), value="iso")
     field(page, "Sample ID column").fill("ID")
     field(page, "Analysis start column").fill("Run Time")
     field(page, "Analyte columns").fill("Pb | Lead | ug/L | 1.0\nCu | Copper | ug/L | 2.0")
@@ -274,8 +281,8 @@ def test_mapped_imports_preview_first_and_keep_exact_text_and_provenance(page: P
     shown_hash = (
         page.locator("div")
         .filter(has_text=re.compile(r"^File SHA-256"))
-        .locator("span[title]")
-        .last.get_attribute("title")
+        .locator("span[data-bs-original-title]")  # a title hint, now a Bootstrap tooltip
+        .last.get_attribute("data-bs-original-title")
     )
     assert shown_hash == hashlib.sha256(good.encode()).hexdigest()  # the exact uploaded bytes
     assert ResultRevision.objects.filter(result__batch=batch).count() == 0  # still nothing saved

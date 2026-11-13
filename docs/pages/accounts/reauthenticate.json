@@ -5,6 +5,33 @@
   ],
   "title": "Confirm your password",
   "purpose": "Reconfirm your identity before an account-sensitive action.",
+  "summary": "Confirm your password before a sensitive account change, such as two-factor settings.",
+  "tasks": [
+    {
+      "title": "Confirm and continue",
+      "steps": [
+        "Type your current [[Password]].",
+        "Select [[Confirm]]. The action you started continues."
+      ]
+    },
+    {
+      "title": "Use your authenticator instead",
+      "steps": [
+        "Select [[Use authenticator app or code]], when you have one set up."
+      ]
+    },
+    {
+      "title": "Recover a forgotten password",
+      "steps": [
+        "Select [[Forgot your password?]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "This asks for your current password, not a new one.",
+    "A confirmation counts as recent for five minutes.",
+    "Wrong passwords are rate limited."
+  ],
   "sections": [
     {
       "title": "Fields and actions",

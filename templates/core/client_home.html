@@ -1,11 +1,10 @@
 {% extends "layouts/portal.html" %}
+{% load ui %}
 {% block page_heading %}{{ client.name }}{% endblock %}
-{% block page_meta %}<ul class="vr-page-meta"><li>Client workspace</li></ul>{% endblock %}
+{% block page_meta %}{% page_meta %}<li>Client workspace</li>{% endpage_meta %}{% endblock %}
 {% block content %}
-<section class="card vr-table-card" aria-labelledby="client-projects-heading">
-  <div class="card-header"><h2 class="card-title" id="client-projects-heading">Your projects</h2><span class="vr-count">{{ projects|length }}</span></div>
-  <div class="card-body">
-    {% if projects %}
+{% panel title="Your projects" heading_id="client-projects-heading" count=projects|length table=True %}
+    {% list_results items=projects empty_title="No projects yet" empty_body="Your laboratory contact sets up projects. Sample status and issued reports will appear here." %}
     <div class="vr-table-wrap">
       <table class="table vr-table">
         <thead><tr><th scope="col">Project</th><th scope="col">Program / permit</th><th scope="col" class="text-end">Turnaround (days)</th></tr></thead>
@@ -16,9 +15,6 @@
         </tbody>
       </table>
     </div>
-    {% else %}
-    {% include "includes/empty_state.html" with title="No projects yet" body="Your laboratory contact sets up projects. Sample status and issued reports will appear here." %}
-    {% endif %}
-  </div>
-</section>
+    {% endlist_results %}
+{% endpanel %}
 {% endblock %}

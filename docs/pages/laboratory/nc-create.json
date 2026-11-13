@@ -5,6 +5,35 @@
   ],
   "title": "New nonconformance",
   "purpose": "Record an issue and optionally link the affected sample, batch, stock lot or asset.",
+  "summary": "Record a new nonconformance and link the sample, batch, stock lot or equipment involved. Any lab staff member can open one.",
+  "tasks": [
+    {
+      "title": "Report an issue",
+      "steps": [
+        "Enter a [[Title]] and a [[Description]] of what happened and how it was found.",
+        "Choose the [[Category]] and [[Severity]], and check [[Discovered on]].",
+        "Select [[Create nonconformance]]. It opens with an NC number in Open."
+      ]
+    },
+    {
+      "title": "Link the affected records",
+      "steps": [
+        "Enter the [[Sample]] ID or [[Analytical batch]] number, or choose the [[Standard / reagent lot]] or [[Equipment]]."
+      ]
+    },
+    {
+      "title": "Assign it",
+      "steps": [
+        "Choose an [[Owner]] and optionally a [[Due]] date. An owner is needed before investigation can start."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Category and severity are deliberate choices. Nothing is preselected unless you started from a linked record.",
+    "When you start from a lot, asset, batch or sample, that link and category are filled in. Check them before saving.",
+    "Linking a record does not change it. No batch is held and no stock is altered.",
+    "The due date is a corrective action target, not a holding time."
+  ],
   "sections": [
     {
       "title": "Access and navigation",

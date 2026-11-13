@@ -1,7 +1,5 @@
-{% load allauth %}<section class="card mb-3">
-  <div class="card-header"><h2 class="card-title">{% slot title %}{% endslot %}</h2></div>
-  <div class="card-body">
+{% comment %}allauth panel element as the shared panel (includes/panel.html); its actions form the shared action row.{% endcomment %}{% load allauth ui %}{% setvar actions_html %}{% for action in slots.actions %}{{ action }}{% endfor %}{% endsetvar %}{% panel class="mb-3" %}
+  {% fill title %}{% slot title %}{% endslot %}{% endfill %}
     {% slot body %}{% endslot %}
-    {% if slots.actions %}<div class="vr-form-actions">{% for action in slots.actions %}{{ action }}{% endfor %}</div>{% endif %}
-  </div>
-</section>
+    {% if actions_html %}{% form_actions no_submit=True %}{{ actions_html }}{% endform_actions %}{% endif %}
+{% endpanel %}

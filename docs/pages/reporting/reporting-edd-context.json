@@ -5,6 +5,28 @@
   ],
   "title": "Export context",
   "purpose": "Record export-only sample depths/locations, QC facts and corrected-result test types for one released report version.",
+  "summary": "Record the export-only facts for one released report version: sample depths and locations, QC dates and dilutions, and the test type of corrected results.",
+  "tasks": [
+    {
+      "title": "Enter sample depths and locations",
+      "steps": [
+        "Under [[Sample depth and location]], enter the depths, the unit and the [[NYSDEC location code]] for each sample.",
+        "Select [[Save changes]] to return to the EDD preview."
+      ]
+    },
+    {
+      "title": "Enter laboratory QC facts",
+      "steps": [
+        "For each QC sample, enter the [[Sample date]] and [[Dilution factor]], then select [[Save changes]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "These values only feed exports. They never change the report, its PDF or earlier exports.",
+    "Batch prepared is shown for reference only. It is not copied into the QC sample date for you.",
+    "Saving is not an export-ready decision. Depth order and location codes are checked in the export preview.",
+    "There is no warning if someone else saved meanwhile. Reload before overwriting their changes."
+  ],
   "sections": [
     {
       "title": "Access and data boundaries",

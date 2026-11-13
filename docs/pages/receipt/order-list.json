@@ -5,6 +5,34 @@
   ],
   "title": "Chains of custody",
   "purpose": "Find the laboratory order representing one chain of custody and the samples received against it. Orders can exist before physical receipt.",
+  "summary": "Every chain of custody the laboratory has opened, with its client, project, turnaround, delivery target and the samples received on it.",
+  "tasks": [
+    {
+      "title": "Find a chain of custody",
+      "steps": [
+        "Type a reference, purchase order, tracking number, project or client in [[Search]].",
+        "Select [[Apply]], then select the reference to open it."
+      ]
+    },
+    {
+      "title": "Start receiving a shipment",
+      "steps": [
+        "Select [[New chain of custody]], fill in the paperwork details and create it.",
+        "Receive each physical sample from the new chain of custody."
+      ]
+    },
+    {
+      "title": "List rush work",
+      "steps": [
+        "Set [[Turnaround]] to Rush and select [[Apply]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A chain of custody can exist before any sample arrives. Samples counts only samples actually received.",
+    "The delivery target is the date agreed with the client. It is separate from analytical holding times.",
+    "Cancelled chains of custody stay in the list and in searches, marked beside the reference."
+  ],
   "sections": [
     {
       "title": "Search, filters and actions",
@@ -102,7 +130,7 @@
         },
         {
           "label": "Column headings and Columns",
-          "description": "Linked headings sort the complete matching set, with record ID breaking ties. Columns controls optional visibility and order, saved locally in this browser; reset restores default presentation. Identifying columns stay visible."
+          "description": "Linked headings sort the complete matching set, with record ID breaking ties. Columns controls optional visibility and order, saved for your account; reset restores default presentation. Identifying columns stay visible."
         },
         {
           "label": "Rows per page / Show",
@@ -134,7 +162,7 @@
         },
         {
           "label": "Reset columns",
-          "description": "Restores this table’s default order and visibility in this browser."
+          "description": "Restores this table’s default order and visibility for your account."
         },
         {
           "label": "Done / Close",

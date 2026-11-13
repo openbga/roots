@@ -5,6 +5,26 @@
   ],
   "title": "Remove authenticator",
   "purpose": "Confirm removal of one lost sign-in factor from an account.",
+  "summary": "Confirm removing one lost sign-in factor from an account.",
+  "tasks": [
+    {
+      "title": "Remove the factor",
+      "steps": [
+        "Check the factor named on the page, then select [[Yes, I’m sure]]."
+      ]
+    },
+    {
+      "title": "Keep it",
+      "steps": [
+        "Select [[No, take me back]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Only this factor goes. The account, its roles and its other factors stay.",
+    "The removal is recorded in the account's audit history. If that record cannot be written, nothing is removed.",
+    "The owner can enroll a new factor from their own Two-factor authentication pages."
+  ],
   "sections": [
     {
       "title": "Access and displayed scope",

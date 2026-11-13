@@ -6,6 +6,38 @@
   ],
   "title": "Declared sample",
   "purpose": "Add or edit one sample’s collection details, intended tests and grouped containers before laboratory review.",
+  "summary": "One declared sample in your submission: how and where it was collected, the tests you intend, and the containers you are sending.",
+  "tasks": [
+    {
+      "title": "Declare a sample",
+      "steps": [
+        "Enter [[Your sample ID]], the [[Matrix]], [[Collector name]] and [[Collection location]].",
+        "Choose the [[Intended tests]]; only tests for the sample's matrix can be added.",
+        "Add each container type with its [[Quantity]], then select [[Add sample]]."
+      ]
+    },
+    {
+      "title": "Declare several similar samples quickly",
+      "steps": [
+        "Select [[Save and add another]]. The next sample is copied from this one, with the sample ID blank.",
+        "Check every copied value, especially times and location, before saving it."
+      ]
+    },
+    {
+      "title": "Prepare bottles before sampling",
+      "steps": [
+        "Leave [[Collected / composite ended at]] blank and set a [[Planned collection date]] instead.",
+        "Never enter an estimated future time; the actual time is confirmed at receipt."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Your sample ID must be unique within the submission. It is used on planned labels and to match the received sample.",
+    "Changing the matrix keeps the chosen tests for review. Remove the ones that no longer match before saving.",
+    "Mark field blanks, trip blanks and field duplicates in Sample type. The laboratory confirms it at receipt.",
+    "A submission holds up to 200 samples, and each sample up to 20 containers.",
+    "If the submission changed after you opened the form, saving is refused but your typing is kept. Reload and review."
+  ],
   "sections": [
     {
       "title": "Access",

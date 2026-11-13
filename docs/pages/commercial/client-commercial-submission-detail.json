@@ -5,6 +5,42 @@
   ],
   "title": "Submission",
   "purpose": "Review your shipment and declared samples, submit it for laboratory review, and follow acceptance and receipt.",
+  "summary": "One sample submission: the shipment, the samples you declared, and where it stands with the laboratory, from your draft to receipt.",
+  "tasks": [
+    {
+      "title": "Declare the samples",
+      "steps": [
+        "Select [[Add sample]] and enter its collection details, intended tests and containers.",
+        "Repeat for each sample. Use [[Edit]] to change the shipment or project details."
+      ]
+    },
+    {
+      "title": "Send the submission to the laboratory",
+      "steps": [
+        "Check every sample has tests and containers.",
+        "Select [[Submit to laboratory]]. The version is frozen and editing is locked while the laboratory reviews it."
+      ]
+    },
+    {
+      "title": "Make the changes the laboratory asked for",
+      "steps": [
+        "Read the laboratory's note at the top or under Submitted versions.",
+        "Edit the details or samples, then select [[Submit to laboratory]] again."
+      ]
+    },
+    {
+      "title": "Discard a draft you no longer need",
+      "steps": [
+        "Select [[Delete draft]] and confirm. The draft and all its samples are deleted; this cannot be undone."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Submitting does not record a receipt. Lab status shows Received as only after the laboratory physically receives a sample.",
+    "Accepted means the laboratory expects the samples. It does not mean any sample has arrived.",
+    "Samples not yet collected can be submitted. Actual collection details are confirmed at receipt.",
+    "Only a draft that was never submitted can be deleted. A cancelled submission cannot be reinstated by you; contact the laboratory."
+  ],
   "sections": [
     {
       "title": "Access",

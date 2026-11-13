@@ -7,6 +7,36 @@
   ],
   "title": "Quote",
   "purpose": "Read an issued quote, inspect its issued versions, and accept or decline the current eligible version.",
+  "summary": "Read a quote the laboratory issued to you, compare its issued versions, and accept or decline the current one.",
+  "tasks": [
+    {
+      "title": "Accept the quote",
+      "steps": [
+        "Read the prices, scope and terms of the version shown.",
+        "Optionally enter [[Your purchase order or reference]].",
+        "Tick [[I accept these prices and terms for this laboratory work.]] and select [[Accept version]]."
+      ]
+    },
+    {
+      "title": "Decline the quote",
+      "steps": [
+        "Enter the [[Reason]] for the laboratory and select [[Decline version]].",
+        "The laboratory may send a revised version."
+      ]
+    },
+    {
+      "title": "Look at an earlier version",
+      "steps": [
+        "Under Versions, select the version number. Select Show the current version to come back."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "You can decide only on the latest issued version, while it is Issued and not past its valid-until date.",
+    "Accepting does not send samples or create an order. You can then link the quote to a sample submission.",
+    "If the laboratory issues a new version while you are deciding, your decision is refused. Review the new version and decide again.",
+    "A decision cannot be undone on this page. Contact the laboratory if it needs to change."
+  ],
   "sections": [
     {
       "title": "Access",

@@ -5,6 +5,41 @@
   ],
   "title": "Equipment details",
   "purpose": "Review one asset, current due dates, calibration and maintenance records and linked issues.",
+  "summary": "Review one asset: its status, calibration and maintenance due dates, event history and linked nonconformances.",
+  "tasks": [
+    {
+      "title": "Record calibration or maintenance",
+      "steps": [
+        "Select [[Record calibration]] or [[Record maintenance]]. The filled button is the more urgent one.",
+        "Enter when it was performed, by whom, the outcome and the next due date the lab sets, then save."
+      ]
+    },
+    {
+      "title": "Correct a mistaken event",
+      "steps": [
+        "Select [[Correct]] on the event's row.",
+        "Change the values, give a correction reason and save. The original event stays on record, marked Corrected."
+      ]
+    },
+    {
+      "title": "Take the asset out of service",
+      "steps": [
+        "Select [[Change status]], choose the new status and give a reason. Only admin and reviewer roles can change status."
+      ]
+    },
+    {
+      "title": "Raise a nonconformance about the asset",
+      "steps": [
+        "Select [[Add nonconformance]] in the linked nonconformances panel. The new record is linked to this asset."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Recording an event does not change the asset's status, and a Not acceptable outcome does not open a nonconformance for you.",
+    "Retired assets cannot have new events or corrections. Change the status first if that is appropriate.",
+    "A correction is a new record. Attach the evidence file again if it belongs on the correction.",
+    "Due dates come from the latest uncorrected event of each kind. No interval is assumed."
+  ],
   "sections": [
     {
       "title": "Access and navigation",
@@ -50,7 +85,7 @@
         },
         {
           "label": "Record maintenance / Record calibration",
-          "description": "Admin, analyst and reviewer roles can append events on non-retired assets. Allowed while Out of service. New events do not automatically change status."
+          "description": "Admin, analyst and reviewer roles can append events on non-retired assets. Allowed while Out of service. New events do not automatically change status. The primary (filled) button is the more urgent of the two: overdue before due soon, then the earlier due date; calibration when neither is more urgent."
         },
         {
           "label": "Correct",
@@ -61,7 +96,7 @@
     {
       "title": "Due dates and alerts",
       "paragraphs": [
-        "For each kind, dates and outcomes come from the latest uncorrected event by performed date, then record ID descending. No interval is calculated. A date is overdue only after it passes. Within the fixed 30-day highlight, the label is Due today or Due in … d; later dates are Scheduled; blank is Not scheduled. The filter window may differ from this fixed highlight.",
+        "For each kind, dates and outcomes come from the latest uncorrected event by performed date, then record ID descending. No interval is calculated. A date is overdue only after it passes. The date is shown as text; an Overdue … d pill follows it once it has passed, and a Due today or Due in … d pill within the fixed 30-day highlight. Later dates carry no pill; blank reads Not scheduled. The filter window may differ from this fixed highlight.",
         "Due dates show the latest performed date as Last. Out of service shows a warning. Overdue dates show an alert for non-retired equipment; retired detail still retains due-date facts. Missing dates mean no schedule was recorded, not that an interval is assumed. Not acceptable prompts consideration of a nonconformance; it does not create one or take the asset out of service."
       ]
     },
@@ -146,6 +181,6 @@
     "templates/includes/record_foot.html",
     "laboratory/common.py",
     "core/models.py",
-    "laboratory/templates/laboratory/_history.html"
+    "templates/includes/history_panel.html"
   ]
 }

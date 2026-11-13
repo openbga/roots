@@ -1,20 +1,21 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}Preparation batch forms: create, add aliquot, cancel aliquot, record start, record completion.
 Context: page_title, form, batch (absent when creating), submit_label, cancel_url, note, destructive, aliquot_form, available_tests.{% endcomment %}
-{% block breadcrumbs %}{% url 'analytical:prep-list' as list_url %}{% if batch %}{% url 'analytical:prep-detail' batch.pk as batch_url %}{% include "includes/breadcrumbs.html" with section="Preparation batches" section_url=list_url record=batch.number record_url=batch_url %}{% else %}{% include "includes/breadcrumbs.html" with section="Preparation batches" section_url=list_url %}{% endif %}{% endblock %}
+{% block breadcrumbs %}{% url 'analytical:prep-list' as list_url %}{% if batch %}{% url 'analytical:prep-detail' batch.pk as batch_url %}{% breadcrumbs section="Preparation batches" section_url=list_url record=batch.number record_url=batch_url %}{% else %}{% breadcrumbs section="Preparation batches" section_url=list_url %}{% endif %}{% endblock %}
 {% block content %}
 {% if batch %}
-<section class="card mb-3" aria-labelledby="preparation-heading">
-  <div class="card-header"><h2 class="card-title" id="preparation-heading">Preparation</h2></div>
-  <div class="card-body"><dl class="vr-facts">
-    <div><dt>Batch</dt><dd class="vr-id">{{ batch.number }}</dd></div>
-    <div><dt>Preparation method</dt><dd>{{ batch.method }}</dd></div>
-    <div><dt>Matrix</dt><dd>{{ batch.get_matrix_display }}</dd></div>
-    <div><dt>Actual start</dt><dd>{% if batch.prepared_at %}<time datetime="{{ batch.prepared_at|date:'c' }}" title="{{ batch.prepared_at|date:'Y-m-d H:i T' }}">{{ batch.prepared_at|date:"Y-m-d H:i" }}</time>{% else %}Not recorded{% endif %}</dd></div>
-  </dl></div>
-</section>
+{% panel title="Preparation" heading_id="preparation-heading" class="mb-3" %}
+  <dl class="vr-facts">
+    {% fact label="Batch" value=batch.number class="vr-id" %}
+    {% fact label="Preparation method" value=batch.method %}
+    {% fact label="Matrix" %}{% matrix_tag matrix=batch.matrix %}{% endfact %}
+    {% fact label="Actual start" %}{% if batch.prepared_at %}<time datetime="{{ batch.prepared_at|date:'c' }}" title="{{ batch.prepared_at|date:'Y-m-d H:i T' }}">{{ batch.prepared_at|date:"Y-m-d H:i" }}</time>{% else %}Not recorded{% endif %}{% endfact %}
+  </dl>
+{% endpanel %}
 {% endif %}
 {% if aliquot_form %}
+{# form: filter #}
 <form class="vr-form mb-3" method="get">
   <fieldset class="vr-form-section">
     <legend>Sample</legend>
@@ -23,12 +24,8 @@ Context: page_title, form, batch (absent when creating), submit_label, cancel_ur
   </fieldset>
 </form>
 {% endif %}
-<form class="vr-form" method="post" novalidate>
-  {% csrf_token %}
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.{% if not destructive %} Times are laboratory local time.{% endif %}</p>
-  {% if note %}<p class="vr-form-note">{{ note }}</p>{% endif %}
+{% form_page form=form cancel_url=cancel_url submit_label=submit_label destructive=destructive times=destructive|yesno:",True" note=note %}
   {% if aliquot_form %}
-    {% include "includes/form_errors.html" with form=form %}
     {{ form.sample.as_hidden }}
     <fieldset class="vr-form-section"><legend>Aliquot</legend>{{ form.label.as_field_group }}</fieldset>
     <fieldset class="vr-form-section"><legend>Tests covered</legend>
@@ -45,20 +42,6 @@ Context: page_title, form, batch (absent when creating), submit_label, cancel_ur
       </ul>
       {% else %}<p class="vr-form-note">Choose a received sample and load its requested tests.</p>{% endif %}
     </fieldset>
-  {% else %}
-    <fieldset class="vr-form-section">
-      <legend class="visually-hidden">{{ page_title }}</legend>
-      {{ form }}
-    </fieldset>
   {% endif %}
-  <div class="vr-form-actions">
-    {% if destructive %}
-    <button class="btn btn-outline-danger vr-form-actions-start" type="submit">{{ submit_label }}</button>
-    <a class="btn btn-link" href="{{ cancel_url }}">Cancel</a>
-    {% else %}
-    <a class="btn btn-link" href="{{ cancel_url }}">Cancel</a>
-    <button class="btn btn-primary" type="submit">{{ submit_label }}</button>
-    {% endif %}
-  </div>
-</form>
+{% endform_page %}
 {% endblock %}

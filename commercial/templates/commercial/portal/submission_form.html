@@ -1,12 +1,11 @@
 {% extends "layouts/portal.html" %}
+{% load ui %}
 {% comment %}Submission header (create or edit). Context: form (SubmissionForm: grouped()), submission (edit).{% endcomment %}
-{% block breadcrumbs %}{% url 'client_commercial:submission-list' as list_url %}{% if submission %}{% url 'client_commercial:submission-detail' submission.pk as record_url %}{% include "includes/breadcrumbs.html" with section="Submissions" section_url=list_url record=submission.number record_url=record_url current="Edit" %}{% else %}{% include "includes/breadcrumbs.html" with section="Submissions" section_url=list_url %}{% endif %}{% endblock %}
+{% block breadcrumbs %}{% url 'client_commercial:submission-list' as list_url %}{% if submission %}{% url 'client_commercial:submission-detail' submission.pk as record_url %}{% breadcrumbs section="Submissions" section_url=list_url record=submission.number record_url=record_url current="Edit" %}{% else %}{% breadcrumbs section="Submissions" section_url=list_url %}{% endif %}{% endblock %}
 {% block page_intro %}<p class="vr-page-intro">This tells the laboratory what to expect; it does not replace the signed chain of custody that travels with the samples.</p>{% endblock %}
 {% block content %}
-<form class="vr-form" method="post" novalidate>
-  {% csrf_token %}
-  {% include "includes/form_errors.html" with form=form %}
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required. You add the samples on the next page.</p>
+{% if submission %}{% url 'client_commercial:submission-detail' submission.pk as cancel_url %}{% else %}{% url 'client_commercial:submission-list' as cancel_url %}{% endif %}
+{% form_page form=form cancel_url=cancel_url submit_label=submission|yesno:"Save changes,Create submission" note="You add the samples on the next page." %}
   {% for legend, fields in form.grouped %}
   <fieldset class="vr-form-section">
     <legend>{{ legend }}</legend>
@@ -16,9 +15,5 @@
   </fieldset>
   {% endfor %}
   {% for field in form.hidden_fields %}{{ field }}{% endfor %}
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{% if submission %}{% url 'client_commercial:submission-detail' submission.pk %}{% else %}{% url 'client_commercial:submission-list' %}{% endif %}">Cancel</a>
-    <button class="btn btn-primary" type="submit">{% if submission %}Save changes{% else %}Create submission{% endif %}</button>
-  </div>
-</form>
+{% endform_page %}
 {% endblock %}

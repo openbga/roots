@@ -5,6 +5,35 @@
   ],
   "title": "New chain of custody",
   "purpose": "Create the laboratory order for one chain-of-custody form once, with its turnaround, purchase order, shipment details and instructions, then receive each physical sample without retyping them.",
+  "summary": "Open the laboratory order for one chain of custody form, once. You then receive each physical sample on it without retyping the shared details.",
+  "tasks": [
+    {
+      "title": "Open a chain of custody",
+      "steps": [
+        "Choose the [[Project]] and enter the [[Chain of custody reference]] from the paperwork.",
+        "Set [[Turnaround]] and, if one was agreed, the [[Delivery target]].",
+        "Select [[Create chain of custody]], then receive the first sample from its page."
+      ]
+    },
+    {
+      "title": "Record how the shipment arrived",
+      "steps": [
+        "Choose the [[Delivery method]] and enter the [[Carrier / tracking number]] and [[Coolers / packages]]."
+      ]
+    },
+    {
+      "title": "Pass on instructions to the receivers",
+      "steps": [
+        "Write them in [[Special instructions]]. They appear above the receipt form for every sample on this order."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Creating the order records no sample, container or custody event. Receipt is recorded per sample.",
+    "Rush marks the order and its samples. It does not change the delivery target.",
+    "The delivery target is never calculated from the project's turnaround, and it does not affect holding times.",
+    "A blank purchase order takes the project's standing purchase order, if it has one."
+  ],
   "sections": [
     {
       "title": "Chain of custody",

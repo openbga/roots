@@ -1,20 +1,19 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}Edit the draft version. Context: quote, version, form (QuoteDraftForm), formset (prefix "lines"). Blank rows are ignored; "Add line" appends one (static/js/app.js).{% endcomment %}
-{% block breadcrumbs %}{% url 'commercial:quote-list' as list_url %}{% url 'commercial:quote-detail' quote.pk as record_url %}{% include "includes/breadcrumbs.html" with section="Quotes" section_url=list_url record=quote.number record_url=record_url current="Edit" %}{% endblock %}
+{% block breadcrumbs %}{% url 'commercial:quote-list' as list_url %}{% url 'commercial:quote-detail' quote.pk as record_url %}{% breadcrumbs section="Quotes" section_url=list_url record=quote.number record_url=record_url current="Edit" %}{% endblock %}
 {% block page_meta %}
-<ul class="vr-page-meta">
+{% page_meta %}
   <li>{% include "commercial/_quote_status.html" with plain=True %}</li>
   <li>Version {{ version.number }}</li>
   <li>{{ quote.client.name }}</li>
-</ul>
+{% endpage_meta %}
 {% endblock %}
 {% block page_intro %}<p class="vr-page-intro">Amounts are US dollars; saving a draft does not show it to the client, issuing does.</p>{% endblock %}
 {% block content %}
 {% with prefix=formset.prefix %}
-<form class="vr-form vr-form-wide" method="post" novalidate>
-  {% csrf_token %}
-  {% include "includes/form_errors.html" with form=form formset=formset formset_label="quote lines" %}
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+{% url 'commercial:quote-detail' quote.pk as cancel_url %}
+{% form_page form=form formset=formset formset_label="quote lines" class="vr-form-wide" cancel_url=cancel_url %}
   {% for legend, fields in form.grouped %}
   <fieldset class="vr-form-section">
     <legend>{{ legend }}</legend>
@@ -42,15 +41,11 @@
     </div>
     <template id="{{ prefix }}-empty">{% include "commercial/_line_row.html" with lform=formset.empty_form number="__num__" %}</template>
     <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
-      <button class="btn btn-outline-secondary btn-sm" type="button" data-formset-add="{{ prefix }}" hidden>{% include "includes/icon.html" with name="plus-lg" %}Add line</button>
+      <button class="btn btn-outline-secondary btn-sm" type="button" data-formset-add="{{ prefix }}" hidden>{% icon name="plus-lg" %}Add line</button>
       <span class="form-text">A test line takes its price from the price list when the unit price is blank. Fees need a description and a price. Enter a discount as a negative amount, for example -50.00. Blank lines are ignored.</span>
     </div>
   </fieldset>
   {% for field in form.hidden_fields %}{{ field }}{% endfor %}
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{% url 'commercial:quote-detail' quote.pk %}">Cancel</a>
-    <button class="btn btn-primary" type="submit">Save changes</button>
-  </div>
-</form>
+{% endform_page %}
 {% endwith %}
 {% endblock %}

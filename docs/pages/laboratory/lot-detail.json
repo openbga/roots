@@ -5,6 +5,41 @@
   ],
   "title": "Lot details",
   "purpose": "Review one lot, exact balance, preparation lineage and stock ledger.",
+  "summary": "Review one lot: its exact balance, expiry, storage, where it was prepared from, and every stock movement.",
+  "tasks": [
+    {
+      "title": "Record that stock was used",
+      "steps": [
+        "Select [[Record use]].",
+        "Enter the amount and the batch or purpose, then save. Using an expired lot needs an explicit confirmation."
+      ]
+    },
+    {
+      "title": "Add more of the same lot",
+      "steps": [
+        "Select [[Record receipt]] and enter the quantity received."
+      ]
+    },
+    {
+      "title": "Correct the balance",
+      "steps": [
+        "Select [[Record adjustment]] and enter a signed amount with a reason. Only admin and reviewer roles can adjust.",
+        "Or select [[Reverse]] on a movement row to undo that movement."
+      ]
+    },
+    {
+      "title": "Retire the lot",
+      "steps": [
+        "Select [[Retire lot]] and give a reason. Any remaining quantity is written off, and the lot takes no further stock movements."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Movements are never edited or deleted. Corrections are new rows, so the ledger keeps the whole story.",
+    "Balance is shown as recorded at each movement. Backdated movements can make it differ from a running total by date.",
+    "Use after expiry is allowed only with confirmation, and the row stays flagged Used after expiry.",
+    "Material specification shows the material's current text. It is not a frozen copy of this lot's certificate."
+  ],
   "sections": [
     {
       "title": "Access and navigation",
@@ -17,7 +52,7 @@
       "items": [
         {
           "label": "Lot number, state, on hand and Expires",
-          "description": "Identity, exact amount with unit and expiry. Display state takes precedence in this order: Retired; Expired after the expiry date; Depleted at zero balance; Expiring through 30 days from today; otherwise In stock. The expiry date itself is still unexpired. The status highlight always uses 30 days even when a filter uses another window."
+          "description": "Identity, exact amount with unit and expiry. Display state takes precedence in this order: Retired; Expired after the expiry date; Depleted at zero balance; Expiring through 30 days from today; otherwise In stock. The expiry date itself is still unexpired. The status highlight always uses 30 days even when a filter uses another window. On a lot that is not retired, Expires also carries a Due today or Due in … d pill within 30 days and an Overdue … d pill once the date has passed."
         },
         {
           "label": "Material",
@@ -165,6 +200,6 @@
     "templates/includes/record_foot.html",
     "laboratory/common.py",
     "core/models.py",
-    "laboratory/templates/laboratory/_history.html"
+    "templates/includes/history_panel.html"
   ]
 }

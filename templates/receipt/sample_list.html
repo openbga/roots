@@ -1,31 +1,31 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 Samples list. Context (receipt.lists.list_response): page_obj, filter_form (SampleFilter), q, sort,
 per_page, active_filters. Server owns search, filters, sort and pagination; grid.js only presents
 columns (hide/show/reorder, saved per browser).
 {% endcomment %}
-{% block page_actions %}{% if can_receive %}<a class="btn btn-primary" href="{% url 'receipt:order-create' %}">{% include "includes/icon.html" with name="plus-lg" %}Receive samples</a>{% endif %}{% endblock %}
+{% block page_actions %}{% if can_receive %}<a class="btn btn-primary" href="{% url 'receipt:order-create' %}">{% icon name="plus-lg" %}Receive samples</a>{% endif %}{% endblock %}
 {% block content %}
-<section class="card vr-table-card" aria-labelledby="samples-heading">
-  <h2 class="visually-hidden" id="samples-heading">Samples</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter samples" grid="receipt.samples" %}
-  {% if page_obj.paginator.count %}
+{% if can_receive %}{% url 'receipt:order-create' as create_url %}{% endif %}
+{% panel title="Samples" heading_id="samples-heading" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter samples" grid="receipt.samples" invalid=filter_form.errors chips=active_filters sort=sort %}
+  {% list_results items=page_obj noun="samples" filtered=active_filters|default:q invalid=filter_form.errors clear_url=request.path error_body="Correct the highlighted filter above; no samples were hidden by an invalid filter." no_results_title="No samples match these filters" no_results_body="Check the ID for typos, widen the dates, or clear the filters to see every sample." empty_title="No samples received yet" empty_body="Samples appear here once they are received against a chain of custody." action_url=create_url action_label="Receive samples" %}
   <div class="vr-table-wrap">
-    <table class="table table-hover vr-table" data-vr-grid="receipt.samples" data-vr-grid-version="2" aria-labelledby="samples-heading">
+    <table class="table table-hover vr-table" data-vr-grid="receipt.samples" data-vr-grid-version="3" aria-labelledby="samples-heading">
       <thead>
         <tr>
-          {% include "includes/sort_header.html" with label="Lab ID" asc="lab_id" desc="-lab_id" col="lab_id" locked=True %}
-          {% include "includes/sort_header.html" with label="Client sample ID" asc="client_sample_id" desc="-client_sample_id" col="client_sample_id" %}
-          {% include "includes/sort_header.html" with label="Client" asc="client" desc="-client" col="client" %}
-          {% include "includes/sort_header.html" with label="Project" asc="project" desc="-project" col="project" %}
-          {% include "includes/sort_header.html" with label="Matrix" asc="matrix" desc="-matrix" col="matrix" %}
-          {% include "includes/sort_header.html" with label="Type" asc="sample_type" desc="-sample_type" col="sample_type" hidden=True %}
-          {% include "includes/sort_header.html" with label="Collected" asc="collected_at" desc="-collected_at" first="desc" col="collected_at" %}
-          {% include "includes/sort_header.html" with label="Received" asc="received_at" desc="-received_at" first="desc" col="received_at" %}
-          {% include "includes/sort_header.html" with label="Disposition" asc="disposition" desc="-disposition" col="disposition" %}
-          {% include "includes/sort_header.html" with label="Location" asc="current_location" desc="-current_location" col="current_location" %}
-          {% include "includes/sort_header.html" with label="Collection location" asc="collection_location" desc="-collection_location" col="collection_location" hidden=True %}
-          {% include "includes/sort_header.html" with label="Chain of custody" asc="coc_reference" desc="-coc_reference" col="coc_reference" hidden=True %}
+          {% sort_header label="Lab ID" asc="lab_id" desc="-lab_id" col="lab_id" locked=True %}
+          {% sort_header label="Disposition" asc="disposition" desc="-disposition" col="disposition" %}
+          {% sort_header label="Client sample ID" asc="client_sample_id" desc="-client_sample_id" col="client_sample_id" %}
+          {% sort_header label="Client / project" asc="client" desc="-client" col="client" %}
+          {% sort_header label="Matrix" asc="matrix" desc="-matrix" col="matrix" %}
+          {% sort_header label="Type" asc="sample_type" desc="-sample_type" col="sample_type" priority="low" %}
+          {% sort_header label="Collected" asc="collected_at" desc="-collected_at" first="desc" col="collected_at" %}
+          {% sort_header label="Received" asc="received_at" desc="-received_at" first="desc" col="received_at" %}
+          {% sort_header label="Location" asc="current_location" desc="-current_location" col="current_location" priority="low" %}
+          {% sort_header label="Chain of custody" asc="coc_reference" desc="-coc_reference" col="coc_reference" %}
+          {% sort_header label="Collection location" asc="collection_location" desc="-collection_location" col="collection_location" hidden=True %}
           <th scope="col" data-vr-col="collector" data-vr-col-hidden>Collector</th>
         </tr>
       </thead>
@@ -33,31 +33,22 @@ columns (hide/show/reorder, saved per browser).
         {% for sample in page_obj %}
         <tr>
           <th scope="row"><a class="vr-row-link vr-id" href="{% url 'receipt:sample-detail' sample.pk %}">{{ sample.lab_id }}</a></th>
+          <td>{% include "receipt/disposition.html" with plain=True %}</td>
           <td class="vr-id">{{ sample.client_sample_id }}</td>
-          <td>{{ sample.order.project.client }}</td>
-          <td>{{ sample.order.project.name }}</td>
-          <td>{{ sample.get_matrix_display }}{% if sample.source_type %}<div class="small vr-muted">{{ sample.get_source_type_display }}</div>{% endif %}</td>
+          <td class="vr-clip" title="{{ sample.order.project.client }} / {{ sample.order.project.name }}"><span class="vr-clip-main">{{ sample.order.project.client }}</span><span class="vr-sub">{{ sample.order.project.name }}</span></td>
+          <td>{% matrix_tag matrix=sample.matrix source=sample.get_source_type_display %}</td>
           <td>{{ sample.get_sample_type_display }}</td>
           <td class="vr-nowrap"><time datetime="{{ sample.collected_at|date:'c' }}" title="{{ sample.collected_at|date:'Y-m-d H:i T' }}">{{ sample.collected_at|date:"Y-m-d H:i" }}</time></td>
           <td class="vr-nowrap"><time datetime="{{ sample.received_at|date:'c' }}" title="{{ sample.received_at|date:'Y-m-d H:i T' }}">{{ sample.received_at|date:"Y-m-d H:i" }}</time></td>
-          <td>{% include "receipt/disposition.html" with plain=True %}</td>
           <td>{{ sample.current_location }}</td>
-          <td>{{ sample.collection_location|default:"—" }}</td>
           <td class="vr-id"><a href="{% url 'receipt:order-detail' sample.order.pk %}">{{ sample.order.coc_reference }}</a></td>
+          <td>{{ sample.collection_location|default:"—" }}</td>
           <td>{{ sample.collector_name }}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
-  {% include "includes/pagination.html" with noun="samples" filtered=active_filters|default:q %}
-  {% elif filter_form.errors %}
-  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above; no samples were hidden by an invalid filter." clear_url=request.path %}
-  {% elif active_filters or q %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No samples match these filters" body="Check the ID for typos, widen the dates, or clear the filters to see every sample." clear_url=request.path %}
-  {% else %}
-  {% if can_receive %}{% url 'receipt:order-create' as create_url %}{% endif %}
-  {% include "includes/empty_state.html" with title="No samples received yet" body="Samples appear here once they are received against a chain of custody." action_url=create_url action_label="Receive samples" %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}

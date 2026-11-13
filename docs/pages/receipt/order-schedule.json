@@ -5,6 +5,27 @@
   ],
   "title": "Change delivery target",
   "purpose": "Change or remove the order’s agreed delivery target with an attributed reason, without altering analytical holding times.",
+  "summary": "Change or remove the delivery target agreed for this chain of custody, with a reason. Holding times are not affected.",
+  "tasks": [
+    {
+      "title": "Reschedule the delivery",
+      "steps": [
+        "Enter the new [[Delivery target]] and the [[Reason]].",
+        "Select [[Change delivery target]]. Every test on the order shares the new target."
+      ]
+    },
+    {
+      "title": "Remove the target",
+      "steps": [
+        "Clear [[Delivery target]], give the [[Reason]] and save. The order becomes unscheduled."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The delivery target is never calculated from the project's turnaround.",
+    "A cancelled chain of custody must be reinstated before its target can change.",
+    "Every change is kept in the History with the old and new target and the reason."
+  ],
   "sections": [
     {
       "title": "Current record",

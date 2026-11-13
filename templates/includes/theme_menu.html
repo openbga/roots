@@ -1,15 +1,16 @@
-{% comment %}
+{% load ui %}{% comment %}
 Colour theme menu (Bootstrap colour-mode pattern). Choice stored in localStorage "vr-theme"
 (light | dark | system) and applied before paint by static/js/theme-init.js; app.js handles clicks
-and follows the system preference live when "System" is chosen.
+and follows the system preference live when "System" is chosen. The button names the current
+choice in [data-vr-theme-label] (app.js; "System" until it runs).
 {% endcomment %}
 <div class="dropdown">
   <button class="btn btn-sm vr-topbar-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Theme" data-vr-theme-button>
-    {% include "includes/icon.html" with name="circle-half" %}<span class="d-none d-xl-inline">Theme</span>
+    {% icon name="circle-half" %}<span class="d-none d-xl-inline">Theme: <span data-vr-theme-label>System</span></span>
   </button>
   <div class="dropdown-menu dropdown-menu-end" role="group" aria-label="Theme">
-    <button type="button" class="dropdown-item vr-theme-option" data-vr-theme-value="light" aria-pressed="false">{% include "includes/icon.html" with name="sun" %}Light{% include "includes/icon.html" with name="check2" class="vr-theme-check" %}</button>
-    <button type="button" class="dropdown-item vr-theme-option" data-vr-theme-value="dark" aria-pressed="false">{% include "includes/icon.html" with name="moon-stars" %}Dark{% include "includes/icon.html" with name="check2" class="vr-theme-check" %}</button>
-    <button type="button" class="dropdown-item vr-theme-option" data-vr-theme-value="system" aria-pressed="false">{% include "includes/icon.html" with name="circle-half" %}System{% include "includes/icon.html" with name="check2" class="vr-theme-check" %}</button>
+    <button type="button" class="dropdown-item vr-theme-option" data-vr-theme-value="light" aria-pressed="false">{% icon name="sun" %}Light{% icon name="check2" class="vr-theme-check" %}</button>
+    <button type="button" class="dropdown-item vr-theme-option" data-vr-theme-value="dark" aria-pressed="false">{% icon name="moon-stars" %}Dark{% icon name="check2" class="vr-theme-check" %}</button>
+    <button type="button" class="dropdown-item vr-theme-option" data-vr-theme-value="system" aria-pressed="false">{% icon name="circle-half" %}System{% icon name="check2" class="vr-theme-check" %}</button>
   </div>
 </div>

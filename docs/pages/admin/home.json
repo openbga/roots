@@ -6,6 +6,33 @@
   ],
   "title": "Administration",
   "purpose": "Maintain account and authentication records, roles and the laboratory retention statement.",
+  "summary": "Maintenance tooling for accounts, role groups, sign-in records and the laboratory retention statement. Laboratory work happens in the application, not here.",
+  "tasks": [
+    {
+      "title": "Open a maintenance list",
+      "steps": [
+        "Select a module, such as [[Users]] or [[Groups]], to open its list."
+      ]
+    },
+    {
+      "title": "Add a record",
+      "steps": [
+        "Select [[Add]] beside the module, where creation is allowed."
+      ]
+    },
+    {
+      "title": "Go back to the application",
+      "steps": [
+        "Select [[View site]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Users, groups, email addresses and authenticators need Superuser status. A laboratory admin role alone does not open them.",
+    "Staff and Superuser status are technical flags. They grant no laboratory role and no release authority.",
+    "Recent actions lists your latest administration actions only. It is not the laboratory's audit history.",
+    "[[Log out]] signs out at once, without asking first."
+  ],
   "sections": [
     {
       "title": "Scope and available modules",

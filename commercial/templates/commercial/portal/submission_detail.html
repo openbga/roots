@@ -1,53 +1,48 @@
 {% extends "layouts/portal.html" %}
+{% load ui %}
 {% comment %}
 Client submission. Context: submission, samples (prefetched), snapshots, returned (latest returned snapshot),
 editable, submit_form, history. Draft and returned submissions are editable; once sent they are read-only.
 Clients see no history on this page (policy); `history` is passed but not shown.
 {% endcomment %}
-{% block breadcrumbs %}{% url 'client_commercial:submission-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Submissions" section_url=list_url current=submission.number %}{% endblock %}
+{% block breadcrumbs %}{% url 'client_commercial:submission-list' as list_url %}{% breadcrumbs section="Submissions" section_url=list_url current=submission.number %}{% endblock %}
 {% block page_heading %}<span class="vr-id">{{ submission.number }}</span>{% endblock %}
-{% block page_meta %}
-<ul class="vr-page-meta">
+{% block page_meta %}{% page_meta %}
   <li>{% include "commercial/_submission_status.html" with plain=True %}</li>
   <li>{{ submission.project.name }}</li>
   <li>COC <span class="vr-id">{{ submission.coc_reference }}</span></li>
   {% if submission.quote %}<li>Quote <a class="vr-id" href="{% url 'client_commercial:quote-detail' submission.quote_id %}">{{ submission.quote.number }}</a></li>{% endif %}
-</ul>
-{% endblock %}
+{% endpage_meta %}{% endblock %}
 {% block page_intro %}{% if editable %}<p class="vr-page-intro">Submitting freezes what you entered for the laboratory's review; you can still correct it if the laboratory returns it.</p>{% endif %}{% endblock %}
 {% block page_actions %}
 {% if editable %}
 {% if submission.status == "draft" and not snapshots %}<button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#discard-dialog">Delete draft</button>{% endif %}
 <a class="btn btn-outline-secondary" href="{% url 'client_commercial:submission-edit' submission.pk %}">Edit</a>
-<a class="btn btn-outline-secondary" href="{% url 'client_commercial:sample-create' submission.pk %}">{% include "includes/icon.html" with name="plus-lg" %}Add sample</a>
-<form method="post" action="{% url 'client_commercial:submission-submit' submission.pk %}" class="d-inline">{% csrf_token %}{{ submit_form.expected_revision }}<button class="btn btn-primary" type="submit">Submit to laboratory</button></form>
+<a class="btn btn-outline-secondary" href="{% url 'client_commercial:sample-create' submission.pk %}">{% icon name="plus-lg" %}Add sample</a>
+{% url 'client_commercial:submission-submit' submission.pk as submit_url %}{% post_button action=submit_url label="Submit to laboratory" variant="primary" fields=submit_form %}
 {% endif %}
 {% endblock %}
 {% block content %}
 {% if returned %}
-<div class="alert alert-warning" role="alert">{% include "includes/status.html" with label="Returned" tone="warning" plain=True %}<div><strong>The laboratory asked for changes:</strong> {{ returned.decision_note }}<br>Edit the submission, then submit it again.</div></div>
+{% notice tone="warning" label="Returned" blocking=True %}<strong>The laboratory asked for changes:</strong> {{ returned.decision_note }}<br>Edit the submission, then submit it again.{% endnotice %}
 {% elif submission.status == "submitted" %}
-<div class="alert alert-info" role="status">{% include "includes/status.html" with label="With the laboratory" tone="info" plain=True %}<div>Submitted <time datetime="{{ submission.submitted_at|date:'c' }}">{{ submission.submitted_at|date:"Y-m-d H:i" }}</time>. The laboratory will review it. Your samples are logged in when they physically arrive and are checked against this list.</div></div>
+{% notice tone="info" label="With the laboratory" %}Submitted <time datetime="{{ submission.submitted_at|date:'c' }}">{{ submission.submitted_at|date:"Y-m-d H:i" }}</time>. The laboratory will review it. Your samples are logged in when they physically arrive and are checked against this list.{% endnotice %}
 {% elif submission.status == "cancelled" %}
-<div class="alert alert-secondary" role="status">{% include "includes/status.html" with label="Cancelled" tone="neutral" plain=True %}<div>The laboratory marked this shipment as not arriving. Contact the laboratory if you still plan to send these samples.</div></div>
+{% notice tone="neutral" label="Cancelled" %}The laboratory marked this shipment as not arriving. Contact the laboratory if you still plan to send these samples.{% endnotice %}
 {% elif submission.status == "accepted" %}
-<div class="alert alert-success" role="status">{% include "includes/status.html" with label="Accepted" tone="success" plain=True %}<div>The laboratory accepted this submission and is expecting your samples. Receipt is recorded when they arrive.</div></div>
+{% notice tone="success" label="Accepted" %}The laboratory accepted this submission and is expecting your samples. Receipt is recorded when they arrive.{% endnotice %}
 {% endif %}
-{% if uncollected %}<div class="alert alert-info" role="status">{% include "includes/status.html" with label="Note" tone="info" plain=True %}<div>{{ uncollected }} sample{{ uncollected|pluralize }} not collected yet. The laboratory records the actual collection details when the samples arrive. Ask the laboratory for planned bottle labels while you prepare.</div></div>{% endif %}
-<section class="card mb-3" aria-labelledby="shipment-heading">
-  <div class="card-header"><h2 class="card-title" id="shipment-heading">Shipment</h2></div>
-  <div class="card-body">
-    <dl class="vr-facts mb-0">
-      <div><dt>Expected arrival</dt><dd>{{ submission.expected_arrival|date:"Y-m-d"|default:"Not stated" }}</dd></div>
-      <div><dt>Carrier / tracking</dt><dd>{{ submission.carrier|default:"—" }}</dd></div>
-      <div><dt>Coolers / packages</dt><dd>{{ submission.cooler_count|default:"—" }}</dd></div>
-      <div><dt>Contact</dt><dd>{{ submission.contact_name|default:"—" }}{% if submission.contact_phone %} · {{ submission.contact_phone }}{% endif %}</dd></div>
-      <div><dt>Instructions</dt><dd>{{ submission.special_instructions|default:"—"|linebreaksbr }}</dd></div>
+{% if uncollected %}{% notice tone="info" %}{{ uncollected }} sample{{ uncollected|pluralize }} not collected yet. The laboratory records the actual collection details when the samples arrive. Ask the laboratory for planned bottle labels while you prepare.{% endnotice %}{% endif %}
+{% panel title="Shipment" heading_id="shipment-heading" class="mb-3" %}
+    <dl class="vr-facts">
+      {% fact label="Expected arrival" %}{{ submission.expected_arrival|date:"Y-m-d"|default:"Not stated" }}{% endfact %}
+      {% fact label="Carrier / tracking" %}{{ submission.carrier|default:"—" }}{% endfact %}
+      {% fact label="Coolers / packages" %}{{ submission.cooler_count|default:"—" }}{% endfact %}
+      {% fact label="Contact" %}{{ submission.contact_name|default:"—" }}{% if submission.contact_phone %} · {{ submission.contact_phone }}{% endif %}{% endfact %}
+      {% fact label="Instructions" wide=True %}{{ submission.special_instructions|default:"—"|linebreaksbr }}{% endfact %}
     </dl>
-  </div>
-</section>
-<section class="card vr-table-card mb-3" aria-labelledby="samples-heading">
-  <div class="card-header"><h2 class="card-title" id="samples-heading">Samples</h2><span class="vr-count">{{ samples|length }}</span></div>
+{% endpanel %}
+{% panel title="Samples" heading_id="samples-heading" count=samples|length table=True flush=True class="mb-3" %}
   {% if samples %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table">
@@ -61,9 +56,9 @@ Clients see no history on this page (policy); `history` is passed but not shown.
         {% for s in samples %}
         <tr>
           <th scope="row">{% if editable %}<a class="vr-row-link vr-id" href="{% url 'client_commercial:sample-edit' submission.pk s.pk %}">{{ s.client_sample_id }}</a>{% else %}<span class="vr-id">{{ s.client_sample_id }}</span>{% endif %}</th>
-          <td>{{ s.get_matrix_display }}{% if s.source_type %} · {{ s.get_source_type_display }}{% endif %}<div class="text-body-secondary small">{{ s.get_collection_type_display }}{% if s.sample_type != "sample" %} · {{ s.get_sample_type_display }}{% endif %}</div></td>
-          <td class="vr-nowrap">{% if s.collected_at %}<time datetime="{{ s.collected_at|date:'c' }}">{{ s.collected_at|date:"Y-m-d H:i" }}</time>{% else %}{% include "includes/status.html" with label="Not collected yet" tone="neutral" plain=True %}{% if s.planned_collection_on %}<div class="text-body-secondary small">Planned {{ s.planned_collection_on|date:"Y-m-d" }}</div>{% endif %}{% endif %}</td>
-          <td>{{ s.collection_location }}<div class="text-body-secondary small">{{ s.collector_name }}</div></td>
+          <td>{% matrix_tag matrix=s.matrix source=s.get_source_type_display %}<div class="vr-muted small">{{ s.get_collection_type_display }}{% if s.sample_type != "sample" %} · {{ s.get_sample_type_display }}{% endif %}</div></td>
+          <td class="vr-nowrap">{% if s.collected_at %}<time datetime="{{ s.collected_at|date:'c' }}">{{ s.collected_at|date:"Y-m-d H:i" }}</time>{% else %}{% status label="Not collected yet" tone="neutral" plain=True %}{% if s.planned_collection_on %}<div class="vr-muted small">Planned {{ s.planned_collection_on|date:"Y-m-d" }}</div>{% endif %}{% endif %}</td>
+          <td>{{ s.collection_location }}<div class="vr-muted small">{{ s.collector_name }}</div></td>
           <td class="text-end">{{ s.tests.all|length }}</td>
           <td class="text-end">{{ s.container_total }}</td>
           <td>{% if s.sample_id %}Received as <span class="vr-id">{{ s.sample.lab_id }}</span>{% elif submission.status == "accepted" %}Expected{% else %}—{% endif %}</td>
@@ -75,11 +70,10 @@ Clients see no history on this page (policy); `history` is passed but not shown.
   </div>
   {% else %}
   {% url 'client_commercial:sample-create' submission.pk as add_url %}
-  {% include "includes/empty_state.html" with title="No samples yet" body="Add each sample you are sending: its collection details, the tests you want and its containers." action_url=add_url action_label="Add sample" %}
+  {% empty_state title="No samples yet" body="Add each sample you are sending: its collection details, the tests you want and its containers." action_url=add_url action_label="Add sample" %}
   {% endif %}
-</section>
-<section class="card vr-table-card" aria-labelledby="snaps-heading">
-  <div class="card-header"><h2 class="card-title" id="snaps-heading">Submitted versions</h2><span class="vr-count">{{ snapshots|length }}</span></div>
+{% endpanel %}
+{% panel title="Submitted versions" heading_id="snaps-heading" count=snapshots|length table=True flush=True %}
   {% if snapshots %}
   <div class="vr-table-wrap">
     <table class="table vr-table">
@@ -98,16 +92,16 @@ Clients see no history on this page (policy); `history` is passed but not shown.
     </table>
   </div>
   {% else %}
-  {% include "includes/empty_state.html" with title="Not submitted yet" body="Versions appear here once you submit this to the laboratory." %}
+  {% empty_state title="Not submitted yet" body="Versions appear here once you submit this to the laboratory." %}
   {% endif %}
-</section>
+{% endpanel %}
 {% if editable %}
 {% for s in samples %}{% url 'client_commercial:sample-delete' submission.pk s.pk as remove_url %}
-{% with pk_text=s.pk|stringformat:"s" %}{% with dialog_id="remove-sample-"|add:pk_text %}{% include "includes/confirm_dialog.html" with id=dialog_id label="Remove sample" object=s.client_sample_id action=remove_url hidden_name="expected_revision" hidden_value=submission.revision body="The sample is taken off this submission, with its tests and containers. You can add it again before you submit." %}{% endwith %}{% endwith %}
+{% with pk_text=s.pk|stringformat:"s" %}{% with dialog_id="remove-sample-"|add:pk_text %}{% confirm_dialog id=dialog_id label="Remove sample" object=s.client_sample_id action=remove_url hidden_name="expected_revision" hidden_value=submission.revision body="The sample is taken off this submission, with its tests and containers. You can add it again before you submit." %}{% endwith %}{% endwith %}
 {% endfor %}
 {% if submission.status == "draft" and not snapshots %}
-{% url 'client_commercial:submission-discard' submission.pk as discard_url %}{% include "includes/confirm_dialog.html" with id="discard-dialog" label="Delete draft" object=submission.number action=discard_url body="The draft and the samples you entered are deleted. This cannot be undone." %}
+{% url 'client_commercial:submission-discard' submission.pk as discard_url %}{% confirm_dialog id="discard-dialog" label="Delete draft" object=submission.number action=discard_url body="The draft and the samples you entered are deleted. This cannot be undone." %}
 {% endif %}
 {% endif %}
 {% endblock %}
-{% block record_foot %}{% include "includes/record_foot.html" with identifier=submission.number %}{% endblock %}
+{% block record_foot %}{% record_foot identifier=submission.number %}{% endblock %}

@@ -1,0 +1,28 @@
+{% comment %}
+A list's rows or, when there are none, its one state (docs/ui-standards.md section 5, rule 7):
+the body and the pagination footer; else the filter error, no results, or empty state through
+includes/empty_state.html. Rendered by the {% list_results %} block tag ({% load ui %}); the
+tag's body is the table (normally <div class="vr-table-wrap"><table ...></table></div>).
+Parameters:
+  items          a Django Page (page_obj) or any list/queryset; a Page adds the pagination footer
+  noun           plural noun for the count and pager, e.g. "clients"
+  filtered       truthy when a filter or search is active (e.g. active_filters|default:q); also
+                 the footer's "matching filters"
+  invalid        truthy when the filter form is invalid (filter_form.errors): the error state
+  clear_url      URL without filters, for Clear filters (default: no button)
+  paginate       False to leave out the footer for a Page
+  post_name      pagination's post mode (includes/pagination.html)
+  empty_title, empty_body          the empty state (nothing exists yet)
+  action_url, action_label         its create action; give action_url only to users who may create
+  no_results_title, no_results_body  default "No <noun> match these filters" / "Check the spelling or clear the filters."
+  error_body     default "Correct the highlighted filter above. No results are shown until every filter is valid."
+Usage:
+  {% list_results items=page_obj noun="clients" filtered=active_filters|default:q invalid=filter_form.errors clear_url=request.path empty_title="No clients yet" action_url=create_url action_label="New client" %}
+    <div class="vr-table-wrap"><table class="table table-hover vr-table">...</table></div>
+  {% endlist_results %}
+{% endcomment %}
+{% load ui %}{% if has_rows %}{{ body }}
+{% if paginated %}{% pagination page_obj=items noun=noun filtered=filtered post_name=post_name %}{% endif %}
+{% elif invalid %}{% empty_state kind="error" title="These filters cannot be applied" body=error_body|default:"Correct the highlighted filter above. No results are shown until every filter is valid." clear_url=clear_url %}
+{% elif filtered %}{% firstof noun "records" as plural %}{% firstof no_results_title "No "|add:plural|add:" match these filters" as nr_title %}{% empty_state kind="no-results" title=nr_title body=no_results_body|default:"Check the spelling or clear the filters." clear_url=clear_url invalid=False %}
+{% else %}{% empty_state kind="empty" title=empty_title body=empty_body action_url=action_url action_label=action_label clear_url=None %}{% endif %}

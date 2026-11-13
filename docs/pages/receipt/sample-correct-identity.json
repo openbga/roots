@@ -5,6 +5,28 @@
   ],
   "title": "Correct sample details",
   "purpose": "Correct receipt identity, sample type, sample source, collector, collection-place or remarks text while preserving the original recorded values.",
+  "summary": "Correct a sample's client ID, sample type, source, collector, collection place or remarks. The original values stay in the history.",
+  "tasks": [
+    {
+      "title": "Fix a mistyped client sample ID",
+      "steps": [
+        "Enter the right [[Client sample ID]] and the [[Reason]], then select [[Correct sample details]].",
+        "Reprint the labels; the old ID is on them."
+      ]
+    },
+    {
+      "title": "Correct the sample type or source",
+      "steps": [
+        "Set [[Sample type]] or [[Sample source]] as written on the chain of custody.",
+        "Give the [[Reason]] and save."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Once the sample is on an issued report, these details can no longer be corrected here.",
+    "The laboratory ID, chain of custody and custody events never change here.",
+    "The source must belong to the sample's matrix. Correct the matrix on its own tab."
+  ],
   "sections": [
     {
       "title": "Correction sections",

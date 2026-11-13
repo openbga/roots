@@ -5,6 +5,29 @@
   ],
   "title": "Add or withdraw tests",
   "purpose": "Record newly requested analyses or withdraw tests that have not started. Added work keeps its collection-based holding clock and does not rewrite issued reports.",
+  "summary": "Add tests the client requested later, or withdraw tests that have not started.",
+  "tasks": [
+    {
+      "title": "Add a test",
+      "steps": [
+        "Choose it in [[Add tests]]. Only active tests for the sample's matrix are offered.",
+        "Give the [[Reason]] and select [[Add or withdraw tests]]."
+      ]
+    },
+    {
+      "title": "Withdraw a test",
+      "steps": [
+        "Tick it under [[Withdraw tests]]. Tests with work started cannot be withdrawn; the page says why.",
+        "Give the [[Reason]] and save. At least one test must remain."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A late addition keeps the holding clock that started at collection, so it may already be at risk or expired.",
+    "An issued report does not block additions. The new work needs its own review and report; issued versions stay unchanged.",
+    "A rejected sample cannot take new tests. Change its disposition first.",
+    "Even a cancelled external dispatch keeps its test from being withdrawn."
+  ],
   "sections": [
     {
       "title": "Correction sections",

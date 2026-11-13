@@ -5,6 +5,44 @@
   ],
   "title": "Quote",
   "purpose": "Review documents and version history, then edit, issue, revise or withdraw when eligible.",
+  "summary": "One quote: its document, every version and its history. From here you edit, issue, revise or withdraw it when its state allows.",
+  "tasks": [
+    {
+      "title": "Issue the draft to the client",
+      "steps": [
+        "Check the document, then select [[Edit]] if a line, the valid-until date or the terms need changing.",
+        "Select [[Issue version]]. It needs at least one line and a valid-until date of today or later.",
+        "Issuing freezes the lines, prices, total, scope and terms of that version."
+      ]
+    },
+    {
+      "title": "Change a quote the client already has",
+      "steps": [
+        "Select [[Revise]]. The lines, prices and terms are copied into a new draft and the editor opens.",
+        "Set a new valid-until date and issue the new version. The client keeps seeing the last issued version until then."
+      ]
+    },
+    {
+      "title": "Withdraw a quote",
+      "steps": [
+        "Select [[Withdraw quote]] and give the [[Reason]].",
+        "The quote leaves the client's quote pages. Its versions are kept."
+      ]
+    },
+    {
+      "title": "Look at an earlier version",
+      "steps": [
+        "Under Versions, select the version number. The document shows that version as it was issued."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Accepted quotes cannot be revised or withdrawn.",
+    "While a quote is Being revised, the client can read the last issued version but cannot accept or decline it.",
+    "Expired means the valid-until date has passed. Revise an expired quote to offer it again.",
+    "Standard turnaround is what you state to the client. It does not set an order's delivery target or a holding time.",
+    "Print opens browser printing only. It does not issue the quote or store a report."
+  ],
   "sections": [
     {
       "title": "Access",
@@ -149,7 +187,7 @@
     "commercial/selectors.py",
     "commercial/templates/commercial/quote_detail.html",
     "commercial/templates/commercial/_quote_document.html",
-    "commercial/templates/commercial/_history.html",
+    "templates/includes/history_panel.html",
     "commercial/tests/test_quotes.py",
     "commercial/tests/test_concurrency.py",
     "templates/includes/form_dialog.html",
