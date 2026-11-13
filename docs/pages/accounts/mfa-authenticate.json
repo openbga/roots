@@ -43,12 +43,20 @@
       "paragraphs": [
         "A successful code proves this account’s enrolled factor, not a laboratory qualification or role. The committed configuration does not offer trusted-browser skipping. Reauthentication is considered recent for five minutes; normal sign-in and sensitive-action policies remain distinct."
       ]
+    },
+    {
+      "title": "Sign-in activity",
+      "paragraphs": [
+        "In the sign-in variant, a rejected code records a failed sign-in in the deployment’s application logs. Completing all required sign-in stages records one successful sign-in. Logs name the stored username and never include the code. Canceling an unfinished sign-in does not record a sign-out for an authenticated session. These logs follow the deployment’s retention and survive database resets. The reauthentication variant does not create a new sign-in or sign-out event."
+      ]
     }
   ],
   "sources": [
     "config/settings.py",
     "templates/allauth/layouts/base.html",
     "templates/allauth/layouts/manage.html",
-    "uv.lock"
+    "uv.lock",
+    "accounts/signin_log.py",
+    "accounts/tests/test_signin_log.py"
   ]
 }

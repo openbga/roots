@@ -1,7 +1,11 @@
 import io
 import logging
+import os
 import re
+import subprocess
+import sys
 
+import pytest
 from django.http import HttpResponse
 from django.test import Client, override_settings
 from django.urls import path, re_path
@@ -50,6 +54,7 @@ def test_request_log_has_safe_fields_only_and_correlates_errors():
             HTTP_COOKIE="sessionid=cookie-secret",
             HTTP_AUTHORIZATION="Bearer header-secret",
             HTTP_X_REQUEST_ID="client-chosen",
+            HTTP_RNDR_ID="8ebfa3c3-8929-4885",
         )
         client.get("/accounts/confirm-email/CONFIRM-TOKEN-1/?next=/secret-next/")
         client.get("/accounts/password/reset/key/abc-RESET-TOKEN-2/")
@@ -63,7 +68,9 @@ def test_request_log_has_safe_fields_only_and_correlates_errors():
     assert re.fullmatch(r"[0-9a-f]{32}", request_id)
     assert request_id != "client-chosen"
     assert re.search(
-        rf"request_id={request_id} method=POST route=ok/ status=200 duration_ms=\d+\.\d", output
+        rf"request_id={request_id} render_request_id=8ebfa3c3-8929-4885 "
+        r"method=POST route=ok/ status=200 duration_ms=\d+\.\d",
+        output,
     )
     assert "route=accounts/confirm-email/<str:key>/ status=200" in output
     assert "route=<unmatched> status=404" in output
@@ -86,7 +93,8 @@ def test_request_log_has_safe_fields_only_and_correlates_errors():
         assert secret not in output, secret
 
     missing_id = missing["X-Request-ID"]
-    assert f"request_id={missing_id} problem status=404 route=<unmatched>" in output
+    assert f"request_id={missing_id} render_request_id=- problem status=404 " in output
+    assert "route=<unmatched>" in output
 
     bad_id = bad["X-Request-ID"]
     assert bad_id not in (request_id, missing_id)
@@ -103,6 +111,39 @@ def test_request_log_has_safe_fields_only_and_correlates_errors():
     )
     assert "RuntimeError (message withheld)" in output
     assert "in boom" in output  # traceback frames remain
+
+
+@pytest.mark.parametrize("render_id", ["", "x y=forged", "x\nforged=1", "a" * 65])
+@override_settings(ROOT_URLCONF=__name__)
+def test_render_id_is_bounded_and_cannot_inject_log_fields(render_id):
+    stream, handler = capture()
+    try:
+        response = Client().get("/ok/", HTTP_RNDR_ID=render_id)
+        logging.getLogger("roots.probe").info("outside request")
+    finally:
+        logging.getLogger().removeHandler(handler)
+    output = stream.getvalue()
+    assert f"request_id={response['X-Request-ID']} render_request_id=- method=GET" in output
+    assert "request_id=- render_request_id=- outside request" in output
+    assert "forged" not in output
+    assert "a" * 65 not in output
+
+
+def test_configured_console_writes_to_stdout():
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "import django, logging; django.setup(); "
+            "logging.getLogger('roots.signin').info('console-probe')",
+        ],
+        env={**os.environ, "DJANGO_SETTINGS_MODULE": "config.settings", "DEBUG": "true"},
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    assert "INFO roots.signin request_id=- render_request_id=- console-probe" in result.stdout
+    assert "console-probe" not in result.stderr
 
 
 def test_runserver_request_logger_is_discarded(capsys):

@@ -12,7 +12,8 @@ records; it does not certify compliance or accreditation.
 ## What it covers
 
 - **Setup:** laboratory, staff roles, clients and projects, methods, analytes, tests, holding-time
-  rules, QC requirements, limits and qualifiers.
+  rules, QC requirements, limits and qualifiers. These load one record at a time or from
+  spreadsheets saved as CSV, with starter files for common methods that name their public sources.
 - **Receipt and custody:** chains of custody with several samples, containers, receipt
   inspection, holds and dispositions, custody events and reasoned corrections.
 - **Analytical work:** preparation and analytical batches, manual entry and mapped CSV/TSV
@@ -133,6 +134,12 @@ passwords, existing roles and revoked permissions. `--update-lab` explicitly ren
 for new input and new reports; changing it does not reinterpret stored timestamps or issued reports.
 Keep demo seeding separate from a real laboratory database.
 
+After installing, and after each upgrade, run
+`python manage.py run_acceptance --operator "Your Name" --output /path/to/new-directory` and keep
+the evidence package it writes. It checks the first journey on synthetic records in a separate
+scratch database, never the laboratory's own; see
+[Operations](docs/operations.md#acceptance-run-after-installation-and-upgrade).
+
 Sign in at `/accounts/login/`. The owner manages users and group membership at `/admin/`.
 Signed-in users may optionally enrol an authenticator app from the account menu's
 "Two-factor authentication" page (`/accounts/2fa/`).
@@ -162,6 +169,13 @@ Before the first receipt:
    each method version. Creating a new method version does not copy this configuration.
 3. Have a project manager create the client and project, then receive the COC and its samples.
    Assign independent review and explicit release authority to the appropriate staff first.
+
+Steps 1 to 3 can also be loaded from spreadsheets under **Setup → Spreadsheet import**: one CSV
+file per record type, previewed row by row and saved all or nothing through the same checks as
+manual entry. The page offers starter files for common EPA, Standard Methods and SW-846 entries,
+read from 40 CFR 136.3, EPA method documents and SW-846 on the date each file states. They are
+starting points, not laboratory policy: check every row against your methods, permits and
+current rules, and edit the file before importing it.
 
 Before the first report, an administrator records the laboratory's address, contact details,
 logo and certificates under **Setup → Laboratory profile**. New reports print them; a
@@ -209,7 +223,7 @@ See [Render's deploy button documentation](https://render.com/docs/deploy-to-ren
 | [Product scope](docs/product.md) | What the product must do, the domain rules behind it and their sources |
 | [Roadmap](https://openbga.github.io/smart-roots-lims/roadmap/) | What is built, what comes next and what is being explored, without dates |
 | [Architecture](docs/architecture.md) | Stack, integrity and authorization design, deployment shape |
-| [Operations](docs/operations.md) | Backup, restore, recovery and logs for a self-hosted deployment; running a public demonstration |
+| [Operations](docs/operations.md) | Backup, restore, recovery, acceptance runs and logs for a self-hosted deployment; running a public demonstration |
 | [UI standards](docs/ui-standards.md) | Layout, navigation, table and form conventions |
 | [Third-party notices](THIRD_PARTY_NOTICES.md) | Licences of bundled and required components |
 

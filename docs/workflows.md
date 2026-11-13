@@ -32,6 +32,42 @@ chains of custody, quotes, submissions, portal accounts and recent changes, and 
 contacts. Changes keep their history. The demo seed includes synthetic water, wastewater and soil
 methods, analytes and QC settings; existing records and laboratory edits are retained.
 
+## Spreadsheet import of setup records
+
+**Setup → Spreadsheet import** loads clients, projects, analytes, methods, tests, QC
+requirements, holding-time rules, QC limits and preservation rules from CSV files, one file per
+record type. Project managers import clients and projects; administrators import every type.
+Save the sheet as CSV (UTF-8): workbooks are not read, because they hand numbers over as binary
+floating-point values and limits must stay exact decimals. A file holds up to 1024 KiB and 2000
+rows.
+
+Rows find existing records by the keys people use, never database IDs: account code for a
+client, client account code and name for a project, analyte name, method code and version, and
+those plus analyte and matrix for a test. A matching row changes the record; any other row
+creates one. A column left out of the file leaves values alone; a blank cell clears an optional
+value. A row may refer only to records that already exist, so import analytes and methods before
+tests, tests before limits and rules, and clients before projects.
+
+Every row goes through the same service as manual entry, with its checks, identity locks and
+history. The preview runs those services and undoes the work, then shows each row's action, the
+values before and after, and every error. Import checks the file again, refuses it if anything
+it changes was edited since the preview, and saves all rows or none. A file that changes existing
+records needs one reason; each record's history names the file and its SHA-256 digest, and one
+further event records the file and its counts. The uploaded file is not kept. Contacts, price
+lists, qualifiers, preparation requirements, users, samples and results are not imported here.
+
+Starter files on the same page hold common method, test and rule entries read from 40 CFR
+136.3 Tables IB and II, EPA methods and SW-846 Chapter Three on 2026-11-12. Each rule's basis
+names its source. They are starting points, not laboratory policy: the laboratory checks them
+against its methods, permits and current rules and edits them before importing. They carry no
+reporting limits, and Table II's 6 months is entered as 180 days for the laboratory to confirm.
+
+Limit: a holding-time rule belongs to a method and matrix, while Table II sets its limits per
+parameter. Where one method covers parameters with different limits (EPA 300.0 and EPA 365.1 in
+the starter files), the starter rule carries the shortest limit and its basis names the analytes
+with a longer one, so those analytes are flagged early. A laboratory that needs the longer limit
+for them records its own disposition; a limit per analyte is on the roadmap.
+
 ## Receipt corrections
 
 Use **Correct sample details** for reasoned receipt corrections: identity, collector, location,

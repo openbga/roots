@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% comment %}Upload, preview and commit one CSV file of one record type.
+Context: spec (importing.RecordType), form (UploadForm), preview (importing.Preview or None),
+commit_form (CommitForm or None), columns [{name, requirement, format, help}], max_kib, max_rows.{% endcomment %}
+{% block breadcrumbs %}{% url 'dataimport:index' as index_url %}{% include "includes/breadcrumbs.html" with section="Spreadsheet import" section_url=index_url %}{% endblock %}
+{% block page_intro %}<p class="vr-page-intro">One CSV file of {{ spec.title|lower }}: nothing is saved until you confirm the preview, and any error blocks the whole file.</p>{% endblock %}
+{% block content %}
+{% if not preview %}
+<form class="vr-form" method="post" enctype="multipart/form-data" novalidate>
+  {% csrf_token %}
+  <input type="hidden" name="step" value="preview">
+  {% include "includes/form_errors.html" with form=form %}
+  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+  <fieldset class="vr-form-section">
+    <legend class="visually-hidden">File</legend>
+    {{ form }}
+    <p class="vr-form-note">Start from the <a href="{% url 'dataimport:template' spec.slug %}" download>{{ spec.slug }}-template.csv</a> header row. A row with a key that matches an existing record changes it; otherwise it creates one. A column left out of the file leaves that value alone; a blank cell clears an optional value. Needs first: {{ spec.needs }}</p>
+  </fieldset>
+  <div class="vr-form-actions">
+    <a class="btn btn-link" href="{% url 'dataimport:index' %}">Cancel</a>
+    <button class="btn btn-primary" type="submit">Check file</button>
+  </div>
+</form>
+<section class="card vr-table-card mt-3" aria-labelledby="columns-heading">
+  <div class="card-header"><h2 class="card-title" id="columns-heading">Columns</h2><span class="vr-count">{{ columns|length }}</span></div>
+  <div class="vr-table-wrap"><table class="table vr-table" aria-labelledby="columns-heading">
+    <thead><tr><th scope="col">Column</th><th scope="col">Required</th><th scope="col">Format</th><th scope="col">Meaning</th></tr></thead>
+    <tbody>{% for column in columns %}<tr><th scope="row" class="vr-id">{{ column.name }}</th><td class="vr-wrap">{{ column.requirement }}</td><td class="vr-wrap">{{ column.format }}</td><td class="vr-wrap">{{ column.help }}</td></tr>{% endfor %}</tbody>
+  </table></div>
+</section>
+{% else %}
+<div class="alert alert-{% if preview.ok %}success{% else %}danger{% endif %}" role="{% if preview.ok %}status{% else %}alert{% endif %}">
+  {% if preview.ok %}{% include "includes/status.html" with label="Ready" tone="success" plain=True %}
+  <div><strong>{{ preview.filename }}</strong>: {{ preview.rows|length }} row{{ preview.rows|length|pluralize }} checked. Nothing is saved yet.</div>
+  {% else %}{% include "includes/status.html" with label="Errors" tone="danger" plain=True %}
+  <div><strong>{{ preview.filename }}</strong> has {{ preview.error_count }} error{{ preview.error_count|pluralize }}. Correct the file and upload it again; nothing was saved.
+    {% if preview.file_errors %}<ul class="mb-0 ps-3">{% for error in preview.file_errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}</div>
+  {% endif %}
+</div>
+{% if preview.rows %}
+<section class="card vr-table-card mb-3" aria-labelledby="preview-heading">
+  <div class="card-header"><h2 class="card-title" id="preview-heading">Preview</h2><span class="vr-count">{{ preview.counts.create }} to create · {{ preview.counts.update }} to change · {{ preview.counts.unchanged }} unchanged · {{ preview.counts.error }} with errors{% if preview.counts.error %}, listed first{% endif %}</span></div>
+  <div class="vr-table-wrap">
+    <table class="table vr-table" aria-labelledby="preview-heading">
+      <thead><tr><th scope="col" class="text-end">Line</th><th scope="col">Action</th><th scope="col">Record</th><th scope="col">Values (before → after)</th><th scope="col">Errors</th></tr></thead>
+      <tbody>
+      {% for row in preview.ordered_rows %}
+        <tr{% if row.errors %} class="table-danger"{% endif %}>
+          <td class="text-end vr-id">{{ row.line }}</td>
+          <td>{% if row.errors %}{% include "includes/status.html" with label="Error" tone="danger" plain=True %}{% elif row.action == "create" %}{% include "includes/status.html" with label="Create" tone="info" plain=True %}{% elif row.action == "update" %}{% include "includes/status.html" with label="Change" tone="warning" plain=True %}{% else %}{% include "includes/status.html" with label="Unchanged" tone="neutral" plain=True %}{% endif %}</td>
+          <th scope="row" class="vr-wrap">{{ row.label|default:"—" }}</th>
+          <td class="vr-wrap">{% if row.changes %}<ul class="mb-0 ps-3">{% for name, before, after in row.changes %}<li><span class="vr-id">{{ name }}</span>: {% if row.action == "update" %}<del class="vr-prior">{{ before|default:"blank" }}</del> <span aria-hidden="true">→</span><span class="visually-hidden">changed to</span> {% endif %}{{ after|default:"blank" }}</li>{% endfor %}</ul>{% else %}—{% endif %}</td>
+          <td class="vr-wrap">{% if row.errors %}<ul class="vr-field-errors mb-0">{% for error in row.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% else %}—{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}
+{% if preview.ok and commit_form %}
+<form class="vr-form" method="post" novalidate>
+  {% csrf_token %}
+  <input type="hidden" name="step" value="commit">
+  {% include "includes/form_errors.html" with form=commit_form %}
+  {% for field in commit_form.hidden_fields %}{{ field }}{% endfor %}
+  {% if preview.needs_reason %}
+  <fieldset class="vr-form-section">
+    <legend>Change record</legend>
+    {{ commit_form.reason.as_field_group }}
+  </fieldset>
+  {% endif %}
+  <div class="vr-form-actions">
+    <a class="btn btn-link" href="{% url 'dataimport:index' %}">Cancel</a>
+    <a class="btn btn-link" href="{% url 'dataimport:upload' spec.slug %}">Start over</a>
+    <button class="btn btn-primary" type="submit">Import {{ preview.rows|length }} row{{ preview.rows|length|pluralize }}</button>
+  </div>
+  <p class="vr-form-note">The file and the records it changes are checked again when you import. If either changed since this preview, nothing is saved and a new preview is shown.</p>
+</form>
+{% else %}
+<div class="vr-form-actions">
+  <a class="btn btn-link" href="{% url 'dataimport:index' %}">Cancel</a>
+  <a class="btn btn-primary" href="{% url 'dataimport:upload' spec.slug %}">Upload a corrected file</a>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}

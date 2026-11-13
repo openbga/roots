@@ -4,6 +4,7 @@ Rules, kept deliberately simple:
 - Only the admin role changes the catalog. Every create and edit is audited with before and
   after values; changing an existing row needs a reason.
 - Rows are deactivated, never deleted.
+- A new test, or a test moved to another method, needs an active method version.
 - Identity is locked once work depends on it, because reports read method titles, analyte
   names and units live. A method version with a batch, requested test or result keeps its
   code, version, title and source; a test definition with any reference keeps its method,
@@ -375,6 +376,14 @@ def save_test_definition(*, actor, instance, reason="", expected_state=None):
             errors["reporting_limit"] = "Use at most 8 decimal places."
         else:  # same stored scale as the database, so an unchanged value compares equal
             instance.reporting_limit = limit.quantize(LIMIT_SCALE)
+    # New work needs an active method version: the form offers only active versions for a new
+    # test or a changed method; an existing test on a since-retired version stays editable.
+    if (
+        instance.method_id
+        and (old is None or instance.method_id != old.method_id)
+        and not Method.objects.filter(pk=instance.method_id, is_active=True).exists()
+    ):
+        errors["method"] = "This method version is inactive. Choose an active version."
     clash = TestDefinition.objects.filter(
         method_id=instance.method_id, analyte_id=instance.analyte_id, matrix=instance.matrix
     )

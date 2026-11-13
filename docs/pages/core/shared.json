@@ -69,7 +69,7 @@
         },
         {
           "label": "Project manager",
-          "description": "Clients, Projects, Quotes and Price lists support client and quotation work. Client submissions, Chains of custody, Sample storage and Delivery schedule are shared with custodians. Samples is shared with custodians and reviewers."
+          "description": "Clients, Projects, Quotes and Price lists support client and quotation work; Spreadsheet import loads clients and projects from CSV files. Client submissions, Chains of custody, Sample storage and Delivery schedule are shared with custodians. Samples is shared with custodians and reviewers."
         },
         {
           "label": "Custodian",
@@ -89,7 +89,7 @@
         },
         {
           "label": "Admin",
-          "description": "Admin includes the operational destinations of custodians, project managers, analysts and reviewers, plus Catalog, QC configuration, Laboratory profile, Record retention and Announcements. The admin role does not grant report-release permission."
+          "description": "Admin includes the operational destinations of custodians, project managers, analysts and reviewers, plus Catalog, QC configuration, Laboratory profile, Spreadsheet import for every record type, Record retention and Announcements. The admin role does not grant report-release permission."
         },
         {
           "label": "Accounts & roles",

@@ -97,6 +97,8 @@ NON_PAGE_ROUTES = {
     "reporting:report-preview-pdf",
     "reporting:version-pdf",
     "mfa_download_recovery_codes",
+    "dataimport:template",
+    "dataimport:starter",
 }
 
 # Items whose label does not yet equal the title (h1) of the page they open. The page title is
@@ -270,6 +272,7 @@ ROLE_MENUS = {
         "schedule",
         "subcontracts",
         "reports",
+        "spreadsheet-import",
     },
     "admin": STAFF_KEYS - {"accounts-roles"},
 }

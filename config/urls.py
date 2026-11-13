@@ -82,6 +82,7 @@ urlpatterns = [
     path("analytical/", include("analytical.urls")),
     path("laboratory/", include("laboratory.urls")),
     path("reports/", include("reporting.urls")),
+    path("setup/import/", include("dataimport.urls")),
     path("portal/", include("reporting.portal_urls")),
     path("portal/", include("commercial.portal_urls")),
 ]

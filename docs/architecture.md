@@ -50,6 +50,8 @@ Keep a few Django apps for accounts, receipt/custody, analytical work and report
 one project and database. Views/forms handle transport and validation; small explicit domain
 functions handle multi-record transitions in `transaction.atomic`. Ordinary ORM queries need
 no repository wrapper. Use constraints and selective row locks/version checks for concurrency.
+The setup import (`dataimport`) depends on receipt, catalog and analytical and writes only through
+their services; none of them depends on it.
 Do not encode release policy in signals or spread it across UI handlers.
 
 Client pre-login records planned work; acceptance may create an empty order, never fabricated
@@ -175,7 +177,9 @@ empty and prior schema plus restore; and a browser journey from receipt through 
 and authorized client download. Inspect professional layout, keyboard navigation and PDF page
 output. Verify the container and Blueprint before deploying. Run the checks a change affects;
 don't add tests that simply restate templates. Passing synthetic tests is not laboratory
-validation. Commands are in [CONTRIBUTING](../CONTRIBUTING.md#verify-your-change).
+validation. A laboratory's own acceptance run (`run_acceptance`) works only in a separate scratch
+database and records what passed there; it is evidence for the laboratory to weigh, not a
+validation either. Commands are in [CONTRIBUTING](../CONTRIBUTING.md#verify-your-change).
 
 ## Open decisions
 

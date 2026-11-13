@@ -34,6 +34,10 @@
         {
           "label": "Rows per page",
           "description": "Only QC limits are paginated: 25 by default, 50 or 100. Their page links retain the method filter. Other tables show their full selected sets."
+        },
+        {
+          "label": "Spreadsheet import",
+          "description": "Administrators can also create or change QC requirements, holding-time rules, QC limits and preservation rules from CSV files under Setup → Spreadsheet import, with a row-by-row preview and the same checks and history as these forms. Preparation requirements and qualifiers are not imported."
         }
       ]
     },
@@ -226,6 +230,7 @@
     "analytical/holding.py",
     "analytical/tests/test_views.py",
     "analytical/tests/test_lists.py",
-    "analytical/tests/test_preservation_workflow.py"
+    "analytical/tests/test_preservation_workflow.py",
+    "dataimport/importing.py"
   ]
 }
