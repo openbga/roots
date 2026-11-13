@@ -24,12 +24,20 @@
           "description": "The breadcrumb also returns to administration home/login. No credentials or other editable fields are shown here."
         }
       ]
+    },
+    {
+      "title": "Sign-out activity",
+      "paragraphs": [
+        "Ending an authenticated administration session records the same sign-out event as the account menu, with the stored username in the deployment’s application logs. These logs follow the deployment’s retention and survive database resets; they are separate from laboratory record audit history."
+      ]
     }
   ],
   "sources": [
     "config/settings.py",
     "config/urls.py",
     "templates/admin/base_site.html",
-    "uv.lock"
+    "uv.lock",
+    "accounts/signin_log.py",
+    "accounts/tests/test_signin_log.py"
   ]
 }

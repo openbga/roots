@@ -37,6 +37,12 @@
         "This page requires a pending code request in the current browser session. If the attempt expires or is missing, you return to the code request page when email-code sign-in is enabled, or to password sign-in when it is disabled. Request a fresh code to start again. A successful code completes only its pending attempt; it cannot start a new session by itself.",
         "Use the account your laboratory issued. Unknown or inactive accounts receive no usable sign-in code even though the confirmation page looks the same. If no sign-in email arrives, check the address and mail folders, then contact your laboratory for account or delivery assistance."
       ]
+    },
+    {
+      "title": "Sign-in activity",
+      "paragraphs": [
+        "A rejected code for a known account is recorded as a failed sign-in in the deployment’s application logs. A successful code produces a completed sign-in event only after any required second factor succeeds. Logs name the stored username and never include the email address or code; requesting or resending a code does not record a completed sign-in. These logs follow the deployment’s retention and survive database resets."
+      ]
     }
   ],
   "sources": [
@@ -45,6 +51,8 @@
     "accounts/tests/test_login.py",
     "templates/account/request_login_code.html",
     "templates/allauth/layouts/base.html",
-    "uv.lock"
+    "uv.lock",
+    "accounts/signin_log.py",
+    "accounts/tests/test_signin_log.py"
   ]
 }
