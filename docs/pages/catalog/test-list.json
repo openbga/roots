@@ -5,6 +5,41 @@
   ],
   "title": "Catalog: tests",
   "purpose": "Find the exact analyte, method version, matrix and unit combination used to request work. Receipt offers it only while both test and method version are active.",
+  "summary": "Find the test definitions that receipt and the bench use: one analyte by one method version in one matrix, with its unit and default reporting limit. Only admins can create or edit them.",
+  "tasks": [
+    {
+      "title": "Find a test",
+      "steps": [
+        "Type an analyte, method code, method title or unit in [[Search]].",
+        "Optionally pick a [[Method]], [[Matrix]] or [[Status]], then select [[Apply]]."
+      ]
+    },
+    {
+      "title": "See which tests receipt can offer",
+      "steps": [
+        "Set [[Status]] to Available at receipt and select [[Apply]]. This needs both the test and its method version to be active."
+      ]
+    },
+    {
+      "title": "Create a test",
+      "steps": [
+        "Create its method version and analyte first, if they don't exist yet.",
+        "Select [[New test]], choose the method, analyte and matrix, and enter the unit."
+      ]
+    },
+    {
+      "title": "Edit a test",
+      "steps": [
+        "Select the analyte name in its row. Only admins see it as a link."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A test is offered at receipt only while both the test and its method version are active.",
+    "A blank reporting limit means no default, not zero. Each result keeps the limit actually used.",
+    "Units are shown exactly as entered. The system never converts units.",
+    "Hiding, showing or moving columns never changes a test."
+  ],
   "sections": [
     {
       "title": "Access and navigation",

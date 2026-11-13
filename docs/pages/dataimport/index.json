@@ -5,6 +5,31 @@
   ],
   "title": "Spreadsheet import",
   "purpose": "Load setup records kept in spreadsheets (clients, projects, analytes, methods, tests, QC requirements, holding-time rules, QC limits and preservation rules) one CSV file per record type, each checked row by row before anything is saved.",
+  "summary": "Load setup records you keep in spreadsheets, one CSV file per record type. Project managers import clients and projects; admins import every type.",
+  "tasks": [
+    {
+      "title": "Import a spreadsheet of records",
+      "steps": [
+        "Find the record type under [[Record types]]. Import in the order shown, because a row can only refer to records that already exist.",
+        "Download its template from the [[Template]] column and add one row per record below the header.",
+        "Select the record type's name to open its import page, then check and import the file there."
+      ]
+    },
+    {
+      "title": "Start from a starter file",
+      "steps": [
+        "Under [[Starter files]], download the file for the record type you need.",
+        "Open its sources and caveats, and check every row against your own methods, permits and current rules.",
+        "Edit the file in a spreadsheet, then import it on the matching record type's page."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Nothing is saved until you confirm the preview on the import page, and any error blocks the whole file.",
+    "An import never creates records of another type. Analytes and methods come before tests, and clients before projects.",
+    "Starter files are starting points, not the laboratory's policy. Starter tests carry no reporting limit.",
+    "Save sheets as CSV (UTF-8). Excel workbooks are not accepted; CSV keeps limits as exact decimals."
+  ],
   "sections": [
     {
       "title": "Access",

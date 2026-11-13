@@ -5,6 +5,27 @@
   ],
   "title": "Generate recovery codes",
   "purpose": "Replace the backup codes for your two-factor authentication.",
+  "summary": "Replace your recovery codes with a new set of ten. The old codes stop working.",
+  "tasks": [
+    {
+      "title": "Get a new set of recovery codes",
+      "steps": [
+        "Select [[Generate]]. The new codes open on the Recovery codes page.",
+        "Save the new codes somewhere private."
+      ]
+    },
+    {
+      "title": "Keep the current codes",
+      "steps": [
+        "Leave with the normal account navigation without selecting Generate."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Generating new codes invalidates every earlier code, used or not.",
+    "Your authenticator app keeps working.",
+    "Generating again replaces the set again. Keep only the latest set."
+  ],
   "sections": [
     {
       "title": "Confirmation",

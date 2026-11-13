@@ -5,6 +5,40 @@
   ],
   "title": "Catalog: methods",
   "purpose": "Browse separately identified method versions, their tests and work usage, and start a new version without rewriting existing work.",
+  "summary": "Browse the lab's method versions, how many tests and how much work use each, and start a new version without rewriting existing work. Only admins can create or edit methods.",
+  "tasks": [
+    {
+      "title": "Find a method version",
+      "steps": [
+        "Type a code, version, title or source reference in [[Search]].",
+        "Optionally pick a [[Method code]] or [[Status]], then select [[Apply]]."
+      ]
+    },
+    {
+      "title": "Start a new version of a method",
+      "steps": [
+        "Select [[New version]] in the row of the version it replaces."
+      ]
+    },
+    {
+      "title": "Add a method",
+      "steps": [
+        "Select [[New method]] and enter its first version."
+      ]
+    },
+    {
+      "title": "Edit a method version",
+      "steps": [
+        "Select the method version in its row. Only admins see it as a link."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Each version is a separate record. A new version never changes work recorded against an older one.",
+    "Making a version inactive only stops new work from using it. Existing references stay.",
+    "Active tests counts active definitions without checking whether the method version itself is active.",
+    "Hiding, showing or moving columns never changes a method."
+  ],
   "sections": [
     {
       "title": "Access and navigation",

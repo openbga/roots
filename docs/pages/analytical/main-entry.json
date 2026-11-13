@@ -5,6 +5,36 @@
   ],
   "title": "Enter results",
   "purpose": "Enter awaiting results or new revisions of entered/returned work in a page-sized grid, then submit saved entries from the batch page.",
+  "summary": "Enter results for the tests in this batch that are awaiting entry, entered or returned, a page at a time. Saving does not submit them for review.",
+  "tasks": [
+    {
+      "title": "Enter results",
+      "steps": [
+        "Optionally set [[Default analysis start]] for every row that has no time of its own.",
+        "Type each result as read, a number or ND, and check its reporting limit and dilution.",
+        "Save the rows on this page. Submit them for review from the batch page."
+      ]
+    },
+    {
+      "title": "Correct a returned result",
+      "steps": [
+        "Read the reviewer's reason under the row, enter the new result and give a [[Reason]], then save."
+      ]
+    },
+    {
+      "title": "Check how to type results",
+      "steps": [
+        "Open [[How to enter results]] for the formats and the qualifier codes you can use."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "If any row has an error, nothing on the page is saved. Your typed values are kept so you can fix them.",
+    "A row is skipped only when its result, reporting limit and analysis start are all blank. Clear a prefilled limit to skip a row.",
+    "Zero is a detected value. Use ND for a non-detect.",
+    "A detected value below its reporting limit needs a qualifier, or enter ND where appropriate.",
+    "Only this page is saved. Save before changing page, or what you typed is lost."
+  ],
   "sections": [
     {
       "title": "Access",

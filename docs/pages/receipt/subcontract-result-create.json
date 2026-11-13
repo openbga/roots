@@ -5,6 +5,30 @@
   ],
   "title": "Enter or correct external source result",
   "purpose": "Transcribe the external observation exactly and attach its source PDF. The first entry creates source 1; later entries create a new immutable version and require a correction reason.",
+  "summary": "Transcribe the external laboratory's result exactly and attach its report PDF. Each entry adds a new version that needs independent review.",
+  "tasks": [
+    {
+      "title": "Enter the result",
+      "steps": [
+        "Enter the [[Exact reported result]] as printed, or ND, with its [[Reported unit]], [[Reported reporting limit]] and [[Reported dilution]].",
+        "Fill in the external method, analyst, analysis time and report reference.",
+        "Attach the [[External source report PDF]] and select [[Enter external source result]]."
+      ]
+    },
+    {
+      "title": "Correct a mistyped result",
+      "steps": [
+        "The fields start with the latest values. Change what was wrong and attach the PDF again.",
+        "Explain the change in [[Correction reason / source note]] and select [[Correct external source]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Type the unit exactly as the report shows it. A different unit is kept and reported as supplied, never converted.",
+    "Enter the reporting limit the external laboratory applied, not the catalog default.",
+    "Every version needs its own PDF. After a form error, choose the file again.",
+    "Reporting waits for an independent review of the new version."
+  ],
   "sections": [
     {
       "title": "Reported observation",

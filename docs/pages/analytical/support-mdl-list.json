@@ -5,6 +5,33 @@
   ],
   "title": "MDL studies",
   "purpose": "Find initial determinations and ongoing verification studies, their latest calculation state and the current adopted MDL for each test.",
+  "summary": "Find method detection limit (MDL) studies, their latest calculation state, and the MDL currently adopted for each test.",
+  "tasks": [
+    {
+      "title": "Find a study",
+      "steps": [
+        "Type an analyte, method code or study number in [[Search]], then select [[Apply]].",
+        "Select the study number to open it."
+      ]
+    },
+    {
+      "title": "Find tests due for recalculation",
+      "steps": [
+        "Open [[More filters]], set [[Recalculation]] to the past-13-months choice, then select [[Apply]]."
+      ]
+    },
+    {
+      "title": "Start a study",
+      "steps": [
+        "Select [[New MDL study]]. Only analysts and admins can start studies."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A recorded MDL is the lab's own record. It does not change reporting limits or show that a method is acceptable.",
+    "Current MDL is the adopted value for the test across all its studies, so it can come from another study.",
+    "Recalculate by counts 13 months from when the adopted calculation was run. Review does not restart it."
+  ],
   "sections": [
     {
       "title": "Access and navigation",

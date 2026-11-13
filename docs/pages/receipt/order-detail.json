@@ -5,6 +5,42 @@
   ],
   "title": "Chain of custody",
   "purpose": "Review one order’s client, project, turnaround, purchase order, shipment details, delivery commitment and received samples; continue receipt, edit its details or record the reason an expected shipment will not arrive.",
+  "summary": "One chain of custody: its client, project, turnaround, shipment details, delivery target and every sample received on it. Continue receipt from here.",
+  "tasks": [
+    {
+      "title": "Receive the samples",
+      "steps": [
+        "Select [[Receive first sample]] or [[Receive next sample]] for each physical sample in the shipment."
+      ]
+    },
+    {
+      "title": "Print labels",
+      "steps": [
+        "Select [[Labels]], choose Each container or Each sample, and set [[Copies of each]].",
+        "Select [[Download PDF]] and print at actual size."
+      ]
+    },
+    {
+      "title": "Fix the details",
+      "steps": [
+        "Select [[Edit details]] for the turnaround, purchase order, shipment or instructions.",
+        "Use [[Change delivery target]] or [[Correct reference]] in the More menu for those two. Each asks for a reason."
+      ]
+    },
+    {
+      "title": "Record a shipment that will not arrive",
+      "steps": [
+        "Select [[Cancel chain of custody]] and give the [[Reason]]. This works only while no sample has been received."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The delivery target is the date agreed with the client. It is not a holding-time deadline.",
+    "Purchase order missing is a reminder only. It does not block receipt.",
+    "Once a sample is on an issued report, the reference can no longer be corrected.",
+    "A chain of custody opened from a client submission is cancelled or reinstated on that submission.",
+    "Printing labels changes nothing on the sample or its custody."
+  ],
   "sections": [
     {
       "title": "Order summary",

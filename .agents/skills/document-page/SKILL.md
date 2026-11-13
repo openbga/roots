@@ -55,8 +55,12 @@ Production reads the files once per release.
   layer is rejected. An entry without them still renders, with its reference sections open, but
   every new or rewritten entry gets the layer.
 - `[[Label]]` inside `steps` and `good_to_know` marks an exact on-screen label, rendered as a
-  quiet chip after the text is escaped. A `[[` without its `]]` and nested markers are rejected
-  at load time. No other markup is allowed anywhere.
+  quiet chip after the text is escaped (`core/templatetags/documentation.py`, `help_text`). A
+  `[[` without its `]]` and nested markers are rejected at load time. The summary is plain text
+  with no markers, and no other markup is allowed anywhere. The size limits count the raw string,
+  brackets included. They are the constants at the top of `core/page_docs.py` (`SUMMARY_MAX`,
+  `TASKS`, `TASK_TITLE_MAX`, `STEPS`, `STEP_MAX`, `TIPS`, `TIP_MAX`), checked by
+  `check_friendly`.
 - `sections`: the reference. Each has a `title` and at least one of `paragraphs` (a list of
   strings) or `items` (`{"label", "description"}` pairs, shown as a definition list with a filter
   box). All values are plain text. Markup is escaped.

@@ -5,6 +5,33 @@
   ],
   "title": "Inventory: materials",
   "purpose": "Find definitions shared by stock lots, including units and handling requirements.",
+  "summary": "Find a material definition (standard, reagent or other) that stock lots share, with its counting unit and storage requirements.",
+  "tasks": [
+    {
+      "title": "Find a material",
+      "steps": [
+        "Type a name, CAS number or specification text in [[Search]], then select [[Apply]].",
+        "Select the material name to see its details and lots."
+      ]
+    },
+    {
+      "title": "Define a new material",
+      "steps": [
+        "Select [[New material]]. Only admin and reviewer roles can create materials."
+      ]
+    },
+    {
+      "title": "See the lots instead",
+      "steps": [
+        "Select the [[Lots]] tab."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A material has no balance. Quantity and expiry belong to each lot.",
+    "An inactive material cannot be chosen for new lots, but its existing lots and history are kept.",
+    "All materials are listed, active and inactive, unless you filter by [[Status]]."
+  ],
   "sections": [
     {
       "title": "Access and navigation",

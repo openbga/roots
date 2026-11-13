@@ -5,6 +5,34 @@
   ],
   "title": "Clients",
   "purpose": "Find the laboratory’s clients and open their account details, people, projects and recent work. Clients own projects; projects group chains of custody and received samples.",
+  "summary": "The laboratory's clients. Open one to see its contacts, projects, recent work and portal accounts.",
+  "tasks": [
+    {
+      "title": "Find a client",
+      "steps": [
+        "Type a name, account code, contact, email or city in [[Search]] and select [[Apply]].",
+        "Select the client's name to open its record."
+      ]
+    },
+    {
+      "title": "Add a client",
+      "steps": [
+        "Select [[New client]], enter at least the name, and save. Then add its projects."
+      ]
+    },
+    {
+      "title": "List clients in one state",
+      "steps": [
+        "Open [[More filters]], choose the [[State]] and select [[Apply]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "An inactive client cannot receive new intake. Its existing records stay readable.",
+    "Search does not look at phone numbers, additional contacts, report instructions or notes.",
+    "Selecting an email address opens your email application. Nothing is sent from here.",
+    "Many clients can be created or changed at once with Spreadsheet import under Setup."
+  ],
   "sections": [
     {
       "title": "Search and actions",

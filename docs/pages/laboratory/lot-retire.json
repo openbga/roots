@@ -5,6 +5,28 @@
   ],
   "title": "Retire lot",
   "purpose": "Take a lot out of use and write off all remaining stock.",
+  "summary": "Take a lot out of use and write off any remaining stock. Only admin and reviewer roles can retire lots.",
+  "tasks": [
+    {
+      "title": "Retire the lot",
+      "steps": [
+        "Explain why in [[Reason]].",
+        "Select [[Retire lot]]. All remaining stock is recorded as Disposed, effective now."
+      ]
+    },
+    {
+      "title": "Correct the balance but keep the lot in use",
+      "steps": [
+        "Go back to the lot and select [[Record adjustment]] instead."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "There is no way to reactivate a retired lot.",
+    "A retired lot takes no further receipts, uses, adjustments or reversals.",
+    "Its history and the lots prepared from it stay readable.",
+    "There is no second confirmation step after you select [[Retire lot]]."
+  ],
   "sections": [
     {
       "title": "Access and effect",

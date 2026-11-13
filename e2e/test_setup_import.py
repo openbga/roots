@@ -42,7 +42,10 @@ def test_upload_preview_commit_and_see_the_records(page: Page, request):
     shot(page, request, "index")
     page.locator(".vr-topbar [data-vr-documentation-toggle]").click()
     help_panel = page.locator("#vr-documentation")
-    expect(help_panel.get_by_role("heading", name="Starter files", exact=True)).to_be_visible()
+    # Reference sections start collapsed under the tasks; opening one shows its content.
+    starter = help_panel.locator("summary", has_text="Starter files")
+    starter.click()
+    expect(starter.locator("xpath=..")).to_have_attribute("open", "")
     shot(page, request, "index-help")
     help_panel.press("Escape")
 

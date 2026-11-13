@@ -5,6 +5,39 @@
   ],
   "title": "Preparation batch record",
   "purpose": "Inspect physical preparation membership, preparation QC and history, and follow the analytical batches that used each aliquot.",
+  "summary": "Work one preparation batch: its labelled aliquots and the tests they cover, the actual start and completion, preparation QC, and the analytical batches that used each aliquot.",
+  "tasks": [
+    {
+      "title": "Add an aliquot",
+      "steps": [
+        "Select [[Add aliquot]], choose the sample, label the vessel and choose the tests it covers."
+      ]
+    },
+    {
+      "title": "Record when preparation happened",
+      "steps": [
+        "Select [[Record actual start]], then [[Mark completed]] when it finishes."
+      ]
+    },
+    {
+      "title": "Record preparation QC",
+      "steps": [
+        "Select [[Add QC sample]], then [[Record measurements]] beside it."
+      ]
+    },
+    {
+      "title": "Close membership",
+      "steps": [
+        "Select [[Close membership]] when no more aliquots or QC samples will be added. This cannot be undone."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Reuse an aliquot by selecting it during analytical result entry. Preparing again means adding a new aliquot.",
+    "A used aliquot cannot be cancelled.",
+    "Once a submitted or approved result relies on this preparation, its start and completion cannot be changed.",
+    "Preparation QC findings hold approval of the analytical results that use these aliquots."
+  ],
   "sections": [
     {
       "title": "Record and relationships",

@@ -5,6 +5,35 @@
   ],
   "title": "Client submissions",
   "purpose": "Find client declarations sent for laboratory review and intake.",
+  "summary": "The sample submissions clients have sent for laboratory review, and the accepted ones whose samples are still to be received.",
+  "tasks": [
+    {
+      "title": "Review new submissions",
+      "steps": [
+        "Set [[Status]] to Submitted and select [[Apply]].",
+        "Open a submission number to accept it into intake or return it to the client."
+      ]
+    },
+    {
+      "title": "See which accepted shipments are still to arrive",
+      "steps": [
+        "Set [[Status]] to Accepted and select [[Apply]]. Awaiting receipt counts the samples not yet received."
+      ]
+    },
+    {
+      "title": "Find a client's submission",
+      "steps": [
+        "Type a submission number, COC reference, client, project or client sample ID in [[Search]], or pick a [[Client]].",
+        "Select [[Apply]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Clients create and submit submissions in their portal. Staff do not create them here.",
+    "Client drafts never appear, so the Draft filter returns no rows.",
+    "Accepted is not receipt. Samples count as received only once each is received from the submission page.",
+    "Expected arrival is the client's plan. A past date does not flag the shipment as overdue."
+  ],
   "sections": [
     {
       "title": "Access",

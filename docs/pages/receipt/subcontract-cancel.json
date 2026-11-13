@@ -5,6 +5,26 @@
   ],
   "title": "Cancel external dispatch",
   "purpose": "Stop an external routing request before any source result has been entered while preserving the completed handoff record.",
+  "summary": "Cancel an external dispatch before any result has been entered. The handoff record is kept.",
+  "tasks": [
+    {
+      "title": "Cancel the dispatch",
+      "steps": [
+        "Give the [[Reason]] and select [[Cancel external dispatch]]."
+      ]
+    },
+    {
+      "title": "Send the test out again",
+      "steps": [
+        "Record a new handoff from the sample. A cancelled subcontract cannot be reused."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Cancelling does not record that containers came back, and does not change the sample's location.",
+    "Once any result is entered, the dispatch can no longer be cancelled.",
+    "A cancelled dispatch still stops the test from being withdrawn and the collection or matrix from being corrected."
+  ],
   "sections": [
     {
       "title": "Fields and actions",

@@ -5,6 +5,28 @@
   ],
   "title": "Page unavailable",
   "purpose": "This address does not have an accessible application page.",
+  "summary": "This address has no page you can use. Nothing was changed.",
+  "tasks": [
+    {
+      "title": "Get back to work",
+      "steps": [
+        "Use the navigation or the browser's Back button to reach a page you can use.",
+        "Sign in again if your session has ended."
+      ]
+    },
+    {
+      "title": "Report an error that keeps happening",
+      "steps": [
+        "Retry from a known page first.",
+        "Give the laboratory operator the request identifier when one is shown."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "If a form could not be verified, nothing was saved. Reload the form and try again.",
+    "If access is denied, a laboratory administrator must review your account's role or client.",
+    "Never send passwords, recovery codes or sample records in an error report."
+  ],
   "sections": [
     {
       "title": "What to do",

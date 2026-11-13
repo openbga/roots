@@ -5,6 +5,26 @@
   ],
   "title": "Accounts are issued by the laboratory",
   "purpose": "This deployment does not offer public account registration.",
+  "summary": "Accounts are issued by the laboratory. There is no public sign-up.",
+  "tasks": [
+    {
+      "title": "Get an account",
+      "steps": [
+        "Ask the laboratory to issue a staff or client account for you."
+      ]
+    },
+    {
+      "title": "Sign in with an issued account",
+      "steps": [
+        "Select the Smart Roots name at the top to go to sign in."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "This page has no registration form or sign-up action.",
+    "Staff and client accounts are both issued by the laboratory.",
+    "The Smart Roots name at the top returns to the application."
+  ],
   "sections": [
     {
       "title": "Closed registration",

@@ -5,6 +5,40 @@
   ],
   "title": "Laboratory profile",
   "purpose": "See what new reports print about your laboratory: its name, address, contact details, logo, certificates and the statement printed with the certificates. The admin laboratory role changes these details here.",
+  "summary": "What new reports print about your laboratory: name, address, contacts, logo, certificates and the certificate statement. The admin role changes them here.",
+  "tasks": [
+    {
+      "title": "Change the address or contact details",
+      "steps": [
+        "Select [[Edit]], change the details and save. New reports print them from then on."
+      ]
+    },
+    {
+      "title": "Set the report logo",
+      "steps": [
+        "Select [[Upload logo]] or [[Replace logo]] and choose a PNG or JPEG file."
+      ]
+    },
+    {
+      "title": "Record a certificate",
+      "steps": [
+        "Select [[Add certificate]] and enter the authority, number and validity dates.",
+        "Tick Print on reports if reports should list it."
+      ]
+    },
+    {
+      "title": "Find out why a report left certificates off",
+      "steps": [
+        "Check the Status and Print on reports columns. A certificate prints only within its validity dates."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Changes apply to reports issued from now on. An issued report never changes.",
+    "Removing the logo or a certificate does not touch reports already issued.",
+    "The application does not check any result against a certificate. It prints what you recorded.",
+    "The laboratory name is set at installation and cannot be changed here."
+  ],
   "sections": [
     {
       "title": "Access",

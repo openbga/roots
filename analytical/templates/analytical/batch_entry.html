@@ -18,6 +18,9 @@
   {% grid_toolbar label="Filter rows to enter" %}
 {% endpanel %}
 {% list_results items=rows noun="rows needing entry" filtered=filtered invalid=filter_form.errors clear_url=request.path no_results_title="No rows match these filters" no_results_body="Clear the filters to see every row that still needs an entry." empty_title="Nothing to enter" empty_body="Every test in this batch is submitted or approved, or the batch has no tests. Returned results and corrections are entered from the result page." action_url=add_url action_label="Add tests" %}
+{# The pager sits above the entry form: it is a GET navigation with its own rows-per-page form, which
+cannot nest inside this POST form, and the form's sticky action row must stay last in the dialog. #}
+{% pagination noun="rows needing entry" filtered=filtered %}
 {# form: entry-grid #}
 <form class="vr-form" method="post" novalidate action="{{ request.get_full_path }}">
   {% csrf_token %}
@@ -92,7 +95,6 @@
   {% form_actions cancel_url=batch_url submit_label="Save "|add:count|add:" row"|add:plural|add:" on this page as entered" %}<span class="vr-form-note order-first me-auto">Save before changing page: what you typed on an unsaved page is lost. Saving keeps every earlier entry.</span>{% endform_actions %}{% endwith %}
   {% endif %}
 </form>
-{% pagination noun="rows needing entry" filtered=filtered %}
 {% endlist_results %}
 {% endblock %}
 {% block extra_js %}

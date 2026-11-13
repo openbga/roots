@@ -6,6 +6,30 @@
   ],
   "title": "Record or correct equipment event",
   "purpose": "Append calibration or maintenance evidence or replace a mistaken event with a linked correction.",
+  "summary": "Record a calibration or maintenance event for an asset, or replace a mistaken event with a linked correction.",
+  "tasks": [
+    {
+      "title": "Record a calibration or maintenance",
+      "steps": [
+        "Check [[Kind]] and enter [[Performed on]].",
+        "Choose a staff performer or enter the outside provider.",
+        "Choose the [[Outcome]] and, if the lab has set one, the [[Next due]] date, then save."
+      ]
+    },
+    {
+      "title": "Correct an earlier event",
+      "steps": [
+        "Change the values that were wrong.",
+        "Explain the change in [[Correction reason]] and save. The original stays on record, marked Corrected."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Maintenance outcomes are Completed or Not acceptable. A new form starts on Acceptable, which is valid only for calibration.",
+    "A Not acceptable outcome shows a warning. It does not open a nonconformance or take the asset out of service.",
+    "Entering an older event does not replace the latest one shown as current.",
+    "Retired assets cannot take new events. An already-corrected event cannot be corrected again; correct the newer one."
+  ],
   "sections": [
     {
       "title": "Access and variants",

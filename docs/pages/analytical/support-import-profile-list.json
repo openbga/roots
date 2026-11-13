@@ -5,6 +5,27 @@
   ],
   "title": "Import mappings",
   "purpose": "Find reusable descriptions of long or wide comma/tab-delimited result files before previewing them against an analytical batch.",
+  "summary": "Find the saved mappings that describe your results files, column by column, for import into an analytical batch.",
+  "tasks": [
+    {
+      "title": "Find a mapping",
+      "steps": [
+        "Type a name or note text in [[Search]], or choose a [[Layout]], then select [[Apply]].",
+        "Select the name to edit it. Only analysts and admins can edit mappings."
+      ]
+    },
+    {
+      "title": "Create a mapping",
+      "steps": [
+        "Select [[New mapping]] and describe your file's columns."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A mapping describes a file. It is not a validated instrument adapter.",
+    "Each import keeps the mapping it used, so later edits never change earlier imports.",
+    "Only active mappings can be chosen for an import. Inactive ones stay listed."
+  ],
   "sections": [
     {
       "title": "Access and navigation",

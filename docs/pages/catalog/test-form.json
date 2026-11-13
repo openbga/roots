@@ -6,6 +6,36 @@
   ],
   "title": "Test definition",
   "purpose": "Define one analyte by one method version in one matrix, with its unit and optional default reporting limit. Receipt requests and analytical work refer to this definition.",
+  "summary": "Define one analyte by one method version in one matrix, with its unit and an optional default reporting limit. Receipt requests and analytical work refer to it. Only admins can save.",
+  "tasks": [
+    {
+      "title": "Define a new test",
+      "steps": [
+        "Choose the method version, the analyte and the matrix.",
+        "Enter the unit and, if the lab has one, the default reporting limit in that unit.",
+        "Select [[Create test]]."
+      ]
+    },
+    {
+      "title": "Change a reporting limit or availability",
+      "steps": [
+        "Change the default reporting limit, or check or uncheck whether it is available for new work.",
+        "Explain the change in [[Reason for change]], then select [[Save changes]]."
+      ]
+    },
+    {
+      "title": "Stop offering a test for new work",
+      "steps": [
+        "Uncheck the box for availability, give a [[Reason for change]] and select [[Save changes]]. Existing work keeps its reference."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Once anything refers to the test, its method, analyte, matrix and unit lock. Create a separate test when one of them must differ.",
+    "Changing the default limit never changes results already recorded: each keeps the limit it applied.",
+    "If someone saved the record after you opened it, your save is refused. Reload and compare before entering the change again.",
+    "Tests are never deleted. Make one unavailable instead."
+  ],
   "sections": [
     {
       "title": "What is measured",

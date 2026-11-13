@@ -6,6 +6,36 @@
   ],
   "title": "Create or edit import mapping",
   "purpose": "Describe exactly which exported columns provide result fields for a reusable long or wide file import.",
+  "summary": "Describe a long or wide results file once: which column holds the sample, analyte, result and the other values. Then reuse it for imports. Only analysts and admins can save mappings.",
+  "tasks": [
+    {
+      "title": "Describe the file",
+      "steps": [
+        "Enter a [[Profile name]] and choose the [[Layout]], [[Delimiter]] and date format.",
+        "Name the sample ID and analysis start columns, and the reporting limit and dilution, as columns or fixed values."
+      ]
+    },
+    {
+      "title": "Map the results",
+      "steps": [
+        "For a long file, name the analyte, result and unit columns.",
+        "For a wide file, list each analyte column in [[Analyte columns]] with its catalog analyte and unit.",
+        "Select [[Create mapping]]."
+      ]
+    },
+    {
+      "title": "Retire a mapping",
+      "steps": [
+        "Clear [[Active]] and select [[Save changes]]. Earlier imports keep their mapping."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Column headers must match exactly, apart from surrounding spaces. Nothing is guessed from a header.",
+    "Units must match the test unit exactly. Nothing is converted.",
+    "A blank percent solids means unknown, not 100%.",
+    "Saving a mapping does not prove it suits a file. Preview a real file against a batch before importing."
+  ],
   "sections": [
     {
       "title": "Access, variants and file assumptions",

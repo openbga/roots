@@ -5,6 +5,30 @@
   ],
   "title": "Receive sample",
   "purpose": "Receive one physical sample and a single container while creating its chain of custody at the same time. Use an existing order’s receipt page for multiple containers or continued receipt.",
+  "summary": "Receive one physical sample with a single container, creating its chain of custody at the same time.",
+  "tasks": [
+    {
+      "title": "Receive the sample",
+      "steps": [
+        "Choose the [[Project]] and enter the [[Chain of custody reference]] and [[Client sample ID]].",
+        "Enter the collection details, [[Received at]], [[Cooler temperature]] and the inspection fields.",
+        "Choose the [[Tests]] and select [[Receive sample]]. The sample gets its laboratory ID."
+      ]
+    },
+    {
+      "title": "Record a problem found at receipt",
+      "steps": [
+        "Describe it in [[Discrepancy]].",
+        "Choose the [[Disposition]] and explain it in [[Disposition note]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "This always creates a new chain of custody. For several containers, or more samples on one order, receive them from the chain of custody instead.",
+    "Record the cooler temperature exactly as read. It is never rounded.",
+    "Holding clocks start at the collection time, or the composite end, not at receipt.",
+    "If anything is invalid, nothing is saved. Your entries stay on the form."
+  ],
   "sections": [
     {
       "title": "Chain of custody",

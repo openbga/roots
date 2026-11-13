@@ -5,6 +5,28 @@
   ],
   "title": "New quote",
   "purpose": "Start a client draft; enter prices and terms on the next page.",
+  "summary": "Start a quote for a client. You add prices, validity and terms on the next page; the client sees nothing until you issue it.",
+  "tasks": [
+    {
+      "title": "Start a quote",
+      "steps": [
+        "Choose the [[Client]] and enter a [[Title]] that describes the work.",
+        "Select [[Create quote]]. The quote gets its QT number as draft version 1 and the draft editor opens."
+      ]
+    },
+    {
+      "title": "Quote for one of the client's projects",
+      "steps": [
+        "Choose the client first, then pick the [[Project]].",
+        "The project must belong to that client; a project of another client is refused."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The client cannot be changed later in the draft editor. Pick the right one now.",
+    "The client cannot see a draft. It becomes visible only when a version is issued.",
+    "Selecting Create quote twice for the same request creates only one quote."
+  ],
   "sections": [
     {
       "title": "Access",

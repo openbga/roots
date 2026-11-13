@@ -5,6 +5,35 @@
   ],
   "title": "MDL study record",
   "purpose": "Inspect the study’s observations and immutable calculations, check readiness and follow the currently adopted MDL for the same test.",
+  "summary": "Work one MDL study: its spiked samples and method blanks, whether it is ready to calculate, its calculations, and the MDL currently adopted for the test.",
+  "tasks": [
+    {
+      "title": "Add data",
+      "steps": [
+        "Select [[Add observation]] to record a spiked sample or method blank.",
+        "Or select [[Import routine blanks]] to copy method-blank QC already recorded for this test."
+      ]
+    },
+    {
+      "title": "Calculate the MDL",
+      "steps": [
+        "Check Readiness lists no reasons.",
+        "Select [[Calculate MDL]]. A reviewer who did not enter the data or run it then adopts it, or not."
+      ]
+    },
+    {
+      "title": "Exclude a gross failure",
+      "steps": [
+        "Select [[Exclude]] on the observation and record the documented reason. The original stays visible."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Ready means a calculation could be reviewed. It is not an adopted MDL.",
+    "A calculation is not an MDL until an independent reviewer adopts it.",
+    "Closing a study cannot be undone. Its calculations, reviews and the adopted MDL are kept.",
+    "Observations cannot be edited or deleted. Exclusions and new calculations are added on top."
+  ],
   "sections": [
     {
       "title": "Record, access and panels",

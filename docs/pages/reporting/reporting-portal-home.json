@@ -5,6 +5,33 @@
   ],
   "title": "Client home",
   "purpose": "See your newest issued reports and where your received samples currently stand.",
+  "summary": "Your overview: the newest reports the laboratory has issued to you and where each of your received samples stands now.",
+  "tasks": [
+    {
+      "title": "Get your latest report",
+      "steps": [
+        "Find it under the latest reports and select [[Download PDF]], or select its RPT number to read the summary."
+      ]
+    },
+    {
+      "title": "See which samples are in each status",
+      "steps": [
+        "Select a status that has samples. It opens your samples filtered to that status."
+      ]
+    },
+    {
+      "title": "Find an older report",
+      "steps": [
+        "Select [[All reports]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Status reflects current work. A sample can move out of Reported after a correction, while issued PDFs stay unchanged.",
+    "A downloaded PDF is the stored original. It is never rebuilt from today's data.",
+    "Held or rejected samples can't be resolved here. Contact the laboratory about next steps.",
+    "When Demonstration appears, all data is synthetic and must not be used as laboratory results."
+  ],
   "sections": [
     {
       "title": "Access and navigation",

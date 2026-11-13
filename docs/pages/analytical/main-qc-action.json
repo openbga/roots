@@ -5,6 +5,29 @@
   ],
   "title": "Record disposition",
   "purpose": "Record a reasoned disposition for one current QC failure, missing measurement or frequency shortfall in an analytical or preparation batch.",
+  "summary": "Record a reasoned decision on one current QC finding: a failure, a missing measurement or a frequency shortfall. Analysts and reviewers can record; only a reviewer can accept.",
+  "tasks": [
+    {
+      "title": "Decide on a QC finding",
+      "steps": [
+        "Read the finding at the top of the page.",
+        "Choose the [[Disposition]] and explain it in [[Corrective action or reason]].",
+        "Select [[Record disposition]]."
+      ]
+    },
+    {
+      "title": "Leave without deciding",
+      "steps": [
+        "Select [[Cancel]] to return to the batch."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Only Accept data with qualification releases the hold, and only for this finding.",
+    "You cannot accept QC you measured, or a finding that affects results you entered or submitted.",
+    "A decision applies to the finding as it is now. If the QC, its limits or the batch counts change, decide again.",
+    "Every decision is kept, and the latest one governs."
+  ],
   "sections": [
     {
       "title": "Access",

@@ -5,6 +5,37 @@
   ],
   "title": "Import results",
   "purpose": "Validate one standard UTF-8 comma-separated results file against tests already assigned to this analytical batch, inspect the preview, and save all rows as entered revisions.",
+  "summary": "Import results for tests already in this batch from one standard CSV file. Check the preview first; nothing is saved until you confirm, and then every row is saved or none.",
+  "tasks": [
+    {
+      "title": "Import a results file",
+      "steps": [
+        "Choose the CSV file and select [[Validate and preview]].",
+        "Check every row reads Ready.",
+        "Confirm the import. The results are saved as entered; submit them for review from the batch."
+      ]
+    },
+    {
+      "title": "Fix a file that has errors",
+      "steps": [
+        "Read the errors listed first in the preview.",
+        "Correct the source file, select [[Upload a corrected file]] and validate it again. Nothing was saved."
+      ]
+    },
+    {
+      "title": "Import an instrument export in another layout",
+      "steps": [
+        "Select the [[Import with a mapping]] tab and use a saved mapping."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Every row must match a sample and analyte already in this batch. Import never adds tests or samples.",
+    "Any error in the file blocks the whole file.",
+    "The same file cannot be imported twice into this batch, even under another name.",
+    "The uploaded file itself is not kept, only the results with the file name, row and digest. Keep your source file.",
+    "Replacing an approved or returned result needs a reason in the reason column."
+  ],
   "sections": [
     {
       "title": "Access",

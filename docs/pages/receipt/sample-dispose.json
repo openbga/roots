@@ -5,6 +5,30 @@
   ],
   "title": "Record physical disposal",
   "purpose": "Record a completed, laboratory-authorized physical disposal and custody transfer while retaining all electronic records.",
+  "summary": "Record that a sample was physically disposed of, with the laboratory's authorization. All electronic records stay.",
+  "tasks": [
+    {
+      "title": "Record the disposal",
+      "steps": [
+        "Enter when it happened, the [[Disposal method]] and the [[Disposal destination]].",
+        "Enter who handed it over and who received it, and the [[Reason]].",
+        "Tick the confirmation and select [[Record physical disposal]]."
+      ]
+    },
+    {
+      "title": "Find out why disposal is refused",
+      "steps": [
+        "Read the warning above the form. It names the reason, such as a hold or outstanding tests."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A retention date must be set and have passed, and no disposal hold or receipt Hold may be active.",
+    "Every requested test must be on an issued report, unless the sample was rejected.",
+    "Open preparation work must be closed or cancelled first.",
+    "After disposal, receipt, custody and storage can no longer change. Results and reports stay readable.",
+    "The confirmation records your statement. It does not make an ineligible sample eligible."
+  ],
   "sections": [
     {
       "title": "Required fields",

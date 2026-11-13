@@ -93,8 +93,12 @@
   font-weight: var(--vr-font-weight-black);
 }
 .vr-help-ui {
-  display: inline-block;
-  padding: 0 var(--vr-space-1-5);
+  /* Inline (not inline-block) so a chip never wraps away from the punctuation after it. */
+  display: inline;
+  white-space: nowrap;
+  padding: var(--vr-space-0-5) var(--vr-space-1-5);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
   border-radius: var(--vr-radius-tag);
   background: var(--vr-help-label-bg);
   color: var(--vr-text-strong);

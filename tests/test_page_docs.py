@@ -9,6 +9,7 @@ from django.test import RequestFactory
 from django.urls import URLResolver, get_resolver, resolve
 
 from core.page_docs import (
+    FRIENDLY_FIELDS,
     document_for_route,
     documentation_for_request,
     read_documents,
@@ -206,7 +207,7 @@ def test_request_help_uses_route_not_query_or_record_data():
     request.resolver_match = resolve("/clients/")
     data = documentation_for_request(request)
     assert data["id"] == document_for_route("receipt:client-list")["id"]
-    assert set(data) == {"id", "title", "purpose", "sections"}
+    assert set(data) <= {"id", "title", "purpose", "sections", *FRIENDLY_FIELDS}
     request.resolver_match = None
     assert documentation_for_request(request)["id"] == "core-unavailable"
 
@@ -319,6 +320,21 @@ def test_friendly_layer_is_optional_but_all_or_none():
 def test_friendly_layer_limits_and_labels_are_enforced(changes, message):
     with pytest.raises(ImproperlyConfigured, match=message):
         check(friendly_document(**changes))
+
+
+# The appended workspace sections are not a page of their own.
+FRIENDLY_EXEMPT = {"core-shared"}
+
+
+def test_every_page_has_the_friendly_layer():
+    # check_friendly (in read_documents) enforces the limits and labels; this enforces presence,
+    # so no page falls back to the plain purpose and an open reference.
+    missing = sorted(
+        document["id"]
+        for document in read_documents()
+        if document["id"] not in FRIENDLY_EXEMPT and "tasks" not in document
+    )
+    assert missing == []
 
 
 def test_the_drawer_receives_the_friendly_layer_but_not_evidence():

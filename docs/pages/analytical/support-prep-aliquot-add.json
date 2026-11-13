@@ -5,6 +5,28 @@
   ],
   "title": "Add aliquot",
   "purpose": "Record one labelled physical preparation of a received sample and the requested tests it covers.",
+  "summary": "Record one labelled physical aliquot prepared from a received sample, and the requested tests it covers.",
+  "tasks": [
+    {
+      "title": "Add an aliquot",
+      "steps": [
+        "Choose the sample and select [[Load requested tests]] before typing anything else.",
+        "Enter the [[Aliquot label]] and check the [[Tests covered]].",
+        "Select [[Add aliquot]]."
+      ]
+    },
+    {
+      "title": "Reuse an existing aliquot instead",
+      "steps": [
+        "Select that aliquot during analytical result entry or mapped import. This page always creates a new one."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "One aliquot can cover several tests, but only tests whose preparation requirement names this method.",
+    "Samples on hold, rejected, disposed of or sent out cannot be prepared.",
+    "Labels are unique within the batch, including cancelled ones."
+  ],
   "sections": [
     {
       "title": "Context and access",

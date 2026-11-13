@@ -5,6 +5,26 @@
   ],
   "title": "Sign out",
   "purpose": "Confirm that you want to end the current session.",
+  "summary": "Confirm that you want to sign out of this browser.",
+  "tasks": [
+    {
+      "title": "Sign out",
+      "steps": [
+        "Select [[Sign Out]]. The session ends and you return to sign in."
+      ]
+    },
+    {
+      "title": "Stay signed in",
+      "steps": [
+        "Leave the page with the normal navigation. Opening this page does not sign you out."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The Sign out item in the account menu signs out at once, without this page.",
+    "Your theme, column and help-panel preferences are kept after you sign out.",
+    "Signing out ends any half-finished sign-in in this browser too."
+  ],
   "sections": [
     {
       "title": "Action",

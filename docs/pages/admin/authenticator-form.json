@@ -5,6 +5,26 @@
   ],
   "title": "Authenticator record",
   "purpose": "Review one enrolled sign-in factor and, when its owner has lost it, remove it.",
+  "summary": "Review one enrolled sign-in factor and remove it when its owner has lost it.",
+  "tasks": [
+    {
+      "title": "Remove this factor",
+      "steps": [
+        "Select [[Delete]] and confirm. The owner then enrolls again from their own Two-factor authentication pages."
+      ]
+    },
+    {
+      "title": "Go back without changes",
+      "steps": [
+        "Select [[Close]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Removing an authenticator app leaves the user's recovery codes. Remove each record that should stop working.",
+    "The secret and recovery codes are never displayed.",
+    "Django's History is separate from the account's audit history."
+  ],
   "sections": [
     {
       "title": "Access",

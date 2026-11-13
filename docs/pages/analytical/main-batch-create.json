@@ -5,6 +5,28 @@
   ],
   "title": "New batch",
   "purpose": "Create an empty analytical batch for one active method version and sample matrix, then add compatible requested tests.",
+  "summary": "Create an empty analytical batch for one method version and one sample matrix. Only analysts and admins can create batches.",
+  "tasks": [
+    {
+      "title": "Create a batch",
+      "steps": [
+        "Choose the [[Method]] and the [[Matrix]].",
+        "If a holding rule starts or ends at preparation, enter the [[Preparation start]].",
+        "Optionally choose the [[Instrument or equipment]], then select [[Create batch]]. You go straight to adding tests."
+      ]
+    },
+    {
+      "title": "Leave without creating a batch",
+      "steps": [
+        "Select [[Cancel]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Tests added later must use exactly this method version and matrix.",
+    "The preparation start cannot be earlier than the collection of the samples you add.",
+    "The equipment is shown beside results for information. Approval and release do not depend on it."
+  ],
   "sections": [
     {
       "title": "Access",

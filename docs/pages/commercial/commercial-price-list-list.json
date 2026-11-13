@@ -5,6 +5,33 @@
   ],
   "title": "Price lists",
   "purpose": "Find staff lists that supply per-sample test prices to quote drafts.",
+  "summary": "The price lists that supply per-sample test prices to quote drafts. Only project managers and admins can use them.",
+  "tasks": [
+    {
+      "title": "Find a price list",
+      "steps": [
+        "Type part of a name or description in [[Search]], or choose a [[Status]].",
+        "Select [[Apply]], then select the name to open the list."
+      ]
+    },
+    {
+      "title": "Create a price list",
+      "steps": [
+        "Select [[New price list]], name it and enter prices for the tests you offer."
+      ]
+    },
+    {
+      "title": "Stop offering a list for new quotes",
+      "steps": [
+        "Open the list, clear [[Active (can be quoted)]], give a reason and save."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Inactive lists cannot be chosen for new quotes. A draft that already uses one keeps it.",
+    "Changing a list never changes prices already saved on quote lines.",
+    "Priced tests counts every price on the list, including tests no longer active."
+  ],
   "sections": [
     {
       "title": "Access",

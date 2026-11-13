@@ -7,6 +7,36 @@
   ],
   "title": "New, renew or correct training record",
   "purpose": "Append training or a demonstration of capability while preserving earlier entries.",
+  "summary": "Record new training or a demonstration of capability, renew a record, or correct one. Earlier records are never changed. Only admin and reviewer roles can save.",
+  "tasks": [
+    {
+      "title": "Record training or a demonstration",
+      "steps": [
+        "Choose the [[Staff member]] and the [[Type]], and enter the [[Title]].",
+        "For a demonstration of capability, choose the [[Method]].",
+        "Enter the outcome, dates and the reviewer, then select [[Create training record]]."
+      ]
+    },
+    {
+      "title": "Renew a record",
+      "steps": [
+        "Enter the new completed, effective and expiry dates and the outcome.",
+        "Attach the new evidence if there is any, and save."
+      ]
+    },
+    {
+      "title": "Correct a record",
+      "steps": [
+        "Fix the values, explain the change in [[Correction reason]] and save. The original stays as history."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The reviewer must be a different person from the trainee.",
+    "No renewal interval is suggested. Expiry is the date you enter, and blank means no expiry.",
+    "Evidence from an earlier record is not copied. Attach it again if it belongs on the new record.",
+    "Saving a record does not grant roles or release permissions."
+  ],
   "sections": [
     {
       "title": "Training access",

@@ -5,6 +5,35 @@
   ],
   "title": "Quotes",
   "purpose": "Find laboratory-issued quotes for your client and review their prices, terms and decision status.",
+  "summary": "The quotes the laboratory has issued to your organization, with their totals, validity and decision status.",
+  "tasks": [
+    {
+      "title": "Find quotes waiting for your decision",
+      "steps": [
+        "Set [[Status]] to Awaiting your decision and select [[Apply]].",
+        "Select a quote number to read it, then accept or decline it there."
+      ]
+    },
+    {
+      "title": "Find a quote",
+      "steps": [
+        "Type a quote number, title or project name in [[Search]] and select [[Apply]]."
+      ]
+    },
+    {
+      "title": "Show more columns",
+      "steps": [
+        "Select [[Columns]] and switch on Project or Issued.",
+        "Your choice is saved for your account on this table."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "You see the last version the laboratory issued. Changes the laboratory is still drafting are never shown.",
+    "Being revised means the laboratory is preparing a new version. You cannot decide on it until it is issued.",
+    "Expired means the valid-until date has passed. Contact the laboratory to have it reissued.",
+    "Drafts and withdrawn quotes do not appear here."
+  ],
   "sections": [
     {
       "title": "Access",

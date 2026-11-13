@@ -5,6 +5,33 @@
   ],
   "title": "QC configuration",
   "purpose": "Inspect six types of laboratory configuration controlling preservation, independent preparation, holding clocks, QC frequencies/limits and result qualifiers.",
+  "summary": "See the lab's configured preservation rules, preparation requirements, holding-time rules, QC requirements, QC limits and result qualifiers. Only administrators can change them.",
+  "tasks": [
+    {
+      "title": "See one method's configuration",
+      "steps": [
+        "Choose the [[Method]] and select [[Apply]]. Qualifiers are not filtered by method."
+      ]
+    },
+    {
+      "title": "Add a rule, requirement, limit or qualifier",
+      "steps": [
+        "Select the add button in that table's header, for example [[Add QC limit]] or [[Add holding-time rule]]."
+      ]
+    },
+    {
+      "title": "Change a configured row",
+      "steps": [
+        "Select the row's first cell to open its edit form. Only administrators see these as links."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "These values are the lab's own policy, not regulatory defaults. The demonstration values are synthetic and not validated.",
+    "Missing configuration is never a pass. No QC limit means Not evaluated, and no holding rule means holding time is not evaluated.",
+    "Changes apply to new work. Results already entered and reports already issued keep the values they were made with.",
+    "Inactive rows stay listed so their history remains visible."
+  ],
   "sections": [
     {
       "title": "Access",

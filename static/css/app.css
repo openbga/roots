@@ -3359,6 +3359,13 @@ fieldset.vr-field > legend {
   display: none;
 }
 
+/* A dialog ends with its form's action row: the history and the page footer stay on the full page,
+   also when a form URL opened directly becomes the dialog. Header actions move to the dialog
+   header (form-dialog.js). */
+.vr-form-dialog :is(.vr-page-only, [data-vr-form-page] > .vr-page-actions) {
+  display: none;
+}
+
 .vr-form-dialog .vr-form,
 .vr-form-dialog .vr-form-wide > .vr-form-section {
   max-width: none;

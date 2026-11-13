@@ -5,6 +5,27 @@
   ],
   "title": "Verify your email",
   "purpose": "Follow the email sent to confirm ownership of an address.",
+  "summary": "A verification link was sent to your address. Follow it from your mailbox to confirm that the address is yours.",
+  "tasks": [
+    {
+      "title": "Verify the address",
+      "steps": [
+        "Open the email and follow its verification link. Check your spam folder if it has not arrived.",
+        "On the link's page, select Confirm."
+      ]
+    },
+    {
+      "title": "Ask for another link",
+      "steps": [
+        "On the Email addresses page, select the address and choose Re-send Verification."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Asking for a link does not verify the address. Only confirming the link does.",
+    "The text mentions sign-up, but accounts here are issued by the laboratory. This page also confirms addresses on existing accounts.",
+    "Whether the email arrives depends on the deployment's outgoing mail."
+  ],
   "sections": [
     {
       "title": "State and next step",

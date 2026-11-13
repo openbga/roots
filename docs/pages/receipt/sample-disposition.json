@@ -5,6 +5,29 @@
   ],
   "title": "Change disposition",
   "purpose": "Record a new receipt decision after client response or laboratory review, preserving the previous decision and its reason.",
+  "summary": "Record a new receipt decision for a sample, for example after the client responds. The previous decision and its reason are kept.",
+  "tasks": [
+    {
+      "title": "Release a sample on hold",
+      "steps": [
+        "Read the receipt discrepancy and the current note.",
+        "Set [[Disposition]] to Proceed or Qualify and record the [[Client response / reason]].",
+        "Select [[Change disposition]]."
+      ]
+    },
+    {
+      "title": "Reject a sample",
+      "steps": [
+        "Set [[Disposition]] to Reject, explain why and select [[Change disposition]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Hold and Reject can block analytical work. A Hold also blocks physical disposal.",
+    "This changes the decision, not the receipt observations. Correct those with Correct sample details.",
+    "Your reason becomes the current disposition note. Earlier decisions stay in the history.",
+    "A physically disposed sample cannot change disposition."
+  ],
   "sections": [
     {
       "title": "Current record",

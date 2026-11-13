@@ -5,6 +5,37 @@
   ],
   "title": "Review analytical batch",
   "purpose": "Approve or return current submitted revisions in one batch that you neither entered nor submitted, using holding, preservation, preparation and QC evidence.",
+  "summary": "Approve or return the results submitted in one batch, using its QC, holding-time, preservation and preparation evidence. You can only decide results you neither entered nor submitted.",
+  "tasks": [
+    {
+      "title": "Approve the results that are ready",
+      "steps": [
+        "Select [[Select only ready to approve]].",
+        "Set [[Action]] to Approve, optionally add a note, and select [[Apply decision to selected]]."
+      ]
+    },
+    {
+      "title": "Return results for correction",
+      "steps": [
+        "Check the results to return.",
+        "Set [[Action]] to Return and explain why in [[Note or reason]]. A reason is required.",
+        "Select [[Apply decision to selected]]."
+      ]
+    },
+    {
+      "title": "Deal with a QC finding",
+      "steps": [
+        "Read the open QC findings at the top.",
+        "Select [[Record disposition]] for a finding to record a decision on it."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Each result is decided on its own. Some can be approved while others are refused with the reason shown.",
+    "Held results can be returned, but not approved until the hold is resolved.",
+    "Whoever measured a QC finding, or entered or submitted the affected results, cannot accept that finding.",
+    "Approving does not issue a report. Release is a separate step with its own checks."
+  ],
   "sections": [
     {
       "title": "Access",

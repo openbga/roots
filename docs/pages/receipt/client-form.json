@@ -6,6 +6,35 @@
   ],
   "title": "Client",
   "purpose": "Create a client organization or update its account details, contact, mailing address, invoicing details, report instructions and notes. Editing also controls whether the client can receive new intake.",
+  "summary": "A client organization's account, contact, address, invoicing and report details. When editing, also whether it accepts new intake.",
+  "tasks": [
+    {
+      "title": "Create a client",
+      "steps": [
+        "Enter the [[Name]] as it should appear on reports. Everything else is optional.",
+        "Add the primary contact, address and invoicing details you have, then select [[Create client]]."
+      ]
+    },
+    {
+      "title": "Require a purchase order",
+      "steps": [
+        "Tick [[Purchase order required]]. Chains of custody without one show a warning at intake."
+      ]
+    },
+    {
+      "title": "Stop new intake for a client",
+      "steps": [
+        "Clear [[Active (accepts new intake)]], give the [[Reason for change]] and select [[Save changes]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Nothing here sends reports or invoices, or creates a portal login.",
+    "Leave the invoicing fields blank when the primary contact and mailing address also receive invoices.",
+    "A missing purchase order shows a warning but never blocks receipt.",
+    "Payment terms are recorded for reference. They do not create invoices or due dates.",
+    "If someone else saved the client after you opened it, your save is refused. Reload and compare first."
+  ],
   "sections": [
     {
       "title": "Layout and access",

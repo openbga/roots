@@ -6,6 +6,28 @@
   ],
   "title": "Group permissions",
   "purpose": "Maintain the capabilities granted to a group of users.",
+  "summary": "Choose which permissions a group grants its members.",
+  "tasks": [
+    {
+      "title": "Change a group's permissions",
+      "steps": [
+        "Move permissions between Available permissions and Chosen permissions under [[Permissions]].",
+        "Select [[Save]]."
+      ]
+    },
+    {
+      "title": "Let a group's members release reports",
+      "steps": [
+        "Choose the accounts authorize_release permission and save."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Members are added on each user's account, not on this form.",
+    "Built-in group names are read only.",
+    "Changes are recorded in the audit history. A later save by someone else replaces yours.",
+    "Groups cannot be deleted."
+  ],
   "sections": [
     {
       "title": "Access and fields",

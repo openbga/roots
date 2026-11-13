@@ -5,6 +5,30 @@
   ],
   "title": "Preservation assessment",
   "purpose": "Compare recorded cooler receipt evidence with this requested test’s exact preservation rule, then record a separate attributed laboratory disposition when needed.",
+  "summary": "See how a test's recorded cooler receipt evidence compares with the lab's preservation rule, and record the lab's disposition. Recording needs the custodian, project manager or reviewer role.",
+  "tasks": [
+    {
+      "title": "Record the lab's disposition",
+      "steps": [
+        "Read the current findings and any manual requirements.",
+        "Choose the [[Lab disposition]] and explain it in [[Assessment evidence and reason]].",
+        "Select [[Record assessment]]."
+      ]
+    },
+    {
+      "title": "Lift an earlier Hold or Reject",
+      "steps": [
+        "Record a new assessment against the current evidence. An earlier Hold or Reject keeps blocking until you do."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The finding compares the recorded cooler reading only. It does not establish container temperature, continuous cooling or chemical preservation.",
+    "No rule configured is not acceptance. A reasoned disposition is still needed.",
+    "Hold or Reject blocks new approval and release until a newer assessment lifts it.",
+    "Proceed and Qualify reasons print on issued reports and client copies. Do not enter internal-only notes.",
+    "If the receipt record or the rule changes, the assessment no longer matches and a new one is needed where a disposition is required."
+  ],
   "sections": [
     {
       "title": "Access",

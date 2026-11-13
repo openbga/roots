@@ -5,6 +5,30 @@
   ],
   "title": "Record use",
   "purpose": "Record exact consumption, optionally linked to an analytical batch.",
+  "summary": "Record exactly how much of a lot was used, and optionally link the use to an analytical batch.",
+  "tasks": [
+    {
+      "title": "Record use for a batch",
+      "steps": [
+        "Enter the quantity used, in the lot's unit.",
+        "Enter the [[Analytical batch]] number, for example B-000123.",
+        "Check [[Used at]] and select [[Record use]]."
+      ]
+    },
+    {
+      "title": "Record use for another purpose",
+      "steps": [
+        "Enter the quantity and describe it in [[Purpose]]. A purpose is required when no batch is given.",
+        "Select [[Record use]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "You cannot use more than the lot holds.",
+    "Using a lot after its expiry date needs the expired-lot confirmation, and the movement stays flagged Used after expiry.",
+    "A use linked to a batch shows beside that batch for information only. It does not change results, QC decisions or reports.",
+    "Retired lots cannot take new uses."
+  ],
   "sections": [
     {
       "title": "Access",

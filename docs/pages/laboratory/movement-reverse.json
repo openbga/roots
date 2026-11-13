@@ -5,6 +5,28 @@
   ],
   "title": "Reverse movement",
   "purpose": "Append the opposite of one earlier movement and retain its original record.",
+  "summary": "Undo one earlier stock movement by recording its exact opposite. The original stays on record, marked Reversed. Only admin and reviewer roles can reverse.",
+  "tasks": [
+    {
+      "title": "Reverse a movement",
+      "steps": [
+        "Explain why in [[Reason]].",
+        "Select [[Reverse movement]]. The opposite amount is recorded effective now."
+      ]
+    },
+    {
+      "title": "Correct by a different amount",
+      "steps": [
+        "Go back to the lot and select [[Record adjustment]] to record a signed correction instead."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Each movement can be reversed once, and a reversal cannot itself be reversed.",
+    "Undoing a receipt is refused if the balance would go below zero.",
+    "A reversed batch use stays visible beside the batch, marked as later reversed.",
+    "For any further correction, record a new movement."
+  ],
   "sections": [
     {
       "title": "Access and prerequisites",

@@ -5,6 +5,27 @@
   ],
   "title": "Authentication email addresses",
   "purpose": "Look up the email addresses accounts use for sign-in codes and password reset, and whether each is verified.",
+  "summary": "Look up the sign-in email addresses of accounts and whether each is verified. This list is read only.",
+  "tasks": [
+    {
+      "title": "Find an account's addresses",
+      "steps": [
+        "Search by email, username or name, or filter by primary and verified.",
+        "Select the address to see its record."
+      ]
+    },
+    {
+      "title": "Help a user with an unverified address",
+      "steps": [
+        "Ask them to verify it from their own Email addresses page. Addresses cannot be verified here."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Nothing can be added, edited, verified or deleted here.",
+    "These are sign-in addresses, not client contacts or report recipients.",
+    "Only superusers can open this list."
+  ],
   "sections": [
     {
       "title": "Access and columns",

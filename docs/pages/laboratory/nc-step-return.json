@@ -5,6 +5,27 @@
   ],
   "title": "Return to corrective action",
   "purpose": "Return an issue from Verification to Corrective action when more work is needed.",
+  "summary": "Send a nonconformance in Verification back to Corrective action when more work is needed.",
+  "tasks": [
+    {
+      "title": "Return the issue",
+      "steps": [
+        "Explain what still needs doing in [[Reason]].",
+        "Select [[Return to corrective action]]."
+      ]
+    },
+    {
+      "title": "Submit it again later",
+      "steps": [
+        "Revise the corrective action, then select [[Submit for verification]] on the record."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Only an issue in Verification can be returned.",
+    "The cause, disposition, corrective action, due date and verification text are kept.",
+    "Only the owner or a lead can return an issue."
+  ],
   "sections": [
     {
       "title": "Who can change this record",

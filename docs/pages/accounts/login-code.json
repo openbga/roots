@@ -5,6 +5,35 @@
   ],
   "title": "Confirm sign-in code",
   "purpose": "Enter the emailed code in the browser window that requested it to continue signing in to your laboratory account.",
+  "summary": "Type the sign-in code from your email to finish signing in. Use the same browser window that asked for the code.",
+  "tasks": [
+    {
+      "title": "Finish signing in with the code",
+      "steps": [
+        "Check that the address in \"We've sent a code to\" is the one you expected. If it is wrong, select [[Cancel]] and ask again.",
+        "Type the code from the latest email in [[Code]] within five minutes of asking for it.",
+        "Select [[Confirm]]. If you have an authenticator app, you are asked for its code next."
+      ]
+    },
+    {
+      "title": "Get a new code",
+      "steps": [
+        "Select [[Request new code]]. The new code replaces earlier ones, and you can ask twice per attempt."
+      ]
+    },
+    {
+      "title": "Use your password instead",
+      "steps": [
+        "Select [[Cancel]] to end this attempt and go back to password sign-in."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A new code does not restart the five-minute deadline.",
+    "Three wrong codes end the attempt, and you need to ask for a code again.",
+    "This page looks the same for unknown or inactive accounts, so it does not prove that an account exists.",
+    "A code asked for in another browser cannot finish this sign-in."
+  ],
   "sections": [
     {
       "title": "Fields and actions",

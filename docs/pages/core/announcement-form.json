@@ -6,6 +6,35 @@
   ],
   "title": "Announcement",
   "purpose": "Post a new announcement or change one that has not been withdrawn. The edit form is also the announcement’s record page.",
+  "summary": "Write an announcement and choose where and when it shows. For an existing one, this is also its record, with its history.",
+  "tasks": [
+    {
+      "title": "Post an announcement",
+      "steps": [
+        "Enter the [[Title]] and [[Message]], and choose the places under [[Show on]].",
+        "Leave [[Show from]] at now, or set a future time to schedule it.",
+        "Select [[Post announcement]]. It shows as soon as Show from has passed."
+      ]
+    },
+    {
+      "title": "End it at a set time",
+      "steps": [
+        "Set [[Show until]]. Its status becomes Ended at that time."
+      ]
+    },
+    {
+      "title": "Make it stand out",
+      "steps": [
+        "Set [[Importance]] to Important. It uses the warning colours; who sees it does not change."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "There is no draft or approval step. A posted announcement shows as soon as Show from has passed.",
+    "The sign-in page is seen by anyone, without signing in. Keep confidential and client information out of it.",
+    "The message is plain text. Links and formatting are shown as typed.",
+    "If someone changed the announcement after you opened it, saving is refused. Reload and compare before saving again."
+  ],
   "sections": [
     {
       "title": "Fields",

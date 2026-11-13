@@ -8,6 +8,39 @@
   },
   "title": "Import holding-time rules",
   "purpose": "Create or change holding-time rules from one CSV file: check every row in a preview, then save all rows or none.",
+  "summary": "Create or change holding-time rules from one CSV file. You check every row in a preview first, then all rows are saved or none. Only admins can import holding-time rules.",
+  "tasks": [
+    {
+      "title": "Import a file of holding-time rules",
+      "steps": [
+        "Download [[holding-rules-template.csv]] and add one row per record below the header. Open [[Columns]] to see what each column needs.",
+        "Save the sheet as CSV (UTF-8), choose it in [[CSV file (UTF-8)]], and select [[Check file]].",
+        "Read the preview. When it says Ready, select the Import button, which names the number of rows."
+      ]
+    },
+    {
+      "title": "Change existing holding-time rules",
+      "steps": [
+        "Identify each rule by its method version, matrix, start event and end event.",
+        "Leave out the columns you don't want to change. A blank cell clears an optional value.",
+        "Check the file, fill in [[Reason for changing existing records]], and import it."
+      ]
+    },
+    {
+      "title": "Fix a file with errors",
+      "steps": [
+        "Read the Errors column. Each error names its line and column, and rows with errors are listed first.",
+        "Correct the file, select [[Upload a corrected file]], and check it again. Nothing was saved."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Nothing is saved until you import the checked preview, and any error blocks the whole file.",
+    "A row finds its rule by method version, matrix, start event and end event.",
+    "An import never creates records of another type. The method versions the rules name must exist first.",
+    "Durations are in hours, as on the manual form (48 is 2 days). A calendar period such as 6 months needs the hours the laboratory has decided on.",
+    "The uploaded file is not kept. History records its file name and SHA-256 digest, so keep your copy."
+  ],
   "sections": [
     {
       "title": "Access",

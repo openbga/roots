@@ -5,6 +5,28 @@
   ],
   "title": "Edit laboratory profile",
   "purpose": "Change the address, contact details and certificate statement printed on new reports.",
+  "summary": "Change the address, contact details and certificate statement that new reports print.",
+  "tasks": [
+    {
+      "title": "Update the address or contacts",
+      "steps": [
+        "Change the address lines, [[Phone]], [[Email]] or [[Website]].",
+        "Select [[Save changes]]. New reports print the new details."
+      ]
+    },
+    {
+      "title": "Write your own certificate statement",
+      "steps": [
+        "Enter it in [[Certificate statement]]. Leave it blank to print the default statement."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Reports already issued keep the details they printed.",
+    "A blank detail is simply left off reports.",
+    "The website must start with https:// or http://.",
+    "If the profile or logo changed after you opened the form, saving is refused. Reload and compare first."
+  ],
   "sections": [
     {
       "title": "Fields",

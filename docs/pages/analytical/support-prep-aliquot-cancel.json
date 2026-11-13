@@ -5,6 +5,27 @@
   ],
   "title": "Cancel unused aliquot",
   "purpose": "Retain an unused aliquot and its test links as cancelled evidence rather than deleting them.",
+  "summary": "Cancel an aliquot that has never been used in analysis. It stays on record as cancelled; nothing is deleted.",
+  "tasks": [
+    {
+      "title": "Cancel an unused aliquot",
+      "steps": [
+        "Explain why in [[Reason]].",
+        "Select [[Cancel aliquot]]."
+      ]
+    },
+    {
+      "title": "Keep the aliquot",
+      "steps": [
+        "Select [[Cancel]] to go back without cancelling."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "An aliquot used by any result revision cannot be cancelled. Record a new preparation instead.",
+    "A cancelled aliquot still counts toward preparation QC frequency.",
+    "Closing membership does not stop you cancelling an unused aliquot."
+  ],
   "sections": [
     {
       "title": "Context and fields",

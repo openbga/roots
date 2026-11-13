@@ -6,6 +6,35 @@
   ],
   "title": "Preview and release a report",
   "purpose": "Inspect the proposed first issue or next amendment, resolve blockers and explicitly authorize immutable release.",
+  "summary": "Review the proposed first issue or next amendment, resolve anything blocking it, and authorize release of exactly this content. Release needs the explicit release permission.",
+  "tasks": [
+    {
+      "title": "Release a report",
+      "steps": [
+        "Review the results and select [[Open PDF preview]] to read the PDF.",
+        "For an amendment, explain why it replaces the previous issue in [[Amendment reason]].",
+        "Check [[I authorize release of exactly the content previewed above.]] and select the Release version button."
+      ]
+    },
+    {
+      "title": "Resolve what blocks release",
+      "steps": [
+        "Follow the Fix in link beside each blocking issue, correct the work, then reload this page."
+      ]
+    },
+    {
+      "title": "Run the optional NYSDEC data check first",
+      "steps": [
+        "Select [[run the NYSDEC data check]] under the release section. Its findings don't block the PDF release."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Release stores the PDF and its snapshot for good. Earlier versions stay available unchanged.",
+    "If records changed since you opened the preview, nothing is released. Review the refreshed preview and confirm again.",
+    "Results show exactly as entered, without report rounding. ND means not detected at the applied limit, not zero.",
+    "Release does not send email."
+  ],
   "sections": [
     {
       "title": "Access and navigation",

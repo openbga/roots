@@ -5,6 +5,27 @@
   ],
   "title": "Upload logo",
   "purpose": "Upload the logo printed on new reports, or replace the current one. The title reads Replace logo when a logo is already set.",
+  "summary": "Upload the logo printed on new reports, or replace the current one.",
+  "tasks": [
+    {
+      "title": "Upload the logo",
+      "steps": [
+        "Choose the file in [[Logo image]]: PNG or JPEG, at most 512 KiB, 32 to 2000 pixels a side.",
+        "Select [[Upload logo]]. Reports issued from then on print it."
+      ]
+    },
+    {
+      "title": "Replace the logo",
+      "steps": [
+        "Choose the new file and select [[Replace logo]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Reports already issued keep the logo they printed. A replaced logo stays stored for them.",
+    "CMYK images, damaged files and sizes out of range are refused with the reason, and nothing changes.",
+    "The file type is read from the image itself, not its name."
+  ],
   "sections": [
     {
       "title": "Field",

@@ -5,6 +5,37 @@
   ],
   "title": "Receive expected sample",
   "purpose": "Record actual receipt for one expected sample after accepting its client submission into intake.",
+  "summary": "Record the actual receipt of one sample a client declared. The declaration prefills the form; you confirm it against the labels and paperwork.",
+  "tasks": [
+    {
+      "title": "Receive the sample",
+      "steps": [
+        "Check every prefilled value against the bottle labels and the chain of custody.",
+        "Enter the actual [[Collected / composite ended at]] time, [[Received at]], [[Cooler temperature]] and the inspection fields.",
+        "Confirm the [[Tests]] and each container's [[Condition at receipt]], then select [[Receive sample]]."
+      ]
+    },
+    {
+      "title": "Record a problem found at receipt",
+      "steps": [
+        "Describe it in [[Discrepancy]].",
+        "Choose the [[Disposition]] and explain it in [[Disposition note]]."
+      ]
+    },
+    {
+      "title": "Receive more or fewer containers than declared",
+      "steps": [
+        "Use [[Add container]] or [[Remove this container]] so the rows match what physically arrived."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Receipt observations are never taken from the client's claims. Temperature, seal, coolant, preservation and condition come from the shipment in front of you.",
+    "Record the cooler temperature exactly as read. Do not round it to make it pass a limit.",
+    "The actual collection time is required, even if the client left it blank while planning bottles.",
+    "The client's intended tests are a request. Only the tests you confirm here are ordered.",
+    "Receiving the same expected sample twice at the same time cannot create two samples."
+  ],
   "sections": [
     {
       "title": "Access",

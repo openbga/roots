@@ -5,6 +5,40 @@
   ],
   "title": "Announcements",
   "purpose": "Post, find, change and withdraw the notices your laboratory shows on the sign-in page, on the staff dashboard and on the client portal home page.",
+  "summary": "The notices your laboratory shows on the sign-in page, the staff dashboard and the client portal home page. Only the admin role can manage them.",
+  "tasks": [
+    {
+      "title": "Post an announcement",
+      "steps": [
+        "Select [[New announcement]], write the title and message, and choose where it shows.",
+        "Set when it starts and, optionally, when it ends, then post it."
+      ]
+    },
+    {
+      "title": "Stop an announcement now",
+      "steps": [
+        "Select [[Withdraw]] on its row and confirm. It stops showing everywhere at once."
+      ]
+    },
+    {
+      "title": "Change an announcement",
+      "steps": [
+        "Select its title to open its form, change it and save. Its history is on the same page."
+      ]
+    },
+    {
+      "title": "Find what readers see right now",
+      "steps": [
+        "Set [[Status]] to Showing and select [[Apply]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A withdrawn announcement cannot be shown again or changed. Post a new one instead.",
+    "To end an announcement at a known time, set Show until rather than withdrawing it.",
+    "Client portal announcements are seen by every client account, whichever client it belongs to.",
+    "Status is worked out when the page loads from the Show from and Show until times."
+  ],
   "sections": [
     {
       "title": "Access and where announcements appear",

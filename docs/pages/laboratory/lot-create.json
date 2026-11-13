@@ -5,6 +5,31 @@
   ],
   "title": "New lot",
   "purpose": "Record a purchased or prepared lot and opening stock, optionally consuming a parent in the same save.",
+  "summary": "Record a new purchased or lab-prepared lot of a material with its expiry, storage and opening quantity. A prepared lot can draw from a parent lot in the same save.",
+  "tasks": [
+    {
+      "title": "Record a purchased lot",
+      "steps": [
+        "Choose the [[Material]] and enter the [[Lot number]].",
+        "Enter the received date, [[Expires on]], [[Opening quantity]] and [[Storage location]].",
+        "Select [[Create lot]]."
+      ]
+    },
+    {
+      "title": "Record a lot prepared in the lab",
+      "steps": [
+        "Set [[Source]] to Prepared in the lab and enter the prepared date.",
+        "Optionally choose the [[Prepared from lot]] and the [[Quantity drawn from parent]].",
+        "Select [[Create lot]]. The parent's use is recorded with the new lot."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Expiry is the label or lab-set date you enter. It is never calculated.",
+    "Quantities are exact and in the material's unit. No unit conversion or concentration calculation is done.",
+    "If the parent lot does not hold enough, nothing is saved: neither the new lot nor the parent use.",
+    "Lot numbers are unique per material, ignoring upper and lower case."
+  ],
   "sections": [
     {
       "title": "Access and relationships",

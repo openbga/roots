@@ -5,6 +5,34 @@
   ],
   "title": "Submissions",
   "purpose": "Find your client’s planned shipments, drafts and laboratory submission decisions.",
+  "summary": "Your organization's sample submissions: drafts you are preparing, shipments sent to the laboratory, and the laboratory's decisions on them.",
+  "tasks": [
+    {
+      "title": "Tell the laboratory about a shipment",
+      "steps": [
+        "Select [[New submission]] and fill in the project and shipment details.",
+        "Add the samples on the submission page, then submit it."
+      ]
+    },
+    {
+      "title": "Find submissions that need your changes",
+      "steps": [
+        "Set [[Status]] to Returned for changes and select [[Apply]].",
+        "Open the submission number to see the laboratory's note and edit it."
+      ]
+    },
+    {
+      "title": "Find a submission",
+      "steps": [
+        "Type a submission number, COC reference or project name in [[Search]] and select [[Apply]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A submission announces samples. It does not replace the signed chain of custody that travels with them.",
+    "Samples counts the samples you declared, not what the laboratory physically received.",
+    "Accepted means the laboratory expects the shipment at intake. It is not a receipt."
+  ],
   "sections": [
     {
       "title": "Access",

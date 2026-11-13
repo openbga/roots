@@ -8,6 +8,39 @@
   },
   "title": "Import projects",
   "purpose": "Create or change projects from one CSV file: check every row in a preview, then save all rows or none.",
+  "summary": "Create or change projects from one CSV file. You check every row in a preview first, then all rows are saved or none. Project managers and admins can import projects.",
+  "tasks": [
+    {
+      "title": "Import a file of projects",
+      "steps": [
+        "Download [[projects-template.csv]] and add one row per record below the header. Open [[Columns]] to see what each column needs.",
+        "Save the sheet as CSV (UTF-8), choose it in [[CSV file (UTF-8)]], and select [[Check file]].",
+        "Read the preview. When it says Ready, select the Import button, which names the number of rows."
+      ]
+    },
+    {
+      "title": "Change existing projects",
+      "steps": [
+        "Use the client's account code and the project's current name to identify each project.",
+        "Leave out the columns you don't want to change. A blank cell clears an optional value.",
+        "Check the file, fill in [[Reason for changing existing records]], and import it."
+      ]
+    },
+    {
+      "title": "Fix a file with errors",
+      "steps": [
+        "Read the Errors column. Each error names its line and column, and rows with errors are listed first.",
+        "Correct the file, select [[Upload a corrected file]], and check it again. Nothing was saved."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Nothing is saved until you import the checked preview, and any error blocks the whole file.",
+    "A row finds its project by the client's account code and the project name, ignoring case. The import never renames a project or moves it to another client.",
+    "An import never creates records of another type. The client must already exist with that account code.",
+    "The project_manager column holds the username of an active laboratory staff account.",
+    "The uploaded file is not kept. History records its file name and SHA-256 digest, so keep your copy."
+  ],
   "sections": [
     {
       "title": "Access",

@@ -5,6 +5,41 @@
   ],
   "title": "Equipment details",
   "purpose": "Review one asset, current due dates, calibration and maintenance records and linked issues.",
+  "summary": "Review one asset: its status, calibration and maintenance due dates, event history and linked nonconformances.",
+  "tasks": [
+    {
+      "title": "Record calibration or maintenance",
+      "steps": [
+        "Select [[Record calibration]] or [[Record maintenance]]. The filled button is the more urgent one.",
+        "Enter when it was performed, by whom, the outcome and the next due date the lab sets, then save."
+      ]
+    },
+    {
+      "title": "Correct a mistaken event",
+      "steps": [
+        "Select [[Correct]] on the event's row.",
+        "Change the values, give a correction reason and save. The original event stays on record, marked Corrected."
+      ]
+    },
+    {
+      "title": "Take the asset out of service",
+      "steps": [
+        "Select [[Change status]], choose the new status and give a reason. Only admin and reviewer roles can change status."
+      ]
+    },
+    {
+      "title": "Raise a nonconformance about the asset",
+      "steps": [
+        "Select [[Add nonconformance]] in the linked nonconformances panel. The new record is linked to this asset."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Recording an event does not change the asset's status, and a Not acceptable outcome does not open a nonconformance for you.",
+    "Retired assets cannot have new events or corrections. Change the status first if that is appropriate.",
+    "A correction is a new record. Attach the evidence file again if it belongs on the correction.",
+    "Due dates come from the latest uncorrected event of each kind. No interval is assumed."
+  ],
   "sections": [
     {
       "title": "Access and navigation",

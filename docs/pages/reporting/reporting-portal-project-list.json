@@ -5,6 +5,26 @@
   ],
   "title": "Client projects",
   "purpose": "Find your projects and navigate to their received samples.",
+  "summary": "Find your projects, with how many samples the laboratory has received for each and how many reports it has issued.",
+  "tasks": [
+    {
+      "title": "Find a project",
+      "steps": [
+        "Type a project name or program in the search box and select [[Apply]]."
+      ]
+    },
+    {
+      "title": "See a project's samples",
+      "steps": [
+        "Select the number in the [[Samples]] column. It opens your samples for that project."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Turnaround (days) is the project's configured turnaround, not a due date for any order.",
+    "Reports counts issued reports, not versions. Drafts are not counted.",
+    "Projects are set up by the laboratory. Contact your laboratory if one is missing."
+  ],
   "sections": [
     {
       "title": "Access and navigation",

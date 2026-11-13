@@ -5,6 +5,38 @@
   ],
   "title": "Physical sample storage",
   "purpose": "Review the sample’s physical retention and disposal record separately from its preserved electronic history.",
+  "summary": "A sample's physical storage record: where it is, how long it must be kept, any disposal hold, and its disposal once recorded.",
+  "tasks": [
+    {
+      "title": "Set how long to keep the sample",
+      "steps": [
+        "Select [[Set retention date]] and give the basis for the date."
+      ]
+    },
+    {
+      "title": "Stop the sample from being disposed of",
+      "steps": [
+        "Select [[Change disposal hold]] and place a hold with a reason."
+      ]
+    },
+    {
+      "title": "Record that the sample was disposed of",
+      "steps": [
+        "Select [[Record physical disposal]]. The form checks dates, holds, outstanding tests and preparation."
+      ]
+    },
+    {
+      "title": "Move the sample",
+      "steps": [
+        "Select [[Record transfer]] beside the current location."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Retention date elapsed does not authorize disposal by itself.",
+    "A receipt Hold disposition blocks disposal just like a disposal hold.",
+    "Disposal keeps every electronic record. Receipt, custody, results and reports stay readable."
+  ],
   "sections": [
     {
       "title": "Physical sample facts",

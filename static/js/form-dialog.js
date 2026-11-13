@@ -26,6 +26,7 @@
     var confirming = false;
     var dialog = element.querySelector(".modal-dialog");
     var maximize = element.querySelector("[data-vr-form-maximize]");
+    var tools = element.querySelector("[data-vr-form-tools]");
     var modal = window.bootstrap.Modal.getOrCreateInstance(element, { backdrop: "static", keyboard: false });
     var active = false;
     var shown = false;
@@ -307,6 +308,7 @@
       dirty = false;
       retryUrl = url;
       currentUrl = url;
+      clearPageActions();
       var route = routeFor(new URL(url, window.location.href));
       setSize(route && route.size);
       if (!content.querySelector("[data-vr-form-page]")) {
@@ -372,7 +374,26 @@
           form.setAttribute("hx-encoding", "multipart/form-data");
         }
       });
+      showPageActions(page);
       window.htmx.process(page);
+    }
+
+    // The page header is hidden in the dialog, so its actions (a method's New version) move to
+    // the dialog header, before Help, in page order. Links stay links: a form route opens here.
+    function showPageActions(page) {
+      clearPageActions();
+      var region = page && page.querySelector(".vr-page-actions");
+      var first = tools.firstElementChild;
+      Array.from(region ? region.children : []).forEach(function (action) {
+        action.setAttribute("data-vr-page-action", "");
+        tools.insertBefore(action, first);
+      });
+    }
+
+    function clearPageActions() {
+      tools.querySelectorAll("[data-vr-page-action]").forEach(function (action) {
+        action.remove();
+      });
     }
 
     function localButton(form) {
@@ -393,6 +414,7 @@
       }
       function open() {
         restoreLocal();
+        clearPageActions();
         begin(button);
         dirty = false;
         currentUrl = form.action;
@@ -557,6 +579,7 @@
       allowedHide = false;
       restoreLocal();
       content.replaceChildren();
+      clearPageActions();
       setBackgroundInert(false);
       if (opener && opener.isConnected) {
         opener.focus();

@@ -5,6 +5,34 @@
   ],
   "title": "Nonconformance details",
   "purpose": "Read one issue, linked records, current findings and the complete corrective action timeline.",
+  "summary": "Read one nonconformance: the issue, the linked records, the current findings and the complete timeline from opening to closure.",
+  "tasks": [
+    {
+      "title": "Move the issue to its next step",
+      "steps": [
+        "Select the step button in the header: [[Start investigation]], [[Record root cause and disposition]], [[Submit for verification]] or [[Verify and close]].",
+        "Fill in what that step requires and save. Only the owner or a lead can do this."
+      ]
+    },
+    {
+      "title": "Add information without changing the status",
+      "steps": [
+        "Select [[Add note or evidence]]. Any staff member can, even after closure."
+      ]
+    },
+    {
+      "title": "Send it back or reopen it",
+      "steps": [
+        "In Verification, select [[Return to corrective action]]. When closed, select [[Reopen]]. Both need a reason."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Steps follow a fixed order and cannot be skipped: Open, Investigating, Corrective action, Verification, Closed.",
+    "A disposition such as Hold or Qualify is a record only. It does not hold a batch, qualify a result or block a report.",
+    "The original description cannot be edited. Add a note to clarify it.",
+    "Nothing in the timeline is deleted. Reopening keeps the earlier closure in the timeline."
+  ],
   "sections": [
     {
       "title": "Access and navigation",

@@ -5,6 +5,29 @@
   ],
   "title": "New method version",
   "purpose": "Create a separate active version with the predecessor’s method code while preserving work that used it.",
+  "summary": "Create a new version of a method with the same code, while work that used the old version keeps it. Only admins can create versions.",
+  "tasks": [
+    {
+      "title": "Create the new version",
+      "steps": [
+        "Enter the new version text and check the prefilled title and references.",
+        "Leave the active tests copied, or uncheck the copy if the new version needs different tests.",
+        "Decide whether to retire the previous version for new work.",
+        "Give the [[Reason for the new version]] and select [[Create version]]."
+      ]
+    },
+    {
+      "title": "Leave without creating a version",
+      "steps": [
+        "Select [[Cancel]] to return to Methods."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Copying brings over analyte, matrix, unit and default limit only. QC, holding, preservation and preparation rules must be set up for the new version separately.",
+    "If you don't retire the previous version, both stay active and receipt can offer both.",
+    "Existing work keeps the old version either way."
+  ],
   "sections": [
     {
       "title": "Fields",

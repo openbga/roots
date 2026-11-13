@@ -5,6 +5,29 @@
   ],
   "title": "Authenticators",
   "purpose": "See which second sign-in factors each account has enrolled, and find a lost factor to remove so its owner can enroll again.",
+  "summary": "See which second sign-in factors each account has, and find a lost one to remove so its owner can enroll again.",
+  "tasks": [
+    {
+      "title": "Remove a user's lost factor",
+      "steps": [
+        "Filter by [[Type]] if needed and select the user to open the factor.",
+        "Select [[Delete]] on the record and confirm.",
+        "Remove the user's Recovery codes record too if those should stop working."
+      ]
+    },
+    {
+      "title": "Check when a factor was last used",
+      "steps": [
+        "Read Last used at, or filter by it."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Secrets and recovery codes are never shown here.",
+    "Factors cannot be added or edited. Users enroll their own on their Two-factor authentication pages.",
+    "Each removal is recorded in the account's audit history.",
+    "When to remove someone's factor is the laboratory's account-recovery decision."
+  ],
   "sections": [
     {
       "title": "Access and columns",

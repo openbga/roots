@@ -5,6 +5,33 @@
   ],
   "title": "Catalog: analytes",
   "purpose": "Find measured substances/properties and see how their test definitions are used. An analyte is requestable through a test definition.",
+  "summary": "Find the substances and properties the lab measures and how many tests use each. Only admins can create or edit analytes.",
+  "tasks": [
+    {
+      "title": "Find an analyte",
+      "steps": [
+        "Type a name or CAS number in [[Search]].",
+        "Optionally pick a [[Group]] or whether it has [[Tests]], then select [[Apply]]."
+      ]
+    },
+    {
+      "title": "Add an analyte",
+      "steps": [
+        "Select [[New analyte]], enter its name and optional CAS number, and save. Define tests for it next."
+      ]
+    },
+    {
+      "title": "Edit an analyte",
+      "steps": [
+        "Select the analyte name in its row. Only admins see it as a link."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "An analyte can only be requested through a test definition that uses it.",
+    "Active tests counts active definitions, whether or not their method version is active.",
+    "Hiding, showing or moving columns never changes an analyte."
+  ],
   "sections": [
     {
       "title": "Access and navigation",

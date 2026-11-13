@@ -5,6 +5,32 @@
   ],
   "title": "Material details",
   "purpose": "Inspect a material specification and related lots.",
+  "summary": "Inspect one material: its counting unit, storage requirements, specification and the lots received or prepared from it.",
+  "tasks": [
+    {
+      "title": "Add a lot of this material",
+      "steps": [
+        "Select [[Add lot]]. The new lot form opens with this material chosen. It appears only for active materials."
+      ]
+    },
+    {
+      "title": "Open one of its lots",
+      "steps": [
+        "Select a lot number in the lots table."
+      ]
+    },
+    {
+      "title": "Revise the material",
+      "steps": [
+        "Select [[Edit]], change the details and give a reason. Only admin and reviewer roles can edit."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The lots table shows at most 100 lots. For the full list, filter the Lots list by this material.",
+    "The specification here is the material's grade or certified value. A lot's stated concentration is recorded on the lot.",
+    "The unit cannot be changed once any lot exists."
+  ],
   "sections": [
     {
       "title": "Access and navigation",

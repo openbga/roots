@@ -5,6 +5,29 @@
   ],
   "title": "Users",
   "purpose": "Find staff and client accounts and review their assigned access.",
+  "summary": "Find staff and client accounts and check their roles, client link and release authority. Only superusers can open this list.",
+  "tasks": [
+    {
+      "title": "Find an account",
+      "steps": [
+        "Type a username, name or email in the search box and press Enter.",
+        "Narrow it with the filters on the right, such as account type or release authority.",
+        "Select the username to open the account."
+      ]
+    },
+    {
+      "title": "Create an account",
+      "steps": [
+        "Select [[Add user]] and fill in the account. No invitation email is sent."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Accounts are never deleted. Clear Active on the account instead, so its history keeps its name.",
+    "Roles shows the account's groups. The admin group also covers custodian, analyst, reviewer and project manager work, but not approver.",
+    "Can release needs the explicit release permission, directly or through a group. Superuser status does not give it.",
+    "A client-linked account cannot have staff flags, groups or permissions."
+  ],
   "sections": [
     {
       "title": "Access",

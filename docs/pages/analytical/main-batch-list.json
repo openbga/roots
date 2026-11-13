@@ -5,6 +5,33 @@
   ],
   "title": "Batches & QC",
   "purpose": "Find analytical batches and compare result progress, open QC findings and holding-time issues. Independent preparation batches have their own list.",
+  "summary": "Find an analytical batch and compare its progress: approved tests, results awaiting review, open QC findings and holding-time issues.",
+  "tasks": [
+    {
+      "title": "Find a batch",
+      "steps": [
+        "Type a batch number, method code, sample ID or analyte in [[Search]], then select [[Apply]].",
+        "Select the batch number to open it."
+      ]
+    },
+    {
+      "title": "Find batches with results to review",
+      "steps": [
+        "Open [[More filters]], set [[Review]] to Has results awaiting review, then select [[Apply]]."
+      ]
+    },
+    {
+      "title": "Create a batch",
+      "steps": [
+        "Select [[New batch]]. Only analysts and admins can create batches."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Closing a batch freezes which samples are in it. Result entry and review continue.",
+    "A result moved in after approval in another batch does not count as approved here.",
+    "Preparation batches have their own list."
+  ],
   "sections": [
     {
       "title": "Access",

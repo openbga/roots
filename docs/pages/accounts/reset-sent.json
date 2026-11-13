@@ -5,6 +5,26 @@
   ],
   "title": "Password reset requested",
   "purpose": "Check your email for recovery instructions.",
+  "summary": "Your reset request was received. If an account matches, check your email for the reset link.",
+  "tasks": [
+    {
+      "title": "Reset the password",
+      "steps": [
+        "Open the email and follow the reset link. Check your spam folder if it has not arrived."
+      ]
+    },
+    {
+      "title": "Go back to sign in",
+      "steps": [
+        "Select the Smart Roots name at the top."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "This page does not confirm that an account exists.",
+    "No password has changed yet.",
+    "Contact the laboratory if no email arrives; delivery depends on the deployment's mail."
+  ],
   "sections": [
     {
       "title": "State and next action",

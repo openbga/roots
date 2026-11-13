@@ -5,6 +5,28 @@
   ],
   "title": "New MDL study",
   "purpose": "Start an open initial determination or ongoing verification for one exact catalog test.",
+  "summary": "Start an MDL study for one test: an initial determination or an ongoing verification. Only analysts and admins can start studies.",
+  "tasks": [
+    {
+      "title": "Start a study",
+      "steps": [
+        "Choose the [[Test (method, analyte, matrix)]] and the [[Kind]].",
+        "Enter the [[Spiking level]] in the test unit.",
+        "Select [[Create study]], then add spiked samples and blanks."
+      ]
+    },
+    {
+      "title": "Leave without creating a study",
+      "steps": [
+        "Select [[Cancel]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Every spike used must match the study's spiking level exactly.",
+    "Only an ongoing verification can later keep the existing MDL.",
+    "The study settings cannot be edited after creation."
+  ],
   "sections": [
     {
       "title": "Access and fields",

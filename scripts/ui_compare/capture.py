@@ -33,7 +33,7 @@ BEFORE = "http://127.0.0.1:8001"
 VIEWPORT = {"width": 1440, "height": 900}
 LAPTOP = {"width": 1280, "height": 800}
 THEMES = ("light", "dark")
-STAFF, CLIENT = "demo_admin", "demo_client"  # synthetic demo accounts only
+STAFF, CLIENT, ANONYMOUS = "demo_admin", "demo_client", ""  # synthetic demo accounts only
 
 
 # ------------------------------------------------------------------------------- page actions
@@ -65,6 +65,14 @@ def open_select(page: Page) -> None:
             control.click()
         page.locator(".ts-dropdown:visible").first.wait_for()
     page.wait_for_timeout(300)
+
+
+def open_help(page: Page) -> None:
+    page.locator("[data-vr-documentation-toggle]:visible").first.click()
+    page.locator("#vr-documentation").wait_for(state="visible")
+    page.mouse.move(600, 600)  # no hover tooltip on the Help button
+    page.evaluate("document.querySelectorAll('.tooltip').forEach(t => t.remove())")
+    page.wait_for_timeout(400)
 
 
 def open_datetime(page: Page) -> None:
@@ -104,6 +112,8 @@ PAGES = {
         VIEWPORT,
     ),
     "portal": ("Client portal home", CLIENT, "/portal/", None, VIEWPORT),
+    "sign-in": ("Sign-in page", ANONYMOUS, "/accounts/login/", None, VIEWPORT),
+    "help": ("Help drawer on the sample record", STAFF, "@sample", open_help, VIEWPORT),
 }
 for _path, _title in (
     ("/samples/", "Samples list"),
@@ -300,6 +310,8 @@ def login(browser, base: str, account: str, theme: str):
     ctx = browser.new_context(viewport=VIEWPORT, color_scheme=theme, reduced_motion="reduce")
     ctx.add_init_script(f"try {{ localStorage.setItem('vr-theme', '{theme}'); }} catch (e) {{}}")
     page = ctx.new_page()
+    if account == ANONYMOUS:
+        return ctx, page
     goto(page, base + "/accounts/login/")
     page.fill("input[name=login]", account)
     page.fill("input[name=password]", os.environ["DEMO_PASSWORD"])
@@ -361,6 +373,8 @@ def capture(browser, side: str, base: str, pages: dict, urls: dict, result: dict
                     shot = {"animations": "disabled", "caret": "hide"}
                     page.screenshot(path=f"{stem}.png", **shot)
                     page.screenshot(path=f"{stem}-full.png", full_page=True, **shot)
+                    if action is open_help:  # the drawer stays open on later pages: shut it
+                        page.locator("[data-vr-documentation-close]").first.click()
                     print(f"  {side:6} {theme:5} {pid}", flush=True)
                 except Exception as exc:  # keep going; the page lists the gap
                     result["errors"].append(

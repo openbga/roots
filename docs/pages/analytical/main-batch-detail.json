@@ -5,6 +5,43 @@
   ],
   "title": "Analytical batch",
   "purpose": "Manage one analytical batch’s membership, current results, QC and supporting equipment and preparation information.",
+  "summary": "Work one analytical batch: its tests and current results, QC samples and findings, preparation time and equipment. Submit entered results for review from here.",
+  "tasks": [
+    {
+      "title": "Enter or import results",
+      "steps": [
+        "Select [[Enter results]] to type them in the grid.",
+        "Or open [[Import results]] and choose a standard CSV file or a saved mapping."
+      ]
+    },
+    {
+      "title": "Submit entered results for review",
+      "steps": [
+        "Check the results, or check the box in the column heading to select every entered result on this page.",
+        "Select [[Submit selected for review]]. You cannot then review those results yourself."
+      ]
+    },
+    {
+      "title": "Record QC",
+      "steps": [
+        "Select [[Add QC sample]] to add a blank, LCS, spike or duplicate.",
+        "Select [[Record measurements]] beside a QC sample to enter its values."
+      ]
+    },
+    {
+      "title": "Resolve a QC finding",
+      "steps": [
+        "In the QC holds approval notice, select [[Record disposition]] for the finding."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Closing a batch only freezes which samples and QC samples are in it. Entry, QC and review continue.",
+    "An exceeded holding time needs a holding-time qualifier before the result can be submitted.",
+    "Failing, missing or unevaluated QC holds approval until it is resolved or independently accepted.",
+    "Returned results must be entered again with a reason before they can be submitted.",
+    "The laboratory records panel shows today's records for information. It does not allow or block any work."
+  ],
   "sections": [
     {
       "title": "Access",

@@ -5,6 +5,27 @@
   ],
   "title": "Groups",
   "purpose": "Inspect laboratory role groups and the release authority they grant.",
+  "summary": "Inspect the role groups, how many members each has and whether it grants release authority. Only superusers can open this list.",
+  "tasks": [
+    {
+      "title": "Check a group's permissions",
+      "steps": [
+        "Select the group's name to open its permissions."
+      ]
+    },
+    {
+      "title": "Create a permission group",
+      "steps": [
+        "Select [[Add group]], name it and choose its permissions."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The built-in groups (admin, custodian, analyst, reviewer, approver, project_manager) are the laboratory roles. A new group never becomes a role.",
+    "Members counts inactive accounts too.",
+    "Groups cannot be deleted. Membership is changed on each user, not here.",
+    "Grants release authority only takes effect for active internal members."
+  ],
   "sections": [
     {
       "title": "Access",

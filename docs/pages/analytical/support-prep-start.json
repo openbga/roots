@@ -5,6 +5,27 @@
   ],
   "title": "Record actual preparation start",
   "purpose": "Record or correct the actual start used as preparation evidence and for holding-time evaluation.",
+  "summary": "Record or correct the actual time preparation started. It is preparation evidence and is used for holding-time clocks.",
+  "tasks": [
+    {
+      "title": "Record the start",
+      "steps": [
+        "Enter the actual start in laboratory local time.",
+        "Select [[Save preparation start]]."
+      ]
+    },
+    {
+      "title": "Leave without saving",
+      "steps": [
+        "Select [[Cancel]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The start cannot be before the collection of a linked sample, or after the recorded completion.",
+    "Once a submitted or approved result relies on this preparation, the start cannot change. A reviewer can return submitted work first.",
+    "Entered draft results are not rewritten when the start changes."
+  ],
   "sections": [
     {
       "title": "Context and field",

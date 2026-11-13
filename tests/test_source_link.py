@@ -1,5 +1,7 @@
 """AGPL-3.0 section 13: every page users reach over a network links to the source."""
 
+import re
+
 import pytest
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -38,7 +40,7 @@ def test_staff_portal_entrance_and_admin_pages_link_to_source(
 
     client.force_login(staff("source-custodian", "custodian"))
     dashboard = client.get(reverse("dashboard")).content.decode()
-    assert dashboard.count(link) == 1 and 'class="vr-app-foot"' in dashboard
+    assert dashboard.count(link) == 1 and re.search(r'<footer class="vr-app-foot[ "]', dashboard)
     missing = client.get("/no-such-page/")
     assert missing.status_code == 404 and link in missing.content.decode()
 

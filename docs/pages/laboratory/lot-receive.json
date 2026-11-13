@@ -5,6 +5,28 @@
   ],
   "title": "Record receipt",
   "purpose": "Add more quantity of the same existing lot while retaining its original opening quantity.",
+  "summary": "Add more quantity to an existing lot. The lot keeps its original opening quantity and expiry.",
+  "tasks": [
+    {
+      "title": "Record more stock of this lot",
+      "steps": [
+        "Enter the quantity received, in the lot's unit.",
+        "Check [[Received at]], add a [[Note]] if useful, and select [[Record receipt]]."
+      ]
+    },
+    {
+      "title": "Record a different lot instead",
+      "steps": [
+        "Create a new lot from the lot list with [[New lot]]. A receipt here always adds to this same lot."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Receiving more does not extend the expiry, even for expired stock.",
+    "The receipt time cannot be before the lot's received or prepared date, or more than a minute in the future.",
+    "A backdated receipt does not recalculate the balances shown on earlier rows.",
+    "Retired lots cannot take receipts."
+  ],
   "sections": [
     {
       "title": "Access",

@@ -5,6 +5,34 @@
   ],
   "title": "Training",
   "purpose": "Find training and demonstrations of capability with their scope, dates, review and current state.",
+  "summary": "Find training records and demonstrations of capability, with their scope, dates, review and current state. Analysts and custodians see only their own records.",
+  "tasks": [
+    {
+      "title": "Find a training record",
+      "steps": [
+        "Type a title, scope, reference, person or method in [[Search]], then select [[Apply]].",
+        "Select the subject to open the record."
+      ]
+    },
+    {
+      "title": "Find records that need renewal",
+      "steps": [
+        "Set [[State]] to Expiring or expired.",
+        "Optionally choose a window in [[Expiring within]], then select [[Apply]]."
+      ]
+    },
+    {
+      "title": "Record new training",
+      "steps": [
+        "Select [[New training record]]. Only admin and reviewer roles can record training."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A record is valid through its expiry date. A record without an expiry never expires by date.",
+    "Renewed is a separate marker. Renewing does not change the earlier record's state.",
+    "These records document training only. They do not grant an application role, result entry or report release."
+  ],
   "sections": [
     {
       "title": "Training access",

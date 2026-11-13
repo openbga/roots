@@ -199,10 +199,11 @@ def test_preservation_rule_assessment_correction_release_and_frozen_evidence(
     assert sample.cooler_temperature == Decimal("6.10")
     page.goto(sample_url)
     expect(page.get_by_text("Outside configured temperature range").first).to_be_visible()
+    # The earlier Proceed is kept, marked out of date against the corrected reading.
+    expect(page.get_by_text("no longer matches the receipt record or rule").first).to_be_visible()
     page.goto(assess_url)
     expect(page.get_by_text(f"{READING} °C")).to_be_visible()
     expect(page.get_by_text("No assessment matches this test's current rule")).to_be_visible()
-    expect(page.get_by_text("Earlier evidence or withdrawn test")).to_be_visible()  # kept
     assert PreservationDecision.objects.count() == 1
     shots("assess-outside-stale", narrow=True)
     page.get_by_role("button", name="Close form", exact=True).click()

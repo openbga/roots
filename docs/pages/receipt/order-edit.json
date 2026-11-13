@@ -5,6 +5,28 @@
   ],
   "title": "Edit chain of custody details",
   "purpose": "Change the turnaround, purchase order, shipment details and special instructions of an existing chain of custody, with an attributed reason. The reference and delivery target are changed on their own pages.",
+  "summary": "Change a chain of custody's turnaround, purchase order, shipment details and special instructions, with a reason.",
+  "tasks": [
+    {
+      "title": "Add a missing purchase order",
+      "steps": [
+        "Enter the [[Purchase order]], give the [[Reason for change]] and select [[Save changes]]."
+      ]
+    },
+    {
+      "title": "Change the turnaround or shipment details",
+      "steps": [
+        "Change [[Turnaround]], [[Delivery method]], [[Carrier / tracking number]] or [[Coolers / packages]].",
+        "Give the [[Reason for change]] and select [[Save changes]]. The change is listed under Detail changes."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The reference and the delivery target are changed with their own actions on the chain of custody, not here.",
+    "Nothing here changes samples, containers or custody.",
+    "A cancelled chain of custody must be reinstated before it can be edited.",
+    "If someone saved a change after you opened the page, yours is refused. Reload and enter your change again."
+  ],
   "sections": [
     {
       "title": "Access and eligibility",

@@ -5,6 +5,43 @@
   ],
   "title": "Edit quote",
   "purpose": "Edit the latest unissued Draft or Being revised version, including exact USD tests, fees and discounts.",
+  "summary": "Edit the latest draft of a quote: details, validity, turnaround, scope, terms and the priced lines. Saving never shows the draft to the client.",
+  "tasks": [
+    {
+      "title": "Price the quote from a price list",
+      "steps": [
+        "Choose a [[Price list]].",
+        "Add Test lines and leave [[Unit price]] blank. Saving fills in the list's current price."
+      ]
+    },
+    {
+      "title": "Add a fee or a discount",
+      "steps": [
+        "Set the line's [[Type]] to Fee or Discount / adjustment.",
+        "Enter a [[Description]] and an amount. A discount is zero or negative."
+      ]
+    },
+    {
+      "title": "Get the draft ready to issue",
+      "steps": [
+        "Set [[Valid until]] to today or later. A revision never copies the old date.",
+        "Fill in [[Scope and assumptions]] and [[Terms]] if the client should see them.",
+        "Select [[Save changes]], then issue the version from the quote page."
+      ]
+    },
+    {
+      "title": "Remove a line",
+      "steps": [
+        "Tick the line's [[Remove]] box and select [[Save changes]]. At least one line must remain."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A saved line keeps its price. Later price list changes do not alter it; clear the unit price to take the current list price on the next save.",
+    "Only the latest Draft or Being revised version can be edited. Use Revise on the quote page to change an issued version.",
+    "Turnaround is a statement to the client. It does not set an order's delivery target.",
+    "If someone else saved the quote after you opened it, your save is refused. Reload and review before trying again."
+  ],
   "sections": [
     {
       "title": "Access",

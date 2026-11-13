@@ -9,6 +9,36 @@
   },
   "title": "QC requirement",
   "purpose": "Add or edit the number of QC samples required for one method/version and QC type.",
+  "summary": "Add or edit how many QC samples of one type each batch of a method needs. Only administrators can save; other staff read these values on QC configuration.",
+  "tasks": [
+    {
+      "title": "Add a QC requirement",
+      "steps": [
+        "Choose the [[Method]] and the QC type.",
+        "Enter [[Min per batch]] and, optionally, [[Every n samples]].",
+        "Select [[Add QC requirement]]."
+      ]
+    },
+    {
+      "title": "Change a QC requirement",
+      "steps": [
+        "Open it from QC configuration and change the values.",
+        "Explain why in [[Reason for change]] and select [[Save changes]]."
+      ]
+    },
+    {
+      "title": "Stop using a QC requirement without deleting it",
+      "steps": [
+        "Clear [[Is active]], give a reason and select [[Save changes]]. The row and its history stay."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The required count is the larger of the minimum and the sample-based count. They are not added together.",
+    "No fixed one-per-20 rule is assumed. Set the lab's own frequency.",
+    "A QC sample counts toward the frequency, but its measurements are still required.",
+    "With no active requirement, no frequency is enforced."
+  ],
   "sections": [
     {
       "title": "Create, edit and access",

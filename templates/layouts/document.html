@@ -105,7 +105,7 @@ core/templatetags/navigation.py. Error pages (400/403/404) keep this shell for s
       {% include "includes/messages.html" %}
       {% block content %}{% endblock %}
       {% block record_foot %}{% endblock %}
-      {% source_footer %}
+      {% source_footer css="vr-page-only" %}
     </main>
   </div>
   {% endblock body %}

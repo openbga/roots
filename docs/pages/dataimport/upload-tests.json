@@ -8,6 +8,39 @@
   },
   "title": "Import tests",
   "purpose": "Create or change tests from one CSV file: check every row in a preview, then save all rows or none.",
+  "summary": "Create or change tests from one CSV file. You check every row in a preview first, then all rows are saved or none. Only admins can import tests.",
+  "tasks": [
+    {
+      "title": "Import a file of tests",
+      "steps": [
+        "Download [[tests-template.csv]] and add one row per record below the header. Open [[Columns]] to see what each column needs.",
+        "Save the sheet as CSV (UTF-8), choose it in [[CSV file (UTF-8)]], and select [[Check file]].",
+        "Read the preview. When it says Ready, select the Import button, which names the number of rows."
+      ]
+    },
+    {
+      "title": "Change existing tests",
+      "steps": [
+        "Identify each test by its method_code, method_version, analyte and matrix.",
+        "Leave out the columns you don't want to change. A blank cell clears an optional value.",
+        "Check the file, fill in [[Reason for changing existing records]], and import it."
+      ]
+    },
+    {
+      "title": "Fix a file with errors",
+      "steps": [
+        "Read the Errors column. Each error names its line and column, and rows with errors are listed first.",
+        "Correct the file, select [[Upload a corrected file]], and check it again. Nothing was saved."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Nothing is saved until you import the checked preview, and any error blocks the whole file.",
+    "A row finds its test by method version, analyte and matrix. The import never rewrites those three.",
+    "An import never creates records of another type. The analytes and method versions the tests name must exist first.",
+    "The unit and reporting_limit columns are stored exactly as written, never converted or rounded. Once anything refers to a test, its unit is locked.",
+    "The uploaded file is not kept. History records its file name and SHA-256 digest, so keep your copy."
+  ],
   "sections": [
     {
       "title": "Access",

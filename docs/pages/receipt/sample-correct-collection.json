@@ -5,6 +5,29 @@
   ],
   "title": "Correct collection",
   "purpose": "Correct collection type and timestamps before analytical work freezes the holding-time inputs.",
+  "summary": "Correct how and when a sample was collected, before analytical work freezes the times its holding clocks use.",
+  "tasks": [
+    {
+      "title": "Correct the collection time",
+      "steps": [
+        "Enter the right [[Collected at / composite collection ended at]] time. It cannot be after receipt.",
+        "Give the [[Reason]] and select [[Correct collection]]."
+      ]
+    },
+    {
+      "title": "Change grab to composite, or back",
+      "steps": [
+        "Set [[Collection type]]. A composite needs [[Composite collection started at]]; a grab leaves it blank.",
+        "Give the [[Reason]] and save."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Any analytical work, preparation, external dispatch or issued report on the sample locks this correction.",
+    "The receipt time cannot be changed here.",
+    "The old values stay in the correction history with your reason.",
+    "If the sample changed after you opened the form, saving is refused. Reload and review first."
+  ],
   "sections": [
     {
       "title": "Correction sections",

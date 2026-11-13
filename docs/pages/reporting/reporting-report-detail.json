@@ -5,6 +5,41 @@
   ],
   "title": "Report detail",
   "purpose": "Review live next-version scope/readiness and retrieve every immutable issued version.",
+  "summary": "See what the next version of a report will contain, whether it is ready to release, and every issued version with its stored PDF.",
+  "tasks": [
+    {
+      "title": "Check whether a report can be released",
+      "steps": [
+        "Under [[Release readiness]], read each blocked test's [[Blocking issues]].",
+        "Select the link in its [[Fix in]] column, fix the work, then reload this page."
+      ]
+    },
+    {
+      "title": "Release the first version",
+      "steps": [
+        "Select [[Preview and release]] and review the preview before authorizing."
+      ]
+    },
+    {
+      "title": "Prepare an amendment",
+      "steps": [
+        "Select [[Edit]] if the scope must change.",
+        "Select [[Preview amendment]] to compare with the latest issue."
+      ]
+    },
+    {
+      "title": "Download an issued PDF",
+      "steps": [
+        "Select [[Download]] in the version's row. You get the stored file, not one rebuilt from current data."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Scope and readiness use live records. Issued versions are frozen snapshots and never change.",
+    "Approved counts on lists are not readiness decisions. Release also rechecks QC, holding times, preparation and preservation.",
+    "Releasing needs explicit release permission, and you cannot release a report with results you entered or submitted.",
+    "Hold and Reject dispositions block release."
+  ],
   "sections": [
     {
       "title": "Access and header",

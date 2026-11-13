@@ -5,6 +5,28 @@
   ],
   "title": "Add MDL observation",
   "purpose": "Append one exact spiked-sample or method-blank observation with preparation identity and chronology.",
+  "summary": "Add one spiked-sample or method-blank observation to an open MDL study, with its preparation identity and times.",
+  "tasks": [
+    {
+      "title": "Add an observation",
+      "steps": [
+        "Choose the [[Sample type]] and enter the result as reported, a number or ND.",
+        "Enter the prepared and analysed times, the [[Preparation batch]] and the [[Preparation / extract ID]].",
+        "Select [[Add observation]], or [[Save and add another]]."
+      ]
+    },
+    {
+      "title": "Record a repeat analysis of the same extract",
+      "steps": [
+        "Use the same preparation batch and extract ID. It counts as another analysis, not another preparation."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "At least seven distinct preparations of each kind, in at least three batches, are needed before a calculation can be evaluated.",
+    "A spike with no qualitative identification, or a non-positive result, can be recorded but prevents an evaluated calculation.",
+    "If several instrument names appear, every observation needs one."
+  ],
   "sections": [
     {
       "title": "Context and fields",

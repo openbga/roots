@@ -5,6 +5,34 @@
   ],
   "title": "Client samples",
   "purpose": "Track your received samples and open issued reports containing their results.",
+  "summary": "Track every sample the laboratory has received from you and open the issued report that contains its results.",
+  "tasks": [
+    {
+      "title": "Find a sample",
+      "steps": [
+        "Type your sample ID or the lab ID in the search box.",
+        "Optionally pick a [[Project]] or [[Status]], then select [[Apply]]."
+      ]
+    },
+    {
+      "title": "Open the report for a sample",
+      "steps": [
+        "Select the link in the [[Report]] column."
+      ]
+    },
+    {
+      "title": "Find samples collected in a date range",
+      "steps": [
+        "Open more filters, set the collection dates and select [[Apply]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Status is worked out from current work. It is not a delivery date.",
+    "A sample can move out of Reported after a correction or a new test. Issued PDFs stay unchanged.",
+    "The Report link names the latest report containing any result of the sample, which may not cover all its current work.",
+    "Search covers sample IDs only, not locations or results."
+  ],
   "sections": [
     {
       "title": "Access and navigation",

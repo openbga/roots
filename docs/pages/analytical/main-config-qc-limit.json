@@ -9,6 +9,36 @@
   },
   "title": "QC limit",
   "purpose": "Add or edit inclusive acceptance bounds for one test definition, QC phase, QC type and measured/calculated quantity.",
+  "summary": "Add or edit the acceptance bounds for one test, QC phase, QC type and measure. Only administrators can save; other staff read these values on QC configuration.",
+  "tasks": [
+    {
+      "title": "Add a QC limit",
+      "steps": [
+        "Choose the [[Definition]], [[Phase]], QC type and [[Measure]].",
+        "Enter the [[Lower]] bound, the [[Upper]] bound or both.",
+        "Select [[Add QC limit]]."
+      ]
+    },
+    {
+      "title": "Change a QC limit",
+      "steps": [
+        "Open it from QC configuration and change the values.",
+        "Explain why in [[Reason for change]] and select [[Save changes]]."
+      ]
+    },
+    {
+      "title": "Stop using a QC limit without deleting it",
+      "steps": [
+        "Clear [[Is active]], give a reason and select [[Save changes]]. The row and its history stay."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Bounds are inclusive. Measured value uses the result unit; recovery and RPD use percent.",
+    "A matrix spike duplicate needs both a recovery limit and an RPD limit.",
+    "A method blank reported as ND passes only against an upper bound.",
+    "Changing a limit re-evaluates current QC and can create or lift a hold. Approved results keep the evidence they relied on."
+  ],
   "sections": [
     {
       "title": "Create, edit and access",

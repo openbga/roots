@@ -5,6 +5,27 @@
   ],
   "title": "Exclude MDL observation",
   "purpose": "Exclude a documented gross failure from future calculation inputs while keeping the original observation.",
+  "summary": "Exclude one MDL observation from future calculations because of a documented gross failure. The original value stays on record.",
+  "tasks": [
+    {
+      "title": "Exclude an observation",
+      "steps": [
+        "Describe the failure in [[Documented gross failure]], for example a mislabelled vessel.",
+        "Select [[Exclude with this rationale]]."
+      ]
+    },
+    {
+      "title": "Leave it included",
+      "steps": [
+        "Select [[Cancel]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "A statistical outlier is not a documented gross failure.",
+    "The reminder says seven of each must remain, but the form does not enforce it. Too few makes the next calculation not evaluated.",
+    "Earlier calculations are not changed. Calculate again after excluding."
+  ],
   "sections": [
     {
       "title": "Access and field",

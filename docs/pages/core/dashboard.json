@@ -5,6 +5,35 @@
   ],
   "title": "Dashboard",
   "purpose": "See the work waiting for your laboratory roles and open the queue that needs attention.",
+  "summary": "The work waiting for your roles, grouped by laboratory area, and the samples received most recently.",
+  "tasks": [
+    {
+      "title": "Start on the work that is waiting",
+      "steps": [
+        "Find the line for your area under Your work queues.",
+        "Select a queue's label to open the list of those items. Queues showing 0 have no link."
+      ]
+    },
+    {
+      "title": "Receive a shipment",
+      "steps": [
+        "Select [[Receive samples]]. A new chain of custody opens for the actual receipt."
+      ]
+    },
+    {
+      "title": "Open a recently received sample",
+      "steps": [
+        "Under Recently received, select the Lab ID. Select [[All samples]] for the complete list."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Counts are live and count different things: samples, tests, batches, reports or records. Do not add them across queues.",
+    "A batch with only your own results is noted separately. Another reviewer must review it.",
+    "A delivery target is the date agreed with the client. It is separate from a method holding time.",
+    "The colour of a line only marks its area. The status and icon tell you the state.",
+    "Announcements cannot be dismissed. They disappear when they end or are withdrawn."
+  ],
   "sections": [
     {
       "title": "Actions and sections",

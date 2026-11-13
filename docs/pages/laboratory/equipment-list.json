@@ -5,6 +5,35 @@
   ],
   "title": "Equipment",
   "purpose": "Find registered assets and their current status and calibration or maintenance attention.",
+  "summary": "Find a registered asset and see its status and whether calibration or maintenance is overdue or due soon.",
+  "tasks": [
+    {
+      "title": "Find an asset",
+      "steps": [
+        "Type an asset ID, name, manufacturer, model, serial number or type in [[Search]], then select [[Apply]].",
+        "Select the Asset ID to open the asset."
+      ]
+    },
+    {
+      "title": "List equipment that is overdue or due soon",
+      "steps": [
+        "Set [[Due]] to Overdue or Due soon.",
+        "For Due soon, optionally choose a window in [[Due within]], then select [[Apply]]."
+      ]
+    },
+    {
+      "title": "Register new equipment",
+      "steps": [
+        "Select [[New equipment]], fill in the asset details and save. Only admin and reviewer roles can register equipment."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Due dates come from the latest uncorrected calibration and maintenance events. No interval is calculated for you.",
+    "A date is overdue only after it has passed. Not scheduled means no due date was recorded.",
+    "An asset can be overdue for one kind of event and due soon for the other.",
+    "Retired assets are left out of the Overdue and Due soon filters and show a dash for due dates."
+  ],
   "sections": [
     {
       "title": "Access and navigation",

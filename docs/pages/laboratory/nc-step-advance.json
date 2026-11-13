@@ -5,6 +5,42 @@
   ],
   "title": "Advance nonconformance",
   "purpose": "Complete the next available step using the fields required by the issue’s current status.",
+  "summary": "Complete a nonconformance's next step. The fields asked for depend on where the issue stands. Only the owner or a lead can advance it.",
+  "tasks": [
+    {
+      "title": "Start the investigation",
+      "steps": [
+        "Choose the [[Owner]], optionally set the [[Due]] date, and select [[Start investigation]]."
+      ]
+    },
+    {
+      "title": "Record the root cause and disposition",
+      "steps": [
+        "Enter the [[Root cause]] and choose the [[Disposition]]. For Other, explain it in the disposition note.",
+        "Select [[Record root cause and disposition]]."
+      ]
+    },
+    {
+      "title": "Submit the corrective action",
+      "steps": [
+        "Describe the [[Corrective action]] taken and select [[Submit for verification]]."
+      ]
+    },
+    {
+      "title": "Verify and close",
+      "steps": [
+        "Explain the [[Verification]].",
+        "Give a [[Reference]] or attach an [[Evidence file]]; one is required.",
+        "Select [[Verify and close]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Only the next step in the fixed order is offered. Steps cannot be skipped.",
+    "Leaving an optional field blank keeps its current value. Use Edit to clear a value.",
+    "Choosing a disposition does not apply it to the linked work.",
+    "Evidence attached earlier does not count for closing. Closing needs a new reference or file."
+  ],
   "sections": [
     {
       "title": "Who can change this record",

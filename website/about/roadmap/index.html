@@ -4,7 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="The Smart Roots LIMS roadmap: what the open-source environmental laboratory LIMS has built, what comes next and where it is heading, grouped by what a laboratory needs.">
-  <meta name="theme-color" content="#e5efe9">
+  <meta name="theme-color" content="#e6ebe1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1c14" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
   <title>Roadmap · Smart Roots LIMS</title>
   <link rel="canonical" href="https://openbga.github.io/smart-roots-lims/roadmap/">
   <meta property="og:type" content="website">
@@ -18,16 +20,41 @@
   <meta property="og:image:alt" content="Smart Roots LIMS: smart roots, strong results. The sample list of the staff workspace.">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
+  <link rel="preload" href="../assets/overpass-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <script src="../assets/theme-init.js"></script>
   <link rel="stylesheet" href="../assets/site.css">
+  <script src="../assets/site.js" defer></script>
 </head>
 <body>
+  <!-- Bootstrap Icons 1.13.2 (MIT), copied verbatim -->
+  <svg xmlns="http://www.w3.org/2000/svg" hidden><symbol id="i-arrow-up" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5"/></symbol><symbol id="i-calendar3" viewBox="0 0 16 16"><path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
+  <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/></symbol><symbol id="i-clipboard-check" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+  <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
+  <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/></symbol><symbol id="i-file-earmark-text" viewBox="0 0 16 16"><path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5"/>
+  <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/></symbol><symbol id="i-layers" viewBox="0 0 16 16"><path d="M8.235 1.559a.5.5 0 0 0-.47 0l-7.5 4a.5.5 0 0 0 0 .882L3.188 8 .264 9.559a.5.5 0 0 0 0 .882l7.5 4a.5.5 0 0 0 .47 0l7.5-4a.5.5 0 0 0 0-.882L12.813 8l2.922-1.559a.5.5 0 0 0 0-.882zm3.515 7.008L14.438 10 8 13.433 1.562 10 4.25 8.567l3.515 1.874a.5.5 0 0 0 .47 0zM8 9.433 1.562 6 8 2.567 14.438 6z"/></symbol><symbol id="i-patch-check" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M10.354 6.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+  <path d="m10.273 2.513-.921-.944.715-.698.622.637.89-.011a2.89 2.89 0 0 1 2.924 2.924l-.01.89.636.622a2.89 2.89 0 0 1 0 4.134l-.637.622.011.89a2.89 2.89 0 0 1-2.924 2.924l-.89-.01-.622.636a2.89 2.89 0 0 1-4.134 0l-.622-.637-.89.011a2.89 2.89 0 0 1-2.924-2.924l.01-.89-.636-.622a2.89 2.89 0 0 1 0-4.134l.637-.622-.011-.89a2.89 2.89 0 0 1 2.924-2.924l.89.01.622-.636a2.89 2.89 0 0 1 4.134 0l-.715.698a1.89 1.89 0 0 0-2.704 0l-.92.944-1.32-.016a1.89 1.89 0 0 0-1.911 1.912l.016 1.318-.944.921a1.89 1.89 0 0 0 0 2.704l.944.92-.016 1.32a1.89 1.89 0 0 0 1.912 1.911l1.318-.016.921.944a1.89 1.89 0 0 0 2.704 0l.92-.944 1.32.016a1.89 1.89 0 0 0 1.911-1.912l-.016-1.318.944-.921a1.89 1.89 0 0 0 0-2.704l-.944-.92.016-1.32a1.89 1.89 0 0 0-1.912-1.911z"/></symbol><symbol id="i-people" viewBox="0 0 16 16"><path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1zm-7.978-1L7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0M6.936 9.28a6 6 0 0 0-1.23-.247A7 7 0 0 0 5 9c-4 0-5 3-5 4q0 1 1 1h4.216A2.24 2.24 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816M4.92 10A5.5 5.5 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4"/></symbol><symbol id="i-rulers" viewBox="0 0 16 16"><path d="M1 0a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h5v-1H2v-1h4v-1H4v-1h2v-1H2v-1h4V9H4V8h2V7H2V6h4V2h1v4h1V4h1v2h1V2h1v4h1V4h1v2h1V2h1v4h1V1a1 1 0 0 0-1-1z"/></symbol><symbol id="i-shield-lock" viewBox="0 0 16 16"><path d="M5.338 1.59a61 61 0 0 0-2.837.856.48.48 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.7 10.7 0 0 0 2.287 2.233c.346.244.652.42.893.533q.18.085.293.118a1 1 0 0 0 .101.025 1 1 0 0 0 .1-.025q.114-.034.294-.118c.24-.113.547-.29.893-.533a10.7 10.7 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.8 11.8 0 0 1-2.517 2.453 7 7 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7 7 0 0 1-1.048-.625 11.8 11.8 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 63 63 0 0 1 5.072.56"/>
+  <path d="M9.5 6.5a1.5 1.5 0 0 1-1 1.415l.385 1.99a.5.5 0 0 1-.491.595h-.788a.5.5 0 0 1-.49-.595l.384-1.99a1.5 1.5 0 1 1 2-1.415"/></symbol><symbol id="i-tools" viewBox="0 0 16 16"><path d="M1 0 0 1l2.2 3.081a1 1 0 0 0 .815.419h.07a1 1 0 0 1 .708.293l2.675 2.675-2.617 2.654A3.003 3.003 0 0 0 0 13a3 3 0 1 0 5.878-.851l2.654-2.617.968.968-.305.914a1 1 0 0 0 .242 1.023l3.27 3.27a.997.997 0 0 0 1.414 0l1.586-1.586a.997.997 0 0 0 0-1.414l-3.27-3.27a1 1 0 0 0-1.023-.242L10.5 9.5l-.96-.96 2.68-2.643A3.005 3.005 0 0 0 16 3q0-.405-.102-.777l-2.14 2.141L12 4l-.364-1.757L13.777.102a3 3 0 0 0-3.675 3.68L7.462 6.46 4.793 3.793a1 1 0 0 1-.293-.707v-.071a1 1 0 0 0-.419-.814zm9.646 10.646a.5.5 0 0 1 .708 0l2.914 2.915a.5.5 0 0 1-.707.707l-2.915-2.914a.5.5 0 0 1 0-.708M3 11l.471.242.529.026.287.445.445.287.026.529L5 13l-.242.471-.026.529-.445.287-.287.445-.529.026L3 15l-.471-.242L2 14.732l-.287-.445L1.268 14l-.026-.529L1 13l.242-.471.026-.529.445-.287.287-.445.529-.026z"/></symbol><symbol id="i-bell" viewBox="0 0 16 16"><path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4 4 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4 4 0 0 0-3.203-3.92zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5 5 0 0 1 13 6c0 .88.32 4.2 1.22 6"/></symbol><symbol id="i-box-seam" viewBox="0 0 16 16"><path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2zm3.564 1.426L5.596 5 8 5.961 14.154 3.5zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464z"/></symbol><symbol id="i-buildings" viewBox="0 0 16 16"><path d="M14.763.075A.5.5 0 0 1 15 .5v15a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V14h-1v1.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V10a.5.5 0 0 1 .342-.474L6 7.64V4.5a.5.5 0 0 1 .276-.447l8-4a.5.5 0 0 1 .487.022M6 8.694 1 10.36V15h5zM7 15h2v-1.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5V15h2V1.309l-7 3.5z"/>
+  <path d="M2 11h1v1H2zm2 0h1v1H4zm-2 2h1v1H2zm2 0h1v1H4zm4-4h1v1H8zm2 0h1v1h-1zm-2 2h1v1H8zm2 0h1v1h-1zm2-2h1v1h-1zm0 2h1v1h-1zM8 7h1v1H8zm2 0h1v1h-1zm2 0h1v1h-1zM8 5h1v1H8zm2 0h1v1h-1zm2 0h1v1h-1zm0-2h1v1h-1z"/></symbol><symbol id="i-calculator" viewBox="0 0 16 16"><path d="M12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+  <path d="M4 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/></symbol><symbol id="i-chat-dots" viewBox="0 0 16 16"><path d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+  <path d="m2.165 15.803.02-.004c1.83-.363 2.948-.842 3.468-1.105A9 9 0 0 0 8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6a10.4 10.4 0 0 1-.524 2.318l-.003.011a11 11 0 0 1-.244.637c-.079.186.074.394.273.362a22 22 0 0 0 .693-.125m.8-3.108a1 1 0 0 0-.287-.801C1.618 10.83 1 9.468 1 8c0-3.192 3.004-6 7-6s7 2.808 7 6-3.004 6-7 6a8 8 0 0 1-2.088-.272 1 1 0 0 0-.711.074c-.387.196-1.24.57-2.634.893a11 11 0 0 0 .398-2"/></symbol><symbol id="i-cpu" viewBox="0 0 16 16"><path d="M5 0a.5.5 0 0 1 .5.5V2h1V.5a.5.5 0 0 1 1 0V2h1V.5a.5.5 0 0 1 1 0V2h1V.5a.5.5 0 0 1 1 0V2A2.5 2.5 0 0 1 14 4.5h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14a2.5 2.5 0 0 1-2.5 2.5v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14A2.5 2.5 0 0 1 2 11.5H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2A2.5 2.5 0 0 1 4.5 2V.5A.5.5 0 0 1 5 0m-.5 3A1.5 1.5 0 0 0 3 4.5v7A1.5 1.5 0 0 0 4.5 13h7a1.5 1.5 0 0 0 1.5-1.5v-7A1.5 1.5 0 0 0 11.5 3zM5 6.5A1.5 1.5 0 0 1 6.5 5h3A1.5 1.5 0 0 1 11 6.5v3A1.5 1.5 0 0 1 9.5 11h-3A1.5 1.5 0 0 1 5 9.5zM6.5 6a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5z"/></symbol><symbol id="i-droplet-half" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M7.21.8C7.69.295 8 0 8 0q.164.544.371 1.038c.812 1.946 2.073 3.35 3.197 4.6C12.878 7.096 14 8.345 14 10a6 6 0 0 1-12 0C2 6.668 5.58 2.517 7.21.8m.413 1.021A31 31 0 0 0 5.794 3.99c-.726.95-1.436 2.008-1.96 3.07C3.304 8.133 3 9.138 3 10c0 0 2.5 1.5 5 .5s5-.5 5-.5c0-1.201-.796-2.157-2.181-3.7l-.03-.032C9.75 5.11 8.5 3.72 7.623 1.82z"/>
+  <path fill-rule="evenodd" d="M4.553 7.776c.82-1.641 1.717-2.753 2.093-3.13l.708.708c-.29.29-1.128 1.311-1.907 2.87z"/></symbol><symbol id="i-eyedropper" viewBox="0 0 16 16"><path d="M13.354.646a1.207 1.207 0 0 0-1.708 0L8.5 3.793l-.646-.647a.5.5 0 1 0-.708.708L8.293 5l-7.147 7.146A.5.5 0 0 0 1 12.5v1.793l-.854.853a.5.5 0 1 0 .708.707L1.707 15H3.5a.5.5 0 0 0 .354-.146L11 7.707l1.146 1.147a.5.5 0 0 0 .708-.708l-.647-.646 3.147-3.146a1.207 1.207 0 0 0 0-1.708zM2 12.707l7-7L10.293 7l-7 7H2z"/></symbol><symbol id="i-file-earmark-arrow-up" viewBox="0 0 16 16"><path d="M8.5 11.5a.5.5 0 0 1-1 0V7.707L6.354 8.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 7.707z"/>
+  <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/></symbol><symbol id="i-flask" viewBox="0 0 16 16"><path d="M4.5 0a.5.5 0 0 0 0 1H5v5.36L.503 13.717A1.5 1.5 0 0 0 1.783 16h12.434a1.5 1.5 0 0 0 1.28-2.282L11 6.359V1h.5a.5.5 0 0 0 0-1zM10 2H9a.5.5 0 0 0 0 1h1v1H9a.5.5 0 0 0 0 1h1v1H9a.5.5 0 0 0 0 1h1.22l.61 1H10a.5.5 0 1 0 0 1h1.442l.611 1H11a.5.5 0 1 0 0 1h1.664l.611 1H12a.5.5 0 1 0 0 1h1.886l.758 1.24a.5.5 0 0 1-.427.76H1.783a.5.5 0 0 1-.427-.76l4.57-7.48A.5.5 0 0 0 6 6.5V1h4z"/></symbol><symbol id="i-geo-alt" viewBox="0 0 16 16"><path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"/>
+  <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/></symbol><symbol id="i-lightbulb" viewBox="0 0 16 16"><path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a2 2 0 0 0-.453-.618A5.98 5.98 0 0 1 2 6m6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1"/></symbol><symbol id="i-plug" viewBox="0 0 16 16"><path d="M6 0a.5.5 0 0 1 .5.5V3h3V.5a.5.5 0 0 1 1 0V3h1a.5.5 0 0 1 .5.5v3A3.5 3.5 0 0 1 8.5 10c-.002.434-.01.845-.04 1.22-.041.514-.126 1.003-.317 1.424a2.08 2.08 0 0 1-.97 1.028C6.725 13.9 6.169 14 5.5 14c-.998 0-1.61.33-1.974.718A1.92 1.92 0 0 0 3 16H2c0-.616.232-1.367.797-1.968C3.374 13.42 4.261 13 5.5 13c.581 0 .962-.088 1.218-.219.241-.123.4-.3.514-.55.121-.266.193-.621.23-1.09.027-.34.035-.718.037-1.141A3.5 3.5 0 0 1 4 6.5v-3a.5.5 0 0 1 .5-.5h1V.5A.5.5 0 0 1 6 0M5 4v2.5A2.5 2.5 0 0 0 7.5 9h1A2.5 2.5 0 0 0 11 6.5V4z"/></symbol><symbol id="i-receipt" viewBox="0 0 16 16"><path d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27m.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0z"/>
+  <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5"/></symbol><symbol id="i-send-check" viewBox="0 0 16 16"><path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855a.75.75 0 0 0-.124 1.329l4.995 3.178 1.531 2.406a.5.5 0 0 0 .844-.536L6.637 10.07l7.494-7.494-1.895 4.738a.5.5 0 1 0 .928.372zm-2.54 1.183L5.93 9.363 1.591 6.602z"/>
+  <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-1.993-1.679a.5.5 0 0 0-.686.172l-1.17 1.95-.547-.547a.5.5 0 0 0-.708.708l.774.773a.75.75 0 0 0 1.174-.144l1.335-2.226a.5.5 0 0 0-.172-.686"/></symbol><symbol id="i-shield-check" viewBox="0 0 16 16"><path d="M5.338 1.59a61 61 0 0 0-2.837.856.48.48 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.7 10.7 0 0 0 2.287 2.233c.346.244.652.42.893.533q.18.085.293.118a1 1 0 0 0 .101.025 1 1 0 0 0 .1-.025q.114-.034.294-.118c.24-.113.547-.29.893-.533a10.7 10.7 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.8 11.8 0 0 1-2.517 2.453 7 7 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7 7 0 0 1-1.048-.625 11.8 11.8 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 63 63 0 0 1 5.072.56"/>
+  <path d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0"/></symbol><symbol id="i-speedometer2" viewBox="0 0 16 16"><path d="M8 4a.5.5 0 0 1 .5.5V6a.5.5 0 0 1-1 0V4.5A.5.5 0 0 1 8 4M3.732 5.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707M2 10a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 10m9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5m.754-4.246a.39.39 0 0 0-.527-.02L7.547 9.31a.91.91 0 1 0 1.302 1.258l3.434-4.297a.39.39 0 0 0-.029-.518z"/>
+  <path fill-rule="evenodd" d="M0 10a8 8 0 1 1 15.547 2.661c-.442 1.253-1.845 1.602-2.932 1.25C11.309 13.488 9.475 13 8 13c-1.474 0-3.31.488-4.615.911-1.087.352-2.49.003-2.932-1.25A8 8 0 0 1 0 10m8-7a7 7 0 0 0-6.603 9.329c.203.575.923.876 1.68.63C4.397 12.533 6.358 12 8 12s3.604.532 4.923.96c.757.245 1.477-.056 1.68-.631A7 7 0 0 0 8 3"/></symbol><symbol id="i-stars" viewBox="0 0 16 16"><path d="M7.657 6.247c.11-.33.576-.33.686 0l.645 1.937a2.89 2.89 0 0 0 1.829 1.828l1.936.645c.33.11.33.576 0 .686l-1.937.645a2.89 2.89 0 0 0-1.828 1.829l-.645 1.936a.361.361 0 0 1-.686 0l-.645-1.937a2.89 2.89 0 0 0-1.828-1.828l-1.937-.645a.361.361 0 0 1 0-.686l1.937-.645a2.89 2.89 0 0 0 1.828-1.828zM3.794 1.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387A1.73 1.73 0 0 0 4.593 5.69l-.387 1.162a.217.217 0 0 1-.412 0L3.407 5.69A1.73 1.73 0 0 0 2.31 4.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387A1.73 1.73 0 0 0 3.407 2.31zM10.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732L9.1 2.137a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z"/></symbol><symbol id="i-circle-half" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 0 8 1zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16"/></symbol><symbol id="i-sun" viewBox="0 0 16 16"><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6m0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"/></symbol><symbol id="i-moon-stars" viewBox="0 0 16 16"><path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278M4.858 1.311A7.27 7.27 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.32 7.32 0 0 0 5.205-2.162q-.506.063-1.029.063c-4.61 0-8.343-3.714-8.343-8.29 0-1.167.242-2.278.681-3.286"/><path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.73 1.73 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.73 1.73 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.73 1.73 0 0 0 1.097-1.097zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z"/></symbol><symbol id="i-check2" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></symbol><symbol id="i-check-circle-fill" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></symbol><symbol id="i-arrow-right-circle-fill" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"/></symbol><symbol id="i-clock-history" viewBox="0 0 16 16"><path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z"/>
+  <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z"/>
+  <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5"/></symbol><symbol id="i-compass" viewBox="0 0 16 16"><path d="M8 16.016a7.5 7.5 0 0 0 1.962-14.74A1 1 0 0 0 9 0H7a1 1 0 0 0-.962 1.276A7.5 7.5 0 0 0 8 16.016m6.5-7.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0"/>
+  <path d="m6.94 7.44 4.95-2.83-2.83 4.95-4.949 2.83 2.828-4.95z"/></symbol></svg>
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header">
+   <div class="site-header-inner">
     <a class="brand" href="../">
       <img src="../assets/mark.svg" alt="" width="40" height="40">
       <span class="wordmark"><span class="wordmark-name">Smart Roots</span> <span class="wordmark-parent">An OpenBGA project</span></span>
     </a>
-    <nav aria-label="Main navigation">
+    <nav class="site-nav" aria-label="Main navigation">
       <a href="../">Overview</a>
       <a href="#built">Built</a>
       <a href="#next">Next</a>
@@ -35,10 +62,19 @@
       <a href="#exploring">Exploring</a>
       <a href="#basis">Basis</a>
     </nav>
+    <div class="theme-menu" data-theme-menu>
+      <button class="theme-button" type="button" aria-expanded="false" aria-controls="theme-options" data-theme-button><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-circle-half"/></svg><span class="theme-button-text">Theme: <span data-theme-label>System</span></span></button>
+      <div class="theme-options" id="theme-options" role="group" aria-label="Theme" data-theme-options hidden>
+        <button type="button" data-theme-value="light" aria-pressed="false"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg>Light<svg class="icon theme-check" aria-hidden="true" focusable="false"><use href="#i-check2"/></svg></button>
+        <button type="button" data-theme-value="dark" aria-pressed="false"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-moon-stars"/></svg>Dark<svg class="icon theme-check" aria-hidden="true" focusable="false"><use href="#i-check2"/></svg></button>
+        <button type="button" data-theme-value="system" aria-pressed="false"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-circle-half"/></svg>System<svg class="icon theme-check" aria-hidden="true" focusable="false"><use href="#i-check2"/></svg></button>
+      </div>
+    </div>
+   </div>
   </header>
 
   <main id="main">
-    <section class="hero hero-board" aria-labelledby="roadmap-title">
+    <section class="hero hero-roadmap" aria-labelledby="roadmap-title">
       <div class="wrap">
         <div class="hero-inner">
           <h1 id="roadmap-title">What is built.<br>What is next.</h1>
@@ -48,58 +84,44 @@
             <p class="project-status">Reviewed November 2026</p>
           </div>
         </div>
-        <nav class="board" aria-label="Roadmap at a glance">
-          <div>
-            <a class="status status-built" href="#built">Built</a>
-            <p>In the software today</p>
-            <ul>
-              <li>Custody and receipt</li>
-              <li>Methods and rules</li>
-              <li>Bench work</li>
-              <li>QC and review</li>
-              <li>Reports</li>
-              <li>Client portal</li>
-              <li>Sales and scheduling</li>
-              <li>Laboratory records</li>
-              <li>Platform</li>
-            </ul>
+        <nav class="route" aria-label="Roadmap at a glance" data-route>
+          <svg class="route-art" viewBox="0 0 1200 790" aria-hidden="true" focusable="false">
+            <g class="canopy"><circle cx="600" cy="150" r="150"/><circle cx="420" cy="190" r="125"/><circle cx="780" cy="190" r="125"/><circle cx="250" cy="235" r="95"/><circle cx="950" cy="235" r="95"/><circle cx="510" cy="105" r="105"/><circle cx="690" cy="105" r="105"/></g>
+            <rect class="soil" x="24" y="472" width="1152" height="294" rx="22"/>
+            <g class="roots"><path d="M600 476C600 526 170 500 170 568" stroke-width="4"/><path d="M600 476C600 500 277.5 506 277.5 662" stroke-width="4"/><path d="M600 476C600 526 385 500 385 568" stroke-width="5"/><path d="M600 476C600 500 492.5 506 492.5 662" stroke-width="5"/><path d="M600 476C600 526 600 500 600 568" stroke-width="5"/><path d="M600 476C600 500 707.5 506 707.5 662" stroke-width="5"/><path d="M600 476C600 526 815 500 815 568" stroke-width="5"/><path d="M600 476C600 500 922.5 506 922.5 662" stroke-width="4"/><path d="M600 476C600 526 1030 500 1030 568" stroke-width="4"/></g>
+            <g class="branches">
+              <path d="M600 266C500 252 300 270 170 240"/><path d="M600 266C520 242 400 215 305 185"/><path d="M600 266C562 232 500 182 445 150"/>
+              <path d="M600 266V128"/>
+              <path d="M600 266C638 232 700 182 755 150"/><path d="M600 266C680 242 800 215 895 185"/><path d="M600 266C700 252 900 270 1030 240"/>
+            </g>
+            <path class="trunk" d="M583 476C588 400 590 330 592 262H608C610 330 612 400 617 476Z"/>
+            <g class="twigs">
+              <path d="M589 448C560 444 520 441 492 440"/><path d="M611 448C640 444 680 441 708 440"/>
+              <path d="M590 378C560 374 520 371 492 370"/><path d="M610 378C640 374 680 371 708 370"/>
+              <path d="M592 308C560 304 520 301 492 300"/><path d="M608 308C640 304 680 301 708 300"/>
+            </g>
+            <g class="tendrils">
+              <path d="M440 128Q400 74 350 60"/><path d="M450 128Q462 92 465 74"/><path d="M600 106V74"/>
+              <path d="M750 128Q738 92 735 74"/><path d="M760 128Q800 74 850 60"/>
+            </g>
+          </svg>
+          <div class="route-group group-built status-built">
+          <a class="zone status status-built" id="z-built" href="#built"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check-circle-fill"/></svg>Built · 9 areas</a>
+          <ul><li><a class="node" id="n-built-custody" href="#built-custody" aria-describedby="tip-built-custody"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-clipboard-check"/></svg></span><span class="node-label">Custody and receipt</span><span class="tip" id="tip-built-custody" role="tooltip">Clients, projects and chains of custody.</span></a></li><li><a class="node" id="n-built-methods" href="#built-methods" aria-describedby="tip-built-methods"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-rulers"/></svg></span><span class="node-label">Methods and rules</span><span class="tip" id="tip-built-methods" role="tooltip">Versioned methods, analytes and tests per matrix, with units, reporting limits and qualifiers.</span></a></li><li><a class="node" id="n-built-bench" href="#built-bench" aria-describedby="tip-built-bench"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-layers"/></svg></span><span class="node-label">Bench work</span><span class="tip" id="tip-built-bench" role="tooltip">Preparation and analytical batches with their QC samples.</span></a></li><li><a class="node" id="n-built-qc" href="#built-qc" aria-describedby="tip-built-qc"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-patch-check"/></svg></span><span class="node-label">QC and review</span><span class="tip" id="tip-built-qc" role="tooltip">QC evaluated against configured limits, with a recorded disposition for each failure.</span></a></li><li><a class="node" id="n-built-reports" href="#built-reports" aria-describedby="tip-built-reports"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-file-earmark-text"/></svg></span><span class="node-label">Reports</span><span class="tip" id="tip-built-reports" role="tooltip">Explicit release authorization.</span></a></li><li><a class="node" id="n-built-portal" href="#built-portal" aria-describedby="tip-built-portal"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-people"/></svg></span><span class="node-label">Client portal</span><span class="tip" id="tip-built-portal" role="tooltip">Each client sees its own projects, samples, reports and quotes, and can send a chain of custody ahead of the samples.</span></a></li><li><a class="node" id="n-built-sales" href="#built-sales" aria-describedby="tip-built-sales"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-calendar3"/></svg></span><span class="node-label">Sales and scheduling</span><span class="tip" id="tip-built-sales" role="tooltip">Price lists and versioned quotes, delivery targets with a schedule by due date, and sample and container labels with barcodes.</span></a></li><li><a class="node" id="n-built-records" href="#built-records" aria-describedby="tip-built-records"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tools"/></svg></span><span class="node-label">Laboratory records</span><span class="tip" id="tip-built-records" role="tooltip">Standards, reagents and lots with stock movements.</span></a></li><li><a class="node" id="n-built-platform" href="#built-platform" aria-describedby="tip-built-platform"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-shield-lock"/></svg></span><span class="node-label">Platform</span><span class="tip" id="tip-built-platform" role="tooltip">Roles and permissions checked on the server, an attributed audit trail and optional two-factor sign-in.</span></a></li></ul>
           </div>
-          <div>
-            <a class="status status-next" href="#next">Next</a>
-            <p>Needed for daily work</p>
-            <ul>
-              <li>A first stable release</li>
-              <li>Calculated results at the bench</li>
-              <li>Instrument data</li>
-              <li>Invoicing</li>
-              <li>Notifications and client results</li>
-              <li>Electronic deliverables</li>
-            </ul>
+          <div class="route-group group-next status-next">
+          <a class="zone status status-next" id="z-next" href="#next"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right-circle-fill"/></svg>Next</a>
+          <ul><li><a class="node" id="n-stable-release" href="#stable-release" aria-describedby="tip-stable-release"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-box-seam"/></svg></span><span class="node-label">Stable release</span><span class="tip" id="tip-stable-release" role="tooltip">Laboratories are asked to evaluate with synthetic data. They need a version they can install, check and upgrade.</span></a></li><li><a class="node" id="n-bench-calculations" href="#bench-calculations" aria-describedby="tip-bench-calculations"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-calculator"/></svg></span><span class="node-label">Bench calculations</span><span class="tip" id="tip-bench-calculations" role="tooltip">The readings behind a result belong in the record.</span></a></li><li><a class="node" id="n-instrument-data" href="#instrument-data" aria-describedby="tip-instrument-data"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-cpu"/></svg></span><span class="node-label">Instruments</span><span class="tip" id="tip-instrument-data" role="tooltip">Laboratories expect instrument exports to load as they are, with the raw file kept beside the batch.</span></a></li><li><a class="node" id="n-invoicing" href="#invoicing" aria-describedby="tip-invoicing"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-receipt"/></svg></span><span class="node-label">Invoicing</span><span class="tip" id="tip-invoicing" role="tooltip">A commercial laboratory bills for its work. Price lists and quotes exist, invoices do not.</span></a></li><li><a class="node" id="n-client-delivery" href="#client-delivery" aria-describedby="tip-client-delivery"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-bell"/></svg></span><span class="node-label">Notifications</span><span class="tip" id="tip-client-delivery" role="tooltip">Clients want to be told, and to work with their numbers.</span></a></li><li><a class="node" id="n-deliverables" href="#deliverables" aria-describedby="tip-deliverables"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-file-earmark-arrow-up"/></svg></span><span class="node-label">Deliverables</span><span class="tip" id="tip-deliverables" role="tooltip">Many clients and agencies take data as a file in their own format, and accept it only against their own specification.</span></a></li></ul>
           </div>
-          <div>
-            <a class="status status-later" href="#later">Later</a>
-            <p>Depth and breadth</p>
-            <ul>
-              <li>Quality system records</li>
-              <li>Management view</li>
-              <li>Drinking water programs</li>
-              <li>Microbiology</li>
-              <li>Sampling and field work</li>
-              <li>Trace organics and PFAS</li>
-              <li>Integrations and scale</li>
-            </ul>
+          <div class="route-group group-later status-later">
+          <a class="zone status status-later" id="z-later" href="#later"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-clock-history"/></svg>Later</a>
+          <ul><li><a class="node" id="n-quality-system" href="#quality-system" aria-describedby="tip-quality-system"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-shield-check"/></svg></span><span class="node-label">Quality system</span><span class="tip" id="tip-quality-system" role="tooltip">Assessors look past sample data to the laboratory's whole quality system.</span></a></li><li><a class="node" id="n-management-view" href="#management-view" aria-describedby="tip-management-view"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-speedometer2"/></svg></span><span class="node-label">Management view</span><span class="tip" id="tip-management-view" role="tooltip">Managers also need to see how the laboratory is doing.</span></a></li><li><a class="node" id="n-drinking-water" href="#drinking-water" aria-describedby="tip-drinking-water"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-droplet-half"/></svg></span><span class="node-label">Drinking water</span><span class="tip" id="tip-drinking-water" role="tooltip">Drinking water compliance results count only from a laboratory certified for the method and analyte.</span></a></li><li><a class="node" id="n-microbiology" href="#microbiology" aria-describedby="tip-microbiology"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-eyedropper"/></svg></span><span class="node-label">Microbiology</span><span class="tip" id="tip-microbiology" role="tooltip">Coliform and E. coli results are counts or presence, not concentrations.</span></a></li><li><a class="node" id="n-sampling" href="#sampling" aria-describedby="tip-sampling"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-geo-alt"/></svg></span><span class="node-label">Field sampling</span><span class="tip" id="tip-sampling" role="tooltip">Much of a laboratory's work repeats on a permit schedule and starts before the cooler arrives.</span></a></li><li><a class="node" id="n-organics" href="#organics" aria-describedby="tip-organics"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-flask"/></svg></span><span class="node-label">Organics and PFAS</span><span class="tip" id="tip-organics" role="tooltip">Organic methods bring their own QC, and PFAS work adds isotope dilution at parts-per-trillion levels.</span></a></li><li><a class="node" id="n-platform" href="#platform" aria-describedby="tip-platform"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-plug"/></svg></span><span class="node-label">Integrations</span><span class="tip" id="tip-platform" role="tooltip">A laboratory system works beside other systems and grows with the laboratory.</span></a></li></ul>
           </div>
-          <div>
-            <a class="status status-exploring" href="#exploring">Exploring</a>
-            <p>Open questions</p>
-            <ul>
-              <li>More regulator formats</li>
-              <li>Assisted review</li>
-              <li>Multi-site laboratories</li>
-              <li>Other disciplines</li>
-            </ul>
+          <div class="route-group group-exploring status-exploring">
+          <a class="zone status status-exploring" id="z-exploring" href="#exploring"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-compass"/></svg>Exploring</a>
+          <ul><li><a class="node" id="n-explore-formats" href="#explore-formats" aria-describedby="tip-explore-formats"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-send-check"/></svg></span><span class="node-label">Regulator formats</span><span class="tip" id="tip-explore-formats" role="tooltip">California GeoTracker EDF, Florida ADaPT, EPA's SEDD and the Water Quality Exchange.</span></a></li><li><a class="node" id="n-explore-assisted" href="#explore-assisted" aria-describedby="tip-explore-assisted"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-lightbulb"/></svg></span><span class="node-label">Assisted review</span><span class="tip" id="tip-explore-assisted" role="tooltip">Software that points a reviewer to unusual results or missing evidence. A person still makes every review and release decision.</span></a></li><li><a class="node" id="n-explore-mcp" href="#explore-mcp" aria-describedby="tip-explore-mcp"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chat-dots"/></svg></span><span class="node-label">MCP access</span><span class="tip" id="tip-explore-mcp" role="tooltip">A Model Context Protocol server, so an AI assistant can look up the records the signed-in person may already see.</span></a></li><li><a class="node" id="n-explore-multi-site" href="#explore-multi-site" aria-describedby="tip-explore-multi-site"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-buildings"/></svg></span><span class="node-label">Multi-site</span><span class="tip" id="tip-explore-multi-site" role="tooltip">Several locations within one laboratory organization.</span></a></li><li><a class="node" id="n-explore-disciplines" href="#explore-disciplines" aria-describedby="tip-explore-disciplines"><span class="node-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-stars"/></svg></span><span class="node-label">Other disciplines</span><span class="tip" id="tip-explore-disciplines" role="tooltip">Whole effluent toxicity, radiochemistry and air. Only with a laboratory that runs them.</span></a></li></ul>
           </div>
-        </nav>
+          </nav>
       </div>
     </section>
 
@@ -107,7 +129,7 @@
       <div class="wrap">
         <div class="section-intro">
           <div>
-            <p class="status status-built">Built</p>
+            <p class="status status-built"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check-circle-fill"></use></svg>Built</p>
             <h2 id="built-title">The journey<br>is in place.</h2>
           </div>
           <p>A sample can travel from receipt to an amended report with its custody, QC, review and release on record. These areas are implemented and covered by automated checks on synthetic data. The project has not yet made a stable release.</p>
@@ -116,15 +138,15 @@
           <caption>What Smart Roots LIMS has built</caption>
           <thead><tr><th scope="col">Area</th><th scope="col">What is in place</th></tr></thead>
           <tbody>
-            <tr><th scope="row">Custody and receipt</th><td>Clients, projects and chains of custody. Receipt inspection with containers, preservation checks, discrepancies and their dispositions. Custody events and corrections that keep their reason.</td></tr>
-            <tr><th scope="row">Methods and rules</th><td>Versioned methods, analytes and tests per matrix, with units, reporting limits and qualifiers. Holding-time and preservation rules, QC requirements and limits, all set by the laboratory. Starter files for common methods, each rule naming its public source, for the laboratory to check and edit before loading.</td></tr>
-            <tr><th scope="row">Bench work</th><td>Preparation and analytical batches with their QC samples. Manual entry and mapped CSV or TSV import, each keeping its source. Holding times computed from the rules, never typed.</td></tr>
-            <tr><th scope="row">QC and review</th><td>QC evaluated against configured limits, with a recorded disposition for each failure. Control charts and MDL studies. Independent technical review that can return work with a reason.</td></tr>
-            <tr><th scope="row">Reports</th><td>Explicit release authorization. Stored PDF versions with a content hash, and amendments that keep earlier versions. The laboratory's address, logo and certificate numbers on each new report. One exploratory electronic deliverable in the New York State format.</td></tr>
-            <tr><th scope="row">Client portal</th><td>Each client sees its own projects, samples, reports and quotes, and can send a chain of custody ahead of the samples.</td></tr>
-            <tr><th scope="row">Sales and scheduling</th><td>Price lists and versioned quotes, delivery targets with a schedule by due date, sample and container labels with barcodes, and subcontracted tests with an independent check of the source.</td></tr>
-            <tr><th scope="row">Laboratory records</th><td>Standards, reagents and lots with stock movements. Equipment calibration and maintenance. Training and demonstrations of capability. Nonconformance and corrective action. Sample storage and disposal.</td></tr>
-            <tr><th scope="row">Platform</th><td>Roles and permissions checked on the server, an attributed audit trail, optional two-factor sign-in, help for every page and announcements. Import of clients, projects, methods, tests, limits and rules from spreadsheets saved as CSV, previewed row by row. Acceptance scripts a laboratory runs on its own installation and keeps as evidence. A container image and a documented backup and restore procedure.</td></tr>
+            <tr id="built-custody"><th scope="row">Custody and receipt</th><td>Clients, projects and chains of custody. Receipt inspection with containers, preservation checks, discrepancies and their dispositions. Custody events and corrections that keep their reason. <a class="back-to-map" href="#n-built-custody"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a></td></tr>
+            <tr id="built-methods"><th scope="row">Methods and rules</th><td>Versioned methods, analytes and tests per matrix, with units, reporting limits and qualifiers. Holding-time and preservation rules, QC requirements and limits, all set by the laboratory. Starter files for common methods, each rule naming its public source, for the laboratory to check and edit before loading. <a class="back-to-map" href="#n-built-methods"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a></td></tr>
+            <tr id="built-bench"><th scope="row">Bench work</th><td>Preparation and analytical batches with their QC samples. Manual entry and mapped CSV or TSV import, each keeping its source. Holding times computed from the rules, never typed. <a class="back-to-map" href="#n-built-bench"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a></td></tr>
+            <tr id="built-qc"><th scope="row">QC and review</th><td>QC evaluated against configured limits, with a recorded disposition for each failure. Control charts and MDL studies. Independent technical review that can return work with a reason. <a class="back-to-map" href="#n-built-qc"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a></td></tr>
+            <tr id="built-reports"><th scope="row">Reports</th><td>Explicit release authorization. Stored PDF versions with a content hash, and amendments that keep earlier versions. The laboratory's address, logo and certificate numbers on each new report. One exploratory electronic deliverable in the New York State format. <a class="back-to-map" href="#n-built-reports"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a></td></tr>
+            <tr id="built-portal"><th scope="row">Client portal</th><td>Each client sees its own projects, samples, reports and quotes, and can send a chain of custody ahead of the samples. <a class="back-to-map" href="#n-built-portal"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a></td></tr>
+            <tr id="built-sales"><th scope="row">Sales and scheduling</th><td>Price lists and versioned quotes, delivery targets with a schedule by due date, sample and container labels with barcodes, and subcontracted tests with an independent check of the source. <a class="back-to-map" href="#n-built-sales"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a></td></tr>
+            <tr id="built-records"><th scope="row">Laboratory records</th><td>Standards, reagents and lots with stock movements. Equipment calibration and maintenance. Training and demonstrations of capability. Nonconformance and corrective action. Sample storage and disposal. <a class="back-to-map" href="#n-built-records"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a></td></tr>
+            <tr id="built-platform"><th scope="row">Platform</th><td>Roles and permissions checked on the server, an attributed audit trail, optional two-factor sign-in, help for every page and announcements. Import of clients, projects, methods, tests, limits and rules from spreadsheets saved as CSV, previewed row by row. Acceptance scripts a laboratory runs on its own installation and keeps as evidence. A container image and a documented backup and restore procedure. <a class="back-to-map" href="#n-built-platform"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a></td></tr>
           </tbody>
         </table>
       </div>
@@ -134,7 +156,7 @@
       <div class="wrap">
         <div class="section-intro">
           <div>
-            <p class="status status-next">Next</p>
+            <p class="status status-next"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right-circle-fill"></use></svg>Next</p>
             <h2 id="next-title">What daily work<br>still needs.</h2>
           </div>
           <p>Six areas stand between the current software and a laboratory that runs its routine work in it. They are listed in the order the project intends to take them.</p>
@@ -147,6 +169,7 @@
               <li>Versioned releases with upgrade notes and tested migrations</li>
               <li>Holding-time limits per analyte, where one method covers analytes with different limits</li>
             </ul>
+            <a class="back-to-map" href="#n-stable-release"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a>
           </li>
           <li id="bench-calculations">
             <h3>Calculated results at the bench</h3>
@@ -158,6 +181,7 @@
               <li>Rounding and significant-figure rules set by the laboratory</li>
               <li>Versioned calculations, so a reported value can be reproduced</li>
             </ul>
+            <a class="back-to-map" href="#n-bench-calculations"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a>
           </li>
           <li id="instrument-data">
             <h3>Instrument data</h3>
@@ -169,6 +193,7 @@
               <li>Run lists exported for the instrument</li>
               <li>Calibration recorded in the run, with curves and verification standards linked to results</li>
             </ul>
+            <a class="back-to-map" href="#n-instrument-data"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a>
           </li>
           <li id="invoicing">
             <h3>Invoicing</h3>
@@ -179,6 +204,7 @@
               <li>Export to accounting software, which stays the ledger</li>
               <li>An optional account hold shown at receipt and at release</li>
             </ul>
+            <a class="back-to-map" href="#n-invoicing"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a>
           </li>
           <li id="client-delivery">
             <h3>Notifications and client results</h3>
@@ -189,6 +215,7 @@
               <li>Result tables in the portal, with download</li>
               <li>Trends by sampling location, with results marked against limits the client supplies</li>
             </ul>
+            <a class="back-to-map" href="#n-client-delivery"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a>
           </li>
           <li id="deliverables">
             <h3>Electronic deliverables</h3>
@@ -199,16 +226,17 @@
               <li>Report packages with a QC summary, chosen per order</li>
               <li>Permit summaries for discharge monitoring reports: averages, maximums and loadings. The permittee still files the report.</li>
             </ul>
+            <a class="back-to-map" href="#n-deliverables"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a>
           </li>
         </ol>
       </div>
     </section>
 
-    <section class="section tinted" id="later" aria-labelledby="later-title">
+    <section class="section band" id="later" aria-labelledby="later-title">
       <div class="wrap">
         <div class="section-intro">
           <div>
-            <p class="status status-later">Later</p>
+            <p class="status status-later"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-clock-history"></use></svg>Later</p>
             <h2 id="later-title">Depth<br>and breadth.</h2>
           </div>
           <p>Planned after the work above. The order here is looser, and a laboratory that needs one of these can move it forward.</p>
@@ -224,6 +252,7 @@
               <li>Checks at the point of use that a laboratory can turn on: a current demonstration of capability, equipment in calibration, lots within expiry</li>
               <li>Method validation, measurement uncertainty and ongoing MDL verification</li>
             </ul>
+            <a class="back-to-map" href="#n-quality-system"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a>
           </li>
           <li id="management-view">
             <h3>Management view</h3>
@@ -235,6 +264,7 @@
               <li>Workload by method and analyst</li>
               <li>Audit trail search by person, record and date</li>
             </ul>
+            <a class="back-to-map" href="#n-management-view"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a>
           </li>
           <li id="drinking-water">
             <h3>Drinking water programs</h3>
@@ -245,6 +275,7 @@
               <li>Compliance sample types, such as routine and repeat samples</li>
               <li>Electronic reporting to a state agency, starting with the format of EPA's Compliance Monitoring Data Portal</li>
             </ul>
+            <a class="back-to-map" href="#n-drinking-water"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a>
           </li>
           <li id="microbiology">
             <h3>Microbiology</h3>
@@ -254,6 +285,7 @@
               <li>Incubation start and read times checked against the method's window</li>
               <li>Media, sterility and incubator temperature records</li>
             </ul>
+            <a class="back-to-map" href="#n-microbiology"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a>
           </li>
           <li id="sampling">
             <h3>Sampling and field work</h3>
@@ -265,6 +297,7 @@
               <li>Field measurements recorded with the sample, such as pH, temperature, residual chlorine and depth</li>
               <li>Capture on a phone or tablet in the field</li>
             </ul>
+            <a class="back-to-map" href="#n-sampling"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a>
           </li>
           <li id="organics">
             <h3>Trace organics and PFAS</h3>
@@ -274,6 +307,7 @@
               <li>Isotope dilution with labeled-standard recoveries, as EPA Method 1633A uses</li>
               <li>Summed analytes, and branched and linear isomers</li>
             </ul>
+            <a class="back-to-map" href="#n-organics"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a>
           </li>
           <li id="platform">
             <h3>Integrations and scale</h3>
@@ -284,6 +318,7 @@
               <li>Background jobs for long imports and report runs</li>
               <li>Stronger tamper evidence for the audit trail and issued reports</li>
             </ul>
+            <a class="back-to-map" href="#n-platform"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a>
           </li>
         </ul>
       </div>
@@ -293,16 +328,17 @@
       <div class="wrap">
         <div class="section-intro">
           <div>
-            <p class="status status-exploring">Exploring</p>
+            <p class="status status-exploring"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-compass"></use></svg>Exploring</p>
             <h2 id="exploring-title">Open<br>questions.</h2>
           </div>
           <p>Directions the project is weighing. Each needs a laboratory that wants it and can test it.</p>
         </div>
         <dl class="principles">
-          <div><dt>More regulator formats</dt><dd>California GeoTracker EDF, Florida ADaPT, EPA's SEDD and the Water Quality Exchange. One at a time, each tested against the recipient's own specification.</dd></div>
-          <div><dt>Assisted review</dt><dd>Software that points a reviewer to unusual results or missing evidence. A person still makes every review and release decision.</dd></div>
-          <div><dt>Multi-site laboratories</dt><dd>Several locations within one laboratory organization. One organization per deployment stays the design.</dd></div>
-          <div><dt>Other disciplines</dt><dd>Whole effluent toxicity, radiochemistry and air. Only with a laboratory that runs them.</dd></div>
+          <div id="explore-formats"><dt>More regulator formats</dt><dd>California GeoTracker EDF, Florida ADaPT, EPA's SEDD and the Water Quality Exchange. One at a time, each tested against the recipient's own specification. <a class="back-to-map" href="#n-explore-formats"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a></dd></div>
+          <div id="explore-assisted"><dt>Assisted review</dt><dd>Software that points a reviewer to unusual results or missing evidence. A person still makes every review and release decision. <a class="back-to-map" href="#n-explore-assisted"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a></dd></div>
+          <div id="explore-mcp"><dt>AI assistant access (MCP)</dt><dd>A Model Context Protocol server, so an AI assistant can look up the records the signed-in person may already see, with the same permissions. Every change still happens in the application, with its audit trail. <a class="back-to-map" href="#n-explore-mcp"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a></dd></div>
+          <div id="explore-multi-site"><dt>Multi-site laboratories</dt><dd>Several locations within one laboratory organization. One organization per deployment stays the design. <a class="back-to-map" href="#n-explore-multi-site"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a></dd></div>
+          <div id="explore-disciplines"><dt>Other disciplines</dt><dd>Whole effluent toxicity, radiochemistry and air. Only with a laboratory that runs them. <a class="back-to-map" href="#n-explore-disciplines"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-up"/></svg>Back to the roadmap</a></dd></div>
         </dl>
       </div>
     </section>
@@ -346,6 +382,7 @@
     <span>Smart Roots LIMS</span>
     <a href="https://github.com/openbga/smart-roots-lims">Source code</a>
     <a href="https://github.com/openbga/smart-roots-lims/blob/main/LICENSE">AGPL-3.0-only</a>
+    <a href="../assets/overpass-OFL.txt">Overpass font licence (OFL-1.1)</a>
   </footer>
 </body>
 </html>

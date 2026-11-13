@@ -5,6 +5,27 @@
   ],
   "title": "QC control charts",
   "purpose": "Find read-only historical QC series by exact test and QC type, keeping analytical and preparation QC separate.",
+  "summary": "Find the QC history of one test and QC type, and open its control chart. Analytical and preparation QC are kept apart.",
+  "tasks": [
+    {
+      "title": "Open a control chart",
+      "steps": [
+        "Type an analyte or method code in [[Search]], or choose a [[QC type]], then select [[Apply]].",
+        "Select the analyte to open its first chart, or a measure in Charts."
+      ]
+    },
+    {
+      "title": "Look at preparation QC",
+      "steps": [
+        "Set [[QC phase]] to Preparation QC and select [[Apply]]."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The lab's configured limits decide QC status. The chart's statistical bands describe the data only.",
+    "Series include every current measurement, not only open batches or passing QC.",
+    "Measurements counts every current observation, including ones that cannot be plotted, such as non-detects."
+  ],
   "sections": [
     {
       "title": "Access and interpretation",

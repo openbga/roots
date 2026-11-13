@@ -5,6 +5,27 @@
   ],
   "title": "Correct reference",
   "purpose": "Correct a mistyped chain-of-custody reference for this order and every sample linked to it, retaining the earlier reference.",
+  "summary": "Correct a mistyped chain of custody reference for this order and every sample on it. The earlier reference stays recorded.",
+  "tasks": [
+    {
+      "title": "Correct the reference",
+      "steps": [
+        "Enter the corrected [[Chain of custody reference]] and the [[Reason]].",
+        "Select [[Correct reference]]. Reprint any labels or paperwork that show the old one."
+      ]
+    },
+    {
+      "title": "Check earlier corrections",
+      "steps": [
+        "Read the History. Each correction shows the old and new reference, who made it and why."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Once any sample on the order is on an issued report, the reference can no longer be corrected here.",
+    "A linked client submission keeps the reference exactly as the client entered it.",
+    "If the order changed after you opened the form, saving is refused. Reload and compare first."
+  ],
   "sections": [
     {
       "title": "Fields",

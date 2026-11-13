@@ -5,6 +5,39 @@
   ],
   "title": "Samples",
   "purpose": "Find received samples across clients and projects, then open their receipt observations, requested tests and custody history.",
+  "summary": "Every received sample across clients and projects. Open one for its receipt observations, requested tests and custody history.",
+  "tasks": [
+    {
+      "title": "Find a sample",
+      "steps": [
+        "Type a lab ID, client sample ID, client, project, reference or location in [[Search]].",
+        "Select [[Apply]], then select the Lab ID to open the sample."
+      ]
+    },
+    {
+      "title": "Find samples waiting for a decision",
+      "steps": [
+        "Set [[Disposition]] to Hold and select [[Apply]]."
+      ]
+    },
+    {
+      "title": "List what arrived in a date range",
+      "steps": [
+        "Open [[More filters]], set [[Received from]] and [[Received to]], then select [[Apply]]."
+      ]
+    },
+    {
+      "title": "Receive new samples",
+      "steps": [
+        "Select [[Receive samples]]. A new chain of custody opens; receive each sample on it."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Disposition is the receipt decision. It is separate from where the analytical work stands.",
+    "Search does not look at the collector's name.",
+    "Received dates use the laboratory's time zone, and both ends are included."
+  ],
   "sections": [
     {
       "title": "Search, filters and actions",

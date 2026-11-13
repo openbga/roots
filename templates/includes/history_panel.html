@@ -4,8 +4,9 @@ events newest last as includes/history_item.html entries, or an empty state. Ren
 {% history_panel %} block tag ({% load ui %}). With an empty body each event is an AuditEvent
 (title event.action|action_label, occurred_at, actor, reason, detail); a body replaces that with
 the caller's own {% history_item %} loop, for other event shapes.
-In the shared form dialog (the page's form_dialog, a documented read) it renders nothing: a dialog
-ends with its form's action row, and the full page shows the history below the form.
+In the shared form dialog it is not shown: a dialog ends with its form's action row, and the full
+page shows the history below the form. A fetched dialog (form_dialog, a documented read) renders
+nothing; a form URL opened directly becomes the dialog with this panel hidden (.vr-page-only).
 Parameters:
   events        the events, oldest first; required even with a body (it decides the empty state)
   newest_first  truthy when events come newest first: they are shown reversed
@@ -19,7 +20,7 @@ Usage:
     {% for event in schedule_events|dictsort:"occurred_at" %}{% history_item title="Delivery target changed" at=event.occurred_at actor=event.actor reason=event.reason %}{% endfor %}
   {% endhistory_panel %}
 {% endcomment %}{% if not form_dialog %}
-{% load ui laboratory_extras %}{% with items=body %}{% panel title=title heading_id=heading_id class=class count=slots.count|default:count %}
+{% load ui laboratory_extras %}{% with items=body %}{% panel title=title heading_id=heading_id class=class|add:" vr-page-only" count=slots.count|default:count %}
 {% if events %}
 <ol class="vr-timeline">
   {% if items %}{{ items }}{% else %}{% for event in events %}{% history_item title=event.action|action_label at=event.occurred_at actor=event.actor reason=event.reason detail=event.detail by=None changes=None extra=None %}{% endfor %}{% endif %}

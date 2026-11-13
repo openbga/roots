@@ -5,6 +5,27 @@
   ],
   "title": "Record retention",
   "purpose": "Read the laboratory’s recorded statement about electronic record retention and the reasons for changes.",
+  "summary": "Your laboratory's own statement about how long electronic records are kept, and the history of changes to it.",
+  "tasks": [
+    {
+      "title": "Read the statement",
+      "steps": [
+        "Read the Retention statement. Not recorded means none has been entered yet."
+      ]
+    },
+    {
+      "title": "Change the statement",
+      "steps": [
+        "Select [[Edit in administration]]. Only a superuser with the admin role sees it.",
+        "Give a reason for the change. It is kept in the history."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Electronic records are never deleted automatically.",
+    "This statement does not set how long physical samples are kept. That is managed under Sample storage.",
+    "The statement is your laboratory's policy text, not a compliance certification."
+  ],
   "sections": [
     {
       "title": "Sections and fields",

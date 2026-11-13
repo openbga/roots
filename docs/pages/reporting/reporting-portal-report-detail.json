@@ -5,6 +5,33 @@
   ],
   "title": "Issued report",
   "purpose": "Read the latest issued result summary and retrieve all retained report versions and generated export files.",
+  "summary": "Read the summary of the latest issued version of a report and download every version and export file the laboratory has issued for it.",
+  "tasks": [
+    {
+      "title": "Download the report of record",
+      "steps": [
+        "Select Download version … (PDF) at the top of the page. The PDF is the report of record; this page is a summary."
+      ]
+    },
+    {
+      "title": "Get an earlier version",
+      "steps": [
+        "Under version history, select [[Download PDF]] for that version."
+      ]
+    },
+    {
+      "title": "Get a NYSDEC export",
+      "steps": [
+        "Under version history, select [[NYSDEC EDD (exploratory) ZIP]] where the laboratory has generated one."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Everything here comes from the issued version. Later changes appear only after a further release.",
+    "ND means not detected at or above the reporting limit, not zero.",
+    "NYSDEC export files are exploratory and not validated by EQuIS EDP.",
+    "Ask the laboratory about errors or needed amendments. You can't change results here."
+  ],
   "sections": [
     {
       "title": "Access and navigation",
