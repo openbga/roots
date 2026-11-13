@@ -133,6 +133,12 @@ passwords, existing roles and revoked permissions. `--update-lab` explicitly ren
 for new input and new reports; changing it does not reinterpret stored timestamps or issued reports.
 Keep demo seeding separate from a real laboratory database.
 
+After installing, and after each upgrade, run
+`python manage.py run_acceptance --operator "Your Name" --output /path/to/new-directory` and keep
+the evidence package it writes. It checks the first journey on synthetic records in a separate
+scratch database, never the laboratory's own; see
+[Operations](docs/operations.md#acceptance-run-after-installation-and-upgrade).
+
 Sign in at `/accounts/login/`. The owner manages users and group membership at `/admin/`.
 Signed-in users may optionally enrol an authenticator app from the account menu's
 "Two-factor authentication" page (`/accounts/2fa/`).
@@ -209,7 +215,7 @@ See [Render's deploy button documentation](https://render.com/docs/deploy-to-ren
 | [Product scope](docs/product.md) | What the product must do, the domain rules behind it and their sources |
 | [Roadmap](https://openbga.github.io/smart-roots-lims/roadmap/) | What is built, what comes next and what is being explored, without dates |
 | [Architecture](docs/architecture.md) | Stack, integrity and authorization design, deployment shape |
-| [Operations](docs/operations.md) | Backup, restore, recovery and logs for a self-hosted deployment; running a public demonstration |
+| [Operations](docs/operations.md) | Backup, restore, recovery, acceptance runs and logs for a self-hosted deployment; running a public demonstration |
 | [UI standards](docs/ui-standards.md) | Layout, navigation, table and form conventions |
 | [Third-party notices](THIRD_PARTY_NOTICES.md) | Licences of bundled and required components |
 

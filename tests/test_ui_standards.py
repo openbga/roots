@@ -17,6 +17,7 @@ ROOT = Path(settings.BASE_DIR)
 # Print documents rendered to PDF carry their own stylesheet; they are not workspace pages.
 DOCUMENTS = {
     "receipt/templates/receipt/pdf/labels.html",
+    "templates/acceptance/report.html",  # acceptance evidence: a standalone file, never served
     "reporting/templates/reporting/pdf/report.html",
 }
 

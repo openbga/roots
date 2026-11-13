@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{ e.software.name }} acceptance run, {{ e.started_at }}</title>
+<style>
+  @page { size: letter; margin: 16mm 14mm 18mm; @bottom-right { content: "Page " counter(page) " of " counter(pages); font: 8pt sans-serif; color: #555; } @bottom-left { content: "{{ e.software.name }} {{ e.software.version }} acceptance run, {{ e.started_at }}"; font: 8pt sans-serif; color: #555; } }
+  body { font: 9.5pt/1.4 "DejaVu Sans", Arial, sans-serif; color: #111; margin: 0 auto; max-width: 60rem; padding: 1rem; }
+  h1 { font-size: 16pt; margin: 0 0 .2rem; }
+  h2 { font-size: 11.5pt; margin: 1.3rem 0 .4rem; border-bottom: 1px solid #999; padding-bottom: .15rem; }
+  p { margin: .3rem 0; }
+  table { border-collapse: collapse; width: 100%; margin: .3rem 0; }
+  th, td { border: 1px solid #bbb; padding: .2rem .35rem; text-align: left; vertical-align: top; }
+  th { background: #eee; font-weight: 600; }
+  tr { break-inside: avoid; }
+  table.kv th { width: 30%; }
+  .banner { border: 2px solid #111; padding: .5rem .7rem; margin: .6rem 0; font-size: 11pt; font-weight: 600; }
+  .banner.bad { border-color: #8b0000; color: #8b0000; }
+  .result { font-weight: 700; white-space: nowrap; }
+  .result.failed { color: #8b0000; }
+  .result.notrun { color: #7a4b00; }
+  .step { border: 1px solid #bbb; padding: .35rem .5rem; margin: .45rem 0; break-inside: avoid; }
+  .step h3 { font-size: 10pt; margin: 0 0 .2rem; display: flex; justify-content: space-between; gap: 1rem; }
+  .step dl { margin: 0; display: grid; grid-template-columns: 6.5rem 1fr; gap: .1rem .5rem; }
+  .step dt { font-weight: 600; color: #333; }
+  .step dd { margin: 0; }
+  .step ul { margin: 0; padding-left: 1rem; }
+  .muted { color: #555; }
+  .mono { font-family: "DejaVu Sans Mono", monospace; font-size: 8pt; word-break: break-all; }
+  .sign { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem; break-inside: avoid; }
+  .sign > div { border: 1px solid #bbb; padding: .5rem .7rem; }
+  .line { border-bottom: 1px solid #111; height: 1.6rem; margin-bottom: .2rem; }
+  .small { font-size: 8pt; }
+</style>
+</head>
+<body>
+<h1>{{ e.software.name }} acceptance run record</h1>
+<p class="muted">Scripted checks on synthetic data, run with <span class="mono">manage.py run_acceptance</span></p>
+
+<div class="banner{% if not e.summary.all_passed %} bad{% endif %}">
+  {% if e.summary.all_passed %}All {{ e.summary.total }} steps passed.{% else %}{{ e.summary.failed }} of {{ e.summary.total }} steps failed and {{ e.summary.not_run }} were not run; {{ e.summary.passed }} passed.{% endif %}
+</div>
+{% if e.problems %}<div class="banner bad">The package is incomplete or needs attention:<ul>{% for p in e.problems %}<li>{{ p }}</li>{% endfor %}</ul></div>{% endif %}
+<p>{{ e.statement }}</p>
+{% if e.settings.DEBUG %}<p><strong>DEBUG was on for this run.</strong> These are development settings: HTTPS redirection, secure cookies and HSTS were not in effect, so the run does not show the production configuration.</p>{% endif %}
+
+<h2>Installation</h2>
+<table class="kv">
+  <tr><th>Software</th><td>{{ e.software.name }} {{ e.software.version }}</td></tr>
+  <tr><th>Commit</th><td>{% if e.software.commit %}<span class="mono">{{ e.software.commit }}</span> ({{ e.software.commit_source }}{% if e.software.tracked_files_modified %}; tracked files modified{% endif %}){% else %}{{ e.software.commit_source }}{% endif %}</td></tr>
+  <tr><th>Python / Django</th><td>{{ e.runtime.python }} / {{ e.runtime.django }}</td></tr>
+  <tr><th>PostgreSQL server</th><td>{{ e.runtime.postgresql|default:"not recorded" }}</td></tr>
+  <tr><th>PDF renderer (WeasyPrint)</th><td>{{ e.runtime.weasyprint }}</td></tr>
+  <tr><th>Time zone setting</th><td>{{ e.settings.TIME_ZONE }}</td></tr>
+  <tr><th>Security settings</th><td>DEBUG={{ e.settings.DEBUG }}, SECURE_SSL_REDIRECT={{ e.settings.SECURE_SSL_REDIRECT }}, SECURE_HSTS_SECONDS={{ e.settings.SECURE_HSTS_SECONDS }}, SESSION_COOKIE_SECURE={{ e.settings.SESSION_COOKIE_SECURE }}, CSRF_COOKIE_SECURE={{ e.settings.CSRF_COOKIE_SECURE }}</td></tr>
+  <tr><th>Working database migrations</th><td>{% if e.database.working_database.how_checked %}{{ e.database.working_database.pending_migrations }} pending, {{ e.database.working_database.applied_but_unknown_to_this_release }} applied but unknown to this release ({{ e.database.working_database.how_checked|lower }}){% else %}{{ e.database.working_database }}{% endif %}</td></tr>
+</table>
+
+<h2>Run</h2>
+<table class="kv">
+  <tr><th>Run by (as stated)</th><td>{{ e.operator }}</td></tr>
+  <tr><th>Started</th><td>{{ e.started_at }}</td></tr>
+  <tr><th>Finished</th><td>{{ e.finished_at }} ({{ e.duration_seconds }} s)</td></tr>
+  <tr><th>Database</th><td>{{ e.database.description }}{% if e.database.scratch_name %}: <span class="mono">{{ e.database.scratch_name }}</span>{% endif %}. {{ e.database.applied_migrations|length }} migrations applied from empty. After the run: {{ e.database.after_run }}.</td></tr>
+  <tr><th>How requests were made</th><td>{{ e.requests.how }}</td></tr>
+</table>
+
+<h2>Steps</h2>
+<table>
+  <tr><th>ID</th><th>Outcome</th><th>Step</th><th>Result</th></tr>
+  {% for s in e.steps %}<tr><td>{{ s.id }}</td><td>{{ s.outcome|default:"" }}</td><td>{{ s.title }}</td><td class="result {% if s.result == failed %}failed{% elif s.result != passed %}notrun{% endif %}">{{ s.result }}</td></tr>{% endfor %}
+</table>
+<p class="small muted">Outcome numbers refer to the acceptance outcomes under "The first journey" in docs/product.md. Each step passes or fails on its own; a step whose prerequisite did not pass is reported as not run.</p>
+
+{% for s in e.steps %}
+<div class="step">
+  <h3><span>{{ s.id }} {{ s.title }}{% if s.outcome %} <span class="muted">(outcome {{ s.outcome }})</span>{% endif %}</span><span class="result {% if s.result == failed %}failed{% elif s.result != passed %}notrun{% endif %}">{{ s.result }}</span></h3>
+  <dl>
+    <dt>Requirement</dt><dd>{{ s.requirement }}</dd>
+    <dt>Expected</dt><dd>{{ s.expected }}</dd>
+    <dt>Observed</dt><dd><ul>{% for o in s.observed %}<li>{{ o }}</li>{% empty %}<li class="muted">Nothing recorded.</li>{% endfor %}</ul></dd>
+    {% if s.depends_on %}<dt>Depends on</dt><dd>{{ s.depends_on|join:", " }}</dd>{% endif %}
+  </dl>
+</div>
+{% endfor %}
+
+<h2>Files produced by the run</h2>
+<table>
+  <tr><th>File</th><th>Bytes</th><th>SHA-256</th></tr>
+  {% for a in e.artifacts %}<tr><td>{{ a.file }}</td><td>{{ a.bytes }}</td><td class="mono">{{ a.sha256 }}</td></tr>{% empty %}<tr><td colspan="3" class="muted">None.</td></tr>{% endfor %}
+</table>
+<p class="small muted">The package also holds evidence.json (every step and observation) and manifest-sha256.txt, the SHA-256 of every other file in the package. Check it with <span class="mono">sha256sum -c manifest-sha256.txt</span> (or <span class="mono">shasum -a 256 -c</span>).</p>
+
+<h2>Migrations applied to the scratch database</h2>
+<table>
+  <tr><th>Application</th><th>Migrations</th><th>Latest</th></tr>
+  {% for m in migrations %}<tr><td>{{ m.app }}</td><td>{{ m.count }}</td><td class="mono">{{ m.latest }}</td></tr>{% endfor %}
+</table>
+
+<h2>Review</h2>
+<p>The laboratory decides what this record means in its quality system and whether further checks are needed.</p>
+<div class="sign">
+  <div><strong>Performed by</strong><p>Name</p><div class="line"></div><p>Signature</p><div class="line"></div><p>Date</p><div class="line"></div></div>
+  <div><strong>Reviewed by</strong><p>Name</p><div class="line"></div><p>Signature</p><div class="line"></div><p>Date</p><div class="line"></div></div>
+</div>
+</body>
+</html>
