@@ -117,14 +117,14 @@
           <thead><tr><th scope="col">Area</th><th scope="col">What is in place</th></tr></thead>
           <tbody>
             <tr><th scope="row">Custody and receipt</th><td>Clients, projects and chains of custody. Receipt inspection with containers, preservation checks, discrepancies and their dispositions. Custody events and corrections that keep their reason.</td></tr>
-            <tr><th scope="row">Methods and rules</th><td>Versioned methods, analytes and tests per matrix, with units, reporting limits and qualifiers. Holding-time and preservation rules, QC requirements and limits, all set by the laboratory.</td></tr>
+            <tr><th scope="row">Methods and rules</th><td>Versioned methods, analytes and tests per matrix, with units, reporting limits and qualifiers. Holding-time and preservation rules, QC requirements and limits, all set by the laboratory. Starter files for common methods, each rule naming its public source, for the laboratory to check and edit before loading.</td></tr>
             <tr><th scope="row">Bench work</th><td>Preparation and analytical batches with their QC samples. Manual entry and mapped CSV or TSV import, each keeping its source. Holding times computed from the rules, never typed.</td></tr>
             <tr><th scope="row">QC and review</th><td>QC evaluated against configured limits, with a recorded disposition for each failure. Control charts and MDL studies. Independent technical review that can return work with a reason.</td></tr>
             <tr><th scope="row">Reports</th><td>Explicit release authorization. Stored PDF versions with a content hash, and amendments that keep earlier versions. The laboratory's address, logo and certificate numbers on each new report. One exploratory electronic deliverable in the New York State format.</td></tr>
             <tr><th scope="row">Client portal</th><td>Each client sees its own projects, samples, reports and quotes, and can send a chain of custody ahead of the samples.</td></tr>
             <tr><th scope="row">Sales and scheduling</th><td>Price lists and versioned quotes, delivery targets with a schedule by due date, sample and container labels with barcodes, and subcontracted tests with an independent check of the source.</td></tr>
             <tr><th scope="row">Laboratory records</th><td>Standards, reagents and lots with stock movements. Equipment calibration and maintenance. Training and demonstrations of capability. Nonconformance and corrective action. Sample storage and disposal.</td></tr>
-            <tr><th scope="row">Platform</th><td>Roles and permissions checked on the server, an attributed audit trail, optional two-factor sign-in, help for every page, announcements, a container image and a documented backup and restore procedure.</td></tr>
+            <tr><th scope="row">Platform</th><td>Roles and permissions checked on the server, an attributed audit trail, optional two-factor sign-in, help for every page and announcements. Import of clients, projects, methods, tests, limits and rules from spreadsheets saved as CSV, previewed row by row. Acceptance scripts a laboratory runs on its own installation and keeps as evidence. A container image and a documented backup and restore procedure.</td></tr>
           </tbody>
         </table>
       </div>
@@ -145,9 +145,7 @@
             <p>Laboratories are asked to evaluate with synthetic data. They need a version they can install, check and upgrade.</p>
             <ul>
               <li>Versioned releases with upgrade notes and tested migrations</li>
-              <li>Acceptance scripts a laboratory can run and keep as its own evidence</li>
-              <li>Spreadsheet import for clients, projects, methods, tests and limits</li>
-              <li>Editable starter rules for common methods, each naming its public source</li>
+              <li>Holding-time limits per analyte, where one method covers analytes with different limits</li>
             </ul>
           </li>
           <li id="bench-calculations">

@@ -62,6 +62,12 @@ names its source. They are starting points, not laboratory policy: the laborator
 against its methods, permits and current rules and edits them before importing. They carry no
 reporting limits, and Table II's 6 months is entered as 180 days for the laboratory to confirm.
 
+Limit: a holding-time rule belongs to a method and matrix, while Table II sets its limits per
+parameter. Where one method covers parameters with different limits (EPA 300.0 and EPA 365.1 in
+the starter files), the starter rule carries the shortest limit and its basis names the analytes
+with a longer one, so those analytes are flagged early. A laboratory that needs the longer limit
+for them records its own disposition; a limit per analyte is on the roadmap.
+
 ## Receipt corrections
 
 Use **Correct sample details** for reasoned receipt corrections: identity, collector, location,
