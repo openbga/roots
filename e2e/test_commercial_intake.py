@@ -21,6 +21,7 @@ from helpers import (
     local_input,
     make_user,
     menu_item,
+    native_select,
     pdf_pages,
     pdf_text,
     pick,
@@ -157,7 +158,9 @@ def test_planned_quote_and_coc_become_an_actual_receipt_schedule_and_labels(
     field(page, "Delivery target").fill(target)
     page.get_by_role("button", name="Change delivery target").click()
     expect(page.locator("#id_reason")).to_have_attribute("aria-invalid", "true")
-    expect(field(page, "Delivery target")).to_have_value(target)  # input preserved
+    # Input preserved: the submitted value in the server's format, and the same value as shown.
+    expect(native_select(field(page, "Delivery target"))).to_have_value(target)
+    expect(field(page, "Delivery target")).to_have_value(target.replace("T", " "))
     page.locator("#id_reason").fill("Agreed with the client at receipt")
     page.get_by_role("button", name="Change delivery target").click()
     expect(

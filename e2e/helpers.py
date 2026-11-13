@@ -34,17 +34,31 @@ def field(scope, name: str):
 
 
 def native_select(control):
-    """The <select> behind a control: itself, or the one a labelled Tom Select combobox enhances
-    (static/js/controls.js; its combobox and menu ids are "<select id>-ts-control/-dropdown")."""
-    # Resolve now and mark the element: a locator for the label would later find the combobox,
-    # and an id may repeat when a page holds two forms. Tom Select inserts its wrapper right
-    # after the element it enhances.
-    mark = control.first.evaluate(
+    """The element holding the value a form submits for a labelled control: the <select> behind
+    a Tom Select, the hidden server-format input of a date field (static/js/controls.js), or the
+    control itself. It first waits until controls.js has enhanced the field, because a labelled
+    locator finds the native element before that and the enhanced control after it: without the
+    wait the answer depends on how fast the page is (an HTMX error re-render, a slow CI runner).
+    The element is resolved now and marked, so a later locator for the label cannot drift."""
+    handle = control.first.element_handle()
+    control.page.wait_for_function(
+        """el => {
+            if (!el.isConnected || el.closest('.ts-wrapper')) return true;
+            const enhanced = el.classList.contains('tomselected');
+            if (el.matches('select:not([data-vr-native])')) return enhanced;
+            if (el.matches('input[data-vr-date]')) return Boolean(el.vrDateField);
+            if (el.matches('input[data-vr-suggest]')) return enhanced;
+            return true;
+        }""",
+        arg=handle,
+    )
+    mark = handle.evaluate(
         """el => {
             const wrapper = el.closest('.ts-wrapper');
-            const native = wrapper ? wrapper.previousElementSibling : el;
-            native.dataset.e2eNative = native.dataset.e2eNative || String(Math.random()).slice(2);
-            return native.dataset.e2eNative;
+            const target = wrapper ? wrapper.previousElementSibling
+                : el.vrDateField ? el.vrDateField.hidden : el;
+            target.dataset.e2eNative = target.dataset.e2eNative || String(Math.random()).slice(2);
+            return target.dataset.e2eNative;
         }"""
     )
     return control.page.locator(f"[data-e2e-native='{mark}']")

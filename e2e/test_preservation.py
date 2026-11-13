@@ -26,7 +26,16 @@ from pathlib import Path
 
 import pytest
 from conftest import DESKTOP, NARROW, Lab
-from helpers import field, pdf_text, pick, save_download, sign_in, sign_out, submit_fresh_batch
+from helpers import (
+    field,
+    native_select,
+    pdf_text,
+    pick,
+    save_download,
+    sign_in,
+    sign_out,
+    submit_fresh_batch,
+)
 from playwright.sync_api import Page, expect
 
 pytestmark = pytest.mark.django_db(transaction=True)
@@ -151,7 +160,7 @@ def test_preservation_rule_assessment_correction_release_and_frozen_evidence(
     pick(field(page, "Lab disposition"), label="Proceed")
     page.get_by_role("button", name="Record assessment").click()
     expect(field(page, "Assessment evidence and reason")).to_have_attribute("aria-invalid", "true")
-    expect(field(page, "Lab disposition")).to_have_value("proceed")
+    expect(native_select(field(page, "Lab disposition"))).to_have_value("proceed")
     assert not PreservationDecision.objects.exists()
     field(page, "Assessment evidence and reason").fill(PROCEED)
     page.get_by_role("button", name="Record assessment").click()
