@@ -12,7 +12,8 @@ records; it does not certify compliance or accreditation.
 ## What it covers
 
 - **Setup:** laboratory, staff roles, clients and projects, methods, analytes, tests, holding-time
-  rules, QC requirements, limits and qualifiers.
+  rules, QC requirements, limits and qualifiers. These load one record at a time or from
+  spreadsheets saved as CSV, with starter files for common methods that name their public sources.
 - **Receipt and custody:** chains of custody with several samples, containers, receipt
   inspection, holds and dispositions, custody events and reasoned corrections.
 - **Analytical work:** preparation and analytical batches, manual entry and mapped CSV/TSV
@@ -168,6 +169,13 @@ Before the first receipt:
    each method version. Creating a new method version does not copy this configuration.
 3. Have a project manager create the client and project, then receive the COC and its samples.
    Assign independent review and explicit release authority to the appropriate staff first.
+
+Steps 1 to 3 can also be loaded from spreadsheets under **Setup → Spreadsheet import**: one CSV
+file per record type, previewed row by row and saved all or nothing through the same checks as
+manual entry. The page offers starter files for common EPA, Standard Methods and SW-846 entries,
+read from 40 CFR 136.3, EPA method documents and SW-846 on the date each file states. They are
+starting points, not laboratory policy: check every row against your methods, permits and
+current rules, and edit the file before importing it.
 
 Before the first report, an administrator records the laboratory's address, contact details,
 logo and certificates under **Setup → Laboratory profile**. New reports print them; a
