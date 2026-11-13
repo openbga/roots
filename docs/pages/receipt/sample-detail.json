@@ -5,6 +5,52 @@
   ],
   "title": "Sample record",
   "purpose": "Follow one received physical sample from its collection and receipt through containers, test work, preservation decisions, custody and issued report versions.",
+  "summary": "Everything about one received sample: where it came from, how it arrived, which tests it needs, how far the work has got, and every custody step since receipt.",
+  "tasks": [
+    {
+      "title": "Decide on a sample that is on hold",
+      "steps": [
+        "Read the highlighted receipt discrepancy and the disposition note at the top.",
+        "Select [[Change disposition]], choose the new disposition and give the reason.",
+        "Nothing else can proceed while the sample is on Hold, so this is the page's main action until it is decided."
+      ]
+    },
+    {
+      "title": "Record that the sample moved",
+      "steps": [
+        "Under Record custody transfer, fill in [[To location]], [[Relinquished by]], [[Received by]], [[Occurred at]] and [[Reason]].",
+        "Select [[Record transfer]]. The new location appears, and the move is added to History; earlier events are never changed."
+      ]
+    },
+    {
+      "title": "Fix a mistake in the sample details",
+      "steps": [
+        "Select [[Correct sample details]] and open the tab you need: identity, collection, observations, requested tests or matrix.",
+        "A section that later work depends on can be locked; the tab tells you."
+      ]
+    },
+    {
+      "title": "Print labels",
+      "steps": [
+        "Select [[Labels]], choose Each container or Each sample, and set [[Copies of each]] (1 to 10).",
+        "Select [[Download PDF]] and print at actual size, one 4 × 2 inch label per page."
+      ]
+    },
+    {
+      "title": "Send a test to an external laboratory",
+      "steps": [
+        "In Requested tests, find a test shown as Not in a batch and select [[Send out]].",
+        "The submission rechecks the sample before dispatch, so the link alone does not guarantee it can go."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "The progress route under the title only summarises the statuses further down. It never decides or changes anything.",
+    "The delivery target is the date agreed for the chain of custody. It is not a holding deadline; holding deadlines are per test, with the nearest one in the header.",
+    "Once a result exists, its holding status (Met, Exceeded, Not evaluable) is frozen. It is not recalculated from today's clock.",
+    "Preservation screens the cooler temperature against each test's rule. It says nothing about the container or chemical preservation.",
+    "A custody transfer cannot be dated in the future or before the latest custody event, and a physically disposed sample cannot be transferred."
+  ],
   "sections": [
     {
       "title": "Progress route",

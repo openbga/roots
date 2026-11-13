@@ -1,17 +1,45 @@
-<article data-vr-documentation-id="{{ page_documentation.id }}">
-  <h2 class="vr-documentation-page-title" tabindex="-1">{{ page_documentation.title }}</h2>
-  <p class="vr-documentation-purpose">{{ page_documentation.purpose }}</p>
-  {% for section in page_documentation.sections %}
-  <section class="vr-documentation-section">
-    <h3>{{ section.title }}</h3>
-    {% for paragraph in section.paragraphs %}<p>{{ paragraph }}</p>{% endfor %}
-    {% if section.items %}
-    <table class="table vr-documentation-table">
-      <caption class="visually-hidden">{{ section.title }}</caption>
-      <thead><tr><th scope="col">Item</th><th scope="col">Description</th></tr></thead>
-      <tbody>{% for item in section.items %}<tr><th scope="row">{{ item.label }}</th><td>{{ item.description }}</td></tr>{% endfor %}</tbody>
-    </table>
-    {% endif %}
+{% load ui documentation %}{% comment %}
+One page's help, cloned into the Help drawer (documentation/panel.html, static/js/documentation.js).
+Order: title; summary (else purpose); when the page has the friendly layer, jump links, Common
+tasks and Good to know; then the reference, "All fields and actions", with a filter and one
+<details> per section (closed with the friendly layer, open without it so nothing is harder to
+find). Text is escaped; [[Label]] in tasks and tips becomes a label chip (the help_text filter).
+Context: page_documentation (core.page_docs).
+{% endcomment %}{% with doc=page_documentation %}
+<article class="vr-help" data-vr-documentation-id="{{ doc.id }}">
+  <h2 class="vr-help-title" tabindex="-1">{{ doc.title }}</h2>
+  <p class="vr-help-summary">{% firstof doc.summary doc.purpose %}</p>
+  {% if doc.tasks %}
+  <ul class="vr-help-jump" aria-label="On this help page">
+    <li><a href="#vr-help-tasks" data-vr-help-jump>{% icon name="list-check" %}Common tasks</a></li>
+    <li><a href="#vr-help-know" data-vr-help-jump>{% icon name="info-circle" %}Good to know</a></li>
+    <li><a href="#vr-help-ref" data-vr-help-jump>{% icon name="journal-text" %}All fields and actions</a></li>
+  </ul>
+  <section class="vr-help-section" id="vr-help-tasks" aria-labelledby="vr-help-tasks-title">
+    <h3 id="vr-help-tasks-title">{% icon name="list-check" %}Common tasks</h3>
+    {% for task in doc.tasks %}<div class="vr-help-task">
+      <h4>{{ task.title }}</h4>
+      <ol class="vr-help-steps">{% for step in task.steps %}<li>{{ step|help_text }}</li>{% endfor %}</ol>
+    </div>{% endfor %}
   </section>
-  {% endfor %}
+  <section class="vr-help-section" id="vr-help-know" aria-labelledby="vr-help-know-title">
+    <h3 id="vr-help-know-title">{% icon name="info-circle" %}Good to know</h3>
+    <ul class="vr-help-tips">{% for tip in doc.good_to_know %}<li>{% icon name="check2" %}<span>{{ tip|help_text }}</span></li>{% endfor %}</ul>
+  </section>
+  {% endif %}
+  <section class="vr-help-section" id="vr-help-ref" aria-labelledby="vr-help-ref-title" data-vr-help-reference>
+    <h3 id="vr-help-ref-title">{% icon name="journal-text" %}All fields and actions</h3>
+    <div class="vr-help-filter">{% grid_search label="Find a field or action" placeholder="Label or word" name="help-filter" id="vr-help-filter" value="" %}</div>
+    {% for section in doc.sections %}
+    <details class="vr-help-ref"{% if not doc.tasks %} open{% endif %} data-vr-help-section>
+      <summary><span>{{ section.title }}</span>{% if section.items %}<span class="vr-help-count">{{ section.items|length }} item{{ section.items|length|pluralize }}</span>{% endif %}</summary>
+      <div class="vr-help-ref-body">
+        {% for paragraph in section.paragraphs %}<p data-vr-help-text>{{ paragraph }}</p>{% endfor %}
+        {% if section.items %}<dl>{% for item in section.items %}{% fact label=item.label value=item.description %}{% endfor %}</dl>{% endif %}
+      </div>
+    </details>
+    {% endfor %}
+    <p class="vr-help-none vr-muted" data-vr-help-none hidden>No field or action matches.</p>
+  </section>
 </article>
+{% endwith %}

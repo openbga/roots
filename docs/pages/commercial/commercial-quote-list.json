@@ -5,6 +5,52 @@
   ],
   "title": "Quotes",
   "purpose": "Find client quotes, latest staff versions, decision states and prices.",
+  "summary": "Find a client quote and see where it stands: its latest version, status, total and how long it stays valid. Only project managers and admins can use quotes.",
+  "tasks": [
+    {
+      "title": "Find a quote",
+      "steps": [
+        "Type a quote number, title, client, project or the client's purchase-order reference in [[Search]].",
+        "Optionally pick a [[Status]] or a [[Client]], then select [[Apply]].",
+        "Select the QT number to open the quote."
+      ]
+    },
+    {
+      "title": "Create a quote",
+      "steps": [
+        "Select [[New quote]].",
+        "Choose the client, optionally a project, and enter a title.",
+        "Select [[Create quote]]. The quote gets its QT number as draft version 1, and you enter prices and terms next. The client cannot see a draft."
+      ]
+    },
+    {
+      "title": "Issue a quote to the client",
+      "steps": [
+        "Open the quote and check the document.",
+        "Select [[Issue version]]. It needs at least one line and a valid-until date of today or later.",
+        "Issuing freezes the lines, prices, total, scope and terms of that version."
+      ]
+    },
+    {
+      "title": "Find quotes that have expired",
+      "steps": [
+        "Set [[Status]] to Expired and select [[Apply]]. This lists issued quotes whose valid-until date has passed."
+      ]
+    },
+    {
+      "title": "Show more columns",
+      "steps": [
+        "Select [[Columns]] and switch on Project, Issued or Client reference.",
+        "Your choice is saved for your account on this table."
+      ]
+    }
+  ],
+  "good_to_know": [
+    "Expired is worked out from the valid-until date. Nobody records it as a decision.",
+    "Title, Version and Total show the latest version, even an unissued draft. The client keeps seeing the last issued version until you issue the new one.",
+    "Hiding, showing or moving columns never changes any quote.",
+    "There is no bulk action: open each quote to issue, revise or withdraw it."
+  ],
   "sections": [
     {
       "title": "Access",
@@ -131,6 +177,8 @@
     "static/js/grid.js",
     "commercial/quotes.py",
     "commercial/templates/commercial/quote_list.html",
-    "commercial/templates/commercial/_quote_status.html"
+    "commercial/templates/commercial/_quote_status.html",
+    "docs/pages/commercial/commercial-quote-create.json",
+    "docs/pages/commercial/commercial-quote-detail.json"
   ]
 }

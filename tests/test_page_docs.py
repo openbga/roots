@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import pytest
+from django.core.exceptions import ImproperlyConfigured
 from django.template.loader import render_to_string
 from django.test import RequestFactory
 from django.urls import URLResolver, get_resolver, resolve
@@ -151,7 +152,8 @@ def test_documentation_is_escaped_and_evidence_is_not_exposed():
         ],
     }
     html = render_to_string("documentation/content.html", {"page_documentation": content})
-    for unsafe in ("<script>", "<img", "<iframe>", "<svg", "private-evidence-path"):
+    # The drawer's own icons are <svg class="vr-icon">; the injected one must stay text.
+    for unsafe in ("<script>", "<img", "<iframe>", "<svg onload", "private-evidence-path"):
         assert unsafe not in html
     assert "&lt;script&gt;" in html
 
@@ -247,3 +249,112 @@ def test_account_and_administration_screens_include_help(client, staff):
     assert response.context["page_documentation"]["id"] == "admin-users"
     assert b"data-vr-documentation-toggle" in response.content
     assert b'id="vr-documentation"' in response.content
+
+
+# ---------------------------------------------------------------- the friendly layer
+
+FRIENDLY = {
+    "summary": "Find a quote and see where it stands.",
+    "tasks": [
+        {"title": "Find a quote", "steps": ["Type a number in [[Search]].", "Select it."]},
+        {"title": "Start a quote", "steps": ["Select [[New quote]]."]},
+    ],
+    "good_to_know": ["One.", "Two.", "Three."],
+}
+
+
+def friendly_document(**changes):
+    document = {
+        "id": "friendly",
+        "title": "Quotes",
+        "purpose": "Quotes.",
+        "routes": ["friendly"],
+        "sources": ["synthetic"],
+        "sections": [{"title": "Fields", "items": [{"label": "Search", "description": "Finds."}]}],
+        **FRIENDLY,
+    }
+    document.update(changes)
+    return document
+
+
+def check(document):
+    from core.page_docs import check_friendly
+
+    check_friendly("synthetic.json", document)
+
+
+def test_friendly_layer_is_optional_but_all_or_none():
+    check(friendly_document())
+    plain = friendly_document()
+    for key in FRIENDLY:
+        del plain[key]
+    check(plain)  # no layer at all is fine
+    for key in FRIENDLY:
+        partial = friendly_document()
+        del partial[key]
+        with pytest.raises(ImproperlyConfigured, match="come together"):
+            check(partial)
+
+
+@pytest.mark.parametrize(
+    "changes, message",
+    [
+        ({"summary": "x" * 241}, "summary"),
+        ({"summary": "Select [[Apply]]."}, "summary is plain text"),
+        ({"tasks": FRIENDLY["tasks"][:1]}, "tasks needs 2-5"),
+        ({"tasks": FRIENDLY["tasks"] * 3}, "tasks needs 2-5"),
+        ({"tasks": [{"title": "x" * 81, "steps": ["a"]}, FRIENDLY["tasks"][1]]}, "title"),
+        ({"tasks": [{"title": "Do", "steps": []}, FRIENDLY["tasks"][1]]}, "1-4 steps"),
+        ({"tasks": [{"title": "Do", "steps": ["a"] * 5}, FRIENDLY["tasks"][1]]}, "1-4 steps"),
+        ({"tasks": [{"title": "Do", "steps": ["x" * 201]}, FRIENDLY["tasks"][1]]}, "over 200"),
+        ({"tasks": [{"title": "Do", "steps": [" "]}, FRIENDLY["tasks"][1]]}, "non-blank"),
+        ({"good_to_know": ["One.", "Two."]}, "good_to_know needs 3-5"),
+        ({"good_to_know": ["a"] * 6}, "good_to_know needs 3-5"),
+        ({"good_to_know": ["One.", "Two.", "x" * 201]}, "over 200"),
+        ({"good_to_know": ["Open [[Columns.", "Two.", "Three."]}, "closing"),
+        ({"good_to_know": ["[[a [[b]] c]]", "Two.", "Three."]}, "closing"),
+        ({"good_to_know": ["Stray ]] here.", "Two.", "Three."]}, "closing"),
+    ],
+)
+def test_friendly_layer_limits_and_labels_are_enforced(changes, message):
+    with pytest.raises(ImproperlyConfigured, match=message):
+        check(friendly_document(**changes))
+
+
+def test_the_drawer_receives_the_friendly_layer_but_not_evidence():
+    from core.page_docs import documentation_for_route
+
+    help_ = documentation_for_route("commercial:quote-list")
+    assert help_["summary"] and help_["tasks"] and help_["good_to_know"]
+    assert "sources" not in help_ and "routes" not in help_
+
+
+def test_labels_render_as_chips_after_escaping():
+    from core.templatetags.documentation import help_text
+
+    assert help_text("Select [[New quote]].") == 'Select <span class="vr-help-ui">New quote</span>.'
+    assert help_text("<b>[[x]]</b>") == '&lt;b&gt;<span class="vr-help-ui">x</span>&lt;/b&gt;'
+    assert help_text("Use [[<i>]].") == 'Use <span class="vr-help-ui">&lt;i&gt;</span>.'
+    assert help_text("no markers") == "no markers"
+
+
+def test_friendly_page_renders_summary_tasks_tips_and_collapsed_reference():
+    html = render_to_string(
+        "documentation/content.html", {"page_documentation": friendly_document()}
+    )
+    assert "Find a quote and see where it stands." in html
+    assert 'href="#vr-help-tasks"' in html and 'id="vr-help-know"' in html
+    assert html.count('<span class="vr-help-ui">') == 2
+    assert '<details class="vr-help-ref" data-vr-help-section>' in html  # closed
+    assert 'id="vr-help-filter"' in html
+
+
+def test_page_without_the_layer_shows_purpose_and_open_reference():
+    document = friendly_document()
+    for key in FRIENDLY:
+        del document[key]
+    html = render_to_string("documentation/content.html", {"page_documentation": document})
+    assert '<p class="vr-help-summary">Quotes.</p>' in html
+    assert "vr-help-jump" not in html and "vr-help-tasks" not in html
+    assert '<details class="vr-help-ref" open data-vr-help-section>' in html
+    assert "<dt>Search</dt>" in html

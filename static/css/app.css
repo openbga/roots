@@ -185,6 +185,16 @@
   --vr-shadow-scroll-bottom: 0 -6px 14px -8px rgba(28, 34, 24, 0.22);
   --vr-shadow-scroll-side: 6px 0 14px -8px rgba(28, 34, 24, 0.22);
   --vr-backdrop: rgba(28, 34, 24, 0.5);
+
+  /* Help drawer (static/css/documentation.css): its surface, a soft left shadow instead of a border,
+     the numbered-step badge, the good-to-know fill, label chips and filter matches. */
+  --vr-help-bg: #fbfbf8;
+  --vr-help-step: #2f5f3a;
+  --vr-on-help-step: #f5f8f2;
+  --vr-help-tip-bg: #eef3ea;
+  --vr-help-label-bg: #eceee7;
+  --vr-help-mark: #f3e3a6;
+  --vr-help-shadow: -12px 0 32px rgba(28, 34, 24, 0.09), -1px 0 0 rgba(28, 34, 24, 0.06);
 }
 
 /* Evergreen, dark: forest night. Composed, not inverted: deep green ground, the shell darker than
@@ -299,6 +309,14 @@
   --vr-shadow-scroll-bottom: 0 -6px 14px -8px rgba(0, 0, 0, 0.55);
   --vr-shadow-scroll-side: 6px 0 14px -8px rgba(0, 0, 0, 0.55);
   --vr-backdrop: rgba(4, 8, 6, 0.6);
+
+  --vr-help-bg: #18241c;
+  --vr-help-step: #86c993;
+  --vr-on-help-step: #0f2214;
+  --vr-help-tip-bg: #1f3126;
+  --vr-help-label-bg: #26352b;
+  --vr-help-mark: #5a4b1c;
+  --vr-help-shadow: -14px 0 36px rgba(0, 0, 0, 0.45), -1px 0 0 rgba(255, 255, 255, 0.04);
 }
 
 :root {

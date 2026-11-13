@@ -196,7 +196,7 @@ def test_admin_help_follows_index_users_form_and_resizes(page: Page, tmp_path):
     page.locator("#result_list").get_by_role("link", name=owner.username, exact=True).click()
     expect(panel.get_by_role("heading", level=2)).to_have_text("User account")
     assert help_id(page) != users_help
-    expect(panel.get_by_role("rowheader", name="User permissions", exact=True)).to_be_visible()
+    expect(panel.get_by_role("term").filter(has_text="User permissions").first).to_be_visible()
     separator = panel.get_by_role("separator", name="Documentation panel width")
     separator.focus()
     separator.press("Home")

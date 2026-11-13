@@ -10,7 +10,7 @@
     var baseSource = document.querySelector("template[data-vr-documentation-source]");
     var formDialog = document.getElementById("vr-form-dialog");
     var storageKey = "vr-documentation:" + (panel.dataset.vrUser || "anonymous");
-    var width = 400;
+    var width = 440;
     var open = false;
     var inForm = false;
     var lastTrigger = null;
@@ -158,6 +158,76 @@
         document.documentElement.style.setProperty("--vr-documentation-top", topbar.getBoundingClientRect().height + "px");
       }).observe(topbar);
     }
+    // Jump links scroll the drawer, never the page or its address.
+    destination.addEventListener("click", function (event) {
+      var link = event.target.closest("[data-vr-help-jump]");
+      if (!link) { return; }
+      var target = destination.querySelector(link.getAttribute("href"));
+      if (!target) { return; }
+      event.preventDefault();
+      var heading = target.querySelector("h3") || target;
+      heading.setAttribute("tabindex", "-1");
+      target.scrollIntoView({ block: "start" });
+      heading.focus({ preventScroll: true });
+    });
+
+    // "Find a field or action": hides reference items that don't match, opens the sections that
+    // do, and marks the matches. Built from text nodes only; help text never becomes markup.
+    var originals = new WeakMap();
+    function plain(element) {
+      if (!originals.has(element)) { originals.set(element, element.textContent); }
+      return originals.get(element);
+    }
+    function mark(element, query) {
+      var text = plain(element);
+      element.replaceChildren();
+      if (!query) { element.append(text); return false; }
+      var lower = text.toLowerCase();
+      var at = 0;
+      var found = false;
+      var index = lower.indexOf(query);
+      while (index !== -1) {
+        found = true;
+        element.append(text.slice(at, index));
+        var hit = document.createElement("mark");
+        hit.textContent = text.slice(index, index + query.length);
+        element.append(hit);
+        at = index + query.length;
+        index = lower.indexOf(query, at);
+      }
+      element.append(text.slice(at));
+      return found;
+    }
+    destination.addEventListener("input", function (event) {
+      if (event.target.id !== "vr-help-filter") { return; }
+      var query = event.target.value.trim().toLowerCase();
+      var reference = destination.querySelector("[data-vr-help-reference]");
+      var any = false;
+      reference.querySelectorAll("[data-vr-help-section]").forEach(function (section) {
+        if (!section.hasAttribute("data-vr-help-default")) {
+          section.setAttribute("data-vr-help-default", section.open ? "open" : "closed");
+        }
+        var matches = 0;
+        section.querySelectorAll("[data-vr-help-text]").forEach(function (paragraph) {
+          var hit = mark(paragraph, query);
+          paragraph.hidden = Boolean(query) && !hit;
+          if (hit) { matches += 1; }
+        });
+        section.querySelectorAll("dl > div").forEach(function (item) {
+          var hits = Array.prototype.map.call(item.querySelectorAll("dt, dd"), function (part) {
+            return mark(part, query);
+          });
+          var hit = hits.indexOf(true) !== -1;
+          item.hidden = Boolean(query) && !hit;
+          if (hit) { matches += 1; }
+        });
+        section.hidden = Boolean(query) && !matches;
+        section.open = query ? matches > 0 : section.getAttribute("data-vr-help-default") === "open";
+        if (matches) { any = true; }
+      });
+      reference.querySelector("[data-vr-help-none]").hidden = !query || any;
+    });
+
     refresh();
     render();
   }
