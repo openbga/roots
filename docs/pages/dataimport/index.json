@@ -1,0 +1,83 @@
+{
+  "id": "dataimport-index",
+  "routes": [
+    "dataimport:index"
+  ],
+  "title": "Spreadsheet import",
+  "purpose": "Load setup records kept in spreadsheets (clients, projects, analytes, methods, tests, QC requirements, holding-time rules, QC limits and preservation rules) one CSV file per record type, each checked row by row before anything is saved.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "Project managers import clients and projects. Administrators import every record type: the admin role includes project manager work and is the only role that changes the catalog and QC configuration. Other staff and client portal accounts are refused this page. The page lists only the record types your role may import, and each import page, template and starter download checks the same role on the server."
+      ]
+    },
+    {
+      "title": "Record types",
+      "paragraphs": [
+        "Import in the order shown. A row may refer only to records that already exist, and an import never creates anything in another record type: analytes and methods come before tests; tests before QC limits and preservation rules; methods before QC requirements and holding-time rules; clients before projects."
+      ],
+      "items": [
+        {
+          "label": "Order",
+          "description": "Position in the import order."
+        },
+        {
+          "label": "Record type",
+          "description": "Opens the import page for that record type, where you upload a file, read the preview and import it."
+        },
+        {
+          "label": "Area",
+          "description": "Where the records appear afterwards: Intake (Clients, Projects), Catalog, or QC configuration."
+        },
+        {
+          "label": "Needs first",
+          "description": "The records that must exist before this file can refer to them."
+        },
+        {
+          "label": "Template",
+          "description": "Downloads a CSV file holding the header row for that record type. The import page lists every column with whether it is required, its allowed values or format and its meaning."
+        }
+      ]
+    },
+    {
+      "title": "Files and limits",
+      "paragraphs": [
+        "Save each sheet as CSV (UTF-8), comma separated, with the header row first; a byte-order mark is allowed. Excel workbooks are not read, because a workbook hands numbers over as binary floating-point values and limits must stay exact decimals. Each file holds one record type, up to 1024 KiB and 2000 rows. Every row is saved through the same service as manual entry, with the same checks, locks and history. Any error blocks the whole file, and nothing is saved until you confirm the preview. A file that changes existing records needs one reason, recorded with the file name and SHA-256 digest on every changed record."
+      ]
+    },
+    {
+      "title": "Starter files",
+      "paragraphs": [
+        "Starter files are CSV files in the import format holding common method, test and rule entries read from public sources on the stated date. They are starting points, not the laboratory's policy and not a compliance claim: check every row against your methods, permits and current rules, edit it in a spreadsheet, then import it on the matching record type's page. Starter tests carry no reporting limit; those are the laboratory's own. Nothing from a starter file is applied until you import it.",
+        "When the release has no starter files, or none for the record types your role imports, the section says so."
+      ],
+      "items": [
+        {
+          "label": "File",
+          "description": "Downloads the starter file, with a byte-order mark so spreadsheet programs read it as UTF-8."
+        },
+        {
+          "label": "Record type",
+          "description": "The import page that accepts this file."
+        },
+        {
+          "label": "Contains",
+          "description": "What the file holds."
+        },
+        {
+          "label": "Sources and caveats",
+          "description": "Open Sources for the public sources the values were read from and the date they were read; each rule row's basis also names its source and locator. Open Caveats for the file's known limits: where sources disagree, what was left out and what the laboratory must decide."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "dataimport/views.py",
+    "dataimport/importing.py",
+    "dataimport/starter.py",
+    "dataimport/templates/dataimport/index.html",
+    "dataimport/tests/test_import.py",
+    "core/templatetags/navigation.py"
+  ]
+}

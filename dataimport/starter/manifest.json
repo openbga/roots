@@ -1,0 +1,249 @@
+{
+  "read_on": "2026-11-12",
+  "caveats": [
+    "Starting points read from public sources on 2026-11-12. The laboratory checks every row against its methods, permits and current rules before use, and edits what differs; nothing here is a compliance claim.",
+    "40 CFR 136.3 Tables IB and II apply to Clean Water Act monitoring of aqueous samples. They are not drinking water rules (40 CFR part 141 was not read) and set no soil holding time for the inorganic parameters in this set. A state, permit, program or method can be stricter or different."
+  ],
+  "files": [
+    {
+      "file": "starter-analytes.csv",
+      "record_type": "analytes",
+      "contains": "45 analytes named by the methods for the starter tests, with CAS numbers where the method gives one.",
+      "sources": [
+        {
+          "title": "Method 200.7, Revision 4.4: Determination of Metals and Trace Elements in Water and Wastes by Inductively Coupled Plasma-Atomic Emission Spectrometry",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_200-7_rev_4-4_1994.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "Method 300.0: Determination of Inorganic Anions by Ion Chromatography",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_300-0_rev_2-1_1993.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "40 CFR 136.3, Tables IB and II with notes (eCFR, data as of 2026-11-10; section amended 2024-06-17)",
+          "url": "https://www.ecfr.gov/api/versioner/v1/full/2026-11-10/title-40.xml?part=136&section=136.3",
+          "read_on": "2026-11-12"
+        }
+      ],
+      "caveats": [
+        "One analyte per Table IB parameter, named as the first method in the dataset names it, with the basis Table IB gives (as N, as SO4) added where that name lacks it: Nitrate (EPA 300.0) is entered as Nitrate (as N); Nitrite (EPA 300.0) is entered as Nitrite (as N); Ortho-phosphate (as P) (EPA 365.1) is entered as Ortho-Phosphate-P; Phosphorus, Total (EPA 365.1) is entered as Phosphorus; Sulfate (EPA 300.0) is entered as Sulfate (as SO4)."
+      ]
+    },
+    {
+      "file": "starter-methods.csv",
+      "record_type": "methods",
+      "contains": "19 method versions: 10 EPA methods and 6 Standard Methods listed in 40 CFR 136.3 Table IB, and 3 SW-846 methods.",
+      "sources": [
+        {
+          "title": "40 CFR 136.3, Tables IB and II with notes (eCFR, data as of 2026-11-10; section amended 2024-06-17)",
+          "url": "https://www.ecfr.gov/api/versioner/v1/full/2026-11-10/title-40.xml?part=136&section=136.3",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "Method 200.7, Revision 4.4: Determination of Metals and Trace Elements in Water and Wastes by Inductively Coupled Plasma-Atomic Emission Spectrometry",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_200-7_rev_4-4_1994.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "Method 200.8, Revision 5.4: Determination of Trace Elements in Waters and Wastes by Inductively Coupled Plasma – Mass Spectrometry",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_200-8_rev_5-4_1994.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "Method 245.1, Revision 3.0: Determination of Mercury in Water by Cold Vapor Atomic Absorption Spectrometry",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_245-1_rev_3_1994.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "Method 300.0: Determination of Inorganic Anions by Ion Chromatography",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_300-0_rev_2-1_1993.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "Method 350.1, Revision 2.0: Determination of Ammonia Nitrogen by Semi-Automated Colorimetry",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_350-1_1993.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "Method 351.2, Revision 2.0: Determination of Total Kjeldahl Nitrogen by Semi-Automated Colorimetry",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_351-2_1993.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "Method 353.2, Revision 2.0: Determination of Nitrate-Nitrite Nitrogen by Automated Colorimetry",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_353-2_1993.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "Method 365.1, Revision 2.0: Determination of Phosphorus by Semi-Automated Colorimetry",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_365-1_1993.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "Method 410.4, Revision 2.0: The Determination of Chemical Oxygen Demand by Semi-Automated Colorimetry",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_410-4_1993.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "Method 180.1: Determination of Turbidity by Nephelometry",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_180-1_1993.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "METHOD 6010D INDUCTIVELY COUPLED PLASMA—OPTICAL EMISSION SPECTROMETRY",
+          "url": "https://www.epa.gov/sites/default/files/2015-12/documents/6010d.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "METHOD 6020B INDUCTIVELY COUPLED PLASMA—MASS SPECTROMETRY",
+          "url": "https://www.epa.gov/sites/default/files/2015-12/documents/6020b.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "METHOD 7471B MERCURY IN SOLID OR SEMISOLID WASTE (MANUAL COLD-VAPOR TECHNIQUE)",
+          "url": "https://www.epa.gov/sites/default/files/2015-12/documents/7471b.pdf",
+          "read_on": "2026-11-12"
+        }
+      ],
+      "caveats": [
+        "Standard Methods titles are the Table IB parameter and methodology wording; the Standard Methods text was not consulted. Versions are the years Table IB gives.",
+        "Technique is filled only where the source wording names one of the application's techniques; otherwise it is blank."
+      ]
+    },
+    {
+      "file": "starter-tests.csv",
+      "record_type": "tests",
+      "contains": "132 water and wastewater tests: each method with the Table IB parameters it is listed for.",
+      "sources": [
+        {
+          "title": "40 CFR 136.3, Tables IB and II with notes (eCFR, data as of 2026-11-10; section amended 2024-06-17)",
+          "url": "https://www.ecfr.gov/api/versioner/v1/full/2026-11-10/title-40.xml?part=136&section=136.3",
+          "read_on": "2026-11-12"
+        }
+      ],
+      "caveats": [
+        "Units are the ones 40 CFR 136.3 Table IB names for each parameter (mg/L, pH units, NTU, micromhos/cm at 25 °C). A laboratory reporting in another unit (for example µg/L for EPA 200.8) edits the unit before importing; values are never converted.",
+        "No reporting limits: those are the laboratory's own.",
+        "These are Table IB \"Total\" parameters where Table IB says so (metals, fluoride, Kjeldahl nitrogen, total phosphorus). Where Table IB lists a method after a digestion or distillation \"followed by\" the method, Table IB footnote 58 makes that step required before analysis (\"Unless otherwise stated, if the language of this table specifies a sample digestion and/or distillation “followed by” analysis with a method, approved digestion and/or distillation are required prior to analysis.\"). The starter set carries no preparation methods or preparation requirements; add them for the laboratory's procedure.",
+        "Tests are water and wastewater only. No source read gives a unit for a soil test, so the file has no soil tests (left out: SW-846 7471B Mercury (soil)); the SW-846 methods are in the methods file and their soil holding-time rules in the holding-time file.",
+        "Left out because the application keeps one collection-to-analysis limit per method and matrix and their Table II limit differs from the rest of the method's tests: EPA 200.7 50. Phosphorus—Total; EPA 353.2 40. Nitrite (as N). Table IB lists EPA 200.7 for total phosphorus and EPA 353.2 for nitrite; add them with their own method entry if the laboratory needs them.",
+        "Not included in this starter set: EPA 200.7 Boron (10. Boron—Total, mg/L); EPA 200.7 Silica (61. Silica—Dissolved, mg/L).",
+        "Table IB lists EPA 200.8 for boron, calcium, gold, iron, magnesium, potassium, silica, sodium, tin and titanium, which the method's scope does not name; those tests are left out.",
+        "One analyte per Table IB parameter, named as the first method in the dataset names it, with the basis Table IB gives (as N, as SO4) added where that name lacks it: Nitrate (EPA 300.0) is entered as Nitrate (as N); Nitrite (EPA 300.0) is entered as Nitrite (as N); Ortho-phosphate (as P) (EPA 365.1) is entered as Ortho-Phosphate-P; Phosphorus, Total (EPA 365.1) is entered as Phosphorus; Sulfate (EPA 300.0) is entered as Sulfate (as SO4)."
+      ]
+    },
+    {
+      "file": "starter-qc-requirements.csv",
+      "record_type": "qc-requirements",
+      "contains": "8 QC frequencies for laboratory fortified blanks and matrices from EPA 200.7, 200.8, 245.1 and 300.0.",
+      "sources": [
+        {
+          "title": "Method 200.7, Revision 4.4: Determination of Metals and Trace Elements in Water and Wastes by Inductively Coupled Plasma-Atomic Emission Spectrometry",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_200-7_rev_4-4_1994.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "Method 200.8, Revision 5.4: Determination of Trace Elements in Waters and Wastes by Inductively Coupled Plasma – Mass Spectrometry",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_200-8_rev_5-4_1994.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "Method 245.1, Revision 3.0: Determination of Mercury in Water by Cold Vapor Atomic Absorption Spectrometry",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_245-1_rev_3_1994.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "Method 300.0: Determination of Inorganic Anions by Ion Chromatography",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_300-0_rev_2-1_1993.pdf",
+          "read_on": "2026-11-12"
+        }
+      ],
+      "caveats": [
+        "The methods say laboratory fortified blank (LFB) and laboratory fortified matrix (LFM); they are entered as the Laboratory control sample and Matrix spike QC types.",
+        "The matrix-spike windows are conditional in the methods: EPA 200.7 also allows a 3-sigma range from its Table 9, and EPA 200.7 and 200.8 need no recovery when the spike is less than 30% of background; EPA 300.0 gives interim limits (80-120% Method A, 75-125% Method B) until 20-30 analyses are available and calculates no recovery when the spike is less than 25% of background. Each basis quotes these; the application applies the window as entered.",
+        "EPA 200.7 matrix-spike limits are left out for Calcium, Magnesium, Sodium: the Section 9.4.2 note says fortifying them at the LFB concentration may be of little use and recommends the dilution test of Section 9.5.2 instead. The EPA 200.7 silver limits quote Section 1.7 on low silver recoveries without digestion.",
+        "EPA 300.0 limits are left out for Nitrate-nitrite (as N): the method fortifies and lists the individual anions, not their sum.",
+        "Left out because they need a laboratory decision: Interim recovery limits until laboratory data are available (Method A 80-120%, Method B 75-125%) (EPA 300.0 9.4.3); Glucose-glutamic acid check acceptance criterion for BOD5 (SM 5210 B 40 CFR 136.3 Table IB note 85); method blank, calibration and precision criteria were not read."
+      ]
+    },
+    {
+      "file": "starter-holding-rules.csv",
+      "record_type": "holding-rules",
+      "contains": "35 collection-to-analysis holding-time rules: one per method and matrix.",
+      "sources": [
+        {
+          "title": "40 CFR 136.3, Tables IB and II with notes (eCFR, data as of 2026-11-10; section amended 2024-06-17)",
+          "url": "https://www.ecfr.gov/api/versioner/v1/full/2026-11-10/title-40.xml?part=136&section=136.3",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "SW-846 Chapter Three, Inorganic Analytes (Update VI)",
+          "url": "https://www.epa.gov/sites/default/files/2019-06/documents/chapter_three_update_vi_12-11-2018.pdf",
+          "read_on": "2026-11-12"
+        }
+      ],
+      "caveats": [
+        "One holding-time rule per method and matrix. Where a method's starter tests have different Table II limits, the rule uses the shortest one and its basis names the tests with a longer limit (EPA 300.0: nitrate, nitrite and orthophosphate 48 hours, the other anions 28 days; EPA 365.1: orthophosphate 48 hours, total phosphorus 28 days). Split or edit the rule if the laboratory runs them separately.",
+        "Table II and SW-846 give 6 months for metals. The application stores a fixed duration, so 6 months is entered as 180 days (4320 hours); the laboratory should confirm that convention.",
+        "Table II footnote 4 starts the clock at collection for a grab sample, at the end of collection for an automated composite and at the last grab for grabs composited in the field or laboratory; each Table II rule's basis quotes it.",
+        "Orthophosphate's \"Filter within 15 minutes\" is not a collection-to-analysis limit: it is in the preservation rule's other requirements, not in a holding rule.",
+        "Soil rules come from SW-846 Chapter Three Table 3-2, which calls itself guidance only (note a). The Mercury (CVAFS) row of Table II is left out: no CVAFS method is in the set.",
+        "SW-846 Table 3-2 differs from Table II in several aqueous rows, for example nitrate, pH, specific conductance, chloride and fluoride; its aqueous rows were not used."
+      ]
+    },
+    {
+      "file": "starter-qc-limits.csv",
+      "record_type": "qc-limits",
+      "contains": "198 recovery limits for laboratory fortified blanks and matrices for the starter tests of EPA 200.7, 200.8, 245.1 and 300.0, except those named in the caveats.",
+      "sources": [
+        {
+          "title": "Method 200.7, Revision 4.4: Determination of Metals and Trace Elements in Water and Wastes by Inductively Coupled Plasma-Atomic Emission Spectrometry",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_200-7_rev_4-4_1994.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "Method 200.8, Revision 5.4: Determination of Trace Elements in Waters and Wastes by Inductively Coupled Plasma – Mass Spectrometry",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_200-8_rev_5-4_1994.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "Method 245.1, Revision 3.0: Determination of Mercury in Water by Cold Vapor Atomic Absorption Spectrometry",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_245-1_rev_3_1994.pdf",
+          "read_on": "2026-11-12"
+        },
+        {
+          "title": "Method 300.0: Determination of Inorganic Anions by Ion Chromatography",
+          "url": "https://www.epa.gov/sites/default/files/2015-08/documents/method_300-0_rev_2-1_1993.pdf",
+          "read_on": "2026-11-12"
+        }
+      ],
+      "caveats": [
+        "The methods say laboratory fortified blank (LFB) and laboratory fortified matrix (LFM); they are entered as the Laboratory control sample and Matrix spike QC types.",
+        "The matrix-spike windows are conditional in the methods: EPA 200.7 also allows a 3-sigma range from its Table 9, and EPA 200.7 and 200.8 need no recovery when the spike is less than 30% of background; EPA 300.0 gives interim limits (80-120% Method A, 75-125% Method B) until 20-30 analyses are available and calculates no recovery when the spike is less than 25% of background. Each basis quotes these; the application applies the window as entered.",
+        "EPA 200.7 matrix-spike limits are left out for Calcium, Magnesium, Sodium: the Section 9.4.2 note says fortifying them at the LFB concentration may be of little use and recommends the dilution test of Section 9.5.2 instead. The EPA 200.7 silver limits quote Section 1.7 on low silver recoveries without digestion.",
+        "EPA 300.0 limits are left out for Nitrate-nitrite (as N): the method fortifies and lists the individual anions, not their sum.",
+        "Left out because they need a laboratory decision: Interim recovery limits until laboratory data are available (Method A 80-120%, Method B 75-125%) (EPA 300.0 9.4.3); Glucose-glutamic acid check acceptance criterion for BOD5 (SM 5210 B 40 CFR 136.3 Table IB note 85); method blank, calibration and precision criteria were not read."
+      ]
+    },
+    {
+      "file": "starter-preservation-rules.csv",
+      "record_type": "preservation-rules",
+      "contains": "132 preservation rules, one per starter test, from Table II.",
+      "sources": [
+        {
+          "title": "40 CFR 136.3, Tables IB and II with notes (eCFR, data as of 2026-11-10; section amended 2024-06-17)",
+          "url": "https://www.ecfr.gov/api/versioner/v1/full/2026-11-10/title-40.xml?part=136&section=136.3",
+          "read_on": "2026-11-12"
+        }
+      ],
+      "caveats": [
+        "Method documents say cool to 4 °C where Table II says ≤6 °C; the rules follow Table II. Footnote 18's wording, quoted in other requirements, is as the eCFR text gives it.",
+        "EPA 365.1 (Sections 8.2 and 8.3) gives preservation with H2SO4, cooling to 4 °C and 28 days for all forms of phosphorus, where Table II gives filter within 15 minutes and analyze within 48 hours for orthophosphate; the rules follow Table II.",
+        "The eCFR sets the digits of chemical formulas as subscripts; they are written here in plain text (H2SO4, HNO3).",
+        "Temperature screening uses only the upper bound of 6 °C; the not-frozen condition is a manual check described in other requirements.",
+        "Metals and mercury rules carry Table II footnote 7 (dissolved metals filtered within 15 minutes, before preservatives) in other requirements; the starter tests are total, not dissolved, parameters."
+      ]
+    }
+  ]
+}

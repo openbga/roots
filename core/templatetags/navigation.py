@@ -324,6 +324,13 @@ STAFF_NAV = (
         "file-earmark-arrow-up",
         ("analytical:import-profile-create", "analytical:import-profile-edit"),
     ),
+    NavItem(
+        "spreadsheet-import",
+        "Spreadsheet import",
+        "dataimport:index",
+        "inbox",
+        ("dataimport:upload",),
+    ),
     NavItem("record-retention", "Record retention", "record-retention", "lock"),
     NavItem(
         "lab-profile",
@@ -400,6 +407,7 @@ STAFF_SECTIONS = (
             "catalog",
             "qc-config",
             "import-mappings",
+            "spreadsheet-import",
             "lab-profile",
             "record-retention",
             "announcements",
@@ -434,6 +442,8 @@ STAFF_MENU_ROLES = {
     "catalog": ("admin",),
     "qc-config": ("admin",),
     "import-mappings": ("analyst",),
+    # Clients and projects for project managers; catalog and QC configuration for admin.
+    "spreadsheet-import": ("project_manager", "admin"),
     "lab-profile": ("admin",),  # other staff read it from the report pages' certificate notice
     "record-retention": ("admin",),
     "announcements": ("admin",),

@@ -610,3 +610,25 @@ def test_lists_filter_by_technique_reference_and_analyte_group(client, analyst, 
     assert b"Metals" in client.get(reverse("catalog:analyte-list")).content
     bad = client.get(reverse("catalog:method-list"), {"technique": "bogus"})
     assert bad.context["page_obj"].paginator.count == 0 and bad.context["filter_form"].errors
+
+
+def test_new_tests_need_an_active_method_version_but_existing_ones_stay_editable(admin_user):
+    retired = Method.objects.create(code="X", version="1", title="Retired", is_active=False)
+    active = Method.objects.create(code="X", version="2", title="Current")
+    analyte = Analyte.objects.create(name="Inactive-method analyte")
+    with pytest.raises(ValidationError) as refused:
+        services.save_test_definition(
+            actor=admin_user,
+            instance=TestDefinition(method=retired, analyte=analyte, matrix="water", unit="mg/L"),
+        )
+    assert "inactive" in refused.value.message_dict["method"][0]
+    existing = TestDefinition.objects.create(
+        method=retired, analyte=analyte, matrix="soil", unit="mg/kg"
+    )
+    existing.is_active = False  # editing a test on a retired version stays allowed
+    services.save_test_definition(actor=admin_user, instance=existing, reason="Retire")
+    existing.method = active  # moving to an active version is fine, back to a retired one is not
+    services.save_test_definition(actor=admin_user, instance=existing, reason="Move")
+    existing.method = retired
+    with pytest.raises(ValidationError):
+        services.save_test_definition(actor=admin_user, instance=existing, reason="Back")

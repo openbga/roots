@@ -1,0 +1,203 @@
+{
+  "id": "dataimport-upload-clients",
+  "routes": [
+    "dataimport:upload"
+  ],
+  "match": {
+    "kind": "clients"
+  },
+  "title": "Import clients",
+  "purpose": "Create or change clients from one CSV file: check every row in a preview, then save all rows or none.",
+  "sections": [
+    {
+      "title": "Access",
+      "paragraphs": [
+        "Clients can be imported by project managers and administrators (the admin role includes project manager work), the same roles that may create and change them by hand. Every row is saved through the same service as manual entry, which checks the role again. Other staff and client portal accounts are refused this page, its template and its import, whatever links they see."
+      ]
+    },
+    {
+      "title": "Upload",
+      "items": [
+        {
+          "label": "CSV file (UTF-8)",
+          "description": "Required. Save the sheet as CSV (UTF-8): comma separated, standard quoting, a leading byte-order mark allowed. The first line is the header; no title rows above it. Up to 1024 KiB and 2000 nonblank data rows; blank lines are ignored. Excel workbooks are not read, because a workbook hands numbers over as binary floating-point values and limits must stay exact decimals."
+        },
+        {
+          "label": "Header",
+          "description": "Column names are matched after trimming spaces and ignoring case. An unknown, unnamed or duplicate column, or a missing key column, blocks the whole file with a message naming it. Data columns may be left out; see How rows match records."
+        },
+        {
+          "label": "clients-template.csv",
+          "description": "Downloads a file holding only the header row, with a byte-order mark so spreadsheet programs read it as UTF-8. Add one row per record below it."
+        },
+        {
+          "label": "Check file",
+          "description": "Reads the file and shows the preview. Nothing is saved."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to Spreadsheet import without importing."
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "paragraphs": [
+        "The Columns table on the page lists the same information. Text is stripped of surrounding spaces and otherwise kept exactly. Values are not converted: numbers are plain decimals (digits 0-9 with an optional point and sign; no exponent, thousands separator, unit or symbol, and no more digits than the field holds), choices are the listed codes exactly as written, and yes/no columns accept yes, no, true or false. A value that does not fit is an error naming its line and column, never a guess."
+      ],
+      "items": [
+        {
+          "label": "account_code",
+          "description": "Key, required. Text. The laboratory's short code for the client. It identifies the client in this file and in the projects file; it is required here although the client form leaves it optional."
+        },
+        {
+          "label": "name",
+          "description": "Required for a new record; cannot be blank. Text, up to 160 characters. The organization as it should appear on reports."
+        },
+        {
+          "label": "contact_name",
+          "description": "Optional; blank clears it. Text, up to 160 characters. The person reports are addressed to."
+        },
+        {
+          "label": "email",
+          "description": "Optional; blank clears it. Text, up to 254 characters. Email address of that contact."
+        },
+        {
+          "label": "phone",
+          "description": "Optional; blank clears it. Text, up to 40 characters. Phone number of that contact."
+        },
+        {
+          "label": "address_line1",
+          "description": "Optional; blank clears it. Text, up to 160 characters. Street address."
+        },
+        {
+          "label": "address_line2",
+          "description": "Optional; blank clears it. Text, up to 160 characters. Suite, building or PO box."
+        },
+        {
+          "label": "city",
+          "description": "Optional; blank clears it. Text, up to 80 characters. City."
+        },
+        {
+          "label": "state",
+          "description": "Optional; blank clears it. One of: AL, AK, AZ, AR, CA, CO, CT, DE, DC, FL, GA, HI, ID, IL, IN, IA, KS, KY, LA, ME, MD, MA, MI, MN, MS, MO, MT, NE, NV, NH, NJ, NM, NY, NC, ND, OH, OK, OR, PA, RI, SC, SD, TN, TX, UT, VT, VA, WA, WV, WI, WY, AS, GU, MP, PR, VI. Two-letter US state code."
+        },
+        {
+          "label": "postal_code",
+          "description": "Optional; blank clears it. Text, up to 12 characters. ZIP code."
+        },
+        {
+          "label": "billing_contact_name",
+          "description": "Optional; blank clears it. Text, up to 160 characters. Invoice-to contact."
+        },
+        {
+          "label": "billing_email",
+          "description": "Optional; blank clears it. Text, up to 254 characters. Invoice email."
+        },
+        {
+          "label": "billing_address",
+          "description": "Optional; blank clears it. Text. Invoice address when invoices do not go to the mailing address."
+        },
+        {
+          "label": "payment_terms",
+          "description": "Optional; blank clears it. One of: due_on_receipt, net_15, net_30, net_45, net_60, prepaid. Payment terms."
+        },
+        {
+          "label": "po_required",
+          "description": "Optional; cannot be blank. yes or no. Whether a chain of custody for this client should carry a purchase order."
+        },
+        {
+          "label": "report_preferences",
+          "description": "Optional; blank clears it. Text. Report instructions."
+        },
+        {
+          "label": "notes",
+          "description": "Optional; blank clears it. Text. Internal notes; not shown to the client."
+        },
+        {
+          "label": "active",
+          "description": "Optional; cannot be blank. yes or no. Whether the record is available for new work. A new record is active unless this says no."
+        }
+      ]
+    },
+    {
+      "title": "How rows match records",
+      "paragraphs": [
+        "A row matches the client whose account code equals account_code exactly. Clients have no other dependable unique key, so account_code is required in this file even though the client form leaves it optional. A row whose account code matches no client creates one, unless a client with the same name (ignoring case) already exists under another account code or none, including a client created by an earlier row of the same file: that is an error, so the import never creates a second client by guessing. Give the existing client its account code on its page, or use that code in the file.",
+        "A row whose key matches an existing record changes it; a row whose key matches none creates a record. Records are found by these keys, never by database IDs. A column absent from the file leaves that value of existing records alone. A column present with a blank cell clears an optional value; it is an error for a required one. A new record needs every required column, and an omitted optional column takes the same default as a new record entered by hand (active unless active says no).",
+        "A row may refer only to records that already exist in the referenced type; a missing reference is an error naming it, and nothing is created in another record type. Two rows for the same record are an error.",
+        "The client service checks email addresses, lengths and the account code's uniqueness as the client form does. Changes increase the client's revision, as an edit does."
+      ]
+    },
+    {
+      "title": "Preview",
+      "paragraphs": [
+        "The preview runs every row through the same checks and services as saving, in a transaction that is then undone, so it shows exactly what Import would do and stores nothing. The undone attempt can use up record ID numbers, so IDs of later records may skip. Any error blocks the whole file.",
+        "The summary above the table says whether the file is ready or how many errors it has; file-level errors (header, encoding, size, malformed CSV) are listed there. The table heading counts the rows to create, to change, unchanged and with errors."
+      ],
+      "items": [
+        {
+          "label": "Line",
+          "description": "Line in the file where the row starts. The header is line 1."
+        },
+        {
+          "label": "Action",
+          "description": "Create, Change, Unchanged, or Error. An unchanged row is not saved and leaves no history."
+        },
+        {
+          "label": "Record",
+          "description": "The key the row names, as it would be found or created."
+        },
+        {
+          "label": "Values (before → after)",
+          "description": "For a change, every changed value with the current value struck through and the new one after it; blank means empty. For a new record, the values it receives. Values are shown exactly, without storage padding."
+        },
+        {
+          "label": "Errors",
+          "description": "Every problem in the row, each naming its column. Rows with errors are listed first. Locked identity values, missing reasons and other rules are reported with the same message as manual editing. A row that fails for an unexpected reason is reported with its line, and nothing is imported."
+        }
+      ]
+    },
+    {
+      "title": "Import",
+      "items": [
+        {
+          "label": "Reason for changing existing records",
+          "description": "Shown and required when the file changes at least one existing record. One reason applies to every changed row. Kept with your text if the import is refused."
+        },
+        {
+          "label": "Import … rows",
+          "description": "Available when the preview has no errors. Reads the file again, refuses it if the file or any record it changes differs from the preview, then saves every row in one transaction or none. A refused import shows a new preview to check and import again."
+        },
+        {
+          "label": "Start over",
+          "description": "Discards the preview and returns to an empty upload form."
+        },
+        {
+          "label": "Upload a corrected file",
+          "description": "Shown when the preview has errors. Correct the file and check it again; nothing was saved."
+        },
+        {
+          "label": "Cancel",
+          "description": "Returns to Spreadsheet import without importing."
+        }
+      ]
+    },
+    {
+      "title": "History",
+      "paragraphs": [
+        "Each created or changed record gets its usual history entry from its service. A created record's reason reads Created by import of the file name and the file's SHA-256 digest; a changed record's reason is your reason followed by the file name and digest. One further event records the file: record type, file name, SHA-256, size and the counts. The uploaded file itself is not kept; keep your copy, which the digest identifies. After a successful import the page opens the list where the records appear, with a message giving the counts."
+      ]
+    }
+  ],
+  "sources": [
+    "dataimport/importing.py",
+    "dataimport/views.py",
+    "dataimport/forms.py",
+    "dataimport/urls.py",
+    "dataimport/templates/dataimport/upload.html",
+    "dataimport/tests/test_import.py",
+    "receipt/services.py",
+    "receipt/models.py"
+  ]
+}

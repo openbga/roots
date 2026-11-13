@@ -13,7 +13,7 @@
       "items": [
         {
           "label": "Method",
-          "description": "Required exact version. Creation offers active methods; editing also retains its current method even when inactive. Labels include code, version and title."
+          "description": "Required exact version. Creation offers active methods; editing also retains its current method even when inactive. Saving refuses a new test, or a move to another method, on an inactive version. Labels include code, version and title."
         },
         {
           "label": "Analyte",

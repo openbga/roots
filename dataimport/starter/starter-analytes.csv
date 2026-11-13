@@ -1,0 +1,46 @@
+name,cas_number
+Aluminum,7429-90-5
+Antimony,7440-36-0
+Arsenic,7440-38-2
+Barium,7440-39-3
+Beryllium,7440-41-7
+Cadmium,7440-43-9
+Calcium,7440-70-2
+Chromium,7440-47-3
+Cobalt,7440-48-4
+Copper,7440-50-8
+Iron,7439-89-6
+Lead,7439-92-1
+Magnesium,7439-95-4
+Manganese,7439-96-5
+Molybdenum,7439-98-7
+Nickel,7440-02-0
+Potassium,7440-09-7
+Selenium,7782-49-2
+Silver,7440-22-4
+Sodium,7440-23-5
+Thallium,7440-28-0
+Tin,7440-31-5
+Titanium,7440-32-6
+Vanadium,7440-62-2
+Zinc,7440-66-6
+Mercury,7439-97-6
+Bromide,
+Chloride,
+Fluoride,
+Nitrate (as N),
+Nitrite (as N),
+Ortho-Phosphate-P,
+Sulfate (as SO4),
+Nitrate-nitrite (as N),
+Ammonia (as N),
+"Kjeldahl Nitrogen, Total (as N)",
+Phosphorus,7723-14-0
+Chemical oxygen demand,
+Turbidity,
+"Residue, filterable (TDS)",
+"Residue, non-filterable (TSS)",
+Biochemical oxygen demand (BOD5),
+Hydrogen ion (pH),
+Alkalinity (as CaCO3),
+Specific conductance,
