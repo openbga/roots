@@ -153,6 +153,7 @@ load the same files.
 | Skill | [`document-page`](.agents/skills/document-page/SKILL.md) | Writing the in-app page help under `docs/pages/` |
 | Skill | [`project-code-review`](.agents/skills/project-code-review/SKILL.md) | The pre-PR gate: diff review against `AGENTS.md` and the UI rules, fixes, checks, browser journeys, before/after screenshots |
 | Rule | [`frontend.md`](.agents/rules/frontend.md) | Short frontend rules: components, tokens, icons, controls, validation |
+| Rule | [`backend.md`](.agents/rules/backend.md) | The helpers behind the backend rules: role and release checks, client scoping, audit events, concurrency, exact decimals, lookups, migrations, tests |
 
 Before/after screenshots for pull requests come from `scripts/ui_compare/capture.py`
 (see the `project-code-review` skill).

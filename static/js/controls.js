@@ -119,16 +119,31 @@
   }
 
   // A click opens the menu, as on a native select (openOnFocus is off so Tab does not open it;
-  // Tom Select then only focuses on click). A click on an open control still closes it.
-  function openOnClick(picker) {
-    var wasOpen = false;
-    picker.control.addEventListener("click", function () { wasOpen = picker.isOpen; }, true);
-    picker.control.addEventListener("click", function () {
-      if (!wasOpen && !picker.isOpen && !picker.isDisabled && !picker.isLocked) {
-        picker.open();
-      }
-    });
+  // Tom Select then only focuses on click). A click on an open control still closes it. Delegated,
+  // so it also covers Tom Selects built by other scripts (the requested-tests picker).
+  function pickerOf(target) {
+    var wrapper = target.closest && target.closest(".ts-wrapper");
+    var native = wrapper && wrapper.previousElementSibling;
+    return native && native.tomselect && native.tomselect.control.contains(target) ? native.tomselect : null;
   }
+
+  // Tom Select stops the click at its control, so the listener goes on the control itself: added
+  // from the capture phase on the first click, it still runs for that click, after Tom Select's.
+  document.addEventListener("click", function (event) {
+    var picker = pickerOf(event.target);
+    if (!picker) {
+      return;
+    }
+    picker.vrWasOpen = picker.isOpen;
+    if (!picker.vrOpensOnClick) {
+      picker.vrOpensOnClick = true;
+      picker.control.addEventListener("click", function () {
+        if (!picker.vrWasOpen && !picker.isOpen && !picker.isDisabled && !picker.isLocked) {
+          picker.open();
+        }
+      });
+    }
+  }, true);
 
   function floatDropdown(picker) {
     var entry = { panel: picker.dropdown, anchor: picker.control, matchWidth: true };
@@ -397,7 +412,6 @@
     }
     copyState(select, picker);
     followNative(select, picker);
-    openOnClick(picker);
     floatDropdown(picker);
     if (!multiple) {
       var caret = document.createElement("span");
@@ -456,7 +470,6 @@
       },
     });
     copyState(input, picker);
-    openOnClick(picker);
     floatDropdown(picker);
   }
 

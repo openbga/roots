@@ -33,7 +33,10 @@ If the diff is empty, say "Nothing to review" and stop. Ignore `.local/`. Don't 
 
 ## 1. Domain and authorization (Python changes)
 
-Read each changed function together with its callers. Fix violations in place:
+Read each changed function together with its callers, against `.agents/rules/backend.md`, which
+names the helpers to use (`accounts/roles.py`, `client_required` and client querysets,
+`core.audit.record_event`, `core/concurrency.py`, `analytical/parsing.py`, `core/lookups.py`).
+Code that reimplements one of them is a finding. Fix violations in place:
 
 | # | Check | What to look for | Fix |
 | --- | --- | --- | --- |
@@ -55,7 +58,7 @@ Read each changed function together with its callers. Fix violations in place:
 - `uv run python manage.py makemigrations --check --dry-run` must say "No changes detected".
 - A data migration is reversible or says why it isn't, and never rewrites issued records.
 
-## 3. Templates and front end (follow the build-page skill)
+## 3. Templates and front end (follow the build-page skill and `.agents/rules/frontend.md`)
 
 | # | Check | Fix |
 | --- | --- | --- |

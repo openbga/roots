@@ -43,7 +43,7 @@
     {
       "title": "Columns",
       "paragraphs": [
-        "The Columns table on the page lists the same information. Text is stripped of surrounding spaces and otherwise kept exactly. Values are not converted: numbers are plain decimals (digits 0-9 with an optional point and sign; no exponent, thousands separator, unit or symbol, and no more digits than the field holds), choices are the listed codes exactly as written, and yes/no columns accept yes, no, true or false. A value that does not fit is an error naming its line and column, never a guess."
+        "The Columns section under the file field (collapsed; open it to see the table) lists the same information. Text is stripped of surrounding spaces and otherwise kept exactly. Values are not converted: numbers are plain decimals (digits 0-9 with an optional point and sign; no exponent, thousands separator, unit or symbol, and no more digits than the field holds), choices are the listed codes exactly as written, and yes/no columns accept yes, no, true or false. A value that does not fit is an error naming its line and column, never a guess."
       ],
       "items": [
         {

@@ -1,15 +1,13 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}Spreadsheet import overview: the record types this account may import, in import order,
 with their templates, and the starter files for those types.
 Context: types [{spec, position, title}], all_types, starters (manifest entries plus record_title),
 hidden_starters, starter_meta, max_kib, max_rows.{% endcomment %}
 {% block page_intro %}<p class="vr-page-intro">Load clients, projects, catalog records and QC configuration from CSV files; each file is checked row by row and saved all or nothing.</p>{% endblock %}
 {% block content %}
-<section class="card vr-table-card mb-3" aria-labelledby="types-heading">
-  <div class="card-header"><h2 class="card-title" id="types-heading">Record types</h2><span class="vr-count">{{ types|length }}</span></div>
-  <div class="card-body">
-    <p class="mb-0">Import in the order shown: a row may only refer to records that already exist, and nothing is created in another record type. Save each sheet as CSV (UTF-8), comma separated, with the header row first; up to {{ max_kib }} KiB and {{ max_rows }} rows per file.{% if not all_types %} Only the record types your role may change are listed.{% endif %}</p>
-  </div>
+{% panel title="Record types" heading_id="types-heading" count=types|length table=True class="mb-3" %}
+  <p>Import in the order shown: a row may only refer to records that already exist, and nothing is created in another record type. Save each sheet as CSV (UTF-8), comma separated, with the header row first; up to {{ max_kib }} KiB and {{ max_rows }} rows per file.{% if not all_types %} Only the record types your role may change are listed.{% endif %}</p>
   <div class="vr-table-wrap"><table class="table vr-table" aria-labelledby="types-heading">
     <thead><tr><th scope="col" class="text-end">Order</th><th scope="col">Record type</th><th scope="col">Area</th><th scope="col">Needs first</th><th scope="col">Template</th></tr></thead>
     <tbody>
@@ -18,35 +16,29 @@ hidden_starters, starter_meta, max_kib, max_rows.{% endcomment %}
       <th scope="row"><a class="vr-row-link" href="{% url 'dataimport:upload' item.spec.slug %}">{{ item.title }}</a></th>
       <td>{{ item.spec.area }}</td>
       <td class="vr-wrap">{{ item.spec.needs }}</td>
-      <td><a href="{% url 'dataimport:template' item.spec.slug %}" download>{% include "includes/icon.html" with name="download" %}{{ item.spec.slug }}-template.csv</a></td>
+      <td><a href="{% url 'dataimport:template' item.spec.slug %}" download>{% icon name="download" %}{{ item.spec.slug }}-template.csv</a></td>
     </tr>{% endfor %}
     </tbody>
   </table></div>
-</section>
+{% endpanel %}
 
-<section class="card vr-table-card mb-3" aria-labelledby="starter-heading">
-  <div class="card-header"><h2 class="card-title" id="starter-heading">Starter files</h2><span class="vr-count">{{ starters|length }}</span></div>
-  <div class="card-body">
-    <p class="mb-0">Starting points read from public sources on the date shown. They are not the laboratory's policy and nothing here is a compliance claim: check every row against your methods, permits and current rules, edit the file, then import it like any other file. Starter tests carry no reporting limit; those are the laboratory's own.</p>
-  </div>
-  {% if starters %}
+{% if hidden_starters %}{% firstof "No starter files for your record types" as starters_empty_title %}{% firstof "The starter files in this release are for record types your role does not import." as starters_empty_body %}{% else %}{% firstof "No starter files in this release" as starters_empty_title %}{% firstof "Use the templates above to build your own files." as starters_empty_body %}{% endif %}
+{% panel title="Starter files" heading_id="starter-heading" count=starters|length table=True class="mb-3" %}
+  {% fill footer %}{% if starters and starter_meta.caveats %}<ul class="vr-muted small">{% for caveat in starter_meta.caveats %}<li>{{ caveat }}</li>{% endfor %}</ul>{% endif %}{% endfill %}
+  <p>Starting points read from public sources on the date shown. They are not the laboratory's policy and nothing here is a compliance claim: check every row against your methods, permits and current rules, edit the file, then import it like any other file. Starter tests carry no reporting limit; those are the laboratory's own.</p>
+  {% list_results items=starters empty_title=starters_empty_title empty_body=starters_empty_body %}
   <div class="vr-table-wrap"><table class="table vr-table" aria-labelledby="starter-heading">
     <thead><tr><th scope="col">File</th><th scope="col">Record type</th><th scope="col">Contains</th><th scope="col">Sources and caveats</th></tr></thead>
     <tbody>
     {% for entry in starters %}<tr>
-      <th scope="row"><a href="{% url 'dataimport:starter' entry.file %}" download>{% include "includes/icon.html" with name="download" %}{{ entry.file }}</a></th>
+      <th scope="row"><a href="{% url 'dataimport:starter' entry.file %}" download>{% icon name="download" %}{{ entry.file }}</a></th>
       <td>{{ entry.record_title }}</td>
       <td class="vr-wrap">{{ entry.contains }}</td>
-      <td class="vr-wrap"><details><summary>{{ entry.sources|length }} source{{ entry.sources|length|pluralize }}</summary><ul class="mb-0 ps-3">{% for source in entry.sources %}<li>{{ source.title }}, read {{ source.read_on }}</li>{% endfor %}</ul></details>
-        {% if entry.caveats %}<details><summary>{{ entry.caveats|length }} caveat{{ entry.caveats|length|pluralize }}</summary><ul class="mb-0 ps-3">{% for caveat in entry.caveats %}<li>{{ caveat }}</li>{% endfor %}</ul></details>{% endif %}</td>
+      <td class="vr-wrap"><details><summary>{{ entry.sources|length }} source{{ entry.sources|length|pluralize }}</summary><ul>{% for source in entry.sources %}<li>{{ source.title }}, read {{ source.read_on }}</li>{% endfor %}</ul></details>
+        {% if entry.caveats %}<details><summary>{{ entry.caveats|length }} caveat{{ entry.caveats|length|pluralize }}</summary><ul>{% for caveat in entry.caveats %}<li>{{ caveat }}</li>{% endfor %}</ul></details>{% endif %}</td>
     </tr>{% endfor %}
     </tbody>
   </table></div>
-  {% if starter_meta.caveats %}<div class="card-footer vr-muted small"><ul class="mb-0 ps-3">{% for caveat in starter_meta.caveats %}<li>{{ caveat }}</li>{% endfor %}</ul></div>{% endif %}
-  {% elif hidden_starters %}
-  {% include "includes/empty_state.html" with title="No starter files for your record types" body="The starter files in this release are for record types your role does not import." %}
-  {% else %}
-  {% include "includes/empty_state.html" with title="No starter files in this release" body="Use the templates above to build your own files." %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}
