@@ -37,6 +37,10 @@
         {
           "label": "Analyte row link",
           "description": "Administrators open its edit form; other staff see a plain name."
+        },
+        {
+          "label": "Spreadsheet import",
+          "description": "Administrators can also create or change many analytes at once from a CSV file under Setup → Spreadsheet import, with a row-by-row preview and the same checks, locks and history as this form."
         }
       ]
     },
@@ -152,6 +156,7 @@
     "catalog/templates/catalog/analyte_list.html",
     "core/grids.py",
     "templates/includes/grid_columns_dialog.html",
-    "static/js/grid.js"
+    "static/js/grid.js",
+    "dataimport/importing.py"
   ]
 }

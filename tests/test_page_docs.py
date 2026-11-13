@@ -66,6 +66,8 @@ NON_PAGE_ROUTES = {
     "reporting:edd-download": "Stored ZIP from EDD preview",
     "portal:report-pdf": "Client-scoped stored PDF from report detail",
     "portal:edd-download": "Client-scoped stored EDD ZIP from report detail",
+    "dataimport:template": "CSV template download from spreadsheet import pages",
+    "dataimport:starter": "Starter CSV download from the spreadsheet import overview",
 }
 
 
@@ -109,12 +111,14 @@ def test_content_has_valid_sources_and_no_ambiguous_variant_matches():
 
 def test_dynamic_forms_resolve_to_their_own_guide():
     from analytical.forms import CONFIG_KINDS
+    from dataimport.importing import BY_SLUG
     from receipt.correction_views import SECTIONS
 
     for route, key, values in (
         ("receipt:sample-correct", "section", SECTIONS),
         ("analytical:config-new", "kind", CONFIG_KINDS),
         ("analytical:config-edit", "kind", CONFIG_KINDS),
+        ("dataimport:upload", "kind", BY_SLUG),
     ):
         ids = []
         for value in values:

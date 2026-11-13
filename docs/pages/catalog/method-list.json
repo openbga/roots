@@ -41,6 +41,10 @@
         {
           "label": "New version",
           "description": "Administrators create a version based on this row, with optional test copies and predecessor retirement."
+        },
+        {
+          "label": "Spreadsheet import",
+          "description": "Administrators can also create or change many method versions at once from a CSV file under Setup → Spreadsheet import, with a row-by-row preview and the same checks, locks and history as this form."
         }
       ]
     },
@@ -180,6 +184,7 @@
     "catalog/templates/catalog/method_list.html",
     "core/grids.py",
     "templates/includes/grid_columns_dialog.html",
-    "static/js/grid.js"
+    "static/js/grid.js",
+    "dataimport/importing.py"
   ]
 }

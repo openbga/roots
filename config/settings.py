@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "analytical.apps.AnalyticalConfig",
     "laboratory",
     "reporting",
+    "dataimport.apps.DataImportConfig",
 ]
 MIDDLEWARE = [
     "core.security_headers.SecurityHeadersMiddleware",

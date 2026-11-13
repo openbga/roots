@@ -33,6 +33,10 @@
         {
           "label": "Email link",
           "description": "Opens your email application; this page does not send an email."
+        },
+        {
+          "label": "Spreadsheet import",
+          "description": "Project managers can also create or change many clients at once from a CSV file under Setup → Spreadsheet import. The file identifies each client by its account code; contacts are not imported."
         }
       ]
     },
@@ -149,6 +153,7 @@
     "tests/test_receipt_grids.py",
     "templates/includes/grid_columns_dialog.html",
     "static/js/grid.js",
-    "receipt/tests/test_master_data.py"
+    "receipt/tests/test_master_data.py",
+    "dataimport/importing.py"
   ]
 }

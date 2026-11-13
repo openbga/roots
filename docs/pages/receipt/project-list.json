@@ -37,6 +37,10 @@
         {
           "label": "Project row link",
           "description": "Project managers and administrators open the edit form. Other staff see the name as text; there is no separate project detail page."
+        },
+        {
+          "label": "Spreadsheet import",
+          "description": "Project managers can also create or change many projects at once from a CSV file under Setup → Spreadsheet import. The file identifies each project by its client's account code and the project name."
         }
       ]
     },
@@ -153,6 +157,7 @@
     "tests/test_receipt_grids.py",
     "templates/includes/grid_columns_dialog.html",
     "static/js/grid.js",
-    "receipt/tests/test_master_data.py"
+    "receipt/tests/test_master_data.py",
+    "dataimport/importing.py"
   ]
 }

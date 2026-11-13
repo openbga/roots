@@ -47,6 +47,7 @@ FORM_SURFACES = {
     "analytical:batch-entry": "xl",
     "analytical:batch-import": "xl",
     "analytical:batch-import-mapped": "xl",
+    "dataimport:upload": "xl",
     "analytical:import-profile-create": "xl",
     "analytical:import-profile-edit": "xl",
     "analytical:qc-sample-add": "lg",
