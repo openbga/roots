@@ -6,12 +6,14 @@ LOGGING = {
     "filters": {"request_id": {"()": "core.request_logging.RequestIdFilter"}},
     "formatters": {
         "standard": {
-            "format": "%(asctime)s %(levelname)s %(name)s request_id=%(request_id)s %(message)s"
+            "format": "%(asctime)s %(levelname)s %(name)s request_id=%(request_id)s "
+            "render_request_id=%(render_request_id)s %(message)s"
         }
     },
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
+            "stream": "ext://sys.stdout",
             "filters": ["request_id"],
             "formatter": "standard",
         },
