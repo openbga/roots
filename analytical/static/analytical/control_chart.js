@@ -42,6 +42,9 @@
     return point.band ? c.muted : c.text;
   }
 
+  // Axis and tooltip text in the application's typeface (Overpass), not Chart.js's default.
+  Chart.defaults.font.family = css("--vr-font-sans");
+
   function build() {
     var c = theme();
     var count = payload.labels.length;

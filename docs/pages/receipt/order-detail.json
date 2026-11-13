@@ -20,7 +20,7 @@
         },
         {
           "label": "Delivery target",
-          "description": "Agreed local date/time or not set; distinct from holding-time deadlines."
+          "description": "Agreed local date/time or not set; distinct from holding-time deadlines. Once the target has passed it carries a red “Overdue N d” pill (just “Overdue” on the day itself); within the seven days before it, an amber “Due in N d” or “Due today” pill. Otherwise the date stands alone. A cancelled chain of custody shows no pill."
         },
         {
           "label": "Created / by",
@@ -33,6 +33,10 @@
         {
           "label": "Purchase order missing",
           "description": "A warning shown while the order is not cancelled, has no purchase order and the client is marked Purchase order required. Staff who can receive are told to add it with Edit details. It is a reminder and does not block receipt."
+        },
+        {
+          "label": "Samples received",
+          "description": "How many samples have been received against this chain of custody so far."
         }
       ]
     },
@@ -86,11 +90,11 @@
         },
         {
           "label": "Change delivery target",
-          "description": "Opens the reasoned rescheduling form while not cancelled."
+          "description": "Opens the reasoned rescheduling form while not cancelled. In the header’s More menu."
         },
         {
           "label": "Correct reference",
-          "description": "Opens a reasoned correction for all samples under this order. An issued report containing a sample blocks reference correction."
+          "description": "Opens a reasoned correction for all samples under this order. An issued report containing a sample blocks reference correction. In the header’s More menu."
         },
         {
           "label": "Cancel chain of custody",

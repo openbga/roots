@@ -13,6 +13,7 @@ from catalog.models import Analyte, Method, TestDefinition
 from core.models import Lab
 from receipt.models import Client, Order, Project, RequestedTest, Sample
 from reporting import services
+from reporting.content import change_text
 
 
 def make_user(name, *roles, client=None, release=False):
@@ -26,6 +27,11 @@ def make_user(name, *roles, client=None, release=False):
             Permission.objects.get(codename="authorize_release", content_type__app_label="accounts")
         )
     return user
+
+
+def texts(changes):
+    """The sentences of stored amendment changes (structured entries or legacy strings)."""
+    return [change_text(c) for c in changes]
 
 
 def fake_pdf(snapshot, *, preview=False):

@@ -39,8 +39,8 @@
       "paragraphs": [],
       "items": [
         {
-          "label": "Cooler temperature (°C), as read",
-          "description": "Required finite exact decimal, up to three places in a seven-digit field. Entered text is retained alongside the numeric value and must represent the same value; no universal acceptance threshold is imposed here."
+          "label": "Cooler temperature, as read",
+          "description": "Required finite exact decimal, up to three places in a seven-digit field. Entered text is retained alongside the numeric value and must represent the same value; no universal acceptance threshold is imposed here. Entered in °C (the field's unit)."
         },
         {
           "label": "Thermometer",

@@ -1,45 +1,44 @@
 {% extends "base.html" %}
-{% load catalog_extras %}
-{% block breadcrumbs %}{% url 'analytical:batch-list' as list_url %}{% if result.batch %}{% url 'analytical:batch-detail' result.batch.pk as batch_url %}{% include "includes/breadcrumbs.html" with section="Batches & QC" section_url=list_url record=result.batch.number record_url=batch_url %}{% else %}{% include "includes/breadcrumbs.html" with section="Batches & QC" section_url=list_url %}{% endif %}{% endblock %}
-{% block page_meta %}
-<ul class="vr-page-meta">
-  <li>{% include "includes/status.html" with label=result.get_status_display tone=tone %}</li>
+{% load catalog_extras ui %}
+{% block breadcrumbs %}{% url 'analytical:batch-list' as list_url %}{% if result.batch %}{% url 'analytical:batch-detail' result.batch.pk as batch_url %}{% breadcrumbs section="Batches & QC" section_url=list_url record=result.batch.number record_url=batch_url %}{% else %}{% breadcrumbs section="Batches & QC" section_url=list_url %}{% endif %}{% endblock %}
+{% block page_meta %}{% page_meta %}
+  <li>{% status label=result.get_status_display tone=tone %}</li>
   <li>Sample <a class="vr-id" href="{% url 'receipt:sample-detail' result.requested_test.sample.pk %}">{{ result.requested_test.sample.lab_id }}</a></li>
   <li>{{ result.requested_test.definition.method }}</li>
   <li>{{ result.requested_test.sample.order.project.client }} / {{ result.requested_test.sample.order.project.name }}</li>
   <li><a href="{% url 'analytical:preservation-assess' result.requested_test.pk %}">Preservation findings and lab disposition</a></li>
-</ul>
-{% endblock %}
+{% endpage_meta %}{% endblock %}
 {% block content %}
-<div class="row g-3">
-  <div class="col-xl-8">
-    <section class="card vr-table-card mb-3" aria-labelledby="rev-heading">
-      <div class="card-header"><h2 class="card-title" id="rev-heading">Revisions</h2><span class="vr-count">newest first; earlier entries are never changed</span></div>
+{% if latest %}{% firstof "Correct result" as entry_label %}{% else %}{% firstof "Enter result" as entry_label %}{% endif %}
+{% if can_enter and can_correct %}{% firstof entry_label as aside_label %}{% else %}{% firstof "Awaiting review" as aside_label %}{% endif %}
+{% record_layout aside_label=aside_label %}
+  {% fill lead %}
+    {% panel title="Revisions" heading_id="rev-heading" count="newest first; earlier entries are never changed" table=True flush=True class="mb-3" %}
       {% for rev in revisions %}
-      <div class="card-body {% if not forloop.first %}border-top{% endif %}">
+      {% panel_section rule=forloop.first|yesno:",True" %}
         <div class="d-flex justify-content-between align-items-baseline">
           <h3 class="vr-section-title mb-0">Revision {{ rev.number }}</h3>
-          {% include "includes/status.html" with label=rev.get_status_display tone=rev.tone plain=True %}
+          {% status label=rev.get_status_display tone=rev.tone plain=True %}
         </div>
-        <dl class="vr-facts mt-2">
-          <div><dt>Result as supplied</dt><dd>{% include "analytical/_revision_value.html" %} {{ rev.unit }}</dd></div>
-          {% if rev.matrix == "soil" %}<div><dt>Weight basis / supplied solids</dt><dd>{% include "analytical/_basis.html" %}</dd></div>{% endif %}
-          <div><dt>Reporting limit applied</dt><dd>{{ rev.reporting_limit_applied|plain_decimal }} {{ rev.unit }}{% if rev.method_reporting_limit %} <span class="vr-muted small">method limit {{ rev.method_reporting_limit|plain_decimal }}</span>{% endif %}</dd></div>
-          <div><dt>Dilution factor</dt><dd>{{ rev.dilution_factor|plain_decimal }}</dd></div>
-          <div><dt>Qualifiers</dt><dd>{% for q in rev.qualifiers %}<span class="vr-id">{{ q.code }}</span> {{ q.description }}{% if not forloop.last %}; {% endif %}{% empty %}none{% endfor %}</dd></div>
-          <div><dt>Analysis start</dt><dd><time datetime="{{ rev.analysis_started_at|date:'c' }}">{{ rev.analysis_started_at|date:"Y-m-d H:i T" }}</time></dd></div>
-          <div><dt>Preparation</dt><dd>{% if rev.prepared_aliquot_id %}<a href="{% url 'analytical:prep-detail' rev.prepared_aliquot.batch_id %}">{{ rev.prepared_aliquot.batch.number }}</a> · {{ rev.prepared_aliquot.label }} · start {{ rev.prepared_at|date:"Y-m-d H:i T" }}{% else %}Independent preparation not recorded{% if rev.prepared_at %}; legacy combined-batch start {{ rev.prepared_at|date:"Y-m-d H:i T" }}{% endif %}{% endif %}</dd></div>
-          <div><dt>Method</dt><dd>{{ rev.method_code }} ({{ rev.method_version }}) · batch <a href="{% url 'analytical:batch-detail' rev.batch.pk %}">{{ rev.batch.number }}</a></dd></div>
-          <div><dt>Holding time</dt><dd>{% include "analytical/_holding.html" with status=rev.holding_status %}
-            {% for c in rev.holding_evaluation %}<div class="small vr-muted">{{ c.name }}: {{ c.status }}{% if c.deadline %}, deadline {{ c.deadline|slice:":10" }} {{ c.deadline|slice:"11:16" }}{% endif %}{% if c.detail %} · {{ c.detail }}{% endif %}</div>{% endfor %}</dd></div>
-          <div><dt>Entered</dt><dd>{{ rev.entered_by.get_username }}, <time datetime="{{ rev.entered_at|date:'c' }}">{{ rev.entered_at|date:"Y-m-d H:i" }}</time> · {{ rev.get_source_display }}{% if rev.source_detail %} ({{ rev.source_detail }}){% endif %}</dd></div>
-          {% if rev.submitted_by %}<div><dt>Submitted</dt><dd>{{ rev.submitted_by.get_username }}, {{ rev.submitted_at|date:"Y-m-d H:i" }}</dd></div>{% endif %}
-          {% if rev.reviewed_by %}<div><dt>{% if rev.status == "approved" %}Approved{% else %}Returned{% endif %}</dt><dd>{{ rev.reviewed_by.get_username }}, {{ rev.reviewed_at|date:"Y-m-d H:i" }}{% if rev.review_note %} · {{ rev.review_note }}{% endif %}</dd></div>{% endif %}
-          {% if rev.correction_reason %}<div><dt>Reason for this revision</dt><dd>{{ rev.correction_reason }}</dd></div>{% endif %}
-          {% if rev.comments %}<div><dt>Comments</dt><dd>{{ rev.comments }}</dd></div>{% endif %}
+        <dl class="vr-facts">
+          {% fact label="Result as supplied" %}{% include "analytical/_revision_value.html" %} {{ rev.unit }}{% endfact %}
+          {% if rev.matrix == "soil" %}{% fact label="Weight basis / supplied solids" %}{% include "analytical/_basis.html" %}{% endfact %}{% endif %}
+          {% fact label="Reporting limit applied" %}{{ rev.reporting_limit_applied|plain_decimal }} {{ rev.unit }}{% if rev.method_reporting_limit %} <span class="vr-muted small">method limit {{ rev.method_reporting_limit|plain_decimal }}</span>{% endif %}{% endfact %}
+          {% fact label="Dilution factor" value=rev.dilution_factor|plain_decimal %}
+          {% fact label="Qualifiers" wide=True %}{% for q in rev.qualifiers %}<span class="vr-id">{{ q.code }}</span> {{ q.description }}{% if not forloop.last %}; {% endif %}{% empty %}none{% endfor %}{% endfact %}
+          {% fact label="Analysis start" %}<time datetime="{{ rev.analysis_started_at|date:'c' }}">{{ rev.analysis_started_at|date:"Y-m-d H:i T" }}</time>{% endfact %}
+          {% fact label="Preparation" wide=True %}{% if rev.prepared_aliquot_id %}<a href="{% url 'analytical:prep-detail' rev.prepared_aliquot.batch_id %}">{{ rev.prepared_aliquot.batch.number }}</a> · {{ rev.prepared_aliquot.label }} · start {{ rev.prepared_at|date:"Y-m-d H:i T" }}{% else %}Independent preparation not recorded{% if rev.prepared_at %}; legacy combined-batch start {{ rev.prepared_at|date:"Y-m-d H:i T" }}{% endif %}{% endif %}{% endfact %}
+          {% fact label="Method" wide=True %}{{ rev.method_code }} ({{ rev.method_version }}) · batch <a href="{% url 'analytical:batch-detail' rev.batch.pk %}">{{ rev.batch.number }}</a>{% endfact %}
+          {% fact label="Holding time" wide=True %}{% include "analytical/_holding.html" with status=rev.holding_status %}
+            {% for c in rev.holding_evaluation %}<div class="small vr-muted">{{ c.name }}: {{ c.status }}{% if c.deadline %}, deadline {{ c.deadline|slice:":10" }} {{ c.deadline|slice:"11:16" }}{% endif %}{% if c.detail %} · {{ c.detail }}{% endif %}</div>{% endfor %}{% endfact %}
+          {% fact label="Entered" wide=True %}{{ rev.entered_by.get_username }}, <time datetime="{{ rev.entered_at|date:'c' }}">{{ rev.entered_at|date:"Y-m-d H:i" }}</time> · {{ rev.get_source_display }}{% if rev.source_detail %} ({{ rev.source_detail }}){% endif %}{% endfact %}
+          {% if rev.submitted_by %}{% fact label="Submitted" %}{{ rev.submitted_by.get_username }}, {{ rev.submitted_at|date:"Y-m-d H:i" }}{% endfact %}{% endif %}
+          {% if rev.reviewed_by %}{% fact %}{% fill label %}{% if rev.status == "approved" %}Approved{% else %}Returned{% endif %}{% endfill %}{{ rev.reviewed_by.get_username }}, {{ rev.reviewed_at|date:"Y-m-d H:i" }}{% if rev.review_note %} · {{ rev.review_note }}{% endif %}{% endfact %}{% endif %}
+          {% if rev.correction_reason %}{% fact label="Reason for this revision" wide=True value=rev.correction_reason %}{% endif %}
+          {% if rev.comments %}{% fact label="Comments" wide=True value=rev.comments %}{% endif %}
         </dl>
         {% if rev.qc_evidence %}
-        <details class="mt-2"><summary>QC evidence relied on at approval ({{ rev.qc_evidence.measurements|length }} measurements, {{ rev.qc_evidence.issues|length }} finding(s))</summary>
+        <details><summary>QC evidence relied on at approval ({{ rev.qc_evidence.measurements|length }} measurements, {{ rev.qc_evidence.issues|length }} finding(s))</summary>
           <ul class="small mt-2">
             {% for m in rev.qc_evidence.measurements %}<li>{{ m.qc_sample }} ({{ m.qc_type }}): {{ m.observed_text }} {{ m.unit }} → {{ m.evaluation.status }}</li>{% endfor %}
             {% for i in rev.qc_evidence.issues %}<li>{{ i.message }} {% if i.resolved %}Accepted with qualification by {{ i.recorded_by }}: {{ i.note }}{% else %}Unresolved{% endif %}</li>{% endfor %}
@@ -47,40 +46,28 @@
             {% for i in rev.qc_evidence.preparation.qc.issues %}<li>Preparation: {{ i.message }} {% if i.resolved %}Accepted with qualification by {{ i.recorded_by }}: {{ i.note }}{% endif %}</li>{% endfor %}
           </ul></details>
         {% endif %}
-      </div>
+      {% endpanel_section %}
       {% empty %}
-      <div class="card-body">{% include "includes/empty_state.html" with title="No result entered yet" body="Enter the result from this page once the test is in a batch." %}</div>
+      {% panel_section %}{% empty_state title="No result entered yet" body="Enter the result from this page once the test is in a batch." %}{% endpanel_section %}
       {% endfor %}
-    </section>
-
-    <section class="card" aria-labelledby="audit-heading">
-      <div class="card-header"><h2 class="card-title" id="audit-heading">History</h2></div>
-      <div class="card-body">
-        {% if events %}<ol class="vr-timeline">
-          {% for e in events %}{% include "includes/history_item.html" with title=e.action at=e.occurred_at actor=e.actor reason=e.reason %}{% endfor %}
-        </ol>{% else %}{% include "includes/empty_state.html" with title="No events recorded" %}{% endif %}
-      </div>
-    </section>
-  </div>
-
-  <div class="col-xl-4">
+    {% endpanel %}
+  {% endfill %}
+  {% fill aside %}
     {% if can_enter and can_correct %}
-    <section class="card" id="entry" aria-labelledby="entry-heading">
-      <div class="card-header"><h2 class="card-title" id="entry-heading">{% if latest %}Correct result{% else %}Enter result{% endif %}</h2></div>
-      <div class="card-body">
-        <form class="vr-form" method="post" action="{{ request.path }}#entry" data-vr-local-form="{% if latest %}Correct result{% else %}Enter result{% endif %}" data-vr-local-title="{% if latest %}Correct result{% else %}Enter result{% endif %}" novalidate>
-          {% csrf_token %}
-          <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
-          {{ form }}
-          <div class="vr-form-actions"><button class="btn btn-primary" type="submit">{% if latest %}Correct result{% else %}Enter result{% endif %}</button></div>
+    {% panel title=entry_label heading_id="entry-heading" id="entry" %}
+        {% with entry_action=request.path|add:"#entry" %}
+        {% form_page form=form action=entry_action local=True submit_label=entry_label %}
+          {% for field in form.visible_fields %}{{ field.as_field_group }}{% endfor %}
+          {% for field in form.hidden_fields %}{{ field }}{% endfor %}
           <p class="vr-form-note mt-2 mb-0">Unit: {{ result.requested_test.definition.unit }} (not converted). The earlier entry is kept.</p>
-        </form>
-      </div>
-    </section>
+        {% endform_page %}
+        {% endwith %}
+    {% endpanel %}
     {% elif latest and latest.status == "submitted" %}
-    <div class="alert alert-info" role="status">{% include "includes/status.html" with label="Awaiting review" tone="progress" plain=True %}<div>Awaiting technical review. It cannot be changed until a reviewer approves or returns it.</div></div>
+    {% notice tone="progress" label="Awaiting review" %}Awaiting technical review. It cannot be changed until a reviewer approves or returns it.{% endnotice %}
     {% endif %}
-  </div>
-</div>
+  {% endfill %}
+  {% history_panel events=events heading_id="audit-heading" empty_title="No events recorded" %}{% endhistory_panel %}
+{% endrecord_layout %}
 {% endblock %}
-{% block record_foot %}{% include "includes/record_foot.html" with identifier=page_title %}{% endblock %}
+{% block record_foot %}{% record_foot identifier=page_title %}{% endblock %}

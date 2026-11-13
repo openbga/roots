@@ -74,7 +74,7 @@ authorization; reuse existing authorized resources within the assigned scope.
 
 ## Page documentation
 
-Use [`document-page`](skills/document-page/SKILL.md) whenever a page, form, displayed field,
+Use [`document-page`](.agents/skills/document-page/SKILL.md) whenever a page, form, displayed field,
 action, tab, permission, filter or underlying workflow rule changes. Update its help under
 `docs/pages/` in the same increment, including affected staff/client and dialog variants.
 The help explains the page's purpose, every action and field and its use, related records,

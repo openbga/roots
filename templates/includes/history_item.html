@@ -1,4 +1,4 @@
-{% comment %}
+{% load ui %}{% comment %}
 One entry of a record's history (docs/ui-standards.md section 6, rule 4): what happened, when, who,
 and the reason where one was required. Items sit in <ol class="vr-timeline">, newest last, in the
 record page's final panel (a card with an h2 "History").
@@ -11,11 +11,13 @@ Parameters:
   changes   optional iterable of (label, before, after) for field changes; blank values read "blank";
             the prior value is struck through in red pencil (<del>)
   detail    optional extra line of plain text under the actor (e.g. "superseded: the rule changed")
-  extra     optional template name included at the end of the item, with the same context, for
-            links such as evidence or downloads
+  extra     optional template name for links such as evidence or downloads at the end of the
+            item; the {% history_item %} tag renders it in the caller's context (so it sees the
+            loop variable) and the item wraps it in its meta line style, so it writes plain lines
+            (<div>s) without timeline classes
 Usage:
   <ol class="vr-timeline">
-    {% for event in history %}{% include "includes/history_item.html" with title=event.action at=event.occurred_at actor=event.actor reason=event.reason %}{% endfor %}
+    {% for event in history %}{% history_item title=event.action at=event.occurred_at actor=event.actor reason=event.reason %}{% endfor %}
   </ol>
 {% endcomment %}
 <li class="vr-history-item">
@@ -29,5 +31,5 @@ Usage:
   {% if reason %}<p class="vr-timeline-body">{{ reason|linebreaksbr }}</p>{% endif %}
   {% if actor %}<p class="vr-timeline-meta">{% if by %}{{ by }} {% endif %}{{ actor.get_full_name|default:actor.get_username }}</p>{% endif %}
   {% if detail %}<p class="vr-timeline-meta">{{ detail }}</p>{% endif %}
-  {% if extra %}{% include extra %}{% endif %}
+  {% if extra %}<div class="vr-timeline-meta">{{ extra }}</div>{% endif %}
 </li>

@@ -16,6 +16,10 @@
       "title": "Navigation and scope",
       "items": [
         {
+          "label": "Awaiting · ready · held by QC",
+          "description": "Header counts over every current submitted revision in this batch, before filters: awaiting review, ready for you to approve (not your own work and nothing holds it), and held by at least one open QC finding."
+        },
+        {
           "label": "Batch",
           "description": "Number links to current membership, entry and QC. Method, matrix and optional primary equipment identify the run. Equipment is informational."
         },
@@ -39,6 +43,10 @@
         {
           "label": "Open QC findings",
           "description": "Each current unresolved analytical QC issue is listed once with its disposition/conflict state. It holds the affected definitions; Record disposition, shown to analysts and reviewers, opens its separate assessment."
+        },
+        {
+          "label": "All QC evaluations",
+          "description": "QC measurements that fail or are not evaluated are listed under the open findings. Every evaluation, passing ones included, is in the collapsed All QC evaluations list; open it to see the full set with the same columns."
         },
         {
           "label": "QC sample",
@@ -182,7 +190,7 @@
         },
         {
           "label": "Columns",
-          "description": "Show or hide optional columns and change their order using movement controls or header dragging. Changes apply immediately and are saved for this table in this browser. Locked columns stay available."
+          "description": "Show or hide optional columns and change their order using movement controls or header dragging. Changes apply immediately and are saved for this table in your account, on any workstation. Locked columns stay available."
         },
         {
           "label": "Reset columns",

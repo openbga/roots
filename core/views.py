@@ -31,8 +31,25 @@ from reporting.services import PREPARER_ROLES
 
 from .models import AuditEvent, Lab
 
+# Dashboard lines: the laboratory area each queue belongs to, in work order (accents only, never
+# status), and the words of a queue's status pill when work is waiting, by tone.
+QUEUE_AREAS = (
+    ("intake", "Intake"),
+    ("sales", "Sales"),
+    ("bench", "Bench"),
+    ("release", "Release"),
+    ("lab", "Laboratory"),
+)
+QUEUE_STATUS = {
+    "hold": "Needs a decision",
+    "info": "Waiting",
+    "progress": "In review",
+    "warning": "Needs attention",
+    "danger": "Overdue",
+}
 
-def _queue(label, rows, url, params, *, oldest=None, tone="info", note=""):
+
+def _queue(label, rows, url, params, *, area, oldest=None, tone="info", note="", status=""):
     """One dashboard queue. `rows` is the same queryset the linked list builds for `params`, so
     the count here is the count there. A single aggregate query gives count and oldest item."""
     totals = {"count": Count("pk", distinct=True)}
@@ -46,7 +63,20 @@ def _queue(label, rows, url, params, *, oldest=None, tone="info", note=""):
         "oldest_at": totals.get("oldest"),
         "tone": tone,
         "note": note,
+        "area": area,
+        "status": status or QUEUE_STATUS[tone],
     }
+
+
+def _queue_lines(queues):
+    """The queues grouped by area, in QUEUE_AREAS order, with each area's total; empty areas out."""
+    lines = []
+    for family, name in QUEUE_AREAS:
+        stations = [queue for queue in queues if queue["area"] == family]
+        if stations:
+            total = sum(queue["count"] for queue in stations)
+            lines.append({"family": family, "name": name, "total": total, "queues": stations})
+    return lines
 
 
 def _work_queues(user):
@@ -65,6 +95,7 @@ def _work_queues(user):
                 Sample.objects.filter(disposition="hold"),
                 "receipt:sample-list",
                 {"disposition": "hold"},
+                area="intake",
                 oldest="received_at",
                 tone="hold",
                 note="Each needs a disposition decision.",
@@ -76,6 +107,7 @@ def _work_queues(user):
                 Submission.objects.filter(status=Submission.Status.SUBMITTED),
                 "commercial:submission-list",
                 {"status": Submission.Status.SUBMITTED},
+                area="sales",
                 oldest="submitted_at",
             )
         )
@@ -88,6 +120,7 @@ def _work_queues(user):
                 .filter(sample__order__due_at__lt=now),
                 "receipt:schedule",
                 {"deadline": "overdue"},
+                area="bench",
                 oldest="sample__order__due_at",
                 tone="danger",
             )
@@ -99,6 +132,7 @@ def _work_queues(user):
                 quotes_with_latest().filter(status=Quote.Status.DRAFT),
                 "commercial:quote-list",
                 {"status": Quote.Status.DRAFT},
+                area="sales",
                 oldest="created_at",
             )
         )
@@ -114,8 +148,10 @@ def _work_queues(user):
                     analytical.worklist_queryset(status=status),
                     "analytical:batch-worklist",
                     {"status": status},
+                    area="bench",
                     oldest="sample__received_at",
                     tone="warning" if status == "returned" else "info",
+                    status="Returned" if status == "returned" else "",
                 )
             )
     if roles & {"analyst", "custodian", "project_manager"}:
@@ -124,6 +160,8 @@ def _work_queues(user):
             analytical.worklist_queryset(holding="at_risk"),
             "analytical:batch-worklist",
             {"holding": "at_risk"},
+            area="bench",
+            status="At risk",
             tone="danger",
         )
         expired = analytical.worklist_queryset(holding="expired").count() if queue["count"] else 0
@@ -136,6 +174,7 @@ def _work_queues(user):
             reviewable,
             "analytical:review-list",
             {},
+            area="release",
             oldest="oldest_submitted",
             tone="progress",
         )
@@ -151,6 +190,7 @@ def _work_queues(user):
             unreviewed.exclude(latest_entered_by=user.pk),
             "receipt:subcontract-list",
             {"state": "unreviewed"},
+            area="release",
             tone="progress",
         )
         own_external = unreviewed.filter(latest_entered_by=user.pk).count()
@@ -168,6 +208,7 @@ def _work_queues(user):
                 drafts,
                 "reporting:report-list",
                 {"status": "draft"},
+                area="release",
                 oldest="created_at",
             )
         )
@@ -178,6 +219,8 @@ def _work_queues(user):
                 changed,
                 "reporting:report-list",
                 {"attention": "changed"},
+                area="release",
+                status="Changed",
                 tone="warning",
                 note="A change after issue needs an amended version.",
             )
@@ -189,6 +232,7 @@ def _work_queues(user):
                 equipment_due(equipment_with_due(), "overdue", today, 30),
                 "laboratory:equipment-list",
                 {"due": "overdue"},
+                area="lab",
                 tone="danger",
             )
         )
@@ -200,6 +244,7 @@ def _work_queues(user):
                 ),
                 "laboratory:lot-list",
                 {"state": "expired"},
+                area="lab",
                 tone="danger",
             )
         )
@@ -210,6 +255,8 @@ def _work_queues(user):
                 nonconformances_with_state(today=today).filter(owner=user).exclude(status="closed"),
                 "laboratory:nc-list",
                 {"status": "not_closed", "owner": "me"},
+                area="lab",
+                status="Open",
                 tone="warning",
             )
         )
@@ -223,7 +270,9 @@ def _work_queues(user):
                 ),
                 "laboratory:training-list",
                 {"state": "attention", "staff": user.pk},
+                area="lab",
                 tone="warning",
+                status="Due",
             )
         )
     return queues
@@ -242,6 +291,8 @@ def dashboard(request):
             "page_title": "Dashboard",
             "held_count": Sample.objects.filter(disposition="hold").count(),
             "queues": queues,
+            "queue_lines": _queue_lines(queues),
+            "queue_total": sum(queue["count"] for queue in queues),
             "queues_clear": not any(queue["count"] for queue in queues),
             "recent_samples": Sample.objects.select_related("order__project__client")[:10],
         },

@@ -1,0 +1,1 @@
+{% load reporting %}{% comment %}One amendment change (context: change). A replaced value prints its old text struck through; versions issued before structured changes stored a sentence, printed as it is.{% endcomment %}{% with e=change|amendment_change %}{% if e.old and e.new %}{{ e.subject }}: <s>{{ e.old }}</s> → {{ e.new }}{% else %}{{ e.text }}{% endif %}{% endwith %}

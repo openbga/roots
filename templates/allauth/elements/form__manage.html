@@ -1,0 +1,4 @@
+{% comment %}allauth form element on signed-in account pages (layouts/manage.html: password change, two-factor, email): the shared form page ({% form_page %}) with allauth's fields as its body and allauth's buttons as its action row. Entrance pages (sign in, codes) keep allauth/elements/form.html.{% endcomment %}{% load allauth ui %}{% setvar actions_html %}{% slot actions %}{% endslot %}{% endsetvar %}{% setvar body_html %}{% slot body %}{% endslot %}{% endsetvar %}{% form_page form=attrs.form action=attrs.action method=attrs.method|lower no_submit=True no_required_note=attrs.form|yesno:",True" %}
+  {% fill actions %}{{ actions_html }}{% endfill %}
+  {{ body_html }}
+{% endform_page %}

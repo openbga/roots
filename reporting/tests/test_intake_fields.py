@@ -6,6 +6,8 @@ from receipt.models import Sample
 from reporting.content import assemble, describe_changes, fingerprint
 from reporting.pdf import render_html
 
+from .conftest import texts
+
 pytestmark = pytest.mark.django_db
 
 
@@ -31,7 +33,7 @@ def test_content_adds_recorded_intake_fields_without_changing_older_content(worl
         "coolant": "Wet ice",
     }
     assert fingerprint(before) != fingerprint(after)
-    changes = describe_changes(before, after)
+    changes = texts(describe_changes(before, after))
     assert "Client address changed." in changes
     assert any("sample type" in change and "VR-A1" in change for change in changes)
 

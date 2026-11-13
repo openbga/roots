@@ -1,32 +1,29 @@
 {% extends "layouts/portal.html" %}
-{% load reporting %}
+{% load reporting ui %}
 {% block title %}{{ report.number }} · Reports · Smart Roots LIMS{% endblock %}
-{% block breadcrumbs %}{% url 'portal:report-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Reports" section_url=list_url current=report.number %}{% endblock %}
+{% block breadcrumbs %}{% url 'portal:report-list' as list_url %}{% breadcrumbs section="Reports" section_url=list_url current=report.number %}{% endblock %}
 {% block page_heading %}<span class="vr-id">{{ report.number }}</span>{% endblock %}
-{% block page_meta %}
-<ul class="vr-page-meta">
+{% block page_meta %}{% page_meta %}
   <li>{% include "reporting/version_status.html" %}</li>
   <li>{{ c.report.title }}</li>
   <li>{{ report.project.name }}</li>
   <li>Released <time datetime="{{ current.released_at|date:'c' }}">{{ current.released_at|date:"Y-m-d H:i T" }}</time> by {{ current.released_by.get_full_name|default:current.released_by.get_username }}</li>
-</ul>
-{% endblock %}
+{% endpage_meta %}{% endblock %}
 {% block page_intro %}<p class="vr-page-intro">This summary is taken from issued version {{ current.number }}; the PDF is the report of record, and ND means not detected at or above the reporting limit.</p>{% endblock %}
 {% block page_actions %}
-<a class="btn btn-primary" href="{% url 'portal:report-pdf' report.pk current.number %}">{% include "includes/icon.html" with name="download" %}Download version {{ current.number }} (PDF)</a>
+<a class="btn btn-primary" href="{% url 'portal:report-pdf' report.pk current.number %}">{% icon name="download" %}Download version {{ current.number }} (PDF)</a>
 {% endblock %}
 {% block content %}
 {% include "reporting/portal/notice.html" %}
-{% include "includes/page_toc.html" with items=toc %}
+{% page_toc items=toc %}
 {% if current.amends %}
-<div class="alert alert-info" role="status">
-  {% include "includes/status.html" with label="Amended report" tone="info" plain=True %}
-  <div>Version {{ current.number }} replaces version {{ current.amends.number }}. Reason: {{ current.amendment_reason }}</div>
-</div>
+{% notice tone="info" label="Amended report" %}Version {{ current.number }} replaces version {{ current.amends.number }}. Reason: {{ current.amendment_reason }}{% endnotice %}
 {% endif %}
 {% for s in c.samples %}
-<section class="card vr-table-card mb-3" aria-labelledby="sample-{{ forloop.counter }}">
-  <div class="card-header"><h2 class="card-title" id="sample-{{ forloop.counter }}"><span class="vr-id">{{ s.client_sample_id }}</span> · lab ID <span class="vr-id">{{ s.lab_id }}</span></h2><span class="vr-count">{{ s.collection_location|default:"Location not recorded" }} · {{ s.matrix }} · collected {{ s.collected_at|iso_time }}</span></div>
+{% with n=forloop.counter|stringformat:"s" %}{% with sample_heading="sample-"|add:n %}
+{% panel title=s.client_sample_id heading_id=sample_heading table=True flush=True class="mb-3" %}
+  {% fill title %}<span class="vr-id">{{ s.client_sample_id }}</span> · lab ID <span class="vr-id">{{ s.lab_id }}</span>{% endfill %}
+  {% fill count %}{{ s.collection_location|default:"Location not recorded" }} · {{ s.matrix }} · collected {{ s.collected_at|iso_time }}{% endfill %}
   <div class="vr-table-wrap">
     <table class="table vr-table">
       <caption class="visually-hidden">Results in version {{ current.number }} for sample {{ s.client_sample_id }}</caption>
@@ -34,20 +31,20 @@
       <tbody>
         {% for r in s.results %}
         <tr><th scope="row">{{ r.analyte }}</th><td class="text-end"><span class="fw-semibold">{{ r.reported }}</span>{% with basis=r|basis_label:s.matrix solids=r|solids_text %}{% if basis %}<div class="vr-muted small">{{ basis }}</div>{% endif %}{% if solids %}<div class="vr-muted small">{{ solids }}</div>{% endif %}{% endwith %}</td><td>{{ r.unit }}</td><td>{% if r.source == "external" %}{% if r.external_qualifiers %}{{ r.external_qualifiers }}<div class="vr-muted small">As reported by {{ r.external.laboratory }}</div>{% else %}—{% endif %}{% else %}{{ r.qualifiers|join:", "|default:"—" }}{% endif %}</td><td class="text-end">{{ r.reporting_limit }}</td><td>{% if r.source == "external" %}{{ r.method_code }}<div class="vr-muted small">Subcontracted to {{ r.external.laboratory }}</div>{% else %}{{ r.method_code }} v{{ r.method_version }}{% endif %}</td><td class="vr-nowrap">{{ r.analysis_started_at|iso_time }}</td></tr>
-        <tr><td colspan="7" class="small">{% include "reporting/preservation_record.html" %}</td></tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
-</section>
+  {% panel_section rule=True %}
+  <details><summary>Receipt and preparation notes ({{ s.results|length }} result{{ s.results|length|pluralize }})</summary>
+    <ul class="small mb-0 mt-2 ps-3">{% for r in s.results %}<li><strong>{{ r.analyte }}:</strong> {% include "reporting/preservation_record.html" %}</li>{% endfor %}</ul>
+  </details>
+  {% endpanel_section %}
+{% endpanel %}{% endwith %}{% endwith %}
 {% endfor %}
-<section class="card" aria-labelledby="versions-heading">
-  <div class="card-header"><h2 class="card-title" id="versions-heading">Version history</h2><span class="vr-count">{{ versions|length }} version{{ versions|length|pluralize }}, newest last</span></div>
-  <div class="card-body">
-    <ol class="vr-timeline">
-      {% for version in versions|dictsort:"number" %}{% include "includes/history_item.html" with title=version.history_title at=version.released_at actor=version.released_by by="Released by" reason=version.amendment_reason detail=version.history_detail extra="reporting/portal/_version_files.html" %}{% endfor %}
-    </ol>
-  </div>
-</section>
+{% history_panel events=versions title="Version history" heading_id="versions-heading" %}
+  {% fill count %}{{ versions|length }} version{{ versions|length|pluralize }}, newest last{% endfill %}
+  {% for version in versions|dictsort:"number" %}{% history_item title=version.history_title at=version.released_at actor=version.released_by by="Released by" reason=version.amendment_reason detail=version.history_detail extra="reporting/portal/_version_files.html" %}{% endfor %}
+{% endhistory_panel %}
 {% endblock %}
-{% block record_foot %}{% include "includes/record_foot.html" with identifier=report.number %}{% endblock %}
+{% block record_foot %}{% record_foot identifier=report.number %}{% endblock %}

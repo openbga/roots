@@ -138,7 +138,7 @@
           "description": "For soil only: Wet weight or Dry weight is required. New soil observations cannot use Not applicable."
         },
         {
-          "label": "Percent solids (%)",
+          "label": "Percent solids",
           "description": "Optional exact supplied percentage from 0 through 100."
         },
         {

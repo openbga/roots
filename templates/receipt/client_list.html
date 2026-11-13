@@ -1,26 +1,27 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 Clients. Context (receipt.lists.list_response): page_obj (Client), filter_form (ClientFilter), q, sort,
 per_page, active_filters and the toolbar context (inline, more, more_open, active, placeholder).
 {% endcomment %}
-{% block page_actions %}{% if can_manage_clients %}<a class="btn btn-primary" href="{% url 'receipt:client-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New client</a>{% endif %}{% endblock %}
+{% block page_actions %}{% if can_manage_clients %}<a class="btn btn-primary" href="{% url 'receipt:client-create' %}">{% icon name="plus-lg" %}New client</a>{% endif %}{% endblock %}
 {% block content %}
-<section class="card vr-table-card" aria-labelledby="clients-heading">
-  <h2 class="visually-hidden" id="clients-heading">Clients</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter clients" grid="receipt.clients" %}
-  {% if page_obj.paginator.count %}
+{% if can_manage_clients %}{% url 'receipt:client-create' as create_url %}{% endif %}
+{% panel title="Clients" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter clients" grid="receipt.clients" invalid=filter_form.errors chips=active_filters sort=sort %}
+  {% list_results items=page_obj noun="clients" filtered=active_filters|default:q invalid=filter_form.errors clear_url=request.path error_body="Correct the highlighted filter above. No clients are hidden by an invalid filter." no_results_title="No clients match these filters" empty_title="No clients yet" empty_body="Add a client before creating projects and receiving their samples." action_url=create_url action_label="New client" %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table" data-vr-grid="receipt.clients" data-vr-grid-version="3" aria-labelledby="clients-heading">
       <thead>
         <tr>
-          {% include "includes/sort_header.html" with label="Client" asc="name" desc="-name" col="name" locked=True %}
-          {% include "includes/sort_header.html" with label="Account code" asc="account_number" desc="-account_number" col="account_number" %}
-          {% include "includes/sort_header.html" with label="Status" asc="is_active" desc="-is_active" col="is_active" %}
-          {% include "includes/sort_header.html" with label="Contact" asc="contact_name" desc="-contact_name" col="contact_name" %}
-          {% include "includes/sort_header.html" with label="Email" asc="email" desc="-email" col="email" %}
+          {% sort_header label="Client" asc="name" desc="-name" col="name" locked=True %}
+          {% sort_header label="Account code" asc="account_number" desc="-account_number" col="account_number" %}
+          {% sort_header label="Status" asc="is_active" desc="-is_active" col="is_active" %}
+          {% sort_header label="Contact" asc="contact_name" desc="-contact_name" col="contact_name" %}
+          {% sort_header label="Email" asc="email" desc="-email" col="email" %}
           <th scope="col" data-vr-col="phone">Phone</th>
-          {% include "includes/sort_header.html" with label="City" asc="city" desc="-city" col="city" %}
-          {% include "includes/sort_header.html" with label="State" asc="state" desc="-state" col="state" %}
+          {% sort_header label="City" asc="city" desc="-city" col="city" %}
+          {% sort_header label="State" asc="state" desc="-state" col="state" %}
           <th scope="col" data-vr-col="payment_terms" data-vr-col-hidden>Payment terms</th>
           <th scope="col" data-vr-col="report_preferences" data-vr-col-hidden>Report instructions</th>
         </tr>
@@ -30,7 +31,7 @@ per_page, active_filters and the toolbar context (inline, more, more_open, activ
         <tr>
           <th scope="row"><a class="vr-row-link" href="{% url 'receipt:client-detail' client.pk %}">{{ client.name }}</a></th>
           <td class="vr-id">{{ client.account_number|default:"—" }}</td>
-          <td>{% if client.is_active == False %}{% include "includes/status.html" with label="Inactive" tone="neutral" plain=True title="No new intake; history stays readable" %}{% else %}{% include "includes/status.html" with label="Active" tone="success" plain=True %}{% endif %}</td>
+          <td>{% if client.is_active == False %}{% status label="Inactive" tone="neutral" plain=True title="No new intake; history stays readable" %}{% else %}{% status label="Active" tone="success" plain=True %}{% endif %}</td>
           <td>{{ client.contact_name|default:"—" }}</td>
           <td>{% if client.email %}<a href="mailto:{{ client.email }}">{{ client.email }}</a>{% else %}—{% endif %}</td>
           <td class="vr-nowrap">{{ client.phone|default:"—" }}</td>
@@ -43,14 +44,6 @@ per_page, active_filters and the toolbar context (inline, more, more_open, activ
       </tbody>
     </table>
   </div>
-  {% include "includes/pagination.html" with noun="clients" filtered=active_filters|default:q %}
-  {% elif filter_form.errors %}
-  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above. No clients are hidden by an invalid filter." clear_url=request.path %}
-  {% elif active_filters or q %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No clients match these filters" body="Check the spelling or clear the filters." clear_url=request.path %}
-  {% else %}
-  {% if can_manage_clients %}{% url 'receipt:client-create' as create_url %}{% endif %}
-  {% include "includes/empty_state.html" with title="No clients yet" body="Add a client before creating projects and receiving their samples." action_url=create_url action_label="New client" %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}

@@ -1,12 +1,11 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}Create/edit a price list with one price per catalog test. Context: form (PriceListForm: grouped(), test_fields), price_list, history.{% endcomment %}
-{% block breadcrumbs %}{% url 'commercial:price-list-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Price lists" section_url=list_url %}{% endblock %}
+{% block breadcrumbs %}{% url 'commercial:price-list-list' as list_url %}{% breadcrumbs section="Price lists" section_url=list_url %}{% endblock %}
 {% block page_intro %}<p class="vr-page-intro">Prices are US dollars per sample; leave a price blank to not offer that test, and changes are audited with before and after prices.</p>{% endblock %}
 {% block content %}
-<form class="vr-form vr-form-wide" method="post" novalidate>
-  {% csrf_token %}
-  {% include "includes/form_errors.html" with form=form %}
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+{% url 'commercial:price-list-list' as cancel_url %}
+{% form_page form=form class="vr-form-wide" cancel_url=cancel_url submit_label=price_list|yesno:"Save changes,Create price list" %}
   {% for legend, fields in form.grouped %}
   <fieldset class="vr-form-section">
     <legend>{{ legend }}</legend>
@@ -15,7 +14,8 @@
   {% endfor %}
   <fieldset class="vr-form-section">
     <legend>Prices</legend>
-    {% if form.test_fields %}
+    {% url 'catalog:test-list' as catalog_url %}
+    {% list_results items=form.test_fields empty_title="No catalog tests to price" empty_body="Define tests in the catalog first." action_url=catalog_url action_label="Open catalog" %}
     <div class="vr-table-wrap">
       <table class="table table-hover vr-table">
         <caption class="visually-hidden">Price per catalog test in US dollars</caption>
@@ -28,7 +28,7 @@
           <tr>
             <th scope="row">{{ test.analyte.name }}</th>
             <td>{{ test.method }}</td>
-            <td>{{ test.get_matrix_display }}</td>
+            <td>{% matrix_tag matrix=test.matrix size="sm" %}</td>
             <td class="vr-nowrap">{{ test.unit }}</td>
             <td>
               <label class="visually-hidden" for="{{ field.id_for_label }}">Price in US dollars for {{ test.analyte.name }}, {{ test.method }}, {{ test.get_matrix_display }}</label>
@@ -42,16 +42,9 @@
         </tbody>
       </table>
     </div>
-    {% else %}
-    {% url 'catalog:test-list' as catalog_url %}
-    {% include "includes/empty_state.html" with title="No catalog tests to price" body="Define tests in the catalog first." action_url=catalog_url action_label="Open catalog" %}
-    {% endif %}
+    {% endlist_results %}
   </fieldset>
   {% for field in form.hidden_fields %}{{ field }}{% endfor %}
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{% url 'commercial:price-list-list' %}">Cancel</a>
-    <button class="btn btn-primary" type="submit">{% if price_list %}Save changes{% else %}Create price list{% endif %}</button>
-  </div>
-</form>
-{% if history %}{% include "commercial/_history.html" with history=history %}{% endif %}
+{% endform_page %}
+{% if history %}{% history_panel events=history class="mt-3" %}{% endhistory_panel %}{% endif %}
 {% endblock %}

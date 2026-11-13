@@ -15,7 +15,7 @@ from reporting.models import Report, ReportVersion
 from reporting.pdf import render_html
 from reporting.services import StaleReport, release_report, update_report
 
-from .conftest import make_sample
+from .conftest import make_sample, texts
 
 PDF = b"%PDF-1.4\n% synthetic external source report\n%%EOF"
 
@@ -133,7 +133,7 @@ def test_subcontracted_result_release_amendment_and_client_view(world, people, c
         release(report, people["approver"], reason="Corrected external result")
     accept(contract, corrected, people)
     v2 = release(report, people["approver"], reason="Corrected external result")
-    assert any("0.00021 mg/L" in c and "0.00019 mg/L" in c for c in v2.changes)
+    assert any("0.00021 mg/L" in c and "0.00019 mg/L" in c for c in texts(v2.changes))
     assert list(v2.external_result_revisions.values_list("pk", flat=True)) == [corrected.pk]
     v1 = ReportVersion.objects.get(pk=v1.pk)
     assert list(v1.external_result_revisions.values_list("pk", flat=True)) == [source.pk]

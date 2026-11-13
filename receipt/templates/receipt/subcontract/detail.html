@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 One external handoff and its source versions. Context: subcontract, sample, requested_test, sources
 (newest first), latest, unit_difference (latest source's unit is not the catalog unit), events
@@ -6,16 +7,14 @@ One external handoff and its source versions. Context: subcontract, sample, requ
 can_enter_external, can_review_source. Header actions: cancel (destructive, first), correct
 (secondary), then the one primary, which is review when offered, else entering the first result.
 {% endcomment %}
-{% block breadcrumbs %}{% url 'receipt:subcontract-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Subcontracted tests" section_url=list_url current=subcontract.number %}{% endblock %}
+{% block breadcrumbs %}{% url 'receipt:subcontract-list' as list_url %}{% breadcrumbs section="Subcontracted tests" section_url=list_url current=subcontract.number %}{% endblock %}
 {% block page_heading %}<span class="vr-id">{{ subcontract.number }}</span>{% endblock %}
-{% block page_meta %}
-<ul class="vr-page-meta">
+{% block page_meta %}{% page_meta %}
   <li>{% include "receipt/subcontract/status.html" with decision=latest.review_decision plain=True %}</li>
   <li>{{ sample.order.project.client }}</li>
   <li><a class="vr-id" href="{% url 'receipt:sample-detail' sample.pk %}">{{ sample.lab_id }}</a> / {{ requested_test.definition.analyte }}</li>
   <li>{{ subcontract.external_lab }}</li>
-</ul>
-{% endblock %}
+{% endpage_meta %}{% endblock %}
 {% block page_intro %}{% if sources %}<p class="vr-page-intro">Source acceptance checks the entered observation against the external report; it is separate from internal analytical and QC approval.</p>{% endif %}{% endblock %}
 {% block page_actions %}
 {% if can_dispatch and not subcontract.cancelled_at and not latest %}<a class="btn btn-outline-danger" href="{% url 'receipt:subcontract-cancel' subcontract.pk %}">Cancel external dispatch</a>{% endif %}
@@ -24,24 +23,19 @@ can_enter_external, can_review_source. Header actions: cancel (destructive, firs
 {% elif can_enter_external and not subcontract.cancelled_at and not latest %}<a class="btn btn-primary" href="{% url 'receipt:subcontract-result-create' subcontract.pk %}">Enter external source result</a>{% endif %}
 {% endblock %}
 {% block content %}
-{% if unit_difference %}<div class="alert alert-warning">{% include "includes/status.html" with label="Unit differs" tone="warning" plain=True %} {{ unit_difference }}</div>{% endif %}
-<section class="card mb-3" aria-labelledby="dispatch-heading">
-  <div class="card-header"><h2 class="card-title" id="dispatch-heading">External handoff</h2></div>
-  <div class="card-body">
+{% if unit_difference %}{% notice tone="warning" label="Unit differs" %}{{ unit_difference }}{% endnotice %}{% endif %}
+{% panel title="External handoff" heading_id="dispatch-heading" class="mb-3" %}
     <dl class="vr-facts">
-      <div><dt>External order reference</dt><dd>{{ subcontract.external_reference }}</dd></div>
-      <div><dt>Sample ID at dispatch</dt><dd>{{ subcontract.external_sample_id|default:"Not assigned at dispatch" }}</dd></div>
-      <div><dt>Completed handoff</dt><dd><time datetime="{{ subcontract.dispatched_at|date:'c' }}">{{ subcontract.dispatched_at|date:"Y-m-d H:i T" }}</time> from {{ subcontract.from_location }} to {{ subcontract.handed_to }}</dd></div>
-      <div><dt>Recorded by</dt><dd>{{ subcontract.created_by.get_full_name|default:subcontract.created_by.get_username }} at <time datetime="{{ subcontract.created_at|date:'c' }}">{{ subcontract.created_at|date:"Y-m-d H:i T" }}</time></dd></div>
-      {% if subcontract.cancelled_at %}<div><dt>Cancellation</dt><dd><time datetime="{{ subcontract.cancelled_at|date:'c' }}">{{ subcontract.cancelled_at|date:"Y-m-d H:i T" }}</time> by {{ subcontract.cancelled_by.get_full_name|default:subcontract.cancelled_by.get_username }}<div>{{ subcontract.cancellation_reason }}</div><div class="vr-muted">Cancellation does not record physical return of the containers.</div></dd></div>{% endif %}
+      {% fact label="External order reference" %}{{ subcontract.external_reference }}{% endfact %}
+      {% fact label="Sample ID at dispatch" %}{{ subcontract.external_sample_id|default:"Not assigned at dispatch" }}{% endfact %}
+      {% fact label="Completed handoff" %}<time datetime="{{ subcontract.dispatched_at|date:'c' }}">{{ subcontract.dispatched_at|date:"Y-m-d H:i T" }}</time> from {{ subcontract.from_location }} to {{ subcontract.handed_to }}{% endfact %}
+      {% fact label="Recorded by" %}{{ subcontract.created_by.get_full_name|default:subcontract.created_by.get_username }} at <time datetime="{{ subcontract.created_at|date:'c' }}">{{ subcontract.created_at|date:"Y-m-d H:i T" }}</time>{% endfact %}
+      {% if subcontract.cancelled_at %}{% fact label="Cancellation" %}<time datetime="{{ subcontract.cancelled_at|date:'c' }}">{{ subcontract.cancelled_at|date:"Y-m-d H:i T" }}</time> by {{ subcontract.cancelled_by.get_full_name|default:subcontract.cancelled_by.get_username }}<div>{{ subcontract.cancellation_reason }}</div><div class="vr-muted">Cancellation does not record physical return of the containers.</div>{% endfact %}{% endif %}
     </dl>
-  </div>
-</section>
+{% endpanel %}
 
-<section class="card vr-table-card mb-3" aria-labelledby="containers-heading">
-  <div class="card-header"><h2 class="card-title" id="containers-heading">Containers selected at handoff</h2><span class="vr-count">{{ subcontract.selected_containers|length }}</span></div>
-  <div class="card-body">
-    {% if subcontract.selected_containers %}
+{% panel title="Containers selected at handoff" heading_id="containers-heading" count=subcontract.selected_containers|length table=True class="mb-3" %}
+    {% list_results items=subcontract.selected_containers empty_title="No containers selected" empty_body="No containers are recorded for this handoff." %}
     <div class="vr-table-wrap">
       <table class="table vr-table">
         <thead><tr><th scope="col">Container label</th><th scope="col">Description</th><th scope="col">Condition at receipt</th><th scope="col">Preservation</th></tr></thead>
@@ -52,40 +46,27 @@ can_enter_external, can_review_source. Header actions: cancel (destructive, firs
         </tbody>
       </table>
     </div>
-    <p class="vr-muted small mt-2 mb-0">This records the selected containers. Other containers and the sample's current location are tracked separately in receipt and custody.</p>
-    {% else %}
-    {% include "includes/empty_state.html" with title="No containers selected" body="No containers are recorded for this handoff." %}
-    {% endif %}
-  </div>
-</section>
+    <p class="vr-muted small">This records the selected containers. Other containers and the sample's current location are tracked separately in receipt and custody.</p>
+    {% endlist_results %}
+{% endpanel %}
 
 {% for source in sources %}
-<section class="card mb-3" aria-labelledby="source-{{ source.pk }}-heading">
-  <div class="card-header"><h2 class="card-title" id="source-{{ source.pk }}-heading">Source {{ source.number }}{% if forloop.first %} · latest{% else %} · historical{% endif %}</h2></div>
-  <div class="card-body">
+{% with source_pk=source.pk|stringformat:"s" %}{% panel heading_id="source-"|add:source_pk|add:"-heading" class="mb-3" %}
+  {% fill title %}Source {{ source.number }}{% if forloop.first %} · latest{% else %} · historical{% endif %}{% endfill %}
     {% if forloop.first %}
     {% include "receipt/subcontract/source_summary.html" %}
     {% else %}
     <details><summary>Show original observation and source review</summary><div class="pt-3">{% include "receipt/subcontract/source_summary.html" %}</div></details>
     {% endif %}
-  </div>
-</section>
+{% endpanel %}{% endwith %}
 {% empty %}
-<section class="card mb-3" aria-labelledby="sources-heading">
-  <div class="card-header"><h2 class="card-title" id="sources-heading">External source versions</h2></div>
-  <div class="card-body">
-    {% include "includes/empty_state.html" with title="No external result received" body="Enter the reported observation and attach its source PDF when available." %}
-  </div>
-</section>
+{% panel title="External source versions" heading_id="sources-heading" class="mb-3" %}
+    {% empty_state title="No external result received" body="Enter the reported observation and attach its source PDF when available." %}
+{% endpanel %}
 {% endfor %}
 
-<section class="card" aria-labelledby="subcontract-history-heading">
-  <div class="card-header"><h2 class="card-title" id="subcontract-history-heading">History</h2></div>
-  <div class="card-body">
-    <ol class="vr-timeline">
-      {% for event in events %}{% include "includes/history_item.html" with title=event.display_title at=event.occurred_at actor=event.actor reason=event.reason|default:"Initial external source entry" %}{% endfor %}
-    </ol>
-  </div>
-</section>
+{% history_panel events=events heading_id="subcontract-history-heading" %}
+      {% for event in events %}{% history_item title=event.display_title at=event.occurred_at actor=event.actor reason=event.reason|default:"Initial external source entry" %}{% endfor %}
+{% endhistory_panel %}
 {% endblock %}
-{% block record_foot %}{% include "includes/record_foot.html" with identifier=subcontract.number %}{% endblock %}
+{% block record_foot %}{% record_foot identifier=subcontract.number %}{% endblock %}

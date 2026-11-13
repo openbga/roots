@@ -79,7 +79,7 @@
         },
         {
           "label": "Calibration due",
-          "description": "For each kind, dates and outcomes come from the latest uncorrected event by performed date, then record ID descending. No interval is calculated. A date is overdue only after it passes. Within the fixed 30-day highlight, the label is Due today or Due in … d; later dates are Scheduled; blank is Not scheduled. The filter window may differ from this fixed highlight. Last not acceptable is additionally marked for calibration. Retired assets show a dash for date, though the last unacceptable calibration marker can remain."
+          "description": "For each kind, dates and outcomes come from the latest uncorrected event by performed date, then record ID descending. No interval is calculated. A date is overdue only after it passes. The date is shown as text; an Overdue … d pill follows it once it has passed, and a Due today or Due in … d pill within the fixed 30-day highlight. Later dates carry no pill; blank reads Not scheduled. The filter window may differ from this fixed highlight. Last not acceptable is additionally marked for calibration. Retired assets show a dash for date, though the last unacceptable calibration marker can remain."
         },
         {
           "label": "Maintenance due",
@@ -100,7 +100,7 @@
         },
         {
           "label": "Active filters",
-          "description": "Remove a chip to clear that filter and return to page 1. Clear all restores the unfiltered list, default sort and 25 rows per page. The default 30-day window is not an active filter."
+          "description": "Remove a chip to clear that filter and return to page 1. Clear all restores the unfiltered list; your saved sort and rows per page stay. The default 30-day window is not an active filter."
         },
         {
           "label": "Column headings",
@@ -112,7 +112,7 @@
         },
         {
           "label": "Columns",
-          "description": "When table enhancement is available, check columns to show them or uncheck to hide them. Changes apply immediately and remain in this browser. Use Move … up or Move … down controls, or drag headings. The identity column is Always shown and cannot move or hide. Reset columns restores the initial layout. Close or Done closes the dialog. These preferences do not change records, filters, sorting or paging. If browser storage is blocked, the layout applies only to this page."
+          "description": "When table enhancement is available, check columns to show them or uncheck to hide them. Changes apply immediately and are saved for your account, on any workstation. Use Move … up or Move … down controls, or drag headings. The identity column is Always shown and cannot move or hide. Reset columns restores the initial layout. Close or Done closes the dialog. These preferences do not change records, filters, sorting or paging. If the change cannot be saved, the layout applies only to this page."
         }
       ]
     },

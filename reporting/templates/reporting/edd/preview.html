@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 NYSDEC EDD v5 validation preview for one released version. Rows come only from the version's frozen
 snapshot plus the current recipient codes; generating freezes those codes into an immutable export.
@@ -6,32 +7,26 @@ Context: version, report, result (nysdec.Export), issue_groups (identical causes
 [(section, columns, rows, total)], notice, format_name/version, reference_values, exports, can_generate.
 {% endcomment %}
 {% block title %}NYSDEC EDD · {{ report.number }} v{{ version.number }} · Smart Roots LIMS{% endblock %}
-{% block breadcrumbs %}{% url 'reporting:report-list' as list_url %}{% url 'reporting:report-detail' report.pk as record_url %}{% with number=version.number|stringformat:"s" %}{% include "includes/breadcrumbs.html" with section="Reports" section_url=list_url record=report.number record_url=record_url current="NYSDEC EDD v"|add:number %}{% endwith %}{% endblock %}
+{% block breadcrumbs %}{% url 'reporting:report-list' as list_url %}{% url 'reporting:report-detail' report.pk as record_url %}{% with number=version.number|stringformat:"s" %}{% breadcrumbs section="Reports" section_url=list_url record=report.number record_url=record_url current="NYSDEC EDD v"|add:number %}{% endwith %}{% endblock %}
 {% block page_heading %}NYSDEC EDD for <span class="vr-id">{{ report.number }}</span> version {{ version.number }}{% endblock %}
-{% block page_meta %}
-<ul class="vr-page-meta">
-  <li>{% include "includes/status.html" with label="Exploratory" tone="warning" title="Not validated by EQuIS EDP" %}</li>
+{% block page_meta %}{% page_meta %}
+  <li>{% status label="Exploratory" tone="warning" title="Not validated by EQuIS EDP" %}</li>
   <li>{{ format_name }} format {{ format_version }} · reference values {{ reference_values }}</li>
   <li>{{ report.project.client }} / {{ report.project.name }}</li>
-</ul>
-{% endblock %}
+{% endpage_meta %}{% endblock %}
 {% block page_actions %}{% if can_generate and result.ok %}<button class="btn btn-primary" type="submit" form="generate-form">Generate export</button>{% endif %}{% endblock %}
 {% block content %}
-<div class="alert alert-warning" role="status">{% include "includes/status.html" with label="Note" tone="warning" plain=True %}<div><strong>Exploratory recipient file.</strong> {{ notice }} It is generated only from released version {{ version.number }}; later record changes never alter it.</div></div>
+{% notice tone="warning" label="Note" %}<strong>Exploratory recipient file.</strong> {{ notice }} It is generated only from released version {{ version.number }}; later record changes never alter it.{% endnotice %}
 {% if post_errors %}
-<div class="alert alert-danger" role="alert" tabindex="-1" id="edd-errors">{% include "includes/status.html" with label="Error" tone="danger" plain=True %}<div><p class="mb-1"><strong>No export was generated.</strong></p><ul class="mb-0 ps-3">{% for e in post_errors %}<li>{{ e }}</li>{% endfor %}</ul></div></div>
+{% notice tone="danger" blocking=True id="edd-errors" focus=True %}<p class="mb-1"><strong>No export was generated.</strong></p><ul class="mb-0 ps-3">{% for e in post_errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endnotice %}
 {% endif %}
-<div class="row g-3 mb-3">
-  <div class="col-xl-8">
-    <section class="card" aria-labelledby="summary-heading">
-      <div class="card-header">
-        <h2 class="card-title" id="summary-heading">Checks before export</h2>
-        {% if result.ok %}{% include "includes/status.html" with label="No blocking issues found by this application" tone="success" %}{% else %}{% with n=result.errors|length|stringformat:"s" c=issue_groups|length|stringformat:"s" %}{% include "includes/status.html" with label=n|add:" blocking in "|add:c|add:" causes" tone="danger" %}{% endwith %}{% endif %}
-      </div>
-      <div class="card-body">
+{% record_layout aside_label="Generate export" %}
+  {% fill lead %}
+    {% panel title="Checks before export" heading_id="summary-heading" %}
+      {% fill count %}{% if result.ok %}{% status label="No blocking issues found by this application" tone="success" %}{% else %}{% with n=result.errors|length|stringformat:"s" c=issue_groups|length|stringformat:"s" %}{% status label=n|add:" blocking in "|add:c|add:" causes" tone="danger" %}{% endwith %}{% endif %}{% endfill %}
         {% if fix_summary %}
         <p class="vr-form-note">Every check below blocks the export. Fix them where they are recorded:</p>
-        <ul class="list-unstyled mb-0">
+        <ul class="list-unstyled">
           {% for fix in fix_summary %}
           <li class="d-flex flex-wrap align-items-baseline gap-2 py-1 border-bottom">
             <span class="fw-semibold">{% if fix.url %}<a href="{{ fix.url }}">{{ fix.label }}</a>{% else %}{{ fix.label }}{% endif %}</span>
@@ -40,42 +35,38 @@ Context: version, report, result (nysdec.Export), issue_groups (identical causes
           {% endfor %}
         </ul>
         {% else %}
-        <p class="mb-0">Required fields, lengths, number and date formats, enumerations and keys pass the NYSDEC v5 format rules this application knows. Reference-table codes (company, method, analyte, unit, matrix, fraction, preservative, qualifier) still need EQuIS EDP.</p>
+        <p>Required fields, lengths, number and date formats, enumerations and keys pass the NYSDEC v5 format rules this application knows. Reference-table codes (company, method, analyte, unit, matrix, fraction, preservative, qualifier) still need EQuIS EDP.</p>
         {% endif %}
-      </div>
-    </section>
-  </div>
-  <div class="col-xl-4">
-    <section class="card" aria-labelledby="generate-heading">
-      <div class="card-header"><h2 class="card-title" id="generate-heading">Generate export</h2></div>
-      <div class="card-body">
+    {% endpanel %}
+  {% endfill %}
+  {% fill aside %}
+    {% panel title="Generate export" heading_id="generate-heading" %}
         <dl class="vr-facts">
-          <div><dt>Version {{ version.number }} released</dt><dd><time datetime="{{ version.released_at|date:'c' }}">{{ version.released_at|date:"Y-m-d H:i T" }}</time></dd></div>
-          {% for section, names, rows, total in tables %}<div><dt>{{ section }}</dt><dd>{{ total }} row{{ total|pluralize }}</dd></div>{% endfor %}
+          {% fact %}{% fill label %}Version {{ version.number }} released{% endfill %}<time datetime="{{ version.released_at|date:'c' }}">{{ version.released_at|date:"Y-m-d H:i T" }}</time>{% endfact %}
+          {% for section, names, rows, total in tables %}{% fact label=section %}{{ total }} row{{ total|pluralize }}{% endfact %}{% endfor %}
         </dl>
         {% if not can_generate %}
-        <p class="mb-0">Generating needs the project manager, approver or admin role.</p>
+        <p>Generating needs the project manager, approver or admin role.</p>
         {% elif not result.ok %}
-        <p class="mb-0">Resolve the checks first. Settings fixes apply to new exports only.</p>
+        <p>Resolve the checks first. Settings fixes apply to new exports only.</p>
         {% else %}
+        {# form: button-target #}
         <form class="vr-form" id="generate-form" method="post">{% csrf_token %}</form>
-        <p class="vr-form-note mb-0">The ZIP, its SHA-256 and the exact codes used are stored and never changed.</p>
+        <p class="vr-form-note">The ZIP, its SHA-256 and the exact codes used are stored and never changed.</p>
         {% endif %}
-      </div>
-    </section>
-  </div>
-</div>
+    {% endpanel %}
+  {% endfill %}
 
 {% if issue_groups %}
-<section class="card vr-table-card mb-3" aria-labelledby="issues-heading">
-  <div class="card-header"><h2 class="card-title" id="issues-heading">Blocking checks by cause</h2><span class="vr-count">{{ issue_groups|length }} cause{{ issue_groups|length|pluralize }}; identical problems are grouped with every affected record listed</span></div>
+{% panel title="Blocking checks by cause" heading_id="issues-heading" table=True flush=True class="mb-3" %}
+  {% fill count %}{{ issue_groups|length }} cause{{ issue_groups|length|pluralize }}; identical problems are grouped with every affected record listed{% endfill %}
   <div class="vr-table-wrap">
       <table class="table vr-table">
         <thead><tr><th scope="col">Problem</th><th scope="col">Field</th><th scope="col" class="text-end">Affected</th><th scope="col">Records</th><th scope="col">Fix in</th></tr></thead>
         <tbody>
           {% for g in issue_groups %}
           <tr{% ifchanged g.kind %} id="fix-{{ g.kind }}"{% endifchanged %}>
-            <th scope="row" class="vr-wrap fw-normal">{% include "includes/status.html" with label="Blocking" tone="danger" plain=True %} {{ g.message }}</th>
+            <th scope="row" class="vr-wrap fw-normal">{% status label="Blocking" tone="danger" plain=True %} {{ g.message }}</th>
             <td class="vr-id">{{ g.field|default:"—" }}</td>
             <td class="text-end">{{ g.records|length }}</td>
             <td class="vr-wrap">{% if g.records|length == 1 %}{{ g.records.0 }}{% else %}<details><summary>{{ g.records.0 }} and {{ g.records|length|add:"-1" }} more</summary><ul class="small mb-0 ps-3">{% for r in g.records %}<li>{{ r }}</li>{% endfor %}</ul></details>{% endif %}</td>
@@ -85,12 +76,10 @@ Context: version, report, result (nysdec.Export), issue_groups (identical causes
         </tbody>
       </table>
   </div>
-</section>
+{% endpanel %}
 {% endif %}
 
-<section class="card mb-3" aria-labelledby="manifest-heading">
-  <div class="card-header"><h2 class="card-title" id="manifest-heading">Export manifest</h2><span class="vr-count">Stored with every generated export</span></div>
-  <div class="card-body">
+{% panel title="Export manifest" heading_id="manifest-heading" count="Stored with every generated export" class="mb-3" %}
     <div class="row g-3">
       <div class="col-lg-6">
         <h3 class="h6">Not exported</h3>
@@ -101,13 +90,12 @@ Context: version, report, result (nysdec.Export), issue_groups (identical causes
         <ul class="mb-0 ps-3">{% for item in result.manifest.interpretations %}<li>{{ item }}</li>{% endfor %}</ul>
       </div>
     </div>
-  </div>
-</section>
+{% endpanel %}
 
-<section class="card vr-table-card mb-3" aria-labelledby="exports-heading">
-  <div class="card-header"><h2 class="card-title" id="exports-heading">Generated exports for version {{ version.number }}</h2><span class="vr-count">{{ exports|length }}, newest first</span></div>
-  <div class="card-body">
-    {% if exports %}
+{% panel title="Generated exports for version" heading_id="exports-heading" table=True class="mb-3" %}
+  {% fill title %}Generated exports for version {{ version.number }}{% endfill %}
+  {% fill count %}{{ exports|length }}, newest first{% endfill %}
+    {% list_results items=exports empty_title="No exports yet" empty_body="Generate one when the checks pass. Each export keeps the exact codes it used." %}
     <div class="vr-table-wrap">
       <table class="table vr-table">
         <thead><tr><th scope="col">Export</th><th scope="col">Generated</th><th scope="col">By</th><th scope="col">Format</th><th scope="col">Rows</th><th scope="col">File</th><th scope="col" class="text-end"><span class="visually-hidden">Actions</span></th></tr></thead>
@@ -126,25 +114,22 @@ Context: version, report, result (nysdec.Export), issue_groups (identical causes
         </tbody>
       </table>
     </div>
-    {% else %}
-    {% include "includes/empty_state.html" with title="No exports yet" body="Generate one when the checks pass. Each export keeps the exact codes it used." %}
-    {% endif %}
-  </div>
-</section>
+    {% endlist_results %}
+{% endpanel %}
 
 {% for section, names, rows, total in tables %}
-<details class="card vr-table-card mb-3"{% if forloop.first %} open{% endif %}>
-  <summary class="card-header"><h2 class="card-title d-inline">{{ section }}</h2> <span class="vr-count">{{ total }} row{{ total|pluralize }}{% if total > preview_rows %}, first {{ preview_rows }} shown{% endif %}; empty optional columns hidden</span></summary>
-  <div class="card-body">
-    {% if rows %}
+{% with n=forloop.counter|stringformat:"s" %}{% with table_heading="edd-table-"|add:n %}
+{% panel title=section heading_id=table_heading table=True collapsible=True open=forloop.first class="mb-3" %}
+  {% fill count %}{{ total }} row{{ total|pluralize }}{% if total > preview_rows %}, first {{ preview_rows }} shown{% endif %}; empty optional columns hidden{% endfill %}
+    {% list_results items=rows empty_title="No rows" empty_body="This section has no rows for this version." %}
     <div class="vr-table-wrap">
       <table class="table vr-table">
         <thead><tr>{% for name in names %}<th scope="col" class="vr-id">{{ name }}</th>{% endfor %}</tr></thead>
         <tbody>{% for row in rows %}<tr>{% for value in row %}<td class="vr-nowrap">{{ value|default:"" }}</td>{% endfor %}</tr>{% endfor %}</tbody>
       </table>
     </div>
-    {% else %}{% include "includes/empty_state.html" with title="No rows" body="This section has no rows for this version." %}{% endif %}
-  </div>
-</details>
+    {% endlist_results %}
+{% endpanel %}{% endwith %}{% endwith %}
 {% endfor %}
+{% endrecord_layout %}
 {% endblock %}

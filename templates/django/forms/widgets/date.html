@@ -1,0 +1,6 @@
+{% comment %}
+DateInput / DateTimeInput (type date or datetime-local). The native input is the no-JS fallback and,
+once static/js/controls.js runs, the hidden submitted value in the field's own format
+(YYYY-MM-DD or YYYY-MM-DDTHH:MM[:SS]) beside a typed text field and a calendar popover.
+data-vr-time-zone is the zone Django reads naive input in: shortcuts use the laboratory's clock.
+{% endcomment %}{% with type=widget.type extra=widget.attrs.class|default:"" %}{% load tz %}{% get_current_timezone as time_zone %}<input type="{{ type }}" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %} class="{% if 'form-' not in extra %}form-control {% endif %}{{ extra }}" data-vr-date="{% if type == 'date' %}date{% else %}datetime{% endif %}" data-vr-time-zone="{{ time_zone }}"{% include "django/forms/widgets/attrs.html" %}>{% endwith %}

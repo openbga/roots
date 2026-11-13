@@ -7,6 +7,26 @@
   "purpose": "Follow one received physical sample from its collection and receipt through containers, test work, preservation decisions, custody and issued report versions.",
   "sections": [
     {
+      "title": "Progress route",
+      "paragraphs": [
+        "Under the title, six stops summarise where the sample stands: Received, Disposition, In a batch, Results entered, Reviewed and Reported. It summarises the statuses shown further down the page; it decides nothing and changes nothing."
+      ],
+      "items": [
+        {
+          "label": "Received",
+          "description": "Always done; shows the receipt time."
+        },
+        {
+          "label": "Disposition",
+          "description": "Done with the disposition (Proceed or Qualify). On Hold it is the current stop, marked “Hold: decide before work starts”; on Reject, “Rejected at receipt”. The later stops then wait."
+        },
+        {
+          "label": "In a batch / Results entered / Reviewed / Reported",
+          "description": "Each shows how many of the sample’s requested tests have reached it: batched or sent to an external laboratory; with a result entered; approved; contained in an issued report version. A stop is done when every test has reached it. The first stop not reached by every test is the current one. With no requested tests the stops read “No tests requested”."
+        }
+      ]
+    },
+    {
       "title": "Access and header",
       "paragraphs": [
         "All laboratory staff can read this record; portal accounts cannot use this staff page. A discrepancy or non-Proceed disposition is highlighted with the receipt discrepancy and current disposition note."
@@ -17,16 +37,20 @@
           "description": "Stable laboratory accession, client identifier, and the recorded matrix with the sample source after a dot when one is recorded."
         },
         {
+          "label": "Matrix",
+          "description": "The sample’s matrix tag (Water, Wastewater or Soil, with its icon) and the sample source, right after the disposition."
+        },
+        {
           "label": "Sample type / Rush",
           "description": "The sample type is shown in the header when it is not an ordinary Field sample (Field duplicate, Field blank, Trip blank or Equipment / rinsate blank). A Rush marker appears when the chain of custody’s turnaround is Rush."
         },
         {
           "label": "Client / Project / Delivery target",
-          "description": "Ownership and explicit target inherited from the chain of custody; the target is not an analytical holding deadline."
+          "description": "Ownership and explicit target inherited from the chain of custody; the target is not an analytical holding deadline. Once the target has passed it carries a red “Overdue N d” pill (just “Overdue” on the day itself); within the seven days before it, an amber “Due in N d” or “Due today” pill. Otherwise the date stands alone."
         },
         {
           "label": "Change disposition",
-          "description": "Custodians, project managers and administrators open a reasoned decision change."
+          "description": "Custodians, project managers and administrators open a reasoned decision change. While the sample is on Hold it is the page’s primary action, because nothing else can proceed until the disposition is decided."
         },
         {
           "label": "Correct sample details",
@@ -35,6 +59,10 @@
         {
           "label": "Labels",
           "description": "Any authorized staff member opens identity-label options. Each container is the default; Each sample prints sample identity. Copies of each is 1–10, initially 1. Download PDF opens one 4 × 2 inch label per page, maximum 200 total, for printing at actual size. No sample/custody state changes; reprint when displayed identity facts are corrected."
+        },
+        {
+          "label": "Next holding deadline",
+          "description": "The requested test whose collection-based holding deadline comes first among the tests still waiting for analysis, with the deadline and the time left. When that test’s clock is at risk the time left is an amber pill; once expired, a red “Expired … ago” pill. It is absent when no waiting test has a holding rule. The Requested tests table shows every test’s clock."
         }
       ]
     },

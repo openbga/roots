@@ -1,0 +1,16 @@
+{% load ui %}{% comment %}
+A button-only action that changes the record's state (docs/ui-standards.md section 4): a POST form
+holding one button, for the page header or a row. The server re-checks permission and state.
+Parameters:
+  action   POST URL (required)
+  label    the button's words, verb plus object (e.g. "Issue version 2")
+  variant  primary | secondary | danger (default secondary): btn-primary, btn-outline-secondary,
+           btn-outline-danger
+  small    truthy for btn-sm (table cells and card headers)
+  fields   optional bound fields to carry, e.g. a form of hidden inputs (action_form) or a list
+  name, value   optional single hidden input (e.g. the record revision the change was based on)
+  icon     optional icon name (header buttons carry one only to create, download or print)
+  id       optional id of the form
+Usage: {% post_button action=issue_url label="Issue version 2" variant="primary" fields=action_form %}
+{% endcomment %}
+<form method="post" action="{{ action }}" class="d-inline"{% if id %} id="{{ id }}"{% endif %}>{% csrf_token %}{% for field in fields %}{{ field }}{% endfor %}{% if name %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endif %}<button class="btn {% if variant == 'primary' %}btn-primary{% elif variant == 'danger' %}btn-outline-danger{% else %}btn-outline-secondary{% endif %}{% if small %} btn-sm{% endif %}" type="submit">{% if icon %}{% icon name=icon %}{% endif %}{{ label }}</button></form>

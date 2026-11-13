@@ -40,11 +40,11 @@
           "description": "Required Preparation start or Analysis start. Preparation-start clocks may end only at Analysis start. Collection may end at either event."
         },
         {
-          "label": "Maximum time (hours)",
-          "description": "Required positive decimal hours, minimum 0.01, at most two decimal places and nine total digits. The form converts hours to seconds; 0.25 is 15 minutes, 48 is two days, and 672 is 28 days. This is a configured limit, not an observed time."
+          "label": "Maximum time",
+          "description": "Required positive decimal hours (the unit shown beside the box), minimum 0.01, at most two decimal places and nine total digits. The form converts hours to seconds; 0.25 is 15 minutes, 48 is two days, and 672 is 28 days. This is a configured limit, not an observed time."
         },
         {
-          "label": "Warn when remaining (hours)",
+          "label": "Warn when remaining",
           "description": "Optional positive decimal hours, minimum 0.01, with at most two decimal places and nine total digits. A running clock is At risk when this much or less remains; blank gives no warning window."
         },
         {

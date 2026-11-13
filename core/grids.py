@@ -2,7 +2,18 @@
 
 from dataclasses import dataclass
 
+from django import forms
 from django.core.paginator import Paginator
+
+PAGE_SIZES = (25, 50, 100)
+
+
+class PageSizeForm(forms.Form):
+    """The rows-per-page control of includes/pagination.html; GridRequest.parse checks the value."""
+
+    per_page = forms.TypedChoiceField(
+        label="Rows per page", choices=[(size, str(size)) for size in PAGE_SIZES], coerce=int
+    )
 
 
 @dataclass(frozen=True)
@@ -18,7 +29,7 @@ class GridRequest:
             per_page = int(params.get("per_page", 25))
         except (TypeError, ValueError) as exc:
             raise ValueError("Invalid page size. Choose 25, 50 or 100.") from exc
-        if per_page not in {25, 50, 100}:
+        if per_page not in PAGE_SIZES:
             raise ValueError("Invalid page size. Choose 25, 50 or 100.")
         sort = params.get("sort", default_sort)
         if sort.removeprefix("-") not in columns:
@@ -45,6 +56,8 @@ def active_filters(request, form):
         params = request.GET.copy()
         params.pop(name, None)
         params.pop("page", None)
+        for saved in getattr(request, "vr_saved_params", ()):
+            params.pop(saved, None)  # added from the user's saved settings; re-added on arrival
         chips.append(
             {"label": label, "value": str(display), "remove_url": "?" + params.urlencode()}
         )

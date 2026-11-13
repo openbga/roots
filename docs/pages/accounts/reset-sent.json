@@ -9,7 +9,7 @@
     {
       "title": "State and next action",
       "paragraphs": [
-        "The Password Reset page acknowledges a request without confirming that an eligible account exists. Check the mailbox and spam folder; contact the laboratory if delivery is unavailable. No password has changed, and no editable fields, resend button or dedicated Sign in link appear on this acknowledgement. Use the brand to return to the application. Signed-in visitors also see the current-account reminder. Actual email delivery depends on deployment mail configuration; the committed fallback writes outgoing mail to the console."
+        "The Reset password page acknowledges a request without confirming that an eligible account exists. Check the mailbox and spam folder; contact the laboratory if delivery is unavailable. No password has changed, and no editable fields, resend button or dedicated Sign in link appear on this acknowledgement. Use the brand to return to the application. Signed-in visitors also see the current-account reminder. Actual email delivery depends on deployment mail configuration; the committed fallback writes outgoing mail to the console."
       ]
     }
   ],

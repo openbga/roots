@@ -9,13 +9,14 @@ from .page_docs import documentation_for_request
 
 def form_presentation(request):
     surface = surface_for_request(request)
+    form_dialog = bool(surface and request.headers.get("X-VR-Form") == "1")
     return {
         "form_surface": surface,
         "form_route_patterns": form_route_patterns(),
+        # True when this response fills the shared form dialog (layouts/form_fragment.html).
+        "form_dialog": form_dialog,
         "form_surface_layout": (
-            "layouts/form_fragment.html"
-            if surface and request.headers.get("X-VR-Form") == "1"
-            else "layouts/document.html"
+            "layouts/form_fragment.html" if form_dialog else "layouts/document.html"
         ),
     }
 

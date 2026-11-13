@@ -70,10 +70,10 @@
         },
         {
           "label": "Supplied percent solids (optional)",
-          "description": "Expand Percent solids (%) and Solids source reference for soil."
+          "description": "Expand Percent solids and Solids source reference for soil."
         },
         {
-          "label": "Percent solids (%)",
+          "label": "Percent solids",
           "description": "Optional supplied exact percentage; requires a source."
         },
         {
@@ -105,8 +105,12 @@
           "description": "Shown for a result that already has a revision. Required for correction of returned/approved work; a draft revision without a reason receives the recorded reason Entry revised before submission."
         },
         {
-          "label": "Qualifier codes you can use",
-          "description": "Expand active code descriptions; codes marked for holding-time exceedance can satisfy the exceeded-time submission requirement."
+          "label": "How to enter results",
+          "description": "Collapsed above the grid: how to type results (exact text, ND for a non-detect), the reporting-limit default, units and time zone, and the active qualifier codes with descriptions. Codes marked for holding-time exceedance can satisfy the exceeded-time submission requirement. On a soil batch the weight-basis rule stays visible above it."
+        },
+        {
+          "label": "Returned row",
+          "description": "A result returned by review shows a Returned line under its row with the reviewer's reason and name. Enter it again with a reason."
         }
       ]
     },

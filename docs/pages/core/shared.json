@@ -39,6 +39,10 @@
           "description": "Select a menu destination or a section tab to change pages. The current destination is marked when it appears in your menu, and keyboard focus has a visible outline. The staff sidebar shows destinations for the work your roles can perform, combines destinations when you hold several roles, and omits empty sections. Related record links and direct pages retain their existing access checks, so a readable record may have no sidebar destination for your role; no sidebar item is marked on that page. Portal destinations wrap onto another line on narrow screens; client portal navigation is unchanged."
         },
         {
+          "label": "Collapse menu / Expand menu",
+          "description": "On wide screens (992px and up) the button at the top of the staff sidebar folds the menu into a rail of icons, leaving more room for tables. In the rail, hover over or focus an icon to see its label; the current destination stays highlighted and section names become short coloured rules. Select Expand menu to restore the full menu. The choice is saved for your account, so it follows you to any workstation and does not affect other people. On narrow screens the menu opens from the Menu button instead and is always full width."
+        },
+        {
           "label": "Theme",
           "description": "The Theme menu offers Light, Dark and System. System follows the device preference. The chosen appearance is saved in this browser. After choosing an appearance, focus returns to the Theme button."
         },
@@ -102,11 +106,11 @@
         },
         {
           "label": "Sort and pages",
-          "description": "Linked column headings change server-side ordering. Pagination moves through the filtered result set; the count describes that set. Choose Rows per page, then select Show to apply that page size and return to page 1 while keeping the other filters. Changing the selection alone does not reload the page."
+          "description": "Linked column headings change server-side ordering. Pagination moves through the filtered result set; the count describes that set. Choose Rows per page, then select Show to apply that page size and return to page 1 while keeping the other filters. Changing the selection alone does not reload the page. Your sort and rows per page are saved for your account on each list: opening the list again, on any workstation, uses them until you choose others. Clear all removes filters only."
         },
         {
           "label": "Columns",
-          "description": "Opens column visibility and order preferences. Use the controls to show/hide or move supported columns, or Reset columns to restore the defaults. Columns marked Always shown are locked. These preferences stay in this browser and do not change permissions or the underlying records."
+          "description": "Opens column visibility and order preferences. Use the controls to show/hide or move supported columns, or Reset columns to restore the defaults. Columns marked Always shown are locked. These preferences are saved for your account, on any workstation, and do not change permissions or the underlying records."
         }
       ]
     },
@@ -140,6 +144,9 @@
     "accounts/roles.py",
     "core/templatetags/navigation.py",
     "templates/includes/nav_staff.html",
-    "tests/test_navigation.py"
+    "tests/test_navigation.py",
+    "static/js/sidebar.js",
+    "static/js/preferences.js",
+    "core/preferences.py"
   ]
 }

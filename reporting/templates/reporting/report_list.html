@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 Staff report grid. Context: page_obj, filter_form (bound
 ReportFilterForm), q, sort, per_page, active_filters, filtered, can_prepare. Columns carry stable
@@ -6,27 +7,26 @@ data-vr-col IDs for static/js/grid.js; hiding a column is presentation only. "Ch
 release checks are the precise readiness and change test.
 {% endcomment %}
 {% block page_actions %}
-{% if can_prepare %}<a class="btn btn-primary" href="{% url 'reporting:report-create' %}">{% include "includes/icon.html" with name="plus-lg" %}Prepare report</a>{% endif %}
+{% if can_prepare %}<a class="btn btn-primary" href="{% url 'reporting:report-create' %}">{% icon name="plus-lg" %}Prepare report</a>{% endif %}
 {% endblock %}
 {% block content %}
 {% if can_prepare %}{% url 'reporting:report-create' as create_url %}{% endif %}
-<section class="card vr-table-card" aria-labelledby="reports-heading">
-  <h2 class="visually-hidden" id="reports-heading">Reports</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter reports" placeholder="Report ID, title, project or client" search_id="filter-q" grid="reporting.reports" active=filtered %}
-  {% if page_obj.paginator.count %}
+{% panel title="Reports" heading_id="reports-heading" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter reports" placeholder="Report ID, title, project or client" search_id="filter-q" grid="reporting.reports" active=filtered %}
+  {% list_results items=page_obj noun="reports" filtered=filtered invalid=filter_form.errors clear_url=request.path error_body="Correct the highlighted filter above." no_results_title="No reports match these filters" no_results_body="Check the report ID for typos, or clear the filters." empty_title="No reports yet" empty_body="Prepare a report for samples whose results are reviewed and approved." action_url=create_url action_label="Prepare report" %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table" data-vr-grid="reporting.reports" data-vr-grid-version="1" aria-labelledby="reports-heading">
       <thead>
         <tr>
-          {% include "includes/sort_header.html" with label="Report" asc="number" desc="-number" col="report" locked=True %}
-          {% include "includes/sort_header.html" with label="Title" asc="title" desc="-title" col="title" %}
-          {% include "includes/sort_header.html" with label="Client / project" asc="client" desc="-client" col="client" %}
-          {% include "includes/sort_header.html" with label="Status" asc="status" desc="-status" col="status" %}
+          {% sort_header label="Report" asc="number" desc="-number" col="report" locked=True %}
+          {% sort_header label="Title" asc="title" desc="-title" col="title" %}
+          {% sort_header label="Client / project" asc="client" desc="-client" col="client" %}
+          {% sort_header label="Status" asc="status" desc="-status" col="status" %}
           <th scope="col" data-vr-col="results" data-vr-col-label="Results">Results <span class="visually-hidden">(approved of requested, or changes since issue)</span></th>
-          {% include "includes/sort_header.html" with label="Samples" asc="samples" desc="-samples" class="text-end" col="samples" %}
-          {% include "includes/sort_header.html" with label="Released" asc="released" desc="-released" first="desc" col="released" %}
+          {% sort_header label="Samples" asc="samples" desc="-samples" class="text-end" col="samples" %}
+          {% sort_header label="Released" asc="released" desc="-released" first="desc" col="released" %}
           <th scope="col" data-vr-col="released_by" data-vr-col-hidden>Released by</th>
-          {% include "includes/sort_header.html" with label="Prepared" asc="created" desc="-created" first="desc" col="prepared" hidden=True %}
+          {% sort_header label="Prepared" asc="created" desc="-created" first="desc" col="prepared" hidden=True %}
         </tr>
       </thead>
       <tbody>
@@ -34,14 +34,14 @@ release checks are the precise readiness and change test.
         <tr>
           <th scope="row"><a class="vr-row-link vr-id" href="{% url 'reporting:report-detail' report.pk %}">{{ report.number }}</a></th>
           <td>{{ report.title }}</td>
-          <td>{{ report.project.client }}<div class="vr-muted small">{{ report.project.name }}</div></td>
+          <td class="vr-clip" title="{{ report.project.client }} / {{ report.project.name }}"><span class="vr-clip-main">{{ report.project.client }}</span><span class="vr-sub">{{ report.project.name }}</span></td>
           <td>{% include "reporting/version_status.html" with plain=True %}</td>
           <td>
             {% if report.latest_version %}
-              {% if report.results_changed %}{% include "includes/status.html" with label="Results or samples changed" tone="info" plain=True title="A result was corrected or re-entered, or the sample scope changed, since the latest issued version. Preview to see exactly what would change; QC and narrative changes are only detected there." %}{% else %}<span class="vr-muted" title="No result or sample-scope change detected. QC and narrative changes are checked only in the preview.">No result changes</span>{% endif %}
+              {% if report.results_changed %}{% status label="Results or samples changed" tone="info" plain=True title="A result was corrected or re-entered, or the sample scope changed, since the latest issued version. Preview to see exactly what would change; QC and narrative changes are only detected there." %}{% else %}<span class="vr-muted" title="No result or sample-scope change detected. QC and narrative changes are checked only in the preview.">No result changes</span>{% endif %}
             {% else %}
               {% with a=report.tests_approved|stringformat:"s" t=report.tests_total|stringformat:"s" %}{% with label=a|add:" / "|add:t|add:" approved" %}
-              {% if report.tests_total and report.tests_approved == report.tests_total %}{% include "includes/status.html" with label=label tone="neutral" plain=True title="All requested tests approved. Preview to run the release checks." %}{% else %}{% include "includes/status.html" with label=label tone="warning" plain=True title="Approved of requested tests." %}{% endif %}
+              {% if report.tests_total and report.tests_approved == report.tests_total %}{% status label=label tone="neutral" plain=True title="All requested tests approved. Preview to run the release checks." %}{% else %}{% status label=label tone="warning" plain=True title="Approved of requested tests." %}{% endif %}
               {% endwith %}{% endwith %}
             {% endif %}
           </td>
@@ -54,13 +54,6 @@ release checks are the precise readiness and change test.
       </tbody>
     </table>
   </div>
-  {% include "includes/pagination.html" with noun="reports" filtered=filtered %}
-  {% elif filter_form.errors %}
-  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above." clear_url=request.path %}
-  {% elif filtered %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No reports match these filters" body="Check the report ID for typos, or clear the filters." clear_url=request.path %}
-  {% else %}
-  {% include "includes/empty_state.html" with title="No reports yet" body="Prepare a report for samples whose results are reviewed and approved." action_url=create_url action_label="Prepare report" %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}

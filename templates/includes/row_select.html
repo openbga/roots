@@ -1,0 +1,16 @@
+{% load ui %}{% comment %}
+A row's selection checkbox for a bulk action (docs/ui-standards.md section 5, rule 5), in the row's
+first cell; the header's includes/select_all.html checks the enabled boxes of the same name.
+Parameters:
+  name      the field name the bulk form reads, e.g. "revisions" (required)
+  value     the row's id (required unless disabled)
+  label     accessible name naming the row, e.g. "Select S-0001 Lead"
+  form_id   optional id of the bulk form when the table sits outside it (not "form": an include
+            sees the page's context, where "form" is usually a bound Django form)
+  ready     truthy to mark the row for select_all's ready shortcut (data-ready)
+  checked   truthy when selected
+  disabled  truthy for an ineligible row; give the visible reason beside it and in label
+  id, describedby   optional id and aria-describedby
+Usage: <td>{% row_select name="revisions" value=rev.pk label="Select "|add:sample.lab_id %}</td>
+{% endcomment %}
+<input class="form-check-input" type="checkbox"{% if name and not disabled %} name="{{ name }}"{% endif %}{% if value != "" and value is not None and not disabled %} value="{{ value }}"{% endif %}{% if id %} id="{{ id }}"{% endif %}{% if form_id %} form="{{ form_id }}"{% endif %}{% if ready %} data-ready{% endif %}{% if checked %} checked{% endif %}{% if disabled %} disabled{% endif %}{% if describedby %} aria-describedby="{{ describedby }}"{% endif %}{% if label %} aria-label="{{ label }}"{% endif %}>

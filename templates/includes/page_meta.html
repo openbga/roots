@@ -1,0 +1,8 @@
+{% comment %}
+Key facts under a record page's title (docs/ui-standards.md section 4): status first, then at
+most four facts that identify the record; no prose. Rendered by the {% page_meta %} block tag
+({% load ui %}) inside {% block page_meta %}; the tag's body is the <li> items.
+Usage:
+  {% block page_meta %}{% page_meta %}<li>{% status ... %}</li><li>{{ quote.title }}</li>{% endpage_meta %}{% endblock %}
+{% endcomment %}
+{% if body %}<ul class="vr-page-meta">{{ body }}</ul>{% endif %}

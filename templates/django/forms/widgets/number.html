@@ -1,0 +1,9 @@
+{% comment %}
+NumberInput as a text field: the exact typed string is submitted (Decimal on the server, never a
+float), with no spinners and no browser-localised display. min/max/step are not rendered (the
+server validates). The touch keypad: an explicit inputmode attr wins; otherwise "numeric" or
+"decimal" only when min >= 0, because those keypads have no minus sign.
+Unit: the widget attr "unit" (forms.NumberInput(attrs={"unit": "%"})) renders the field as one
+input group with the unit as its addon, wherever the field is rendered, and the unit is read with
+the field (aria-describedby "<id>_unit"). Keep the unit out of the label.
+{% endcomment %}{% with type=widget.type extra=widget.attrs.class|default:"" step=widget.attrs.step|default_if_none:""|stringformat:"s" min=widget.attrs.min unit=widget.attrs.unit unit_id=widget.attrs.id|add:"_unit" %}{% if unit %}<div class="input-group vr-unit-group">{% endif %}<input type="text" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %} class="{% if 'form-' not in extra %}form-control {% endif %}{{ extra }} vr-number"{% if not widget.attrs.inputmode and min != None and min >= 0 %} inputmode="{% if step == '' or step == '1' %}numeric{% else %}decimal{% endif %}"{% endif %} autocomplete="off" spellcheck="false"{% if unit %} aria-describedby="{% for name, value in widget.attrs.items %}{% if name == 'aria-describedby' %}{{ value }} {% endif %}{% endfor %}{{ unit_id }}"{% endif %}{% for name, value in widget.attrs.items %}{% if name != "class" and name != "min" and name != "max" and name != "step" and name != "unit" and value is not False %}{% if name != "aria-describedby" or not unit %} {{ name }}{% if value is not True %}="{{ value|stringformat:'s' }}"{% endif %}{% endif %}{% endif %}{% endfor %}>{% if unit %}<span class="input-group-text" id="{{ unit_id }}">{{ unit }}</span></div>{% endif %}{% endwith %}

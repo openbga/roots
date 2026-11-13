@@ -1,0 +1,15 @@
+{% comment %}
+A sample matrix as a tag: a small tile in the matrix colour with its icon, then the matrix name and
+the sample source as text, so the colour is never the only cue. The icon of each matrix is set once,
+in receipt.models.MATRIX_ICONS (Water droplet-fill, Wastewater water, Soil layers-half).
+Rendered by the {% matrix_tag %} tag ({% load ui %}).
+Parameters:
+  matrix   the stored matrix value (water, wastewater, soil); another value shows a grey tile
+  name     the matrix name when it is not a stored value (a submission snapshot's label)
+  source   optional sample source text (e.g. sample.get_source_type_display). A leading matrix
+           word is dropped from the visible text ("Wastewater effluent" shows "effluent"); the
+           tag's title and the screen-reader text keep the whole value. A source equal to the
+           matrix ("Soil") is left out
+  size     "sm" in dense rows, "lg" in a record header; default for lists
+Usage: {% matrix_tag matrix=sample.matrix source=sample.get_source_type_display %}
+{% endcomment %}{% load ui %}<span class="vr-matrix-tag{% if size == "sm" %} is-sm{% elif size == "lg" %} is-lg{% endif %}"{% if data_matrix %} data-matrix="{{ data_matrix }}"{% endif %}{% if source %} title="{{ name }} · {{ source }}"{% endif %}><span class="vr-matrix-icon">{% if icon %}{% icon name=icon %}{% endif %}</span><span class="vr-matrix-name">{{ name }}</span>{% if source %}<span class="vr-matrix-sep" aria-hidden="true">·</span> {% if short_source != source %}<span class="vr-matrix-source" aria-hidden="true">{{ short_source }}</span><span class="visually-hidden">{{ source }}</span>{% else %}<span class="vr-matrix-source">{{ source }}</span>{% endif %}{% endif %}</span>

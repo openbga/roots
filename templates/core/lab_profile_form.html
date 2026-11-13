@@ -1,33 +1,20 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 Laboratory profile forms (admin role): address and contact details, logo upload, one certificate.
 Context: page_title, submit_label, form (grouped(); None when no laboratory is set up), multipart
 (the logo upload), notes (sentences shown above the fields). Saving returns to the profile.
 {% endcomment %}
-{% block breadcrumbs %}{% url 'lab-profile' as profile_url %}{% include "includes/breadcrumbs.html" with section="Laboratory profile" section_url=profile_url %}{% endblock %}
+{% block breadcrumbs %}{% url 'lab-profile' as profile_url %}{% breadcrumbs section="Laboratory profile" section_url=profile_url %}{% endblock %}
 {% block content %}
+{% url 'lab-profile' as cancel_url %}
 {% if form %}
-<form class="vr-form" method="post" novalidate{% if multipart %} enctype="multipart/form-data"{% endif %}>
-  {% csrf_token %}
-  {% include "includes/form_errors.html" with form=form %}
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required. Changes are audited with before and after values.</p>
+{% form_page form=form multipart=multipart cancel_url=cancel_url submit_label=submit_label note="Changes are audited with before and after values." %}
   {% for note in notes %}<p class="vr-form-note">{{ note }}</p>{% endfor %}
-  {% with sections=form.grouped %}{% for legend, fields in sections %}
-  <fieldset class="vr-form-section">
-    {% if sections|length > 1 %}<legend>{{ legend }}</legend>{% endif %}
-    {% for field in fields %}{{ field.as_field_group }}{% endfor %}
-  </fieldset>
-  {% endfor %}{% endwith %}
-  {% for field in form.hidden_fields %}{{ field }}{% endfor %}
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{% url 'lab-profile' %}">Cancel</a>
-    <button class="btn btn-primary" type="submit">{{ submit_label }}</button>
-  </div>
-</form>
+  {% form_sections form=form %}
+{% endform_page %}
 {% else %}
-{% include "includes/empty_state.html" with title="No laboratory configured" body="The laboratory is not configured yet, so it has no profile to change." %}
-<div class="vr-form-actions">
-  <a class="btn btn-link" href="{% url 'lab-profile' %}">Cancel</a>
-</div>
+{% empty_state title="No laboratory configured" body="The laboratory is not configured yet, so it has no profile to change." %}
+{% form_actions cancel_url=cancel_url no_submit=True %}{% endform_actions %}
 {% endif %}
 {% endblock %}

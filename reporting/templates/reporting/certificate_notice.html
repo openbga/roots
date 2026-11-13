@@ -2,10 +2,8 @@
 Certificates the laboratory marked for printing that the next version leaves off because its
 issue date is outside their recorded validity. Information for the person preparing the report;
 it never blocks release. Context: withheld_certificates, issued_on, can_manage_lab_profile.
-{% endcomment %}{% if withheld_certificates %}
-<div class="alert alert-info" role="status" id="withheld-certificates">
-  {% include "includes/status.html" with label="Certificates left off" tone="info" plain=True %}
-  <div>
+{% endcomment %}{% load ui %}{% if withheld_certificates %}
+{% notice tone="info" label="Certificates left off" id="withheld-certificates" %}
     <p class="mb-1">{% with n=withheld_certificates|length %}{{ n }} certificate{{ n|pluralize }} marked for printing {{ n|pluralize:"is,are" }} left off the next version if it is issued on <time datetime="{{ issued_on|date:'Y-m-d' }}">{{ issued_on|date:"Y-m-d" }}</time>, because that date is outside the validity recorded for {{ n|pluralize:"it,them" }}:{% endwith %}</p>
     <ul class="mb-1 ps-3">
       {% for certificate in withheld_certificates %}
@@ -13,6 +11,5 @@ it never blocks release. Context: withheld_certificates, issued_on, can_manage_l
       {% endfor %}
     </ul>
     <p class="mb-0">This does not block release. If the dates are out of date, {% if can_manage_lab_profile %}correct them in{% else %}an administrator can correct them in{% endif %} <a href="{% url 'lab-profile' %}">Setup → Laboratory profile</a>, then reload this page.</p>
-  </div>
-</div>
+{% endnotice %}
 {% endif %}

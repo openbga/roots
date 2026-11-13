@@ -1,0 +1,15 @@
+{% load ui %}{% comment %}
+A form's fields in sections, for a form whose grouped() returns [(legend, [bound fields])]: one
+fieldset.vr-form-section per group, with its legend when there is more than one group, then the
+hidden fields. The body of {% form_page %} for such forms. (receipt GroupedForms, whose groups
+carry column classes, use receipt/_grouped_fields.html.)
+Parameters: form (required; pass it explicitly, the page's own "form" is not assumed).
+Usage: {% form_page form=form cancel_url=cancel_url %}{% form_sections form=form %}{% endform_page %}
+{% endcomment %}
+{% with sections=form.grouped %}{% for legend, fields in sections %}
+<fieldset class="vr-form-section">
+  {% if legend and sections|length > 1 %}<legend>{{ legend }}</legend>{% endif %}
+  {% for field in fields %}{{ field.as_field_group }}{% endfor %}
+</fieldset>
+{% endfor %}{% endwith %}
+{% for field in form.hidden_fields %}{{ field }}{% endfor %}

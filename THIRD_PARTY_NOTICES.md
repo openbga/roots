@@ -22,9 +22,11 @@ files in the image. Do not strip those files or the notices in bundled browser a
 | SciPy / NumPy | BSD-3-Clause; https://github.com/scipy/scipy/blob/v1.18.1/LICENSE.txt and https://github.com/numpy/numpy/blob/v2.5.4/LICENSE.txt; retain bundled numerical-library notices |
 | dj-database-url | BSD-3-Clause; https://github.com/jazzband/dj-database-url/blob/master/LICENSE |
 | Bootstrap 5.3.8 | MIT; https://github.com/twbs/bootstrap/blob/v5.3.8/LICENSE; retain bundled license header/file under static/vendor/bootstrap-5.3.8/ |
-| Bootstrap Icons 1.13.2 (subset in static/img/icons.svg) | MIT; https://github.com/twbs/icons/blob/v1.13.2/LICENSE; retain static/img/icons.LICENSE |
+| Bootstrap Icons 1.13.2 (subset in static/img/icons.svg, symbols copied verbatim) | MIT; https://github.com/twbs/icons/blob/v1.13.2/LICENSE; retain static/img/icons.LICENSE |
+| Overpass (variable, latin and latin-ext subsets, via @fontsource-variable/overpass 5.3.0) | SIL Open Font License 1.1; Copyright 2021 The Overpass Project Authors (https://github.com/RedHatOfficial/Overpass); retain static/vendor/overpass-5.3.0/OFL.txt; the subsets are also embedded in issued report PDFs |
 | HTMX 2.0.11 | 0BSD; https://github.com/bigskysoftware/htmx/blob/v2.0.11/LICENSE; retain bundled LICENSE under static/vendor/htmx-2.0.11/ |
 | Tom Select 2.7.0 (including bundled Sifter and microplugin) | Apache-2.0; https://github.com/orchidjs/tom-select/blob/v2.7.0/LICENSE; retain bundled license and headers under static/vendor/tom-select/ |
+| Vanilla Calendar Pro 3.4.0 | MIT; https://github.com/uvarov-frontend/vanilla-calendar-pro/blob/v3.4.0/LICENSE; retain bundled LICENSE and the header under static/vendor/vanilla-calendar-pro-3.4.0/ |
 | Chart.js 4.6.1 / bundled @kurkle/color 0.3.2 | MIT; https://github.com/chartjs/Chart.js/blob/v4.6.1/LICENSE.md; retain both license files under static/vendor/chartjs-4.6.1/ |
 | DataTables 3.1.5 / ColReorder 3.1.2 (with Bootstrap 5 integrations) | MIT; https://datatables.net/license/mit; retain bundled License.txt under static/vendor/datatables/ |
 | Playwright / pytest-playwright (optional test tools) | Apache-2.0; https://github.com/microsoft/playwright-python/blob/main/LICENSE |

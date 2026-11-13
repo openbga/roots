@@ -1,7 +1,9 @@
 {% load reporting %}<!doctype html>
 {% comment %}
 PDF layout rendered from a frozen snapshot only: `c` is snapshot content, `release` its release
-block (None in previews). Never read live models here; issued PDFs are stored, not regenerated.
+block (None in previews), `view` the reading aids reporting.pdf.layout derives from `c` (flags,
+grouped receipt notes, QC per batch). Never read live models here; issued PDFs are stored, not
+regenerated. Print-safe: every emphasis is weight, an outline or a strike line, never colour.
 {% endcomment %}
 <html lang="en">
 <head>
@@ -11,11 +13,11 @@ block (None in previews). Never read live models here; issued PDFs are stored, n
 </head>
 <body>
 <header class="running-header">
-  <div class="header-row"><span class="lab">{{ c.lab.name|default:"Laboratory" }}</span><span class="doc">{{ c.report.number }}{% if release %} · Version {{ release.version }}{% else %} · Preview{% endif %}</span></div>
+  <div class="header-row"><span class="lab">{{ c.lab.name|default:"Laboratory" }}</span><span class="doc"><strong>{{ c.report.number }}</strong>{% if release %}<span class="sep">·</span>Version {{ release.version }}{% if release.amends %}<span class="sep">·</span>Amended{% endif %}{% else %}<span class="sep">·</span>Preview{% endif %}</span></div>
   {% if c.synthetic_notice %}<div class="synthetic-banner">Synthetic demonstration data. Not a laboratory result. Not for regulatory or compliance use.</div>{% endif %}
 </header>
 <footer class="running-footer">
-  <span class="hash">{% if release %}Content SHA-256 {{ sha }}{% else %}Preview, not issued{% endif %}</span>
+  <span>{% if release %}Content SHA-256 <span class="hash">{{ sha }}</span>{% else %}Preview, not issued{% endif %}</span>
 </footer>
 {% if preview %}<div class="watermark">PREVIEW · NOT ISSUED</div>{% endif %}
 
@@ -24,21 +26,24 @@ block (None in previews). Never read live models here; issued PDFs are stored, n
   {% if c.lab.logo %}<div class="letterhead-logo"><img src="{{ c.lab.logo|logo_url }}" alt=""></div>{% endif %}
   <div class="letterhead-text">
     <p class="letterhead-name">{{ c.lab.name }}</p>
-    {% for line in c.lab.address %}<p>{{ line }}</p>{% endfor %}
+    {% if c.lab.address %}<p>{% for line in c.lab.address %}{% if not forloop.first %}<span class="sep">·</span>{% endif %}{{ line }}{% endfor %}</p>{% endif %}
     {% if c.lab.phone or c.lab.email or c.lab.website %}<p class="letterhead-contact">{% if c.lab.phone %}<span>Phone {{ c.lab.phone }}</span>{% endif %}{% if c.lab.email %}<span>{{ c.lab.email }}</span>{% endif %}{% if c.lab.website %}<span>{{ c.lab.website }}</span>{% endif %}</p>{% endif %}
   </div>
 </section>
 {% endif %}
 
 <section class="title-block">
-  <p class="eyebrow">Analytical report</p>
+  <p class="identity"><span class="number">{{ c.report.number }}</span>{% if release %}<span class="version">Version {{ release.version }}</span>{% if release.amends %}<span class="status-mark">Amended</span>{% endif %}{% else %}<span class="status-mark">Preview<span class="sep">·</span>not issued</span>{% endif %}</p>
   <h1>{{ c.report.title }}</h1>
-  <table class="facts">
-    <tr><th>Report</th><td>{{ c.report.number }}</td><th>Version</th><td>{% if release %}{{ release.version }}{% if release.amends %} (amendment){% endif %}{% else %}Not issued (preview){% endif %}</td></tr>
-    <tr><th>Client</th><td>{{ c.client.name }}{% if c.client.contact_name %}<br><span class="muted">Attn: {{ c.client.contact_name }}</span>{% endif %}{% for line in c.client.address %}<br><span class="muted">{{ line }}</span>{% endfor %}</td><th>Project</th><td>{{ c.project.name }}{% if c.project.program %}<br><span class="muted">Program / permit: {{ c.project.program }}</span>{% endif %}</td></tr>
-    <tr><th>Released</th><td>{% if release %}{{ release.released_at|iso_time }}{% else %}—{% endif %}</td><th>Released by</th><td>{% if release %}{{ release.released_by }}{% else %}—{% endif %}</td></tr>
-    <tr><th>Samples</th><td>{{ c.samples|length }}</td><th>Times</th><td>Laboratory local time ({{ c.lab.timezone }}), UTC offset shown</td></tr>
-  </table>
+  <p class="subtitle">Analytical report for <strong>{{ c.client.name }}</strong><span class="sep">·</span><strong>{{ c.project.name }}</strong></p>
+</section>
+
+<section class="glance">
+  <h2>At a glance</h2>
+  {% if release %}<p>Released for issue by <strong>{{ release.released_by }}</strong> on {{ release.released_at|iso_time }}.</p>
+  {% else %}<p><strong>Preview only.</strong> This document has not been released and is not a laboratory report.</p>{% endif %}
+  <p><strong>{{ c.samples|length }} sample{{ c.samples|length|pluralize }}, {{ view.result_count }} result{{ view.result_count|pluralize }}.</strong>{% if view.attention %} Results that need attention, each explained under its row:{% else %} No result carries a qualifier, a holding-time flag or a QC issue.{% endif %}</p>
+  {% if view.attention %}<ul>{% for a in view.attention %}<li><span class="id">{{ a.sample.lab_id }}</span> ({{ a.sample.client_sample_id }}) {{ a.r.analyte }} {{ a.r.reported }} {{ a.r.unit }}: {% if a.qualifiers %}qualifier {% for code, meaning in a.qualifiers %}{{ code }}{% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}{% if a.holding_flag %}{% if a.qualifiers %}; {% endif %}holding time {{ a.holding_flag|lower }}{% endif %}{% if a.qc_issues %}{% if a.qualifiers or a.holding_flag %}; {% endif %}QC exception in batch {% for i in a.qc_issues %}{% ifchanged i.batch %}{% if not forloop.first %}, {% endif %}{{ i.batch }}{% endifchanged %}{% endfor %}{% endif %}</li>{% endfor %}</ul>{% endif %}
 </section>
 
 {% if release.amends %}
@@ -46,9 +51,18 @@ block (None in previews). Never read live models here; issued PDFs are stored, n
   <h2>Amended report</h2>
   <p>This version {{ release.version }} replaces version {{ release.amends.version }} issued {{ release.amends.released_at|iso_time }}. The earlier version remains on record.</p>
   <p><strong>Reason:</strong> {{ release.reason }}</p>
-  {% if release.changes %}<p><strong>Changes:</strong></p><ul>{% for change in release.changes %}<li>{{ change }}</li>{% endfor %}</ul>{% endif %}
+  {% if release.changes %}<p><strong>Changes:</strong></p><ul>{% for change in release.changes %}<li>{% include "reporting/_change.html" %}</li>{% endfor %}</ul>{% endif %}
 </section>
 {% endif %}
+
+<table class="facts">
+  <tr>
+    <td><span class="label">Client</span>{{ c.client.name }}{% if c.client.contact_name or c.client.address %}<span class="muted">{% if c.client.contact_name %}<br>Attn: {{ c.client.contact_name }}{% endif %}{% for line in c.client.address %}<br>{{ line }}{% endfor %}</span>{% endif %}</td>
+    <td><span class="label">Project</span>{{ c.project.name }}{% if c.project.program %}<br><span class="muted">Program / permit: {{ c.project.program }}</span>{% endif %}</td>
+    <td><span class="label">Released</span>{% if release %}{{ release.released_at|iso_time }}<br>by {{ release.released_by }}{% else %}Not issued (preview){% endif %}</td>
+    <td><span class="label">Times</span><span class="muted">Laboratory local time ({{ c.lab.timezone }}), UTC offset shown</span></td>
+  </tr>
+</table>
 
 {% if c.report.narrative %}
 <section class="narrative">
@@ -59,86 +73,97 @@ block (None in previews). Never read live models here; issued PDFs are stored, n
 
 <section>
   <h2>Sample summary</h2>
-  <table class="grid">
+  <table class="grid summary">
     <thead><tr><th>Lab ID</th><th>Client sample ID</th><th>Location</th><th>Matrix</th><th>Type</th><th>Collected</th><th>Received</th><th>Receipt disposition</th></tr></thead>
-    <tbody>
-      {% for s in c.samples %}
-      <tr><td class="id">{{ s.lab_id }}</td><td class="id">{{ s.client_sample_id }}</td><td>{{ s.collection_location|default:"Not recorded" }}</td><td>{{ s.matrix }}{% if s.source %}, {{ s.source|lower }}{% endif %}</td><td>{{ s.collection_type }}{% if s.sample_type %}<br><span class="muted">{{ s.sample_type }}</span>{% endif %}</td><td>{{ s.collected_at|iso_time }}</td><td>{{ s.received_at|iso_time }}</td><td>{{ s.disposition }}</td></tr>
-      {% endfor %}
+    {% for v in view.samples %}{% with s=v.s %}
+    <tbody class="summary-row">
+      <tr{% if v.qualifier_flags or v.holding_flags or v.qc_exception %} class="flagged"{% endif %}><td class="id">{{ s.lab_id }}</td><td class="id">{{ s.client_sample_id }}</td><td>{{ s.collection_location|default:"Not recorded" }}</td><td>{{ s.matrix }}{% if s.source %}, {{ s.source|lower }}{% endif %}</td><td>{{ s.collection_type }}{% if s.sample_type %}<br><span class="muted">{{ s.sample_type }}</span>{% endif %}</td><td>{{ s.collected_at|iso_time }}</td><td>{{ s.received_at|iso_time }}</td><td>{{ s.disposition }}</td></tr>
+      {% if v.qualifier_flags or v.holding_flags or v.qc_exception %}<tr class="attention-row"><td></td><td colspan="7">Needs attention: {% if v.qualifier_flags %}Qualified {% for q in v.qualifier_flags %}<span class="flag">{{ q }}</span> {% endfor %}{% endif %}{% for h in v.holding_flags %}<span class="flag">Holding {{ h|lower }}</span> {% endfor %}{% if v.qc_exception %}<span class="flag">QC exception</span>{% endif %}</td></tr>{% endif %}
     </tbody>
+    {% endwith %}{% endfor %}
   </table>
 </section>
 
-{% for s in c.samples %}
+{% for v in view.samples %}{% with s=v.s %}
 <section class="sample">
-  <h2>Sample <span class="id">{{ s.lab_id }}</span> · client ID <span class="id">{{ s.client_sample_id }}</span></h2>
-  <table class="facts compact">
-    <tr><th>Chain of custody</th><td class="id">{{ s.coc_reference }}</td><th>Matrix</th><td>{{ s.matrix }}{% if s.source %}, {{ s.source|lower }}{% endif %} ({{ s.collection_type|lower }}){% if s.sample_type %}<br><span class="muted">{{ s.sample_type }}</span>{% endif %}</td></tr>
-    <tr><th>Collection location</th><td colspan="3">{{ s.collection_location|default:"Not recorded" }}</td></tr>
-    <tr>{% if s.collection_started_at %}<th>Composite start</th><td>{{ s.collection_started_at|iso_time }}</td><th>Composite end</th>{% else %}<th>Collector</th><td>{{ s.collector }}</td><th>Collected</th>{% endif %}<td>{{ s.collected_at|iso_time }}</td></tr>
-    {% if s.collection_started_at %}<tr><th>Collector</th><td colspan="3">{{ s.collector }}</td></tr>{% endif %}
-    <tr><th>Received</th><td>{{ s.received_at|iso_time }}</td><th>Received by</th><td>{{ s.received_by }}</td></tr>
-    <tr><th>Cooler temperature</th><td>{{ s.cooler_temperature }} {{ s.cooler_temperature_unit }} (as read){% if s.coolant %}; coolant on arrival: {{ s.coolant|lower }}{% endif %}{% if s.temperature_instrument %}<br><span class="muted">{{ s.temperature_instrument }}</span>{% endif %}</td><th>Custody seal</th><td>{{ s.seal_condition }}</td></tr>
-    <tr><th>Preservation check</th><td colspan="3">{{ s.preservation_check }}</td></tr>
-    {% if s.discrepancy or s.disposition_note %}<tr><th>Receipt discrepancy</th><td colspan="3">{{ s.discrepancy|default:"None recorded" }}{% if s.disposition_note %}<br>Disposition: {{ s.disposition }}. {{ s.disposition_note }}{% endif %}</td></tr>{% endif %}
+  <h2>Sample <span class="id">{{ s.lab_id }}</span><span class="client-id"><span class="sep">·</span>client ID <span class="id">{{ s.client_sample_id }}</span></span></h2>
+  <table class="facts">
+    <tr>
+      <td><span class="label">Chain of custody</span><span class="id">{{ s.coc_reference }}</span></td>
+      <td><span class="label">Matrix</span>{{ s.matrix }}{% if s.source %}, {{ s.source|lower }}{% endif %} ({{ s.collection_type|lower }}){% if s.sample_type %}<br><span class="muted">{{ s.sample_type }}</span>{% endif %}</td>
+      {% if s.collection_started_at %}<td><span class="label">Composite start</span>{{ s.collection_started_at|iso_time }}</td><td><span class="label">Composite end</span>{{ s.collected_at|iso_time }}</td>
+      {% else %}<td><span class="label">Collected</span>{{ s.collected_at|iso_time }}</td><td><span class="label">Collector</span>{{ s.collector }}</td>{% endif %}
+    </tr>
+    <tr>
+      <td><span class="label">Collection location</span>{{ s.collection_location|default:"Not recorded" }}</td>
+      <td><span class="label">Received</span>{{ s.received_at|iso_time }}</td>
+      <td><span class="label">Received by</span>{{ s.received_by }}</td>
+      <td><span class="label">Custody seal</span>{{ s.seal_condition }}</td>
+    </tr>
+    <tr>
+      <td><span class="label">Cooler temperature</span>{{ s.cooler_temperature }} {{ s.cooler_temperature_unit }} (as read){% if s.coolant %}; coolant on arrival: {{ s.coolant|lower }}{% endif %}{% if s.temperature_instrument %}<br><span class="muted small">{{ s.temperature_instrument }}</span>{% endif %}</td>
+      <td{% if not s.collection_started_at %} colspan="3"{% endif %}><span class="label">Preservation check</span>{{ s.preservation_check }}</td>
+      {% if s.collection_started_at %}<td colspan="2"><span class="label">Collector</span>{{ s.collector }}</td>{% endif %}
+    </tr>
+    {% if s.discrepancy or s.disposition_note %}<tr><td colspan="4"><span class="label">Receipt discrepancy</span>{{ s.discrepancy|default:"None recorded" }}{% if s.disposition_note %}<br>Disposition: {{ s.disposition }}. {{ s.disposition_note }}{% endif %}</td></tr>{% endif %}
   </table>
-  <table class="grid results{% if s.results|length == 1 %} short{% endif %}">
+  <table class="grid results{% if v.results|length == 1 %} short{% endif %}">
     <thead>
-      <tr><th>Analyte</th><th class="num">Result</th><th class="nowrap">Unit</th><th>Qual.</th><th class="num">RL</th><th class="num">DF</th><th>Method</th><th>Analyzed</th><th>Analyst</th><th>Reviewed by</th><th>Holding time</th></tr>
+      <tr><th>Analyte</th><th class="num">Result</th><th>Unit</th><th>Qual.</th><th class="num">RL</th><th class="num">DF</th><th>Analyzed</th><th>Holding time</th></tr>
     </thead>
-    {% for r in s.results %}
+    {% for e in v.results %}{% with r=e.r %}
     <tbody class="result">
-      <tr>
-        <td>{{ r.analyte }}{% if r.cas_number %}<br><span class="muted">CAS {{ r.cas_number }}</span>{% endif %}</td>
-        <td class="num strong">{{ r.reported }}{% with basis=r|basis_label:s.matrix %}{% if basis %}<br><span class="muted">{{ basis }}</span>{% endif %}{% endwith %}</td>
+      <tr class="value{% if e.attention %} attention{% endif %}">
+        <td>{{ r.analyte }}{% if r.cas_number %} <span class="muted small">CAS {{ r.cas_number }}</span>{% endif %}</td>
+        <td class="num result">{{ r.reported }}{% with basis=r|basis_label:s.matrix %}{% if basis %}<br><span class="muted small">{{ basis }}</span>{% endif %}{% endwith %}</td>
         <td class="nowrap">{{ r.unit }}</td>
-        <td>{{ r.qualifiers|join:", "|default:"" }}</td>
+        <td class="nowrap">{% for q in r.qualifiers %}<span class="flag">{{ q }}</span>{% if not forloop.last %} {% endif %}{% endfor %}</td>
         <td class="num">{{ r.reporting_limit }}</td>
         <td class="num">{{ r.dilution_factor }}</td>
-        {% if r.source == "external" %}
-        <td>{{ r.method_code }}<br><span class="muted">As reported by {{ r.external.laboratory }}</span></td>
         <td class="nowrap">{{ r.analysis_started_at|iso_time }}</td>
-        <td>Subcontracted<sup>S</sup><br><span class="muted">{{ r.external.laboratory }}</span></td>
-        <td>{{ r.reviewed_by }}<br><span class="muted">Source review {{ r.reviewed_at|iso_date }}</span></td>
-        <td>Not evaluated by this laboratory</td>
-        {% else %}
-        <td>{{ r.method_code }} v{{ r.method_version }}<br><span class="muted">Batch {{ r.batch }}{% if r.prepared_at %}, prep {{ r.prepared_at|iso_time }}{% endif %}</span></td>
-        <td class="nowrap">{{ r.analysis_started_at|iso_time }}</td>
-        <td>{{ r.analyst }}</td>
-        <td>{{ r.reviewed_by }}<br><span class="muted">{{ r.reviewed_at|iso_date }}</span></td>
-        <td>{{ r.holding_status }}</td>
-        {% endif %}
+        <td>{% if r.source == "external" %}Not evaluated by this laboratory{% elif e.holding_flag %}<span class="flag">{{ r.holding_status }}</span>{% else %}{{ r.holding_status }}{% endif %}</td>
       </tr>
-      <tr class="note"><td colspan="11">{% include "reporting/preservation_record.html" %}</td></tr>
-      {% with solids=r|solids_text %}{% if r.correction_reason or r.comments or r.external_qualifiers or solids %}<tr class="note"><td colspan="11">{% if r.revision > 1 %}<span class="note-part">Revision {{ r.revision }}: {{ r.correction_reason }}</span>{% endif %}{% if solids %}<span class="note-part">{{ solids }}</span>{% endif %}{% if r.external_qualifiers %}<span class="note-part">Qualifiers as reported by {{ r.external.laboratory }}: {{ r.external_qualifiers }}</span>{% endif %}{% if r.comments %}<span class="note-part">Comment: {{ r.comments }}</span>{% endif %}</td></tr>{% endif %}{% endwith %}
+      {% for code, meaning in e.qualifiers %}<tr class="exception"><td colspan="8"><strong>{{ code }}</strong>{% if meaning %}: {{ meaning }}{% endif %}</td></tr>{% endfor %}
+      {% if e.holding_flag %}<tr class="exception"><td colspan="8"><strong>Holding time {{ r.holding_status|lower }}</strong>{% for h in r.holding %}{% if forloop.first %}: {% else %}; {% endif %}{{ h.name }}: {{ h.status|words }}{% if h.deadline %}, deadline {{ h.deadline|iso_time }}{% endif %}{% endfor %}</td></tr>{% endif %}
+      {% for i in e.qc_issues %}<tr class="exception"><td colspan="8"><strong>QC exception</strong>: batch {{ i.batch }}, {{ i.message }}{% if i.disposition %} Disposition: {{ i.disposition|words }}{% if i.note %} ({{ i.note }}){% elif i.note_withheld %} (note concerns a sample not in this report){% endif %}{% endif %}</td></tr>{% endfor %}
+      {% if r.revision > 1 %}<tr class="exception"><td colspan="8"><strong>Revision {{ r.revision }}:</strong> {{ r.correction_reason }}</td></tr>{% endif %}
+      <tr class="prov"><td colspan="8">{% if r.source == "external" %}{{ r.method_code }}<span class="sep">·</span>As reported by {{ r.external.laboratory }}<span class="sep">·</span>Subcontracted<sup>S</sup> to {{ r.external.laboratory }}<span class="sep">·</span>Reviewed by {{ r.reviewed_by }}, source review {{ r.reviewed_at|iso_date }}{% else %}{{ r.method_code }} ({{ r.method_version }})<span class="sep">·</span>Batch {{ r.batch }}{% if r.prepared_at %}, prep {{ r.prepared_at|iso_time }}{% endif %}<span class="sep">·</span>Analyst {{ r.analyst }}<span class="sep">·</span>Reviewed by {{ r.reviewed_by }} {{ r.reviewed_at|iso_date }}{% endif %}{% with solids=r|solids_text %}{% if solids %}<span class="sep">·</span>{{ solids }}{% endif %}{% if r.external_qualifiers %}<span class="sep">·</span><span class="note-ink">Qualifiers as reported by {{ r.external.laboratory }}: {{ r.external_qualifiers }}</span>{% endif %}{% if r.comments %}<span class="sep">·</span><span class="note-ink">Comment: {{ r.comments }}</span>{% endif %}{% endwith %}</td></tr>
+      {% if not v.shared_note %}<tr class="note"><td colspan="8">{{ e.note }}</td></tr>{% endif %}
     </tbody>
-    {% endfor %}
+    {% endwith %}{% endfor %}
   </table>
+  {% if v.shared_note %}<p class="sample-note"><strong>Receipt and preparation, for every result of this sample:</strong> {{ v.results.0.note }}</p>{% endif %}
 </section>
-{% endfor %}
+{% endwith %}{% endfor %}
 
-{% if c.batches %}
+{% if view.batches %}
 <section class="qc">
   <h2>Batch quality control summary</h2>
-  {% for b in c.batches %}
-  <h3>{% if b.kind == "preparation" %}Preparation batch{% else %}Analytical batch{% endif %} {{ b.number }} · {{ b.method }} · {{ b.matrix|capfirst }}</h3>
-  {% for analyte, qc in b.qc.items %}
+  {% for qb in view.batches %}{% with b=qb.b %}
+  <h3>{% if b.kind == "preparation" %}Preparation batch{% else %}Analytical batch{% endif %} {{ b.number }}<span class="sep">·</span>{{ b.method }}<span class="sep">·</span>{{ b.matrix|capfirst }}</h3>
   <table class="grid qc-table">
-    <thead><tr><th colspan="5">{{ analyte }}: {{ qc.field_samples }} {% if b.kind == "preparation" %}physical aliquot{{ qc.field_samples|pluralize }} for this test{% else %}field sample{{ qc.field_samples|pluralize }}{% endif %} in batch{% if qc.cancelled_aliquots %} (includes {{ qc.cancelled_aliquots }} cancelled aliquot{{ qc.cancelled_aliquots|pluralize }}){% endif %}</th></tr>
-      <tr><th>QC sample</th><th>Type</th><th class="num">Observed</th><th>Evaluation</th><th>Detail</th></tr></thead>
-    <tbody>
+    <thead><tr><th>Analyte</th><th>QC sample</th><th>Type</th><th class="num">Observed</th><th>Evaluation</th><th>Detail</th></tr></thead>
+    {% for g in qb.groups %}{% with qc=g.qc %}
+    <tbody class="qc-group">
       {% for m in qc.measurements %}
-      <tr><td{% if not m.withheld %} class="id"{% endif %}>{{ m.qc_sample }}{% if b.kind == "preparation" and not m.withheld %}<br><span class="muted">Analytical run: {{ m.analysis_batch|default:"not recorded" }}</span>{% endif %}</td><td>{{ m.qc_type|qc_type_label }}</td><td class="num">{% if m.withheld %}<span class="muted">Not shown</span>{% else %}{{ m.observed_text }} {{ m.unit }}{% endif %}</td><td>{{ m.evaluation.status|words|capfirst }}</td><td>{% for e in m.evaluation.measures %}{{ e.detail|capfirst }}{% if not forloop.last %}; {% endif %}{% endfor %}</td></tr>
+      <tr class="{% if forloop.first %}group-start{% endif %}{% if m.evaluation.status == "fail" %} fail{% endif %}">
+        <td class="analyte">{% if forloop.first %}{{ g.analyte }}<br><span class="muted small">{{ qc.field_samples }} {% if b.kind == "preparation" %}physical aliquot{{ qc.field_samples|pluralize }} for this test{% else %}field sample{{ qc.field_samples|pluralize }}{% endif %} in batch{% if qc.cancelled_aliquots %} (includes {{ qc.cancelled_aliquots }} cancelled aliquot{{ qc.cancelled_aliquots|pluralize }}){% endif %}</span>{% endif %}</td>
+        <td{% if not m.withheld %} class="id"{% endif %}>{{ m.qc_sample }}{% if b.kind == "preparation" and not m.withheld %}<br><span class="muted small">Analytical run: {{ m.analysis_batch|default:"not recorded" }}</span>{% endif %}</td>
+        <td>{{ m.qc_type|qc_type_label }}</td>
+        <td class="num">{% if m.withheld %}<span class="muted">Not shown</span>{% else %}{{ m.observed_text }} {{ m.unit }}{% endif %}</td>
+        <td>{% if m.evaluation.status == "fail" %}<span class="flag">{{ m.evaluation.status|words|capfirst }}</span>{% else %}{{ m.evaluation.status|words|capfirst }}{% endif %}</td>
+        <td>{% for e in m.evaluation.measures %}{{ e.detail|capfirst }}{% if not forloop.last %}; {% endif %}{% endfor %}</td>
+      </tr>
       {% empty %}
-      <tr><td colspan="5" class="muted">No QC measurements recorded for this analyte.</td></tr>
+      <tr class="group-start"><td class="analyte">{{ g.analyte }}<br><span class="muted small">{{ qc.field_samples }} {% if b.kind == "preparation" %}physical aliquot{{ qc.field_samples|pluralize }} for this test{% else %}field sample{{ qc.field_samples|pluralize }}{% endif %} in batch{% if qc.cancelled_aliquots %} (includes {{ qc.cancelled_aliquots }} cancelled aliquot{{ qc.cancelled_aliquots|pluralize }}){% endif %}</span></td><td colspan="5" class="muted">No QC measurements recorded for this analyte.</td></tr>
       {% endfor %}
       {% for i in qc.issues %}
-      <tr class="note"><td colspan="5">QC issue: {{ i.message }}{% if i.disposition %} Disposition: {{ i.disposition|words }}{% if i.note %} ({{ i.note }}){% elif i.note_withheld %} (note concerns a sample not in this report){% endif %}{% endif %}</td></tr>
+      <tr class="issue"><td></td><td colspan="5"><strong>QC issue</strong>: {{ i.message }}{% if g.lab_ids %} Affects {{ g.analyte }} in {{ g.lab_ids|join:", " }}.{% endif %}{% if i.disposition %} Disposition: {{ i.disposition|words }}{% if i.note %} ({{ i.note }}){% elif i.note_withheld %} (note concerns a sample not in this report){% endif %}{% endif %}</td></tr>
       {% endfor %}
     </tbody>
+    {% endwith %}{% endfor %}
   </table>
-  {% endfor %}
-  {% endfor %}
+  {% endwith %}{% endfor %}
 </section>
 {% endif %}
 
@@ -150,7 +175,7 @@ block (None in previews). Never read live models here; issued PDFs are stored, n
     <thead><tr><th>Laboratory</th><th>External report and source SHA-256</th><th>Sample</th><th>External sample ID</th><th>Analyte</th><th>Method as reported</th><th>Qualifiers as reported</th><th>Analyst as reported</th></tr></thead>
     <tbody>
       {% for x in c.subcontracted %}
-      <tr><td>{{ x.laboratory }}</td><td><span class="id">{{ x.report_reference }}</span><br><span class="muted">SHA-256 <span class="hash">{{ x.source_sha256|slice:":16" }}…</span></span></td><td class="id">{{ x.lab_id }}</td><td class="id">{{ x.external_sample_id }}</td><td>{{ x.analyte }}</td><td>{{ x.method }}</td><td>{{ x.qualifiers|default:"None reported" }}</td><td>{{ x.analyst|default:"Not stated" }}</td></tr>
+      <tr><td>{{ x.laboratory }}</td><td><span class="id">{{ x.report_reference }}</span><br><span class="muted small">SHA-256 <span class="hash">{{ x.source_sha256|slice:":16" }}…</span></span></td><td class="id">{{ x.lab_id }}</td><td class="id">{{ x.external_sample_id }}</td><td>{{ x.analyte }}</td><td>{{ x.method }}</td><td>{{ x.qualifiers|default:"None reported" }}</td><td>{{ x.analyst|default:"Not stated" }}</td></tr>
       {% endfor %}
     </tbody>
   </table>
@@ -162,17 +187,17 @@ block (None in previews). Never read live models here; issued PDFs are stored, n
   {% if c.methods %}
   <table class="grid">
     <thead><tr><th>Method</th><th>Version</th><th>Title</th></tr></thead>
-    <tbody>{% for m in c.methods %}<tr><td>{{ m.code }}</td><td>{{ m.version }}</td><td>{{ m.title }}{% if m.source %}<br><span class="muted">{{ m.source }}</span>{% endif %}</td></tr>{% endfor %}</tbody>
+    <tbody>{% for m in c.methods %}<tr><td>{{ m.code }}</td><td>{{ m.version }}</td><td>{{ m.title }}{% if m.source %}<br><span class="muted small">{{ m.source }}</span>{% endif %}</td></tr>{% endfor %}</tbody>
   </table>
   {% endif %}
   {% if c.subcontracted %}<p>Methods and qualifiers of subcontracted results are those reported by the external laboratory, listed under Subcontracted analyses{% if not c.methods %}; no analyses in this report were performed by this laboratory{% endif %}.</p>{% endif %}
   {% if c.qualifiers %}
   <table class="grid">
     <thead><tr><th>Qualifier</th><th>Meaning</th></tr></thead>
-    <tbody>{% for q in c.qualifiers %}<tr><td>{{ q.code }}</td><td>{{ q.description }}</td></tr>{% endfor %}</tbody>
+    <tbody>{% for q in c.qualifiers %}<tr><td><span class="flag">{{ q.code }}</span></td><td>{{ q.description }}</td></tr>{% endfor %}</tbody>
   </table>
   {% endif %}
-  <p class="muted">QC prepared from samples not in this report shows its type, outcome and disposition only. ND: not detected at or above the reporting limit (RL). RL: reporting limit applied to this result, including dilution. DF: dilution factor. Results are reported as entered by the analyst, without rounding by this report. Results apply to the samples as received.</p>
+  <p class="muted small">QC prepared from samples not in this report shows its type, outcome and disposition only. ND: not detected at or above the reporting limit (RL). RL: reporting limit applied to this result, including dilution. DF: dilution factor. Results are reported as entered by the analyst, without rounding by this report. Results apply to the samples as received.</p>
 </section>
 
 {% if c.lab.certificates %}
@@ -182,13 +207,14 @@ block (None in previews). Never read live models here; issued PDFs are stored, n
     <thead><tr><th class="c-authority">Issuing authority</th><th class="c-program">Program or scope</th><th class="c-number">Certificate or laboratory ID</th><th class="c-validity">Validity</th></tr></thead>
     <tbody>{% for x in c.lab.certificates %}<tr><td>{{ x.authority }}</td><td>{{ x.program|default:"—" }}</td><td class="cert-id">{{ x.number }}</td><td>{% if x.valid_from and x.valid_until %}From {{ x.valid_from }} to {{ x.valid_until }}{% elif x.valid_from %}From {{ x.valid_from }}{% elif x.valid_until %}Until {{ x.valid_until }}{% else %}Not recorded{% endif %}</td></tr>{% endfor %}</tbody>
   </table>
-  {% if c.lab.certificate_note %}<p class="muted">{{ c.lab.certificate_note|linebreaksbr }}</p>{% endif %}
+  {% if c.lab.certificate_note %}<p class="muted small">{{ c.lab.certificate_note|linebreaksbr }}</p>{% endif %}
 </section>
 {% endif %}
 
 <section class="authorization">
   {% if release %}
   <p>Released for issue by <strong>{{ release.released_by }}</strong> on {{ release.released_at|iso_time }}. Each result was technically reviewed by the reviewer named in its row, who did not enter it.</p>
+  <p class="muted small">Content SHA-256 <span class="hash">{{ sha }}</span></p>
   {% else %}
   <p><strong>Preview only.</strong> This document has not been released and is not a laboratory report.</p>
   {% endif %}

@@ -24,6 +24,7 @@ from .forms import (
     ClientForm,
     ContainerFormSet,
     DispositionForm,
+    LabelOptionsForm,
     OrderActionForm,
     OrderDetailsForm,
     OrderForm,
@@ -57,7 +58,7 @@ from .services import (
     update_order_details,
     update_project,
 )
-from .work_status import requested_test_work
+from .work_status import requested_test_work, sample_route
 
 
 @login_required
@@ -229,6 +230,11 @@ def sample_detail(request, pk):
             "page_title": sample.lab_id,
             "sample": sample,
             "transfer_form": form,
+            "route": sample_route(sample, test_work),
+            "next_hold": min(
+                (rt for rt in test_work if rt.clock), key=lambda rt: rt.hold_deadline, default=None
+            ),
+            "label_form": LabelOptionsForm(auto_id="vr-labels-%s"),
             "test_work": test_work,
             "test_equipment": {
                 rt.batch.equipment for rt in test_work if rt.batch and rt.batch.equipment_id
@@ -399,6 +405,7 @@ def order_detail(request, pk):
         {
             "page_title": order.coc_reference,
             "order": order,
+            "label_form": LabelOptionsForm(auto_id="vr-labels-%s"),
             "samples": order.samples.prefetch_related("containers").order_by("lab_id"),
             "has_submission": hasattr(order, "submission"),
             "action_form": OrderActionForm(initial={"expected_revision": order.revision}),
@@ -559,6 +566,7 @@ def order_add_sample(request, pk):
             "container_formset": containers,
             "defaults": defaults,
             "offer_next_defaults": True,
+            "cancel_url": reverse("receipt:order-detail", args=[order.pk]),
         },
     )
 

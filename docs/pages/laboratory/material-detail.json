@@ -100,6 +100,6 @@
     "templates/includes/record_foot.html",
     "laboratory/common.py",
     "core/models.py",
-    "laboratory/templates/laboratory/_history.html"
+    "templates/includes/history_panel.html"
   ]
 }

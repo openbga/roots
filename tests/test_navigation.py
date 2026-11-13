@@ -84,6 +84,8 @@ NON_PAGE_ROUTES = {
     "client_commercial:sample-delete",
     "commercial:submission-labels",
     "health",
+    "lookup",
+    "preference",
     "ready",
     "laboratory:evidence",
     "portal:edd-download",

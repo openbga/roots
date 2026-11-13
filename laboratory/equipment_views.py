@@ -1,11 +1,15 @@
 """Equipment register, calibration and maintenance events."""
 
+from datetime import date
+
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_http_methods
+
+from core.due import due_state
 
 from . import equipment as service
 from .forms import EquipmentEventForm, EquipmentFilter, EquipmentForm, StatusForm, apply_errors
@@ -73,6 +77,22 @@ def equipment_list(request):
     )
 
 
+URGENCY = {"overdue": 0, "soon": 1, "ok": 2, "none": 3}
+
+
+def most_urgent_event(equipment):
+    """The event kind the header's one primary records: the more urgent of calibration and
+    maintenance by due state (overdue, then due soon), the earlier due date on a tie, and
+    calibration when neither is more urgent."""
+
+    def rank(due):
+        kind, _ = due_state(due)
+        return (URGENCY[kind], due or date.max)
+
+    calibration, maintenance = rank(equipment.calibration_due), rank(equipment.maintenance_due)
+    return "maintenance" if maintenance < calibration else "calibration"
+
+
 @staff_role_required(*STAFF_ROLES)
 def equipment_detail(request, pk):
     equipment = get_object_or_404(equipment_with_due(), pk=pk)
@@ -87,6 +107,7 @@ def equipment_detail(request, pk):
         {
             "page_title": equipment.asset_id,
             "equipment": equipment,
+            "primary_event": most_urgent_event(equipment),
             "events": events,
             "nonconformances": equipment.nonconformances.order_by("-pk")[:20],
             "history": history(equipment)[:50],
@@ -126,7 +147,7 @@ def equipment_edit(request, pk=None):
         request,
         form,
         title=f"Edit {equipment.asset_id}" if equipment else "New equipment",
-        back_url=back,
+        cancel_url=back,
         submit="Save changes" if equipment else "Create equipment",
         crumbs=_crumbs(
             *(
@@ -156,7 +177,7 @@ def equipment_status(request, pk):
         request,
         form,
         title="Change status",
-        back_url=reverse("laboratory:equipment-detail", kwargs={"pk": equipment.pk}),
+        cancel_url=reverse("laboratory:equipment-detail", kwargs={"pk": equipment.pk}),
         submit="Change status",
         crumbs=_crumbs(
             (
@@ -216,7 +237,7 @@ def event_edit(request, pk, event_pk=None):
         request,
         form,
         title=title,
-        back_url=detail,
+        cancel_url=detail,
         submit=title,
         crumbs=_crumbs((equipment.asset_id, detail), (title, None)),
         notes=[

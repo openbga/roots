@@ -188,7 +188,7 @@
     "receipt/services.py",
     "commercial/templates/commercial/submission_detail.html",
     "commercial/templates/commercial/_snapshot.html",
-    "commercial/templates/commercial/_history.html",
+    "templates/includes/history_panel.html",
     "commercial/tests/test_submissions.py",
     "commercial/tests/test_cancellation.py",
     "commercial/tests/test_workflow.py",

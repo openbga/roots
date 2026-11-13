@@ -1,24 +1,24 @@
 {% extends "layouts/portal.html" %}
+{% load ui %}
 {% comment %}
 Client report grid. Context: page_obj, filter_form (client-scoped
 PortalFilterForm), q, sort, per_page, active_filters, filtered. Only issued reports are listed.
 {% endcomment %}
 {% block content %}
 {% include "reporting/portal/notice.html" %}
-<section class="card vr-table-card" aria-labelledby="reports-heading">
-  <h2 class="visually-hidden" id="reports-heading">Reports</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter reports" placeholder="Report ID, title or project" search_id="filter-q" grid="portal.reports" active=filtered %}
-  {% if page_obj.paginator.count %}
+{% panel title="Reports" heading_id="reports-heading" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter reports" placeholder="Report ID, title or project" search_id="filter-q" grid="portal.reports" active=filtered %}
+  {% list_results items=page_obj noun="reports" filtered=filtered invalid=filter_form.errors clear_url=request.path no_results_title="No reports match" no_results_body="Check the report ID, or clear the filters." empty_title="No reports issued yet" empty_body="Reports appear here as soon as the laboratory releases them." %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table" data-vr-grid="portal.reports" data-vr-grid-version="1" aria-labelledby="reports-heading">
       <thead>
         <tr>
-          {% include "includes/sort_header.html" with label="Report" asc="number" desc="-number" col="report" locked=True %}
-          {% include "includes/sort_header.html" with label="Title" asc="title" desc="-title" col="title" %}
-          {% include "includes/sort_header.html" with label="Project" asc="project" desc="-project" col="project" %}
-          {% include "includes/sort_header.html" with label="Current version" asc="status" desc="-status" col="version" %}
-          {% include "includes/sort_header.html" with label="First issued" asc="first_released" desc="-first_released" first="desc" col="first_released" hidden=True %}
-          {% include "includes/sort_header.html" with label="Last released" asc="released" desc="-released" first="desc" col="released" %}
+          {% sort_header label="Report" asc="number" desc="-number" col="report" locked=True %}
+          {% sort_header label="Title" asc="title" desc="-title" col="title" %}
+          {% sort_header label="Project" asc="project" desc="-project" col="project" %}
+          {% sort_header label="Current version" asc="status" desc="-status" col="version" %}
+          {% sort_header label="First issued" asc="first_released" desc="-first_released" first="desc" col="first_released" hidden=True %}
+          {% sort_header label="Last released" asc="released" desc="-released" first="desc" col="released" %}
           <th scope="col" class="text-end" data-vr-col="actions" data-vr-col-label="Actions" data-vr-col-locked><span class="visually-hidden">Actions</span></th>
         </tr>
       </thead>
@@ -37,11 +37,6 @@ PortalFilterForm), q, sort, per_page, active_filters, filtered. Only issued repo
       </tbody>
     </table>
   </div>
-  {% include "includes/pagination.html" with noun="reports" filtered=filtered %}
-  {% elif filtered %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No reports match" body="Check the report ID, or clear the filters." clear_url=request.path %}
-  {% else %}
-  {% include "includes/empty_state.html" with title="No reports issued yet" body="Reports appear here as soon as the laboratory releases them." %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}

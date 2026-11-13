@@ -50,7 +50,7 @@
         },
         {
           "label": "Record maintenance / Record calibration",
-          "description": "Admin, analyst and reviewer roles can append events on non-retired assets. Allowed while Out of service. New events do not automatically change status."
+          "description": "Admin, analyst and reviewer roles can append events on non-retired assets. Allowed while Out of service. New events do not automatically change status. The primary (filled) button is the more urgent of the two: overdue before due soon, then the earlier due date; calibration when neither is more urgent."
         },
         {
           "label": "Correct",
@@ -61,7 +61,7 @@
     {
       "title": "Due dates and alerts",
       "paragraphs": [
-        "For each kind, dates and outcomes come from the latest uncorrected event by performed date, then record ID descending. No interval is calculated. A date is overdue only after it passes. Within the fixed 30-day highlight, the label is Due today or Due in … d; later dates are Scheduled; blank is Not scheduled. The filter window may differ from this fixed highlight.",
+        "For each kind, dates and outcomes come from the latest uncorrected event by performed date, then record ID descending. No interval is calculated. A date is overdue only after it passes. The date is shown as text; an Overdue … d pill follows it once it has passed, and a Due today or Due in … d pill within the fixed 30-day highlight. Later dates carry no pill; blank reads Not scheduled. The filter window may differ from this fixed highlight.",
         "Due dates show the latest performed date as Last. Out of service shows a warning. Overdue dates show an alert for non-retired equipment; retired detail still retains due-date facts. Missing dates mean no schedule was recorded, not that an interval is assumed. Not acceptable prompts consideration of a nonconformance; it does not create one or take the asset out of service."
       ]
     },
@@ -146,6 +146,6 @@
     "templates/includes/record_foot.html",
     "laboratory/common.py",
     "core/models.py",
-    "laboratory/templates/laboratory/_history.html"
+    "templates/includes/history_panel.html"
   ]
 }

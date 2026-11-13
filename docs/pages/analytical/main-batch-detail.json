@@ -17,7 +17,11 @@
       "items": [
         {
           "label": "Batch",
-          "description": "The number, Open/Closed state, exact method/version, matrix and approved/current-test count identify the batch. Approved count requires the latest approved revision to belong to this batch."
+          "description": "The number, Open/Closed state, exact method/version and matrix identify the batch. The progress fact counts tests whose current result is entered (not yet submitted), returned by review, and approved, out of all tests in the batch. Approved count requires the latest approved revision to belong to this batch."
+        },
+        {
+          "label": "Returned notice",
+          "description": "Shown while results in this batch are returned by review. It names up to ten returned results with links to each result and, for analysts, links to Enter results; every returned result must be entered again with a reason before it can be resubmitted."
         },
         {
           "label": "Equipment",
@@ -50,11 +54,7 @@
         },
         {
           "label": "Import results",
-          "description": "Open the standard CSV validation and preview flow."
-        },
-        {
-          "label": "Import with a mapping",
-          "description": "Open profile-mapped CSV/TSV import."
+          "description": "A menu with the two import paths: Standard CSV file opens the standard CSV validation and preview flow; With a saved mapping opens profile-mapped CSV/TSV import."
         },
         {
           "label": "Enter results",
@@ -267,7 +267,7 @@
         },
         {
           "label": "Columns",
-          "description": "Show or hide optional columns and change their order using movement controls or header dragging. Changes apply immediately and are saved for this table in this browser. Locked columns stay available."
+          "description": "Show or hide optional columns and change their order using movement controls or header dragging. Changes apply immediately and are saved for this table in your account, on any workstation. Locked columns stay available."
         },
         {
           "label": "Reset columns",

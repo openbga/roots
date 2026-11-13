@@ -114,7 +114,7 @@
       ]
     },
     {
-      "title": "Evidence below each result",
+      "title": "Receipt and preparation notes",
       "items": [
         {
           "label": "Receipt preservation screening",
@@ -124,6 +124,9 @@
           "label": "Preparation",
           "description": "Independent batch, aliquot label, method/version, start/completion, batch recorder and equipment when linked. Missing completion/equipment is explicit; preparation QC is in the PDF batch summary. A legacy analytical-batch preparation timestamp does not imply independent preparation identity."
         }
+      ],
+      "paragraphs": [
+        "Collapsed once under each sample's results table, one line per result, so the results read without repeated text. Open it to read each result's screening and preparation record."
       ]
     },
     {
@@ -134,7 +137,7 @@
       "items": [
         {
           "label": "Version 1 / Version N",
-          "description": "Chronological history, oldest first and newest last. Latest is Current; others are Superseded. Each entry records release actor/time, Original issue or Amendment of version N, reason and change list when applicable."
+          "description": "Chronological history, oldest first and newest last. Latest is Current; others are Superseded. Each entry records release actor/time, Original issue or Amendment of version N, reason and change list when applicable. In versions released from this update on, a changed result or a changed single-line identity value (laboratory name, time zone, phone, email or website; report title; client name, contact or email; project name or program) shows the earlier value struck through, then the new value. Earlier versions show their changes as they were recorded."
         },
         {
           "label": "Download PDF",
@@ -166,6 +169,7 @@
     "reporting/edd/views.py",
     "reporting/tests/test_edd_views.py",
     "reporting/tests/test_soil_basis.py",
-    "reporting/tests/test_subcontract_release.py"
+    "reporting/tests/test_subcontract_release.py",
+    "reporting/templates/reporting/_change.html"
   ]
 }

@@ -23,10 +23,10 @@
         },
         {
           "label": "Password",
-          "description": "Required account password. Use Forgot your password? beneath this field for the email-based recovery form."
+          "description": "Required account password. Use Forgot your password?, on the row under this field beside Remember me, for the email-based recovery form."
         },
         {
-          "label": "Remember Me",
+          "label": "Remember me",
           "description": "Optional, initially unchecked. Checked requests the normal persistent session lifetime; unchecked expires the session cookie when the browser session ends. The committed session lifetime is Django’s default two weeks."
         },
         {

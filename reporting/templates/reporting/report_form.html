@@ -1,47 +1,44 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 Prepare (project chooser, then scope form) or edit a report scope. The sample picker's search,
 filter and page buttons post the whole form and re-render without saving: typed fields and the
 selection survive. Selected samples outside the visible page are kept as hidden inputs.
 Context: project, form, chooser (create), report (edit), picker_page, picker_show, picker_q,
-picker_per_page, per_page_options, selected_ids, hidden_selected, selected_count, max_samples.
+picker_form (PickerForm: pshow, pper), selected_ids, hidden_selected, selected_count, max_samples.
 {% endcomment %}
-{% block breadcrumbs %}{% url 'reporting:report-list' as list_url %}{% if report %}{% url 'reporting:report-detail' report.pk as record_url %}{% include "includes/breadcrumbs.html" with section="Reports" section_url=list_url record=report.number record_url=record_url current="Edit" %}{% else %}{% include "includes/breadcrumbs.html" with section="Reports" section_url=list_url %}{% endif %}{% endblock %}
-{% block page_meta %}{% if project %}<ul class="vr-page-meta"><li>{{ project.client }} / {{ project.name }}</li>{% if project.program %}<li>{{ project.program }}</li>{% endif %}</ul>{% endif %}{% endblock %}
+{% block breadcrumbs %}{% url 'reporting:report-list' as list_url %}{% if report %}{% url 'reporting:report-detail' report.pk as record_url %}{% breadcrumbs section="Reports" section_url=list_url record=report.number record_url=record_url current="Edit" %}{% else %}{% breadcrumbs section="Reports" section_url=list_url %}{% endif %}{% endblock %}
+{% block page_meta %}{% if project %}{% page_meta %}<li>{{ project.client }} / {{ project.name }}</li>{% if project.program %}<li>{{ project.program }}</li>{% endif %}{% endpage_meta %}{% endif %}{% endblock %}
 {% block page_intro %}{% if chooser and not project %}<p class="vr-page-intro">Step 1 of 2: choose the client project; a report covers samples from one project.</p>{% endif %}{% endblock %}
 {% block content %}
 {% if chooser and not project %}
 {% if has_projects %}
-<form class="vr-form" method="get" novalidate>
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+{% url 'reporting:report-list' as list_url %}
+{% form_page form=chooser method="get" cancel_url=list_url submit_label="Choose samples" %}
   <fieldset class="vr-form-section">
     <legend>Project</legend>
-    {{ chooser }}
+    {% for field in chooser.visible_fields %}{{ field.as_field_group }}{% endfor %}
+    {% for field in chooser.hidden_fields %}{{ field }}{% endfor %}
   </fieldset>
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{% url 'reporting:report-list' %}">Cancel</a>
-    <button class="btn btn-primary" type="submit">Choose samples</button>
-  </div>
-</form>
+{% endform_page %}
 {% else %}
-{% include "includes/empty_state.html" with title="No projects yet" body="A project manager creates the client and project before samples are received." %}
+{% empty_state title="No projects yet" body="A project manager creates the client and project before samples are received." %}
 {% endif %}
 {% else %}
-<form class="vr-form vr-form-wide" method="post" novalidate>
-  {% csrf_token %}
+{% if report %}{% url 'reporting:report-detail' report.pk as cancel_url %}{% firstof "Save changes" as submit_label %}{% else %}{% url 'reporting:report-list' as cancel_url %}{% firstof "Prepare report" as submit_label %}{% endif %}
+{% form_page form=form cancel_url=cancel_url submit_label=submit_label class="vr-form-wide" %}
+  {% fill note %}{% if not report %}<a href="{% url 'reporting:report-create' %}">Choose another project</a>{% endif %}{% endfill %}
   {# Enter in a text field submits the form's first submit button; keep that the real one, not the sample picker's Apply. #}
-  <button class="visually-hidden" type="submit" tabindex="-1" aria-hidden="true">{% if report %}Save changes{% else %}Prepare report{% endif %}</button>
-  {% include "includes/form_errors.html" with form=form %}
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.{% if not report %} <a href="{% url 'reporting:report-create' %}">Choose another project</a>{% endif %}</p>
+  <button class="visually-hidden" type="submit" tabindex="-1" aria-hidden="true">{{ submit_label }}</button>
   {% if report %}
   <input type="hidden" name="expected_revision" value="{{ expected_revision }}">
-  {% if report.latest_version %}<div class="alert alert-info" role="status">{% include "includes/status.html" with label="Issued" tone="info" plain=True %}<div>Version {{ report.latest_version }} is issued and stays unchanged. These changes apply to the next version, which is released as an amendment with a reason.</div></div>{% endif %}
+  {% if report.latest_version %}{% notice tone="info" label="Issued" %}Version {{ report.latest_version }} is issued and stays unchanged. These changes apply to the next version, which is released as an amendment with a reason.{% endnotice %}{% endif %}
   {% endif %}
 
   <fieldset class="vr-form-section">
     <legend>Report</legend>
-    {% include "includes/field.html" with field=form.title %}
-    {% include "includes/field.html" with field=form.narrative %}
+    {% field field=form.title %}
+    {% field field=form.narrative %}
   </fieldset>
 
   <fieldset class="vr-form-section" aria-describedby="picker-summary">
@@ -49,37 +46,21 @@ picker_per_page, per_page_options, selected_ids, hidden_selected, selected_count
     <p class="vr-form-note" id="picker-summary" aria-live="polite"><strong>{{ selected_count }}</strong> of at most {{ max_samples }} selected · {{ project_sample_count }} sample{{ project_sample_count|pluralize }} in this project. Selected samples are listed first. Only approved results can be released; readiness is checked again in the preview.</p>
     {% if form.samples.errors %}<ul class="vr-field-errors" id="id_samples_error">{% for e in form.samples.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
     <div class="d-flex flex-wrap align-items-end gap-3 mb-3" role="group" aria-label="Find samples">
-      <div class="vr-field">
-        <label class="form-label" for="picker-q">Search</label>
-        <input class="form-control" type="search" id="picker-q" name="pq" value="{{ picker_q }}" placeholder="Lab ID or client sample ID" spellcheck="false">
-      </div>
-      <div class="vr-field">
-        <label class="form-label" for="picker-show">Show</label>
-        <select class="form-select" id="picker-show" name="pshow">
-          <option value="all"{% if picker_show == "all" %} selected{% endif %}>All samples (selected first)</option>
-          <option value="selected"{% if picker_show == "selected" %} selected{% endif %}>Selected only</option>
-          <option value="approved"{% if picker_show == "approved" %} selected{% endif %}>All tests approved</option>
-          <option value="unreported"{% if picker_show == "unreported" %} selected{% endif %}>Not in any issued report</option>
-        </select>
-      </div>
-      <div class="vr-field">
-        <label class="form-label" for="picker-per-page">Rows</label>
-        <select class="form-select" id="picker-per-page" name="pper">
-          {% for n in per_page_options %}<option value="{{ n }}"{% if picker_per_page == n %} selected{% endif %}>{{ n }}</option>{% endfor %}
-        </select>
-      </div>
+      {% grid_search value=picker_q id="picker-q" name="pq" placeholder="Lab ID or client sample ID" label="Search" %}
+      {{ picker_form.pshow.as_field_group }}
+      {{ picker_form.pper.as_field_group }}
       <div class="vr-field">
         <button class="btn btn-outline-secondary" type="submit" name="picker" value="1" formnovalidate>Apply</button>
       </div>
     </div>
     {% for pk in hidden_selected %}<input type="hidden" name="samples" value="{{ pk }}">{% endfor %}
     {% if hidden_selected %}<p class="vr-form-note">{{ hidden_selected|length }} selected sample{{ hidden_selected|length|pluralize }} {{ hidden_selected|length|pluralize:"is,are" }} not shown by the current search, filter or page and stay{{ hidden_selected|length|pluralize:"s," }} selected.</p>{% endif %}
-    {% if picker_page.paginator.count %}
+    {% list_results items=picker_page noun="samples" post_name="ppage" filtered=project_sample_count no_results_title="No samples match" no_results_body="Change the search or the Show filter. Selected samples stay selected." empty_title="No samples in this project" empty_body="Samples appear here once they are received for this project." %}
     <div class="vr-table-wrap">
       <table class="table table-hover vr-table">
         <thead>
           <tr>
-            <th scope="col">{% include "includes/select_all.html" with name="samples" label="Select all samples on this page" %}</th>
+            <th scope="col">{% select_all name="samples" label="Select all samples on this page" %}</th>
             <th scope="col">Lab ID</th>
             <th scope="col">Client sample ID</th>
             <th scope="col">Collected</th>
@@ -92,31 +73,21 @@ picker_per_page, per_page_options, selected_ids, hidden_selected, selected_count
         <tbody>
           {% for sample in picker_page %}
           <tr>
-            <td><input class="form-check-input" type="checkbox" name="samples" value="{{ sample.pk }}" id="pick-{{ sample.pk }}"{% if sample.is_selected %} checked{% endif %} aria-describedby="pick-{{ sample.pk }}-facts"></td>
+            <td>{% with pk=sample.pk|stringformat:"s" %}{% with pick_id="pick-"|add:pk facts_id="pick-"|add:pk|add:"-facts" %}{% row_select name="samples" value=sample.pk id=pick_id checked=sample.is_selected describedby=facts_id %}{% endwith %}{% endwith %}</td>
             <th scope="row"><label class="vr-id" for="pick-{{ sample.pk }}">{{ sample.lab_id }}</label></th>
             <td class="vr-id">{{ sample.client_sample_id }}</td>
             <td class="vr-nowrap"><time datetime="{{ sample.collected_at|date:'c' }}">{{ sample.collected_at|date:"Y-m-d H:i" }}</time></td>
             <td class="vr-nowrap"><time datetime="{{ sample.received_at|date:'c' }}">{{ sample.received_at|date:"Y-m-d H:i" }}</time></td>
             <td>{% include "receipt/disposition.html" with plain=True %}</td>
-            <td class="text-end" id="pick-{{ sample.pk }}-facts">{% if sample.tests_total and sample.tests_approved == sample.tests_total %}{% include "includes/status.html" with label="All approved" tone="success" plain=True %}{% else %}{{ sample.tests_approved }} of {{ sample.tests_total }}{% endif %}</td>
+            <td class="text-end" id="pick-{{ sample.pk }}-facts">{% if sample.tests_total and sample.tests_approved == sample.tests_total %}{% status label="All approved" tone="success" plain=True %}{% else %}{{ sample.tests_approved }} of {{ sample.tests_total }}{% endif %}</td>
             <td>{% for r in sample.other_reports %}<a class="vr-id" href="{% url 'reporting:report-detail' r.pk %}">{{ r.number }}</a> {% include "reporting/version_status.html" with report=r plain=True %}{% if not forloop.last %}<br>{% endif %}{% empty %}<span class="vr-muted">—</span>{% endfor %}</td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
-    {% include "includes/pagination.html" with page_obj=picker_page noun="samples" post_name="ppage" %}
-    {% elif project_sample_count %}
-    {% include "includes/empty_state.html" with kind="no-results" title="No samples match" body="Change the search or the Show filter. Selected samples stay selected." %}
-    {% else %}
-    {% include "includes/empty_state.html" with title="No samples in this project" body="Samples appear here once they are received for this project." %}
-    {% endif %}
+    {% endlist_results %}
   </fieldset>
-
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{% if report %}{% url 'reporting:report-detail' report.pk %}{% else %}{% url 'reporting:report-list' %}{% endif %}">Cancel</a>
-    <button class="btn btn-primary" type="submit">{% if report %}Save changes{% else %}Prepare report{% endif %}</button>
-  </div>
-</form>
+{% endform_page %}
 {% endif %}
 {% endblock %}

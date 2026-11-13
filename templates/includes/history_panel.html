@@ -1,0 +1,28 @@
+{% comment %}
+A record's history (docs/ui-standards.md section 6, rule 4): the final panel, "History", with its
+events newest last as includes/history_item.html entries, or an empty state. Rendered by the
+{% history_panel %} block tag ({% load ui %}). With an empty body each event is an AuditEvent
+(title event.action|action_label, occurred_at, actor, reason, detail); a body replaces that with
+the caller's own {% history_item %} loop, for other event shapes.
+In the shared form dialog (the page's form_dialog, a documented read) it renders nothing: a dialog
+ends with its form's action row, and the full page shows the history below the form.
+Parameters:
+  events        the events, oldest first; required even with a body (it decides the empty state)
+  newest_first  truthy when events come newest first: they are shown reversed
+  title         the panel heading (default "History");  heading_id: default "<slug>-heading"
+  count         optional text after the title (or a "count" part for markup), e.g. "12 entries, oldest first"
+  class         extra classes on the panel (default none; e.g. "mt-3", "vr-narrow")
+  empty_title   default "No recorded changes yet";  empty_body: optional sentence
+Usage:
+  {% history_panel events=history newest_first=True class="mt-3" %}{% endhistory_panel %}
+  {% history_panel events=schedule_events|dictsort:"occurred_at" %}
+    {% for event in schedule_events|dictsort:"occurred_at" %}{% history_item title="Delivery target changed" at=event.occurred_at actor=event.actor reason=event.reason %}{% endfor %}
+  {% endhistory_panel %}
+{% endcomment %}{% if not form_dialog %}
+{% load ui laboratory_extras %}{% with items=body %}{% panel title=title heading_id=heading_id class=class count=slots.count|default:count %}
+{% if events %}
+<ol class="vr-timeline">
+  {% if items %}{{ items }}{% else %}{% for event in events %}{% history_item title=event.action|action_label at=event.occurred_at actor=event.actor reason=event.reason detail=event.detail by=None changes=None extra=None %}{% endfor %}{% endif %}
+</ol>
+{% else %}{% empty_state kind="empty" title=empty_title|default:"No recorded changes yet" body=empty_body action_url=None clear_url=None %}{% endif %}
+{% endpanel %}{% endwith %}{% endif %}

@@ -1,22 +1,22 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}Client-submitted chains of custody for staff. Context: page_obj (counts), filter_form, q, sort, per_page, active_filters, filtered.{% endcomment %}
 {% block content %}
-<section class="card vr-table-card" aria-labelledby="subs-heading">
-  <h2 class="visually-hidden" id="subs-heading">Client submissions</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter submissions" placeholder="Number, COC reference, client, project or sample ID" grid="commercial.submissions" %}
-  {% if page_obj.paginator.count %}
+{% panel title="Client submissions" heading_id="subs-heading" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter submissions" placeholder="Number, COC reference, client, project or sample ID" grid="commercial.submissions" invalid=filter_form.errors chips=active_filters sort=sort %}
+  {% list_results items=page_obj noun="submissions" filtered=filtered invalid=filter_form.errors clear_url=request.path error_body="Correct the highlighted filter above." no_results_title="No submissions match these filters" no_results_body="Check the reference or clear the filters." empty_title="No client submissions yet" empty_body="Chains of custody that clients submit from the portal appear here for review." %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table" data-vr-grid="commercial.submissions" data-vr-grid-version="2" aria-labelledby="subs-heading">
       <thead><tr>
-        {% include "includes/sort_header.html" with label="Submission" asc="number" desc="-number" first="desc" col="number" locked=True %}
-        {% include "includes/sort_header.html" with label="Status" asc="status" desc="-status" col="status" %}
-        {% include "includes/sort_header.html" with label="Client" asc="client" desc="-client" col="client" %}
-        {% include "includes/sort_header.html" with label="Project" asc="project" desc="-project" col="project" %}
-        {% include "includes/sort_header.html" with label="COC reference" asc="coc_reference" desc="-coc_reference" col="coc_reference" %}
-        {% include "includes/sort_header.html" with label="Samples" asc="samples" desc="-samples" first="desc" col="samples" class="text-end" %}
-        {% include "includes/sort_header.html" with label="Awaiting receipt" asc="pending" desc="-pending" first="desc" col="pending" class="text-end" %}
-        {% include "includes/sort_header.html" with label="Expected arrival" asc="expected_arrival" desc="-expected_arrival" col="expected_arrival" %}
-        {% include "includes/sort_header.html" with label="Submitted" asc="submitted_at" desc="-submitted_at" first="desc" col="submitted_at" %}
+        {% sort_header label="Submission" asc="number" desc="-number" first="desc" col="number" locked=True %}
+        {% sort_header label="Status" asc="status" desc="-status" col="status" %}
+        {% sort_header label="Client" asc="client" desc="-client" col="client" %}
+        {% sort_header label="Project" asc="project" desc="-project" col="project" %}
+        {% sort_header label="COC reference" asc="coc_reference" desc="-coc_reference" col="coc_reference" %}
+        {% sort_header label="Samples" asc="samples" desc="-samples" first="desc" col="samples" class="text-end" priority="low" %}
+        {% sort_header label="Awaiting receipt" asc="pending" desc="-pending" first="desc" col="pending" class="text-end" %}
+        {% sort_header label="Expected arrival" asc="expected_arrival" desc="-expected_arrival" col="expected_arrival" %}
+        {% sort_header label="Submitted" asc="submitted_at" desc="-submitted_at" first="desc" col="submitted_at" %}
       </tr></thead>
       <tbody>
         {% for sub in page_obj %}
@@ -35,13 +35,6 @@
       </tbody>
     </table>
   </div>
-  {% include "includes/pagination.html" with noun="submissions" filtered=filtered %}
-  {% elif filter_form.errors %}
-  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above." clear_url=request.path %}
-  {% elif filtered %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No submissions match these filters" body="Check the reference or clear the filters." clear_url=request.path %}
-  {% else %}
-  {% include "includes/empty_state.html" with title="No client submissions yet" body="Chains of custody that clients submit from the portal appear here for review." %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}

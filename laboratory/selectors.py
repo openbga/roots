@@ -14,6 +14,8 @@ from django.db.models import (
 )
 from django.utils import timezone
 
+from core.due import due_state  # noqa: F401  (re-exported: laboratory's due dates use it)
+
 from .common import history  # re-exported for views
 from .models import (
     Equipment,
@@ -115,18 +117,6 @@ def equipment_due(queryset, due, today, days):
             status="in_service", calibration_due__isnull=True, maintenance_due__isnull=True
         )
     return queryset
-
-
-def due_state(due, today=None, soon_days=30):
-    """('overdue'|'soon'|'ok'|'none', label). Due through the due date; overdue after."""
-    today = today or timezone.localdate()
-    if due is None:
-        return "none", "Not scheduled"
-    if due < today:
-        return "overdue", f"Overdue {(today - due).days} d"
-    if due <= today + timedelta(days=soon_days):
-        return "soon", "Due today" if due == today else f"Due in {(due - today).days} d"
-    return "ok", "Scheduled"
 
 
 def nonconformances_with_state(queryset=None, *, today=None):

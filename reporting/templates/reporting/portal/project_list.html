@@ -1,24 +1,24 @@
 {% extends "layouts/portal.html" %}
+{% load ui %}
 {% comment %}
 Client project grid. Context: page_obj, filter_form, q, sort, per_page,
 active_filters, filtered.
 {% endcomment %}
 {% block content %}
 {% include "reporting/portal/notice.html" %}
-<section class="card vr-table-card" aria-labelledby="projects-heading">
-  <h2 class="visually-hidden" id="projects-heading">Projects</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter projects" placeholder="Project or program / permit" search_id="filter-q" grid="portal.projects" active=filtered %}
-  {% if page_obj.paginator.count %}
+{% panel title="Projects" heading_id="projects-heading" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter projects" placeholder="Project or program / permit" search_id="filter-q" grid="portal.projects" active=filtered %}
+  {% list_results items=page_obj noun="projects" filtered=filtered invalid=filter_form.errors clear_url=request.path no_results_title="No projects match" no_results_body="Clear the search to see all of your projects." empty_title="No projects yet" empty_body="Your laboratory contact sets up projects. Sample status and issued reports will appear here." %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table" data-vr-grid="portal.projects" data-vr-grid-version="1" aria-labelledby="projects-heading">
       <thead>
         <tr>
-          {% include "includes/sort_header.html" with label="Project" asc="name" desc="-name" col="project" locked=True %}
-          {% include "includes/sort_header.html" with label="Program / permit" asc="program" desc="-program" col="program" %}
-          {% include "includes/sort_header.html" with label="Turnaround (days)" asc="turnaround_days" desc="-turnaround_days" class="text-end" col="turnaround_days" hidden=True %}
-          {% include "includes/sort_header.html" with label="Samples" asc="samples" desc="-samples" class="text-end" col="samples" %}
-          {% include "includes/sort_header.html" with label="Last received" asc="last_received" desc="-last_received" first="desc" col="last_received" %}
-          {% include "includes/sort_header.html" with label="Reports" asc="reports" desc="-reports" class="text-end" col="reports" %}
+          {% sort_header label="Project" asc="name" desc="-name" col="project" locked=True %}
+          {% sort_header label="Program / permit" asc="program" desc="-program" col="program" %}
+          {% sort_header label="Turnaround (days)" asc="turnaround_days" desc="-turnaround_days" class="text-end" col="turnaround_days" hidden=True %}
+          {% sort_header label="Samples" asc="samples" desc="-samples" class="text-end" col="samples" %}
+          {% sort_header label="Last received" asc="last_received" desc="-last_received" first="desc" col="last_received" %}
+          {% sort_header label="Reports" asc="reports" desc="-reports" class="text-end" col="reports" %}
         </tr>
       </thead>
       <tbody>
@@ -35,11 +35,6 @@ active_filters, filtered.
       </tbody>
     </table>
   </div>
-  {% include "includes/pagination.html" with noun="projects" filtered=filtered %}
-  {% elif filtered %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No projects match" body="Clear the search to see all of your projects." clear_url=request.path %}
-  {% else %}
-  {% include "includes/empty_state.html" with title="No projects yet" body="Your laboratory contact sets up projects. Sample status and issued reports will appear here." %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}

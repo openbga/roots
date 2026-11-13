@@ -1,5 +1,7 @@
 from django import forms
 
+from core.widgets import SuggestInput
+
 from .models import Analyte, Method, TestDefinition
 from .services import analyte_locks, definition_locks, method_locks
 
@@ -215,7 +217,7 @@ class DefinitionForm(RecordForm):
             "is_active": "Inactive tests cannot be requested on new samples.",
         }
         widgets = {
-            "unit": forms.TextInput(attrs={"list": "unit-suggestions", "autocomplete": "off"}),
+            "unit": SuggestInput(),
             "reporting_limit": forms.TextInput(attrs={"inputmode": "decimal"}),
         }
 
@@ -240,6 +242,8 @@ class DefinitionForm(RecordForm):
             TestDefinition.objects.order_by("unit").values_list("unit", flat=True).distinct()
         )
         self.unit_suggestions = existing + [u for u in UNIT_SUGGESTIONS if u not in existing]
+        if "unit" in self.fields:
+            self.fields["unit"].widget.suggestions = self.unit_suggestions
         limit = self.instance.reporting_limit
         if limit is not None:  # show the exact value without storage-scale zeros
             self.initial["reporting_limit"] = format(limit.normalize(), "f")

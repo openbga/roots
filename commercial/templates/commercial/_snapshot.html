@@ -1,4 +1,4 @@
-{% comment %}
+{% load ui %}{% comment %}
 What the client submitted (frozen JSON). Parameters: data. Declared by the client; not verified until
 the laboratory receives the samples.
 {% endcomment %}
@@ -13,9 +13,9 @@ the laboratory receives the samples.
       {% for s in data.samples %}
       <tr>
         <th scope="row" class="vr-id">{{ s.client_sample_id }}</th>
-        <td>{{ s.matrix_label }}{% if s.source_label %} · {{ s.source_label }}{% endif %}<div class="text-body-secondary small">{{ s.collection_type|capfirst }}{% if s.sample_type_label and s.sample_type_label != "Field sample" %} · {{ s.sample_type_label }}{% endif %}</div></td>
-        <td class="vr-nowrap">{% if s.collected_at %}{% if s.collection_started_at %}{{ s.collection_started_at.display }} →<br>{% endif %}{{ s.collected_at.display }}{% else %}{% include "includes/status.html" with label="Not collected yet" tone="neutral" plain=True %}{% if s.planned_collection_on %}<div class="text-body-secondary small">Planned {{ s.planned_collection_on }}</div>{% endif %}{% endif %}</td>
-        <td>{{ s.collection_location }}<div class="text-body-secondary small">{{ s.collector_name }}</div>{% if s.field_notes %}<div class="small">{{ s.field_notes }}</div>{% endif %}</td>
+        <td>{% matrix_tag matrix=s.matrix name=s.matrix_label source=s.source_label %}<div class="vr-muted small">{{ s.collection_type|capfirst }}{% if s.sample_type_label and s.sample_type_label != "Field sample" %} · {{ s.sample_type_label }}{% endif %}</div></td>
+        <td class="vr-nowrap">{% if s.collected_at %}{% if s.collection_started_at %}{{ s.collection_started_at.display }} →<br>{% endif %}{{ s.collected_at.display }}{% else %}{% status label="Not collected yet" tone="neutral" plain=True %}{% if s.planned_collection_on %}<div class="vr-muted small">Planned {{ s.planned_collection_on }}</div>{% endif %}{% endif %}</td>
+        <td>{{ s.collection_location }}<div class="vr-muted small">{{ s.collector_name }}</div>{% if s.field_notes %}<div class="small">{{ s.field_notes }}</div>{% endif %}</td>
         <td><ul class="list-unstyled mb-0 small">{% for t in s.tests %}<li>{{ t.label }}</li>{% endfor %}</ul></td>
         <td><ul class="list-unstyled mb-0 small">{% for c in s.containers %}<li>{{ c.quantity }} × {{ c.description }}{% if c.preservation %} ({{ c.preservation }}){% endif %}</li>{% endfor %}</ul></td>
       </tr>

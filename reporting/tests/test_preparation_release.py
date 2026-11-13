@@ -17,6 +17,7 @@ from reporting.edd.nysdec import build
 from reporting.edd.sources import qc_facts, revision_facts
 from reporting.pdf import render_html
 
+from .conftest import texts
 from .test_edd_nysdec import mapping
 from .test_release import release
 
@@ -89,7 +90,7 @@ def test_native_amendment_freezes_preparation_and_retains_legacy_version(world, 
     row = amended.file.snapshot["content"]["samples"][0]["results"][0]
     assert row["preparation"]["batch"] == prep.number
     assert row["preparation"]["aliquot_id"] == rev.prepared_aliquot_id
-    assert any("preparation evidence added" in line for line in amended.changes)
+    assert any("preparation evidence added" in line for line in texts(amended.changes))
     assert "Digestate A" in render_html(amended.file.snapshot)
     old.refresh_from_db()
     assert old.file.snapshot == snapshot and bytes(old.file.pdf) == pdf

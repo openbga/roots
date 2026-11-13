@@ -1,7 +1,11 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 Centred single-panel layout without navigation: sign-in, password reset, and error pages for
 visitors who are not signed in (layouts/error.html).
+Layout: the decorative scene on the left (from 992px), then the body: the brand with Help and Theme
+on the top row, the panel centred with its note under it, and the footer at the bottom. The entrance
+page alone scales its root font from 16px at about 1500px to 20px at 2560px (app.css).
 Blocks: entrance_scene (optional decorative side panel, e.g. includes/entrance_scene.html),
 entrance_heading (optional heading at the top of the panel; used by layouts/error.html),
 content (panel body), entrance_aside (optional box beside the panel on wide screens and under
@@ -13,18 +17,22 @@ entrance_foot (note under the panel).
 <main class="vr-entrance" id="main" tabindex="-1">
   {% block entrance_scene %}{% endblock %}
   <div class="vr-entrance-body">
-    <div class="vr-entrance-theme d-flex align-items-center gap-1">{% include "documentation/button.html" %}{% include "includes/theme_menu.html" %}</div>
-    {% include "includes/brand.html" with href="/" variant="entrance" %}
-    <div class="vr-entrance-sheets">
-      <div class="vr-entrance-panel">
-        {% block entrance_heading %}{% endblock %}
-        {% include "includes/messages.html" %}
-        {% block content %}{% endblock %}
-      </div>
-      {% block entrance_aside %}{% endblock %}
+    <div class="vr-entrance-top">
+      {% brand href="/" variant="entrance" %}
+      <div class="vr-entrance-theme">{% include "documentation/button.html" %}{% include "includes/theme_menu.html" %}</div>
     </div>
-    <p class="vr-entrance-foot">{% block entrance_foot %}{% if lab.name %}{{ lab.name }} · {% endif %}Accounts are issued by the laboratory.{% endblock %}</p>
-    {% include "includes/source_footer.html" with css="vr-app-foot-centered" %}
+    <div class="vr-entrance-center">
+      <div class="vr-entrance-sheets">
+        <div class="vr-entrance-panel">
+          {% block entrance_heading %}{% endblock %}
+          {% include "includes/messages.html" %}
+          {% block content %}{% endblock %}
+        </div>
+        {% block entrance_aside %}{% endblock %}
+      </div>
+      <p class="vr-entrance-foot">{% block entrance_foot %}{% if lab.name %}{{ lab.name }}<span class="vr-entrance-sep" aria-hidden="true">·</span>{% endif %}Accounts are issued by the laboratory.{% endblock %}</p>
+    </div>
+    {% source_footer css="vr-app-foot-centered" %}
   </div>
 </main>
 {% endblock body %}

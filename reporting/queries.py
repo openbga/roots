@@ -20,6 +20,7 @@ from django.db.models.functions import Coalesce
 
 from analytical.models import Result
 from core.grids import GridRequest
+from core.lookups import RemoteSelect
 from receipt.models import Client, Project, RequestedTest, Sample
 from receipt.subcontract_models import Subcontract, SubcontractResult
 
@@ -198,9 +199,17 @@ class ReportFilterForm(forms.Form):
 
     q = forms.CharField(required=False, label="Search")
     status = forms.ChoiceField(required=False, choices=STATUS)
-    client = forms.ModelChoiceField(Client.objects.all(), required=False, empty_label="Any client")
+    client = forms.ModelChoiceField(
+        Client.objects.all(),
+        required=False,
+        empty_label="Any client",
+        widget=RemoteSelect("clients"),
+    )
     project = forms.ModelChoiceField(
-        Project.objects.select_related("client"), required=False, empty_label="Any project"
+        Project.objects.select_related("client"),
+        required=False,
+        empty_label="Any project",
+        widget=RemoteSelect("projects"),
     )
     attention = forms.ChoiceField(required=False, choices=ATTENTION, label="Needs attention")
     released_from = forms.DateField(

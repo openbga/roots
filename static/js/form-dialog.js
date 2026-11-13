@@ -20,7 +20,10 @@
     var content = document.getElementById("vr-form-content");
     var title = document.getElementById("vr-form-title");
     var errorRegion = document.getElementById("vr-form-error");
+    // The discard confirmation is its own small modal (includes/form_dialog.html), stacked over the
+    // form dialog while it asks.
     var discard = document.getElementById("vr-form-discard");
+    var confirming = false;
     var dialog = element.querySelector(".modal-dialog");
     var maximize = element.querySelector("[data-vr-form-maximize]");
     var modal = window.bootstrap.Modal.getOrCreateInstance(element, { backdrop: "static", keyboard: false });
@@ -60,7 +63,8 @@
         var branch = element;
         while (branch.parentElement) {
           Array.from(branch.parentElement.children).forEach(function (sibling) {
-            if (sibling !== branch && !background.has(sibling) && !sibling.matches("script, style, link, template, .modal-backdrop")) {
+            // The discard confirmation opens over the form dialog: it is never background.
+            if (sibling !== branch && sibling !== discard && !background.has(sibling) && !sibling.matches("script, style, link, template, .modal-backdrop")) {
               background.set(sibling, sibling.inert);
               sibling.inert = true;
               namespaceBackground(sibling);
@@ -90,7 +94,7 @@
     }
 
     function focusForm() {
-      if (!active || isBusy() || !discard.hidden) {
+      if (!active || isBusy() || confirming) {
         return;
       }
       var field = content.querySelector("[aria-invalid=true], .is-invalid");
@@ -103,7 +107,7 @@
       }
       field = field || content.querySelector("input:not([type=hidden]):not([disabled]), select:not([disabled]), textarea:not([disabled])");
       if (field && field.tomselect) {
-        field = field.tomselect.control_input;
+        field = field.tomselect.focus_node;
       }
       if (field && field.getClientRects().length) {
         field.focus();
@@ -143,6 +147,9 @@
       if (isBusy()) {
         return;
       }
+      if (window.vrControls) {
+        window.vrControls.init(content); // After setBusy: controls must not initialise disabled.
+      }
       if (window.vrInitTestPickers) {
         window.vrInitTestPickers(content);
       }
@@ -153,25 +160,59 @@
     }
 
     function showError(message, retry) {
-      errorRegion.replaceChildren(document.createTextNode(message));
+      // The region is a danger notice (includes/form_dialog.html): keep its stamp, fill its text.
+      var text = errorRegion.querySelector("[data-vr-notice-text]");
+      var oldRetry = errorRegion.querySelector("[data-vr-form-retry]");
+      if (oldRetry) {
+        oldRetry.remove();
+      }
+      text.replaceChildren(document.createTextNode(message));
       errorRegion.hidden = false;
       if (retry) {
-        var button = document.createElement("button");
-        button.type = "button";
-        button.className = "btn btn-outline-secondary btn-sm ms-2";
-        button.textContent = "Try again";
+        var button = window.vrUi.button("Try again", "secondary", true);
+        button.classList.add("ms-2");
         button.setAttribute("data-vr-form-retry", "");
-        errorRegion.append(button);
+        text.after(button);
       }
     }
 
-    function clearConfirmation() {
-      discard.hidden = true;
+    function discardModal() {
+      return window.bootstrap.Modal.getOrCreateInstance(discard, { backdrop: "static", keyboard: false });
+    }
+
+    // Bootstrap does not stack modals: the form dialog's focus trap would pull focus back from the
+    // confirmation, so it pauses while the confirmation is open.
+    function pauseFocusTrap(paused) {
+      var trap = modal._focustrap;
+      if (trap) {
+        if (paused) {
+          trap.deactivate();
+        } else if (active) {
+          trap.activate();
+        }
+      }
+    }
+
+    function clearConfirmation(then) {
       pending = null;
+      if (!confirming) {
+        if (then) {
+          then();
+        }
+        return;
+      }
+      discard.addEventListener("hidden.bs.modal", function () {
+        confirming = false;
+        pauseFocusTrap(false);
+        if (then) {
+          then();
+        }
+      }, { once: true });
+      discardModal().hide();
     }
 
     function confirmLeave(action) {
-      if (isBusy()) {
+      if (isBusy() || confirming) {
         return;
       }
       if (!dirty) {
@@ -180,9 +221,49 @@
       }
       pending = action;
       confirmationFocus = document.activeElement;
-      discard.hidden = false;
-      discard.querySelector("[data-vr-form-keep]").focus();
+      confirming = true;
+      pauseFocusTrap(true);
+      discard.addEventListener("shown.bs.modal", function () {
+        (discard.querySelector("[data-vr-form-keep][autofocus]") || discard.querySelector("[data-vr-form-keep]")).focus();
+      }, { once: true });
+      discardModal().show();
     }
+
+    function keepEditing() {
+      clearConfirmation(function () {
+        if (confirmationFocus && confirmationFocus.isConnected) {
+          confirmationFocus.focus();
+        }
+      });
+    }
+
+    function discardChanges() {
+      var action = pending;
+      dirty = false;
+      clearConfirmation(function () {
+        if (action) {
+          action();
+        }
+      });
+    }
+
+    discard.addEventListener("click", function (event) {
+      var target = event.target.closest("button");
+      if (target && target.hasAttribute("data-vr-form-keep")) {
+        keepEditing();
+      } else if (target && target.hasAttribute("data-vr-form-discard")) {
+        discardChanges();
+      }
+    });
+
+    // Escape in the confirmation means Keep editing.
+    discard.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        keepEditing();
+      }
+    });
 
     function restoreLocal() {
       if (localForm) {
@@ -300,18 +381,12 @@
       }
       form.dataset.vrLocalReady = "true";
       form.action = form.getAttribute("action") ? new URL(form.getAttribute("action"), window.location.href).href : window.location.href;
-      var button = document.createElement("button");
-      button.type = "button";
-      button.className = "btn btn-outline-secondary";
-      button.textContent = form.getAttribute("data-vr-local-form") || "Open form";
+      var button = window.vrUi.button(form.getAttribute("data-vr-local-form") || "Open form", "secondary");
       form.before(button);
       form.hidden = true;
       form.remove(); // Keep field IDs out of the background while another form is open.
       if (!form.querySelector("[data-vr-form-close], .vr-form-actions .btn-link")) {
-        var cancel = document.createElement("button");
-        cancel.type = "button";
-        cancel.className = "btn btn-link";
-        cancel.textContent = "Cancel";
+        var cancel = window.vrUi.button("Cancel", "quiet");
         cancel.setAttribute("data-vr-form-close", "");
         var actions = form.querySelector(".vr-form-actions") || form;
         actions.insertBefore(cancel, actions.querySelector("button[type=submit]"));
@@ -383,22 +458,20 @@
         target.textContent = full ? "Restore size" : "Maximize";
         target.setAttribute("aria-pressed", full ? "true" : "false");
         modal.handleUpdate();
-      } else if (target.hasAttribute("data-vr-form-keep")) {
-        clearConfirmation();
-        if (confirmationFocus && confirmationFocus.isConnected) {
-          confirmationFocus.focus();
-        }
-      } else if (target.hasAttribute("data-vr-form-discard")) {
-        var action = pending;
-        dirty = false;
-        clearConfirmation();
-        if (action) {
-          action();
-        }
       } else if (target.hasAttribute("data-vr-form-retry") && retryUrl) {
         load(retryUrl);
       }
     });
+
+    // Escape belongs to an open control first (a picker's or a menu's list): it closes that list,
+    // not the dialog. Recorded in the capture phase, before the control closes its list.
+    var escapeForControl = false;
+    element.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        escapeForControl = Boolean(event.target.closest &&
+          event.target.closest('[aria-expanded="true"], .ts-wrapper.dropdown-active, .dropdown-menu.show'));
+      }
+    }, true);
 
     element.addEventListener("keydown", function (event) {
       // With an inert background, Chromium may move directly to browser chrome at the
@@ -419,10 +492,13 @@
         }
       }
       if (event.key === "Escape") {
+        if (escapeForControl && !confirming) {
+          return;
+        }
         event.preventDefault();
         event.stopPropagation();
-        if (!discard.hidden) {
-          element.querySelector("[data-vr-form-keep]").click();
+        if (confirming) {
+          keepEditing();
         } else {
           confirmLeave(close);
         }

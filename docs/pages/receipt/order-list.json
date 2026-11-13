@@ -102,7 +102,7 @@
         },
         {
           "label": "Column headings and Columns",
-          "description": "Linked headings sort the complete matching set, with record ID breaking ties. Columns controls optional visibility and order, saved locally in this browser; reset restores default presentation. Identifying columns stay visible."
+          "description": "Linked headings sort the complete matching set, with record ID breaking ties. Columns controls optional visibility and order, saved for your account; reset restores default presentation. Identifying columns stay visible."
         },
         {
           "label": "Rows per page / Show",
@@ -134,7 +134,7 @@
         },
         {
           "label": "Reset columns",
-          "description": "Restores this table’s default order and visibility in this browser."
+          "description": "Restores this table’s default order and visibility for your account."
         },
         {
           "label": "Done / Close",

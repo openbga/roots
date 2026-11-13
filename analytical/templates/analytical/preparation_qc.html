@@ -1,8 +1,7 @@
-{% load catalog_extras %}
-<section class="card vr-table-card mb-3" aria-labelledby="qc-heading">
-  <div class="card-header"><h2 class="card-title" id="qc-heading">Quality control</h2>
-    {% if can_enter and open %}<a class="btn btn-outline-secondary btn-sm ms-auto" href="{% url 'analytical:qc-sample-add' batch.pk %}">{% include "includes/icon.html" with name="plus-lg" %}Add QC sample</a>{% endif %}</div>
-  <div class="card-body">
+{% load catalog_extras ui %}
+{% panel title="Quality control" heading_id="qc-heading" table=True flush=True class="mb-3" %}
+  {% fill actions %}{% if can_enter and open %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:qc-sample-add' batch.pk %}">{% icon name="plus-lg" %}Add QC sample</a>{% endif %}{% endfill %}
+  {% panel_section %}
     <h3 class="vr-section-title">Required for this method</h3>
     {% if requirements %}
     <div class="vr-table-wrap">
@@ -15,7 +14,7 @@
             <td>{{ row.requirement.get_qc_type_display }}</td>
             <td class="text-end">{{ row.aliquot_count }}{% if row.cancelled_count %}<div class="vr-form-note">includes {{ row.cancelled_count }} cancelled aliquot{{ row.cancelled_count|pluralize }}</div>{% endif %}</td>
             <td class="text-end">{{ row.need }}</td><td class="text-end">{{ row.have }}</td>
-            <td>{% if row.met %}{% include "includes/status.html" with label="Met" tone="success" plain=True %}{% else %}{% include "includes/status.html" with label="Short" tone="warning" plain=True %}{% endif %}</td>
+            <td>{% if row.met %}{% status label="Met" tone="success" plain=True %}{% else %}{% status label="Short" tone="warning" plain=True %}{% endif %}</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -23,20 +22,20 @@
     </div>
     <p class="vr-form-note">Frequencies use the configured requirements and physical aliquots covering each analyte. QC sample counts show frequency only; each QC sample also needs a measurement for that analyte.</p>
     {% elif has_qc_requirements %}
-    {% include "includes/empty_state.html" with title="No required frequencies to show yet" body="Add aliquots and their tests to show the required QC frequency for each analyte." %}
+    {% empty_state title="No required frequencies to show yet" body="Add aliquots and their tests to show the required QC frequency for each analyte." %}
     {% else %}
     {% url 'analytical:qc-config' as config_url %}
-    {% include "includes/empty_state.html" with title="No QC requirements configured" body="No QC requirements are configured for this method, so none are enforced. Review them under QC configuration." action_url=config_url action_label="QC configuration" %}
+    {% empty_state title="No QC requirements configured" body="No QC requirements are configured for this method, so none are enforced. Review them under QC configuration." action_url=config_url action_label="QC configuration" %}
     {% endif %}
-  </div>
+  {% endpanel_section %}
   {% for sample, measurements in qc_rows %}
-  <div class="card-body border-top">
+  {% panel_section rule=True %}
     <div class="d-flex justify-content-between align-items-baseline">
       <h3 class="vr-section-title mb-0"><span class="vr-id">{{ sample.label }}</span> · {{ sample.get_qc_type_display }}{% if sample.parent_sample %} · parent <a class="vr-id" href="{% url 'receipt:sample-detail' sample.parent_sample.pk %}">{{ sample.parent_sample.lab_id }}</a>{% endif %}</h3>
       {% if can_enter %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:qc-measure' sample.pk %}">Record measurements<span class="visually-hidden"> for {{ sample.label }}</span></a>{% endif %}
     </div>
-    {% if measurements %}
-    <div class="vr-table-wrap mt-2">
+    {% list_results items=measurements empty_title="No measurements recorded yet" %}
+    <div class="vr-table-wrap">
       <table class="table vr-table">
         <thead><tr><th scope="col">Analyte</th><th scope="col">Actual analytical run</th><th scope="col" class="text-end">Observed</th><th scope="col">Unit</th><th scope="col" class="text-end">Spike</th><th scope="col">Evaluation</th><th scope="col">Detail</th><th scope="col">Entered by</th></tr></thead>
         <tbody>
@@ -54,9 +53,9 @@
         </tbody>
       </table>
     </div>
-    {% else %}{% include "includes/empty_state.html" with title="No measurements recorded yet" %}{% endif %}
-  </div>
+    {% endlist_results %}
+  {% endpanel_section %}
   {% empty %}
-  <div class="card-body border-top">{% include "includes/empty_state.html" with title="No QC samples in this batch yet" %}</div>
+  {% panel_section rule=True %}{% empty_state title="No QC samples in this batch yet" %}{% endpanel_section %}
   {% endfor %}
-</section>
+{% endpanel %}

@@ -1,5 +1,5 @@
-{% comment %}Holding-time evaluation label. Parameter: status (met, exceeded, not_evaluable, not_evaluated).{% endcomment %}
-{% if status == "met" %}{% include "includes/status.html" with label="Met" tone="success" plain=True %}
-{% elif status == "exceeded" %}{% include "includes/status.html" with label="Exceeded" tone="danger" plain=True title="Holding time exceeded; the result must carry a holding-time qualifier." %}
-{% elif status == "not_evaluable" %}{% include "includes/status.html" with label="Not evaluable" tone="warning" plain=True title="A required time is missing or its recorded chronology is invalid." %}
-{% else %}{% include "includes/status.html" with label="No rule" tone="neutral" plain=True title="No holding-time rule is configured for this method and matrix." %}{% endif %}
+{% load ui %}{% comment %}Holding-time evaluation label. Parameter: status (met, exceeded, not_evaluable, not_evaluated).{% endcomment %}
+{% if status == "met" %}{% status label="Met" tone="success" plain=True %}
+{% elif status == "exceeded" %}{% status label="Exceeded" tone="danger" plain=True title="Holding time exceeded; the result must carry a holding-time qualifier." %}
+{% elif status == "not_evaluable" %}{% status label="Not evaluable" tone="warning" plain=True title="A required time is missing or its recorded chronology is invalid." %}
+{% else %}{% status label="No rule" tone="neutral" plain=True title="No holding-time rule is configured for this method and matrix." %}{% endif %}

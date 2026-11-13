@@ -104,10 +104,11 @@ class ObservationsCorrectionForm(ReceiptCorrectionForm):
             "discrepancy",
         ]
         labels = {
-            "cooler_temperature": "Cooler temperature (°C), as read",
+            "cooler_temperature": "Cooler temperature, as read",
             "temperature_instrument": "Thermometer",
         }
         widgets = {
+            "cooler_temperature": forms.NumberInput(attrs={"unit": "°C"}),
             "discrepancy": forms.Textarea(attrs={"rows": 3}),
             "temperature_instrument": SuggestInput(suggestions=instrument_suggestions),
         }

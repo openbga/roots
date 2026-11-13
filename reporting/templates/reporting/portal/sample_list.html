@@ -1,27 +1,27 @@
 {% extends "layouts/portal.html" %}
+{% load ui %}
 {% comment %}
 Client sample grid. Context: page_obj (status_label/status_tone set),
 filter_form (client-scoped PortalSampleFilterForm), q, sort, per_page, active_filters, filtered.
 {% endcomment %}
 {% block content %}
 {% include "reporting/portal/notice.html" %}
-<section class="card vr-table-card" aria-labelledby="samples-heading">
-  <h2 class="visually-hidden" id="samples-heading">Samples</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter samples" placeholder="Your sample ID or lab ID" search_id="filter-q" grid="portal.samples" active=filtered %}
-  {% if page_obj.paginator.count %}
+{% panel title="Samples" heading_id="samples-heading" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter samples" placeholder="Your sample ID or lab ID" search_id="filter-q" grid="portal.samples" active=filtered %}
+  {% list_results items=page_obj noun="samples" filtered=filtered invalid=filter_form.errors clear_url=request.path error_body="Correct the highlighted filter above." no_results_title="No samples match these filters" no_results_body="Check the sample ID, or clear the filters to see all of your samples." empty_title="No samples received yet" empty_body="Samples appear here once the laboratory receives them." %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table" data-vr-grid="portal.samples" data-vr-grid-version="1" aria-labelledby="samples-heading">
       <thead>
         <tr>
-          {% include "includes/sort_header.html" with label="Your sample ID" asc="client_sample_id" desc="-client_sample_id" col="client_sample_id" locked=True %}
-          {% include "includes/sort_header.html" with label="Lab ID" asc="lab_id" desc="-lab_id" col="lab_id" %}
-          {% include "includes/sort_header.html" with label="Project" asc="project" desc="-project" col="project" %}
-          {% include "includes/sort_header.html" with label="Matrix" asc="matrix" desc="-matrix" col="matrix" hidden=True %}
-          {% include "includes/sort_header.html" with label="Location" asc="collection_location" desc="-collection_location" col="collection_location" hidden=True %}
-          {% include "includes/sort_header.html" with label="Collected" asc="collected_at" desc="-collected_at" first="desc" col="collected_at" %}
-          {% include "includes/sort_header.html" with label="Received" asc="received_at" desc="-received_at" first="desc" col="received_at" hidden=True %}
+          {% sort_header label="Your sample ID" asc="client_sample_id" desc="-client_sample_id" col="client_sample_id" locked=True %}
+          {% sort_header label="Lab ID" asc="lab_id" desc="-lab_id" col="lab_id" %}
+          {% sort_header label="Project" asc="project" desc="-project" col="project" %}
+          {% sort_header label="Matrix" asc="matrix" desc="-matrix" col="matrix" hidden=True %}
+          {% sort_header label="Location" asc="collection_location" desc="-collection_location" col="collection_location" hidden=True %}
+          {% sort_header label="Collected" asc="collected_at" desc="-collected_at" first="desc" col="collected_at" %}
+          {% sort_header label="Received" asc="received_at" desc="-received_at" first="desc" col="received_at" hidden=True %}
           <th scope="col" class="text-end" data-vr-col="tests" data-vr-col-hidden>Tests</th>
-          {% include "includes/sort_header.html" with label="Status" asc="status" desc="-status" col="status" %}
+          {% sort_header label="Status" asc="status" desc="-status" col="status" %}
           <th scope="col" data-vr-col="report" data-vr-col-label="Report">Report</th>
         </tr>
       </thead>
@@ -31,7 +31,7 @@ filter_form (client-scoped PortalSampleFilterForm), q, sort, per_page, active_fi
           <th scope="row" class="vr-id">{{ sample.client_sample_id }}</th>
           <td class="vr-id">{{ sample.lab_id }}</td>
           <td>{{ sample.order.project.name }}</td>
-          <td>{{ sample.get_matrix_display }}</td>
+          <td>{% matrix_tag matrix=sample.matrix %}</td>
           <td>{{ sample.collection_location|default:"Not recorded" }}</td>
           <td class="vr-nowrap"><time datetime="{{ sample.collected_at|date:'c' }}" title="{{ sample.collected_at|date:'Y-m-d H:i T' }}">{{ sample.collected_at|date:"Y-m-d H:i" }}</time></td>
           <td class="vr-nowrap"><time datetime="{{ sample.received_at|date:'c' }}" title="{{ sample.received_at|date:'Y-m-d H:i T' }}">{{ sample.received_at|date:"Y-m-d H:i" }}</time></td>
@@ -43,13 +43,6 @@ filter_form (client-scoped PortalSampleFilterForm), q, sort, per_page, active_fi
       </tbody>
     </table>
   </div>
-  {% include "includes/pagination.html" with noun="samples" filtered=filtered %}
-  {% elif filter_form.errors %}
-  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above." clear_url=request.path %}
-  {% elif filtered %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No samples match these filters" body="Check the sample ID, or clear the filters to see all of your samples." clear_url=request.path %}
-  {% else %}
-  {% include "includes/empty_state.html" with title="No samples received yet" body="Samples appear here once the laboratory receives them." %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}

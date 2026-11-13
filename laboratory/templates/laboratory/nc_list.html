@@ -1,22 +1,23 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}Nonconformances. Context: page_obj (nonconformances_with_state), filter_form, q, sort, per_page, active_filters, filtered, today.{% endcomment %}
-{% block page_actions %}<a class="btn btn-primary" href="{% url 'laboratory:nc-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New nonconformance</a>{% endblock %}
+{% block page_actions %}<a class="btn btn-primary" href="{% url 'laboratory:nc-create' %}">{% icon name="plus-lg" %}New nonconformance</a>{% endblock %}
 {% block content %}
-<section class="card vr-table-card" aria-labelledby="nc-heading">
-  <h2 class="visually-hidden" id="nc-heading">Nonconformances</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter nonconformances" q=q placeholder="Number, title, sample, batch, lot or asset" inline=inline more=more more_open=more_open grid="laboratory.nonconformances" %}
-  {% if page_obj.paginator.count %}
+{% url 'laboratory:nc-create' as create_url %}
+{% panel title="Nonconformances" heading_id="nc-heading" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter nonconformances" q=q placeholder="Number, title, sample, batch, lot or asset" inline=inline more=more more_open=more_open grid="laboratory.nonconformances" %}
+  {% list_results items=page_obj noun="nonconformances" filtered=filtered invalid=filter_form.errors clear_url=request.path error_body="Correct the highlighted filter above." no_results_title="No nonconformances match these filters" no_results_body="Check the number or clear the filters." empty_title="No nonconformances recorded" empty_body="Record an issue and link it to the sample, batch, lot or equipment involved." action_url=create_url action_label="New nonconformance" %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table" data-vr-grid="laboratory.nonconformances" data-vr-grid-version="1" aria-labelledby="nc-heading">
       <thead><tr>
-        {% include "includes/sort_header.html" with label="Number" asc="number" desc="-number" first="desc" col="number" locked=True %}
-        {% include "includes/sort_header.html" with label="Title" asc="title" desc="-title" col="title" %}
-        {% include "includes/sort_header.html" with label="Severity" asc="severity" desc="-severity" col="severity" %}
-        {% include "includes/sort_header.html" with label="Status" asc="status" desc="-status" col="status" %}
+        {% sort_header label="Number" asc="number" desc="-number" first="desc" col="number" locked=True %}
+        {% sort_header label="Title" asc="title" desc="-title" col="title" %}
+        {% sort_header label="Severity" asc="severity" desc="-severity" col="severity" %}
+        {% sort_header label="Status" asc="status" desc="-status" col="status" %}
         <th scope="col" data-vr-col="links" data-vr-col-label="Linked records">Linked records</th>
-        {% include "includes/sort_header.html" with label="Owner" asc="owner" desc="-owner" col="owner" %}
-        {% include "includes/sort_header.html" with label="Due" asc="due" desc="-due" col="due" %}
-        {% include "includes/sort_header.html" with label="Discovered" asc="discovered" desc="-discovered" first="desc" col="discovered" hidden=True %}
+        {% sort_header label="Owner" asc="owner" desc="-owner" col="owner" %}
+        {% sort_header label="Due" asc="due" desc="-due" col="due" %}
+        {% sort_header label="Discovered" asc="discovered" desc="-discovered" first="desc" col="discovered" hidden=True %}
       </tr></thead>
       <tbody>
         {% for nc in page_obj %}
@@ -27,21 +28,13 @@
           <td>{% include "laboratory/_status.html" with kind="nc-status" value=nc.status label=nc.get_status_display plain=True %}</td>
           <td>{% if nc.sample %}<span class="vr-id">{{ nc.sample.lab_id }}</span> {% endif %}{% if nc.batch %}<span class="vr-id">{{ nc.batch.number }}</span> {% endif %}{% if nc.lot %}<span class="vr-id">{{ nc.lot.material.name }} {{ nc.lot.lot_number }}</span> {% endif %}{% if nc.equipment %}<span class="vr-id">{{ nc.equipment.asset_id }}</span>{% endif %}{% if not nc.sample and not nc.batch and not nc.lot and not nc.equipment %}<span class="vr-muted">—</span>{% endif %}</td>
           <td>{% if nc.owner %}{{ nc.owner.get_full_name|default:nc.owner.get_username }}{% else %}<span class="vr-muted">Unassigned</span>{% endif %}</td>
-          <td class="vr-nowrap">{% if nc.due_on %}{{ nc.due_on|date:"Y-m-d" }}{% if nc.is_overdue %} {% include "includes/status.html" with label="Past due" tone="danger" plain=True %}{% endif %}{% else %}<span class="vr-muted">—</span>{% endif %}</td>
+          <td class="vr-nowrap">{% if nc.due_on %}{{ nc.due_on|date:"Y-m-d" }}{% if nc.is_overdue %} {% status label="Past due" tone="danger" plain=True %}{% endif %}{% else %}<span class="vr-muted">—</span>{% endif %}</td>
           <td class="vr-nowrap">{{ nc.discovered_on|date:"Y-m-d" }}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
-  {% include "includes/pagination.html" with noun="nonconformances" filtered=filtered %}
-  {% elif filter_form.errors %}
-  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above." clear_url=request.path %}
-  {% elif filtered %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No nonconformances match these filters" body="Check the number or clear the filters." clear_url=request.path %}
-  {% else %}
-  {% url 'laboratory:nc-create' as create_url %}
-  {% include "includes/empty_state.html" with title="No nonconformances recorded" body="Record an issue and link it to the sample, batch, lot or equipment involved." action_url=create_url action_label="New nonconformance" %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}

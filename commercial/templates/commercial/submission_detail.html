@@ -1,59 +1,52 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 Staff review of a client submission. Context: submission, snapshots, snap (shown), data (snap.data), is_latest,
 awaiting, expected (live SubmissionSample rows), none_received, history, accept_form, return_form, reason_form
 (cancel / reinstate).
 Accepting opens an order in intake only. Physical receipt is recorded per sample with Receive.
 {% endcomment %}
-{% block breadcrumbs %}{% url 'commercial:submission-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Client submissions" section_url=list_url current=submission.number %}{% endblock %}
+{% block breadcrumbs %}{% url 'commercial:submission-list' as list_url %}{% breadcrumbs section="Client submissions" section_url=list_url current=submission.number %}{% endblock %}
 {% block page_heading %}<span class="vr-id">{{ submission.number }}</span>{% endblock %}
-{% block page_meta %}
-<ul class="vr-page-meta">
+{% block page_meta %}{% page_meta %}
   <li>{% include "commercial/_submission_status.html" with plain=True %}</li>
   <li>{{ submission.client.name }} / {{ submission.project.name }}</li>
   <li>COC <span class="vr-id">{{ submission.coc_reference }}</span></li>
-</ul>
-{% endblock %}
+{% endpage_meta %}{% endblock %}
 {% block page_actions %}
-<a class="btn btn-outline-secondary" href="{% url 'commercial:submission-labels' submission.pk %}">{% include "includes/icon.html" with name="printer" %}Planned bottle labels</a>
+<a class="btn btn-outline-secondary" href="{% url 'commercial:submission-labels' submission.pk %}">{% icon name="printer" %}Planned bottle labels</a>
 {% if awaiting %}
-<form method="post" action="{% url 'commercial:submission-accept' submission.pk %}" class="d-inline">{% csrf_token %}{{ accept_form.snapshot_number }}<button class="btn btn-primary" type="submit">Accept into intake</button></form>
+{% url 'commercial:submission-accept' submission.pk as accept_url %}{% post_button action=accept_url label="Accept into intake" variant="primary" fields=accept_form %}
 {% endif %}
 {% endblock %}
 {% block content %}
 {% if awaiting %}
-<div class="alert alert-info" role="status">{% include "includes/status.html" with label="Awaiting review" tone="info" plain=True %}<div>This is what the client declared. Accepting opens the chain of custody in intake; it does not record any sample as received. Temperature, seals, condition and custody are recorded when each sample physically arrives.</div></div>
+{% notice tone="info" label="Awaiting review" %}This is what the client declared. Accepting opens the chain of custody in intake; it does not record any sample as received. Temperature, seals, condition and custody are recorded when each sample physically arrives.{% endnotice %}
 {% endif %}
 {% if submission.status == "cancelled" %}
-<div class="alert alert-secondary" role="status">
-  {% include "includes/status.html" with label="Cancelled" tone="neutral" plain=True %}
-  <div>This shipment was marked as not arriving. No sample can be received until it is reinstated. The client's submitted versions and the reason below stay on record.</div>
-</div>
+{% notice tone="neutral" label="Cancelled" %}This shipment was marked as not arriving. No sample can be received until it is reinstated. The client's submitted versions and the reason below stay on record.{% endnotice %}
 {% endif %}
 {% if not is_latest %}
-<div class="alert alert-info" role="status">{% include "includes/status.html" with label="Superseded" tone="info" plain=True %}<div>You are viewing submitted version {{ snap.number }}, which was superseded. <a href="{% url 'commercial:submission-detail' submission.pk %}">Show the latest</a>.</div></div>
+{% notice tone="info" label="Superseded" %}You are viewing submitted version {{ snap.number }}, which was superseded. <a href="{% url 'commercial:submission-detail' submission.pk %}">Show the latest</a>.{% endnotice %}
 {% endif %}
-<section class="card mb-3" aria-labelledby="shipment-heading">
-  <div class="card-header"><h2 class="card-title" id="shipment-heading">Submitted version {{ snap.number }}</h2><span class="vr-count">by {{ snap.submitted_by.get_full_name|default:snap.submitted_by.get_username }} · <time datetime="{{ snap.submitted_at|date:'c' }}">{{ snap.submitted_at|date:"Y-m-d H:i T" }}</time></span></div>
-  <div class="card-body">
-    <dl class="vr-facts mb-0">
-      <div><dt>Expected arrival</dt><dd>{{ data.expected_arrival|default:"Not stated" }}</dd></div>
-      <div><dt>Carrier / tracking</dt><dd>{{ data.carrier|default:"—" }}</dd></div>
-      <div><dt>Coolers / packages</dt><dd>{{ data.cooler_count|default:"—" }}</dd></div>
-      <div><dt>Client contact</dt><dd>{{ data.contact_name|default:"—" }}{% if data.contact_phone %} · {{ data.contact_phone }}{% endif %}</dd></div>
-      {% if data.quote %}<div><dt>Accepted quote</dt><dd>{{ data.quote }}</dd></div>{% endif %}
-      {% if submission.order_id %}<div><dt>Chain of custody</dt><dd><a class="vr-id" href="{% url 'receipt:order-detail' submission.order_id %}">{{ submission.order.coc_reference }}</a></dd></div>{% endif %}
-      <div><dt>Instructions</dt><dd>{{ data.special_instructions|default:"—"|linebreaksbr }}</dd></div>
+{% panel heading_id="shipment-heading" class="mb-3" %}
+  {% fill title %}Submitted version {{ snap.number }}{% endfill %}
+  {% fill count %}by {{ snap.submitted_by.get_full_name|default:snap.submitted_by.get_username }} · <time datetime="{{ snap.submitted_at|date:'c' }}">{{ snap.submitted_at|date:"Y-m-d H:i T" }}</time>{% endfill %}
+    <dl class="vr-facts">
+      {% fact label="Expected arrival" value=data.expected_arrival|default:"Not stated" %}
+      {% fact label="Carrier / tracking" value=data.carrier %}
+      {% fact label="Coolers / packages" value=data.cooler_count|default:"—" %}
+      {% fact label="Client contact" wide=True %}{{ data.contact_name|default:"—" }}{% if data.contact_phone %} · {{ data.contact_phone }}{% endif %}{% endfact %}
+      {% if data.quote %}{% fact label="Accepted quote" value=data.quote %}{% endif %}
+      {% if submission.order_id %}{% fact label="Chain of custody" %}<a class="vr-id" href="{% url 'receipt:order-detail' submission.order_id %}">{{ submission.order.coc_reference }}</a>{% endfact %}{% endif %}
+      {% fact label="Instructions" wide=True value=data.special_instructions|default:""|linebreaksbr %}
     </dl>
-  </div>
-</section>
-<section class="card vr-table-card mb-3" aria-labelledby="samples-heading">
-  <div class="card-header"><h2 class="card-title" id="samples-heading">Declared samples</h2><span class="vr-count">{{ data.samples|length }}</span></div>
+{% endpanel %}
+{% panel title="Declared samples" heading_id="samples-heading" count=data.samples|length table=True flush=True class="mb-3" %}
   {% include "commercial/_snapshot.html" %}
-</section>
+{% endpanel %}
 {% if submission.status == "accepted" %}
-<section class="card vr-table-card mb-3" aria-labelledby="receive-heading">
-  <div class="card-header"><h2 class="card-title" id="receive-heading">Receive samples</h2><span class="vr-count">Record receipt as each sample arrives</span></div>
+{% panel title="Receive samples" heading_id="receive-heading" count="Record receipt as each sample arrives" table=True flush=True class="mb-3" %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table">
       <caption class="visually-hidden">Expected samples and their receipt</caption>
@@ -62,7 +55,7 @@ Accepting opens an order in intake only. Physical receipt is recorded per sample
         {% for e in expected %}
         <tr>
           <th scope="row" class="vr-id">{{ e.client_sample_id }}</th>
-          <td>{{ e.get_matrix_display }}{% if e.source_type %} · {{ e.get_source_type_display }}{% endif %}{% if e.sample_type != "sample" %}<div class="text-body-secondary small">{{ e.get_sample_type_display }}</div>{% endif %}</td>
+          <td>{% matrix_tag matrix=e.matrix source=e.get_source_type_display %}{% if e.sample_type != "sample" %}<div class="vr-muted small">{{ e.get_sample_type_display }}</div>{% endif %}</td>
           <td>{% if e.sample_id %}<a href="{% url 'receipt:sample-detail' e.sample_id %}">Received as <span class="vr-id">{{ e.sample.lab_id }}</span></a>{% else %}<span class="vr-muted">Not received yet</span>{% endif %}</td>
           <td class="text-end">{% if not e.sample_id %}<a class="btn btn-sm btn-outline-secondary" href="{% url 'commercial:submission-receive' submission.pk e.pk %}">Receive<span class="visually-hidden"> {{ e.client_sample_id }}</span></a>{% endif %}</td>
         </tr>
@@ -70,10 +63,9 @@ Accepting opens an order in intake only. Physical receipt is recorded per sample
       </tbody>
     </table>
   </div>
-</section>
+{% endpanel %}
 {% endif %}
-<section class="card vr-table-card mb-3" aria-labelledby="snaps-heading">
-  <div class="card-header"><h2 class="card-title" id="snaps-heading">Submitted versions</h2><span class="vr-count">{{ snapshots|length }}</span></div>
+{% panel title="Submitted versions" heading_id="snaps-heading" count=snapshots|length table=True flush=True class="mb-3" %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table">
       <caption class="visually-hidden">Versions of {{ submission.number }} submitted by the client</caption>
@@ -90,53 +82,35 @@ Accepting opens an order in intake only. Physical receipt is recorded per sample
       </tbody>
     </table>
   </div>
-</section>
+{% endpanel %}
 {% if awaiting %}
-<section class="card mb-3" aria-labelledby="return-heading">
-  <div class="card-header"><h2 class="card-title" id="return-heading">Return for changes</h2></div>
-  <div class="card-body">
-    <form method="post" action="{% url 'commercial:submission-return' submission.pk %}" data-vr-local-form="Return to client" data-vr-local-title="Return submission for changes" class="vr-form">
-      {% csrf_token %}{{ return_form.snapshot_number }}
-      <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+{% panel title="Return for changes" heading_id="return-heading" class="mb-3" %}
+    {% url 'commercial:submission-return' submission.pk as local_action %}
+    {% form_page form=return_form action=local_action local=True submit_label="Return to client" title="Return submission for changes" secondary=True %}
+      {{ return_form.snapshot_number }}
       {{ return_form.reason.as_field_group }}
-      <div class="vr-form-actions">
-        <button class="btn btn-outline-secondary" type="submit">Return to client</button>
-      </div>
-    </form>
-  </div>
-</section>
+    {% endform_page %}
+{% endpanel %}
 {% endif %}
 {% if submission.status == "cancelled" %}
-<section class="card mb-3" aria-labelledby="reinstate-heading">
-  <div class="card-header"><h2 class="card-title" id="reinstate-heading">Reinstate submission</h2></div>
-  <div class="card-body">
-    <form method="post" action="{% url 'commercial:submission-reinstate' submission.pk %}" data-vr-local-form="Reinstate" data-vr-local-title="Reinstate submission" class="vr-form">
-      {% csrf_token %}{{ reason_form.expected_revision }}
-      <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+{% panel title="Reinstate submission" heading_id="reinstate-heading" class="mb-3" %}
+    {% url 'commercial:submission-reinstate' submission.pk as local_action %}
+    {% form_page form=reason_form action=local_action local=True submit_label="Reinstate" title="Reinstate submission" secondary=True %}
+      {{ reason_form.expected_revision }}
       {{ reason_form.reason.as_field_group }}
-      <div class="vr-form-actions">
-        <button class="btn btn-outline-secondary" type="submit">Reinstate</button>
-      </div>
-    </form>
-  </div>
-</section>
+    {% endform_page %}
+{% endpanel %}
 {% endif %}
 {% if submission.status == "accepted" and none_received %}
-<section class="card mb-3" aria-labelledby="cancel-heading">
-  <div class="card-header"><h2 class="card-title" id="cancel-heading">Shipment not arriving</h2></div>
-  <div class="card-body">
+{% panel title="Shipment not arriving" heading_id="cancel-heading" class="mb-3" %}
     <p class="vr-form-note">Use this when the client confirms the samples will not be sent, or the shipment is lost before any sample is received. Nothing is deleted, and it can be reinstated with a reason.</p>
-    <form method="post" action="{% url 'commercial:submission-cancel' submission.pk %}" data-vr-local-form="Cancel expected shipment" data-vr-local-title="Cancel expected shipment" class="vr-form">
-      {% csrf_token %}{{ reason_form.expected_revision }}
-      <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+    {% url 'commercial:submission-cancel' submission.pk as local_action %}
+    {% form_page form=reason_form action=local_action local=True submit_label="Cancel expected shipment" destructive=True %}
+      {{ reason_form.expected_revision }}
       {{ reason_form.reason.as_field_group }}
-      <div class="vr-form-actions">
-        <button class="btn btn-outline-danger" type="submit">Cancel expected shipment</button>
-      </div>
-    </form>
-  </div>
-</section>
+    {% endform_page %}
+{% endpanel %}
 {% endif %}
-{% include "commercial/_history.html" with history=history %}
+{% history_panel events=history class="mt-3" %}{% endhistory_panel %}
 {% endblock %}
-{% block record_foot %}{% include "includes/record_foot.html" with identifier=submission.number %}{% endblock %}
+{% block record_foot %}{% record_foot identifier=submission.number %}{% endblock %}

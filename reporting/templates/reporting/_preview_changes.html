@@ -1,0 +1,6 @@
+{% load ui %}{% comment %}The amendment's "Changes from version N" panel of the report preview. Context: current, changes.{% endcomment %}
+{% panel title="Changes" heading_id="changes-heading" class="mb-3" %}
+  {% fill title %}Changes from version {{ current.number }}{% endfill %}
+    {% if changes %}<ul class="ps-3">{% for change in changes %}<li>{% include "reporting/_change.html" %}</li>{% endfor %}</ul>
+    {% else %}<p class="vr-muted">The content is identical to version {{ current.number }}. An amendment must change the report: correct the result, QC record or scope first.</p>{% endif %}
+{% endpanel %}

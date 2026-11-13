@@ -170,7 +170,7 @@
         },
         {
           "label": "Columns",
-          "description": "With browser enhancement, change optional column visibility and order using the dialog’s move controls or by dragging headings. Changes apply immediately and are saved in this browser only. Locked identity/action columns stay visible and fixed. Reset columns restores defaults; Done or Close closes the dialog. Presentation settings do not change records, filters or exports."
+          "description": "With browser enhancement, change optional column visibility and order using the dialog’s move controls or by dragging headings. Changes apply immediately and are saved for your account, on any workstation. Locked identity/action columns stay visible and fixed. Reset columns restores defaults; Done or Close closes the dialog. Presentation settings do not change records, filters or exports."
         }
       ]
     },

@@ -98,7 +98,11 @@ def test_equipment_choice_through_the_pages(config, client, analyst):
     icp, retired = asset(analyst), asset(analyst, "OLD-1", status="retired")
     client.force_login(analyst)
     form = client.get(reverse("analytical:batch-create")).content.decode()
-    assert "ICP-1" in form and "OLD-1" not in form and ">Not recorded</option>" in form
+    lookup = reverse("lookup", args=["active-equipment"])
+    assert f'data-vr-lookup="{lookup}"' in form and ">Not recorded</option>" in form
+    offered = client.get(lookup).json()["results"]
+    assert any("ICP-1" in o["text"] for o in offered)
+    assert not any("OLD-1" in o["text"] for o in offered)
     created = client.post(
         reverse("analytical:batch-create"),
         {"method": config["method"].pk, "matrix": "water", "equipment": icp.pk},

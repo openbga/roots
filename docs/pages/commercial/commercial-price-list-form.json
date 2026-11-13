@@ -121,7 +121,7 @@
     "commercial/pricing.py",
     "commercial/selectors.py",
     "commercial/templates/commercial/price_list_form.html",
-    "commercial/templates/commercial/_history.html",
+    "templates/includes/history_panel.html",
     "commercial/tests/test_quotes.py",
     "core/form_surfaces.py",
     "templates/includes/form_dialog.html",

@@ -120,3 +120,51 @@ def requested_test_work(sample):
             rt.clock, remaining = selectors.clock_state(rt.hold_deadline, rt.hold_warning, now)
             rt.remaining_label = holding.timedelta_label(remaining)
     return tests
+
+
+class RouteStop(NamedTuple):
+    name: str
+    state: str  # done | current | next
+    sub: str
+
+
+ROUTE_STAGES = (
+    # (stop name, work statuses counted as having reached it)
+    ("In a batch", {"external", "awaiting", "draft", "submitted", "returned", "approved"}),
+    ("Results entered", {"draft", "submitted", "returned", "approved"}),
+    ("Reviewed", {"approved"}),
+)
+
+
+def sample_route(sample, tests):
+    """The sample's six stops for the record page's route: Received, Disposition, In a batch,
+    Results entered, Reviewed, Reported. A summary of the statuses above, deciding nothing.
+
+    A test is in a batch once it is batched or sent out, entered once a result revision exists,
+    reviewed once approved and reported once an issued version contains it. The first stop not yet
+    reached by every test is current; a sample on hold or rejected stops at Disposition."""
+    received = sample.received_at
+    stops = [RouteStop("Received", "done", timezone.localtime(received).strftime("%Y-%m-%d %H:%M"))]
+    if sample.disposition == "hold":
+        stops.append(RouteStop("Disposition", "current", "Hold: decide before work starts"))
+    elif sample.disposition == "reject":
+        stops.append(RouteStop("Disposition", "current", "Rejected at receipt"))
+    else:
+        stops.append(RouteStop("Disposition", "done", sample.get_disposition_display()))
+    total = len(tests)
+    counts = [sum(rt.work_status in statuses for rt in tests) for _, statuses in ROUTE_STAGES]
+    counts.append(sum(bool(rt.reports) for rt in tests))
+    names = [name for name, _ in ROUTE_STAGES] + ["Reported"]
+    current_found = stops[-1].state == "current"
+    for name, count in zip(names, counts, strict=True):
+        sub = (
+            f"{count} of {total} test{'' if total == 1 else 's'}" if total else "No tests requested"
+        )
+        if total and count == total:
+            state = "done"
+        elif not current_found:
+            state, current_found = "current", True
+        else:
+            state = "next"
+        stops.append(RouteStop(name, state, sub))
+    return stops

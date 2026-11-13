@@ -1,95 +1,77 @@
 {% extends "base.html" %}
-{% load reporting %}
+{% load reporting ui %}
 {% block title %}Preview {{ report.number }} · Reports · Smart Roots LIMS{% endblock %}
-{% block breadcrumbs %}{% url 'reporting:report-list' as list_url %}{% url 'reporting:report-detail' report.pk as record_url %}{% include "includes/breadcrumbs.html" with section="Reports" section_url=list_url record=report.number record_url=record_url current="Preview" %}{% endblock %}
+{% block breadcrumbs %}{% url 'reporting:report-list' as list_url %}{% url 'reporting:report-detail' report.pk as record_url %}{% breadcrumbs section="Reports" section_url=list_url record=report.number record_url=record_url current="Preview" %}{% endblock %}
 {% block page_heading %}Preview {% if amendment %}amendment v{{ next_version }}{% else %}version 1{% endif %} of <span class="vr-id">{{ report.number }}</span>{% endblock %}
-{% block page_meta %}
-<ul class="vr-page-meta">
+{% block page_meta %}{% page_meta %}
   <li>{% include "reporting/version_status.html" %}</li>
   <li>{{ c.client.name }} / {{ c.project.name }}</li>
   <li>{{ c.samples|length }} sample{{ c.samples|length|pluralize }}</li>
   <li>Content <span class="vr-id" title="SHA-256 {{ assembly.fingerprint }}">{{ assembly.fingerprint|slice:":12" }}…</span></li>
-</ul>
-{% endblock %}
+{% endpage_meta %}{% endblock %}
 {% block page_intro %}<p class="vr-page-intro">Every test included in this new issue is checked against current preservation evidence, including unchanged results in an amendment.</p>{% endblock %}
 {% block page_actions %}
-<a class="btn btn-outline-secondary" href="{% url 'reporting:report-preview-pdf' report.pk %}?fp={{ assembly.fingerprint }}" target="_blank" rel="noopener">{% include "includes/icon.html" with name="file-earmark-pdf" %}Open PDF preview</a>
+<a class="btn btn-outline-secondary" href="{% url 'reporting:report-preview-pdf' report.pk %}?fp={{ assembly.fingerprint }}" target="_blank" rel="noopener">{% icon name="file-earmark-pdf" %}Open PDF preview</a>
 {% endblock %}
 {% block content %}
 {% if release_errors %}
-<div class="alert alert-danger" role="alert" tabindex="-1" id="release-errors">
-  {% include "includes/status.html" with label="Error" tone="danger" plain=True %}
-  <div>
+{% notice tone="danger" blocking=True id="release-errors" focus=True %}
     <p class="mb-1"><strong>Nothing was released.</strong></p>
     <ul class="mb-0 ps-3">{% for error in release_errors %}<li>{{ error }}</li>{% endfor %}</ul>
-  </div>
-</div>
+{% endnotice %}
 {% endif %}
 {% if c.synthetic_notice %}
-<div class="alert alert-warning" role="status">{% include "includes/status.html" with label="Note" tone="warning" plain=True %}<div>This deployment marks every report as synthetic demonstration data, printed on each PDF page.</div></div>
+{% notice tone="warning" label="Note" %}This deployment marks every report as synthetic demonstration data, printed on each PDF page.{% endnotice %}
 {% endif %}
 {% include "reporting/certificate_notice.html" %}
-{% include "includes/page_toc.html" with items=toc %}
-<div class="row g-3 mb-3">
-  <div class="col-xl-8">
+{% page_toc items=toc %}
+{% if amendment %}{% firstof "Release amendment" as release_title %}{% else %}{% firstof "Release report" as release_title %}{% endif %}
+{% record_layout aside_label=release_title %}
+  {% fill lead %}
     {% if assembly.blockers %}
-    <section class="card vr-table-card mb-3" aria-labelledby="blockers-heading">
-      <div class="card-header"><h2 class="card-title" id="blockers-heading">Blocking issues</h2>{% include "includes/status.html" with label=assembly.blockers|length|stringformat:"s"|add:" to resolve" tone="warning" %}</div>
-      <div class="card-body">
+    {% panel title="Blocking issues" heading_id="blockers-heading" table=True class="mb-3" %}
+      {% fill count %}{% status label=assembly.blockers|length|stringformat:"s"|add:" to resolve" tone="warning" %}{% endfill %}
         {% include "reporting/readiness_table.html" with samples=assembly.samples only_blocked=True %}
-        {% if report_blockers %}<ul class="mb-0">{% for b in report_blockers %}<li>{{ b }}</li>{% endfor %}</ul>{% endif %}
-        <p class="vr-form-note mb-0">Resolve these in review, QC or receipt, then reload this preview.</p>
-      </div>
-    </section>
+        {% if report_blockers %}<ul>{% for b in report_blockers %}<li>{{ b }}</li>{% endfor %}</ul>{% endif %}
+        <p class="vr-form-note">Resolve these in review, QC or receipt, then reload this preview.</p>
+    {% endpanel %}
+    {% elif amendment %}
+    {% include "reporting/_preview_changes.html" %}
+    {% else %}
+    {% panel title="Ready to release" heading_id="ready-heading" %}
+      {% fill count %}{% status label="No blocking issues" tone="success" %}{% endfill %}
+      <p>Every result below is approved and current. Review the results and the PDF preview, then authorize release.</p>
+    {% endpanel %}
     {% endif %}
-    {% if amendment %}
-    <section class="card mb-3" aria-labelledby="changes-heading">
-      <div class="card-header"><h2 class="card-title" id="changes-heading">Changes from version {{ current.number }}</h2></div>
-      <div class="card-body">
-        {% if changes %}<ul class="mb-0 ps-3">{% for change in changes %}<li>{{ change }}</li>{% endfor %}</ul>
-        {% else %}<p class="mb-0 vr-muted">The content is identical to version {{ current.number }}. An amendment must change the report: correct the result, QC record or scope first.</p>{% endif %}
-      </div>
-    </section>
-    {% endif %}
-    {% if not assembly.blockers and not amendment %}
-    <section class="card" aria-labelledby="ready-heading">
-      <div class="card-header"><h2 class="card-title" id="ready-heading">Ready to release</h2>{% include "includes/status.html" with label="No blocking issues" tone="success" %}</div>
-      <div class="card-body"><p class="mb-0">Every result below is approved and current. Review the results and the PDF preview, then authorize release.</p></div>
-    </section>
-    {% endif %}
-  </div>
-  <div class="col-xl-4">
-    <section class="card" id="release" aria-labelledby="release-heading">
-      <div class="card-header"><h2 class="card-title" id="release-heading">{% if amendment %}Release amendment{% else %}Release report{% endif %}</h2></div>
-      <div class="card-body">
+  {% endfill %}
+  {% fill aside %}
+    {% panel title=release_title heading_id="release-heading" id="release" %}
         {% if not can_release %}
-        <p class="mb-0">Release needs the report release permission. Ask an authorized person to review this preview.</p>
+        <p>Release needs the report release permission. Ask an authorized person to review this preview.</p>
         {% elif not assembly.releasable %}
-        <p class="mb-0">Release is available once the blocking issues are resolved.</p>
+        <p>Release is available once the blocking issues are resolved.</p>
         {% elif amendment and not changes %}
-        <p class="mb-0">Nothing has changed since version {{ current.number }}.</p>
+        <p>Nothing has changed since version {{ current.number }}.</p>
         {% else %}
-        <form class="vr-form" method="post" action="{% url 'reporting:report-release' report.pk %}" novalidate>
-          {% csrf_token %}
-          <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
-          {{ form }}
-          <div class="vr-form-actions">
-            <button class="btn btn-primary" type="submit">{% if amendment %}Release version {{ next_version }}{% else %}Release version 1{% endif %}</button>
-          </div>
+        {% url 'reporting:report-release' report.pk as release_action %}
+        {% with n=next_version|default:1|stringformat:"s" %}{% if amendment %}{% firstof "Release version "|add:n as release_label %}{% else %}{% firstof "Release version 1" as release_label %}{% endif %}
+        {% form_page form=form action=release_action submit_label=release_label %}
+          {% for field in form.visible_fields %}{{ field.as_field_group }}{% endfor %}
+          {% for field in form.hidden_fields %}{{ field }}{% endfor %}
           <p class="vr-form-note mt-2 mb-0">The PDF is generated and stored with your name and the time. Issued versions are never changed; corrections are released as amendments.</p>
-        </form>
+        {% endform_page %}{% endwith %}
         {% endif %}
-        <p class="vr-form-note mt-3 mb-0">A first amendment may need new assessments; earlier issued reports remain unchanged and downloadable. Optional: <a href="{% url 'reporting:edd-readiness' report.pk %}">run the NYSDEC data check</a> first.</p>
-      </div>
-    </section>
-  </div>
-</div>
+        <p class="vr-form-note">A first amendment may need new assessments; earlier issued reports remain unchanged and downloadable. Optional: <a href="{% url 'reporting:edd-readiness' report.pk %}">run the NYSDEC data check</a> first.</p>
+    {% endpanel %}
+  {% endfill %}
+{% if assembly.blockers and amendment %}{% include "reporting/_preview_changes.html" %}{% endif %}
 {% if not expand_samples %}<p class="vr-form-note">Each sample's results are collapsed; open a sample to review them. Blocking issues and changes are listed above.</p>{% endif %}
 {% for s in c.samples %}
-<details class="card vr-table-card mb-3"{% if expand_samples %} open{% endif %}>
-  <summary class="card-header"><h2 class="card-title d-inline" id="sample-{{ forloop.counter }}"><span class="vr-id">{{ s.lab_id }}</span> · {{ s.client_sample_id }}</h2> <span class="vr-count">{{ s.results|length }} result{{ s.results|length|pluralize }} · {{ s.collection_location|default:"Location not recorded" }} · {{ s.matrix }} · collected {{ s.collected_at|iso_time }} · received {{ s.received_at|iso_time }}</span></summary>
-    <div class="card-body">
-      {% if s.results %}
+{% with n=forloop.counter|stringformat:"s" %}{% with sample_heading="sample-"|add:n %}
+{% panel title=s.lab_id heading_id=sample_heading table=True collapsible=True open=expand_samples class="mb-3" %}
+  {% fill title %}<span class="vr-id">{{ s.lab_id }}</span> · {{ s.client_sample_id }}{% endfill %}
+  {% fill count %}{{ s.results|length }} result{{ s.results|length|pluralize }} · {{ s.collection_location|default:"Location not recorded" }} · {{ s.matrix }} · collected {{ s.collected_at|iso_time }} · received {{ s.received_at|iso_time }}{% endfill %}
+      {% list_results items=s.results empty_title="No approved results" empty_body="This sample has no approved results to report yet." %}
       <div class="vr-table-wrap">
         <table class="table vr-table">
           <thead><tr><th scope="col">Analyte</th><th scope="col" class="text-end">Result</th><th scope="col">Unit</th><th scope="col">Qualifiers</th><th scope="col" class="text-end">RL</th><th scope="col" class="text-end">DF</th><th scope="col">Method</th><th scope="col">Analyzed</th><th scope="col">Analyst / reviewer</th><th scope="col">Holding time</th></tr></thead>
@@ -104,38 +86,35 @@
               <td class="text-end">{{ r.reporting_limit }}</td>
               <td class="text-end">{{ r.dilution_factor }}</td>
               <td>{{ r.method_code }}<div class="vr-muted small">as reported</div></td>
-              <td class="vr-nowrap">{{ r.analysis_started_at|iso_time }}</td>
-              <td>{% include "includes/status.html" with label="Subcontracted" tone="info" plain=True %} {{ r.external.laboratory }}<div class="vr-muted small">Entered by {{ r.entered_by }} · source review by {{ r.reviewed_by }}</div></td>
+              <td><span class="vr-id">{{ r.analysis_started_at|iso_minute }}</span>{% if r.analysis_started_at|iso_offset %}<div class="vr-muted small">{{ r.analysis_started_at|iso_offset }}</div>{% endif %}</td>
+              <td>{% status label="Subcontracted" tone="info" plain=True %} {{ r.external.laboratory }}<div class="vr-muted small">Entered by {{ r.entered_by }} · source review by {{ r.reviewed_by }}</div></td>
               <td><span class="vr-muted">Not evaluated by this laboratory</span></td>
-              {% else %}              <th scope="row">{{ r.analyte }}<div class="vr-muted small fw-normal">rev. {{ r.revision }} · batch {{ r.batch }}</div></th>
+              {% else %}              <th scope="row">{{ r.analyte }}<div class="vr-muted small fw-normal">rev. {{ r.revision }} · batch <span class="vr-id">{{ r.batch }}</span></div></th>
               <td class="text-end"><span class="fw-semibold">{{ r.reported }}</span>{% with basis=r|basis_label:s.matrix solids=r|solids_text %}{% if basis %}<div class="vr-muted small">{{ basis }}</div>{% endif %}{% if solids %}<div class="vr-muted small">{{ solids }}</div>{% endif %}{% endwith %}</td>
               <td>{{ r.unit }}</td>
               <td>{{ r.qualifiers|join:", "|default:"—" }}</td>
               <td class="text-end">{{ r.reporting_limit }}</td>
               <td class="text-end">{{ r.dilution_factor }}</td>
               <td>{{ r.method_code }} v{{ r.method_version }}</td>
-              <td class="vr-nowrap">{{ r.analysis_started_at|iso_time }}</td>
+              <td><span class="vr-id">{{ r.analysis_started_at|iso_minute }}</span>{% if r.analysis_started_at|iso_offset %}<div class="vr-muted small">{{ r.analysis_started_at|iso_offset }}</div>{% endif %}</td>
               <td>{{ r.analyst }}<div class="vr-muted small">Reviewed by {{ r.reviewed_by }}</div></td>
               <td>{{ r.holding_status }}</td>
               {% endif %}
             </tr>
-            <tr><td colspan="10" class="small">{% include "reporting/preservation_record.html" %}</td></tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
-      {% else %}
-      {% include "includes/empty_state.html" with title="No approved results" body="This sample has no approved results to report yet." %}
-      {% endif %}
-    </div>
+      <details><summary>Receipt and preparation notes ({{ s.results|length }} result{{ s.results|length|pluralize }})</summary>
+    <ul class="small mb-0 mt-2 ps-3">{% for r in s.results %}<li><strong>{{ r.analyte }}:</strong> {% include "reporting/preservation_record.html" %}</li>{% endfor %}</ul>
   </details>
+      {% endlist_results %}
+{% endpanel %}{% endwith %}{% endwith %}
   {% empty %}
-  {% include "includes/empty_state.html" with title="No samples selected" body="Edit the report scope to add samples." %}
+  {% empty_state title="No samples selected" body="Edit the report scope to add samples." %}
   {% endfor %}
-<section class="card" aria-labelledby="pdf-heading">
-  <div class="card-header"><h2 class="card-title" id="pdf-heading">PDF preview</h2><span class="vr-count">Watermarked, not stored</span></div>
-  <div class="card-body p-0">
+{% panel title="PDF preview" heading_id="pdf-heading" count="Watermarked, not stored" body_class="p-0" %}
     <iframe class="d-block w-100 border-0" height="720" title="PDF preview of {{ report.number }}" src="{% url 'reporting:report-preview-pdf' report.pk %}?fp={{ assembly.fingerprint }}" loading="lazy"></iframe>
-  </div>
-</section>
+{% endpanel %}
+{% endrecord_layout %}
 {% endblock %}

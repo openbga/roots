@@ -4,7 +4,7 @@ import re
 from datetime import datetime, timedelta
 
 import pytest
-from helpers import LAB_TZ, column_headers, column_values, make_list_dataset
+from helpers import LAB_TZ, column_headers, column_values, make_list_dataset, pick
 from playwright.sync_api import Page, expect
 
 pytestmark = pytest.mark.django_db(transaction=True)
@@ -62,7 +62,7 @@ def test_sort_search_filters_paging_and_columns_work_on_the_full_dataset(
     expect(page).not_to_have_url(re.compile(r"[?&]page="))
 
     # Combine with the inline Matrix filter and an advanced date filter; chips show and remove.
-    page.get_by_label("Matrix").select_option(label="Water")
+    pick(page.get_by_label("Matrix"), label="Water")
     page.get_by_role("button", name="More filters").click()
     cutoff = (datetime.now(LAB_TZ) - timedelta(hours=30)).date()
     page.get_by_label("Received from").fill(cutoff.isoformat())
@@ -80,16 +80,16 @@ def test_sort_search_filters_paging_and_columns_work_on_the_full_dataset(
     expect(page.get_by_role("list", name="Active filters")).not_to_contain_text("Matrix")
     assert len(column_values(page, "Client sample ID")) > len(expected)
 
-    # Columns: hide, show a default-hidden one, reorder with the keyboard, and persist per browser.
+    # Columns: hide, show a default-hidden one, reorder with the keyboard, and persist per user.
     page.get_by_role("link", name="Clear all").click()
     default_headers = column_headers(page)
-    assert "Collector" not in default_headers and "Client" in default_headers
+    assert "Collector" not in default_headers and "Client / project" in default_headers
     page.get_by_role("button", name="Columns", exact=True).click()
     dialog = page.get_by_role("dialog", name="Columns")
     expect(dialog).to_be_visible()
-    dialog.get_by_role("checkbox", name="Client", exact=True).uncheck()
+    dialog.get_by_role("checkbox", name="Client / project", exact=True).uncheck()
     dialog.get_by_role("checkbox", name="Collector").check()
-    move_up = dialog.get_by_role("button", name="Move Project up")
+    move_up = dialog.get_by_role("button", name="Move Matrix up")
     move_up.focus()
     move_up.press("Enter")
     expect(move_up).to_be_focused()  # focus stays on the control that was used
@@ -97,12 +97,13 @@ def test_sort_search_filters_paging_and_columns_work_on_the_full_dataset(
     expect(dialog).to_be_hidden()
     expect(page.get_by_role("button", name="Columns", exact=True)).to_be_focused()
     changed = column_headers(page)
-    assert "Client" not in changed and "Collector" in changed
-    assert changed.index("Project") < default_headers.index("Project")
+    assert "Client / project" not in changed and "Collector" in changed
+    assert changed.index("Matrix") < default_headers.index("Matrix")
     assert changed[0] == "Lab ID"  # the identity column stays first and cannot be hidden
 
+    page.wait_for_load_state("networkidle")  # the layout's POST has reached the server
     page.reload()
-    assert column_headers(page) == changed  # saved in this browser
+    assert column_headers(page) == changed  # saved for this user
     page.get_by_role("link", name="Next page").click()
     assert column_headers(page) == changed  # and applied on every page of the list
     assert all(
@@ -132,10 +133,10 @@ def test_sort_search_filters_paging_and_columns_work_on_the_full_dataset(
         page.mouse.up()
 
     before = column_headers(page)
-    drag_header("Project", "Disposition")
+    drag_header("Client / project", "Received")
     after = column_headers(page)
-    assert after.index("Project") > before.index("Project"), (before, after)
-    drag_header("Project", "Lab ID", edge="left")
+    assert after.index("Client / project") > before.index("Client / project"), (before, after)
+    drag_header("Client / project", "Lab ID", edge="left")
     dragged = column_headers(page)
     assert dragged[0] == "Lab ID", dragged  # the locked identity column cannot be displaced
     assert page.console_errors == []

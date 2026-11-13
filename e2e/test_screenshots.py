@@ -15,6 +15,7 @@ from helpers import (
     lcs_history,
     lead_water,
     make_list_dataset,
+    pick,
     released_water_report,
     sign_in,
     submit_fresh_batch,
@@ -60,10 +61,10 @@ def submit_empty_receipt(shot: Page) -> None:
 
 
 def flag_picker_mismatch(shot: Page) -> None:
-    field(shot, "Matrix").select_option(label="Water")
+    pick(field(shot, "Matrix"), label="Water")
     choose_test(shot, "Lead")
     choose_test(shot, "Copper")
-    field(shot, "Matrix").select_option(label="Soil")
+    pick(field(shot, "Matrix"), label="Soil")
     shot.locator(".vr-test-mismatch").scroll_into_view_if_needed()
 
 

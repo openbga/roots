@@ -1,0 +1,8 @@
+{% comment %}
+FileInput / ClearableFileInput: one file component. Without JavaScript the native input shows (as a
+Bootstrap form-control); static/js/controls.js turns it into a drop zone that names the chosen
+file, keeps the native input focusable (Space or Enter opens the chooser) and fills it on drop.
+The accept attribute lists the allowed types in the zone's hint.
+{% endcomment %}{% load ui %}{% with type=widget.type extra=widget.attrs.class|default:"" %}<div class="vr-file-field" data-vr-file><input type="file" name="{{ widget.name }}" class="{% if 'form-' not in extra %}form-control {% endif %}{{ extra }} vr-file-native"{% include "django/forms/widgets/attrs.html" %}>
+<label class="vr-drop"{% if widget.attrs.id %} for="{{ widget.attrs.id }}"{% endif %}>{% icon name="file-earmark-arrow-up" %}<span class="vr-drop-title">Choose a file</span> <span class="vr-drop-text">or drop it here</span>{% if widget.attrs.accept %}<span class="vr-drop-hint">Accepted: {{ widget.attrs.accept }}</span>{% endif %}</label>
+<p class="vr-file-name" data-vr-file-name data-vr-file-empty="No file chosen" aria-live="polite">No file chosen</p></div>{% endwith %}

@@ -1,8 +1,9 @@
-{% comment %}Collection-based holding deadline for a requested test. Parameter: rt, annotated by
+{% load ui %}{% comment %}Collection-based holding deadline for a requested test: the clock pill (warning or danger)
+only when the clock is at_risk or expired, otherwise the time left as quiet text. Parameter: rt, annotated by
 views._annotate_clocks (hold_deadline, clock, remaining_label).{% endcomment %}
 {% if rt.hold_deadline %}
 <time datetime="{{ rt.hold_deadline|date:'c' }}">{{ rt.hold_deadline|date:"Y-m-d H:i" }}</time>
-{% if rt.clock == "expired" %}{% include "includes/status.html" with label="Expired" tone="danger" plain=True title="Past the collection-based holding deadline and not yet analysed." %}
-{% elif rt.clock == "at_risk" %}{% include "includes/status.html" with label="At risk" tone="warning" plain=True %}{% endif %}
-{% if rt.clock %}<div class="vr-muted small">{% if rt.clock == "expired" %}expired {{ rt.remaining_label }} ago{% else %}{{ rt.remaining_label }} left{% endif %}</div>{% endif %}
+{% if rt.clock == "expired" %}<div>{% status label="Expired · "|add:rt.remaining_label|add:" ago" tone="danger" plain=True title="Past the collection-based holding deadline and not yet analysed." %}</div>
+{% elif rt.clock == "at_risk" %}<div>{% status label="At risk · "|add:rt.remaining_label|add:" left" tone="warning" plain=True %}</div>
+{% elif rt.clock %}<div class="vr-muted small">{{ rt.remaining_label }} left</div>{% endif %}
 {% else %}<span class="vr-muted" title="No collection-based holding rule is configured for this method and matrix.">No rule</span>{% endif %}

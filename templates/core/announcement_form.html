@@ -1,22 +1,17 @@
 {% extends "base.html" %}
-{% load laboratory_extras %}
+{% load ui %}
 {% comment %}
 Post or change an announcement (admin role). An announcement has no record page: this form is it.
 Context: page_title, submit_label, form (grouped(); every field disabled when withdrawn), instance
 or None, withdrawn, history (the newest 20 AuditEvents, newest first). Withdrawing is a row action on the list.
 {% endcomment %}
-{% block breadcrumbs %}{% url 'announcement-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Announcements" section_url=list_url %}{% endblock %}
+{% block breadcrumbs %}{% url 'announcement-list' as list_url %}{% breadcrumbs section="Announcements" section_url=list_url %}{% endblock %}
 {% block content %}
 {% if withdrawn %}
-<div class="alert alert-secondary" role="status">
-  {% include "includes/status.html" with label="Withdrawn" tone="neutral" plain=True %}
-  <div>This announcement was withdrawn on <time datetime="{{ instance.withdrawn_at|date:'c' }}">{{ instance.withdrawn_at|date:"Y-m-d H:i T" }}</time> and is no longer shown. It cannot be changed; post a new announcement instead.</div>
-</div>
+{% notice tone="neutral" label="Withdrawn" %}This announcement was withdrawn on <time datetime="{{ instance.withdrawn_at|date:'c' }}">{{ instance.withdrawn_at|date:"Y-m-d H:i T" }}</time> and is no longer shown. It cannot be changed; post a new announcement instead.{% endnotice %}
 {% endif %}
-<form class="vr-form" method="post" novalidate>
-  {% csrf_token %}
-  {% include "includes/form_errors.html" with form=form %}
-  {% if not withdrawn %}<p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required. Times are laboratory local time. Changes are audited with before and after values.</p>{% endif %}
+{% url 'announcement-list' as cancel_url %}
+{% form_page form=form cancel_url=cancel_url submit_label=submit_label no_submit=withdrawn no_required_note=withdrawn times=True note="Changes are audited with before and after values." %}
   {% for legend, fields in form.grouped %}
   <fieldset class="vr-form-section">
     <legend>{{ legend }}</legend>
@@ -24,19 +19,6 @@ or None, withdrawn, history (the newest 20 AuditEvents, newest first). Withdrawi
   </fieldset>
   {% endfor %}
   {% for field in form.hidden_fields %}{{ field }}{% endfor %}
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{% url 'announcement-list' %}">Cancel</a>
-    {% if not withdrawn %}<button class="btn btn-primary" type="submit">{{ submit_label }}</button>{% endif %}
-  </div>
-</form>
-{% if history %}
-<section class="card mt-3" aria-labelledby="history-heading">
-  <div class="card-header"><h2 class="card-title" id="history-heading">History</h2></div>
-  <div class="card-body">
-    <ol class="vr-timeline">
-      {% for event in history reversed %}{% include "includes/history_item.html" with title=event.action|action_label at=event.occurred_at actor=event.actor %}{% endfor %}
-    </ol>
-  </div>
-</section>
-{% endif %}
+{% endform_page %}
+{% if history %}{% history_panel events=history newest_first=True class="mt-3" %}{% endhistory_panel %}{% endif %}
 {% endblock %}

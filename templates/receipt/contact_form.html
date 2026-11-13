@@ -1,33 +1,23 @@
 {% extends "base.html" %}
-{% load laboratory_extras %}
+{% load laboratory_extras ui %}
 {% comment %}
 Add or edit an additional client contact. Context: client, form, contact (edit only), history
 (AuditEvent, newest first; shown oldest first). A contact has no page of its own, so saving returns
 to the client.
 {% endcomment %}
-{% block breadcrumbs %}{% url 'receipt:client-list' as list_url %}{% url 'receipt:client-detail' client.pk as client_url %}{% include "includes/breadcrumbs.html" with section="Clients" section_url=list_url record=client.name record_url=client_url %}{% endblock %}
+{% block breadcrumbs %}{% url 'receipt:client-list' as list_url %}{% url 'receipt:client-detail' client.pk as client_url %}{% breadcrumbs section="Clients" section_url=list_url record=client.name record_url=client_url %}{% endblock %}
 {% block content %}
-<form class="vr-form" method="post" novalidate>
-  {% csrf_token %}
-  {% include "includes/form_errors.html" with form=form %}
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required. Give an email address or a phone number.{% if contact %} Deactivate a contact who has left; the record and its history are kept.{% endif %}</p>
+{% url 'receipt:client-detail' client.pk as cancel_url %}
+{% form_page form=form cancel_url=cancel_url submit_label=contact|yesno:"Save changes,Add contact" %}
+  {% fill note %}Give an email address or a phone number.{% if contact %} Deactivate a contact who has left; the record and its history are kept.{% endif %}{% endfill %}
   <fieldset class="vr-form-section">
     {% for field in form.visible_fields %}{{ field.as_field_group }}{% endfor %}
     {% for field in form.hidden_fields %}{{ field }}{% endfor %}
   </fieldset>
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{% url 'receipt:client-detail' client.pk %}">Cancel</a>
-    <button class="btn btn-primary" type="submit">{% if contact %}Save changes{% else %}Add contact{% endif %}</button>
-  </div>
-</form>
+{% endform_page %}
 {% if history %}
-<section class="card mt-3 vr-narrow" aria-labelledby="contact-history-heading">
-  <div class="card-header"><h2 class="card-title" id="contact-history-heading">History</h2></div>
-  <div class="card-body">
-    <ol class="vr-timeline">
-      {% for event in history|dictsort:"occurred_at" %}{% include "includes/history_item.html" with title=event.action|action_label at=event.occurred_at actor=event.actor reason=event.reason %}{% endfor %}
-    </ol>
-  </div>
-</section>
+{% history_panel events=history|dictsort:"occurred_at" heading_id="contact-history-heading" class="mt-3 vr-narrow" %}
+      {% for event in history|dictsort:"occurred_at" %}{% history_item title=event.action|action_label at=event.occurred_at actor=event.actor reason=event.reason %}{% endfor %}
+{% endhistory_panel %}
 {% endif %}
 {% endblock %}

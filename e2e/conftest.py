@@ -30,11 +30,20 @@ NARROW = {"width": 390, "height": 844}
 
 @pytest.fixture(scope="session")
 def django_db_modify_db_settings():
-    """Use a dedicated database name so this suite cannot collide with the unit-test database."""
+    """Use a dedicated database name so this suite cannot collide with the unit-test database.
+
+    With TEST_DATABASE_NAME set (test_<you>, as for the main suite), the browser suite uses
+    <that name>_e2e, so people running it at the same time each get their own database; without
+    it, test_<database>_e2e.
+    """
     from django.conf import settings
 
+    requested = os.environ.get("TEST_DATABASE_NAME", "").strip()
+    if requested and not requested.startswith("test_"):
+        raise RuntimeError("TEST_DATABASE_NAME must start with test_.")
     for config in settings.DATABASES.values():
-        config.setdefault("TEST", {})["NAME"] = f"test_{config['NAME']}_e2e"
+        name = f"{requested}_e2e" if requested else f"test_{config['NAME']}_e2e"
+        config.setdefault("TEST", {})["NAME"] = name
         assert config["TEST"]["NAME"] != config["NAME"]
 
 

@@ -395,6 +395,15 @@ class Sample(models.Model):
         ]
 
 
+# The icon of each matrix in its tag ({% matrix_tag %}, includes/matrix_tag.html): Bootstrap Icons
+# symbols of static/img/icons.svg. The one mapping from a matrix to its icon.
+MATRIX_ICONS = {
+    Sample.Matrix.WATER: "droplet-fill",
+    Sample.Matrix.WASTEWATER: "water",
+    Sample.Matrix.SOIL: "layers-half",
+}
+
+
 class Container(models.Model):
     sample = models.ForeignKey(Sample, on_delete=models.PROTECT, related_name="containers")
     label = models.CharField(max_length=120)

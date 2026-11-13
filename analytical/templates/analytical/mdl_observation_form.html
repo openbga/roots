@@ -1,19 +1,16 @@
 {% extends "base.html" %}
-{% block breadcrumbs %}{% url 'analytical:mdl-list' as list_url %}{% url 'analytical:mdl-detail' study.pk as study_url %}{% include "includes/breadcrumbs.html" with section="MDL studies" section_url=list_url record=study.number record_url=study_url %}{% endblock %}
-{% block page_meta %}<ul class="vr-page-meta"><li>Study <span class="vr-id">{{ study.number }}</span></li><li>{{ study.definition }}</li><li>Unit {{ study.definition.unit }}</li><li>Spiking level {{ study.spiking_level|stringformat:"s" }}</li></ul>{% endblock %}
+{% load ui %}
+{% block breadcrumbs %}{% url 'analytical:mdl-list' as list_url %}{% url 'analytical:mdl-detail' study.pk as study_url %}{% breadcrumbs section="MDL studies" section_url=list_url record=study.number record_url=study_url %}{% endblock %}
+{% block page_meta %}{% page_meta %}<li>Study <span class="vr-id">{{ study.number }}</span></li><li>{{ study.definition }}</li><li>Unit {{ study.definition.unit }}</li><li>Spiking level {{ study.spiking_level|stringformat:"s" }}</li>{% endpage_meta %}{% endblock %}
 {% block content %}
-<form class="vr-form" method="post" novalidate>
-  {% csrf_token %}
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required. Times are in the laboratory time zone; the calendar dates used for the three-date rule follow it.</p>
+{% url 'analytical:mdl-detail' study.pk as study_url %}
+{% form_page form=form cancel_url=study_url submit_label="Add observation" note="Times are in the laboratory time zone; the calendar dates used for the three-date rule follow it." %}
+  {% fill actions %}<button class="btn btn-outline-secondary" type="submit" name="again" value="1">Save and add another</button>{% endfill %}
   <fieldset class="vr-form-section">
     <legend class="visually-hidden">Observation</legend>
-    {{ form }}
+    {% for field in form.visible_fields %}{{ field.as_field_group }}{% endfor %}
+    {% for field in form.hidden_fields %}{{ field }}{% endfor %}
     <p class="vr-form-note">Identify each preparation: the minimum is seven distinct preparations (extracts), prepared in at least three batches; analysing one extract on several instruments adds analyses, not preparations. Enter the result exactly as reported. A spiked sample must give a numerical result greater than zero and meet the method's qualitative identification; otherwise the spikes are repeated at a higher level (Appendix B II.2(c)). Not-detected blanks stay not detected.</p>
   </fieldset>
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{% url 'analytical:mdl-detail' study.pk %}">Cancel</a>
-    <button class="btn btn-outline-secondary" type="submit" name="again" value="1">Save and add another</button>
-    <button class="btn btn-primary" type="submit">Add observation</button>
-  </div>
-</form>
+{% endform_page %}
 {% endblock %}

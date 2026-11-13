@@ -23,7 +23,7 @@
       "items": [
         {
           "label": "Number, Title, Status, Severity and Category",
-          "description": "Generated number, current issue title, workflow step and recorded classifications. Past due appears only when nonclosed and due before today."
+          "description": "Generated number, current issue title, workflow step and recorded classifications. Until it is closed, the header also shows the due date (or No due date) and the owner (or unassigned); the due date carries an Overdue … d pill once it is before today and a Due today or Due in … d pill within 30 days."
         },
         {
           "label": "Add note or evidence",
@@ -172,6 +172,6 @@
     "templates/includes/record_foot.html",
     "laboratory/common.py",
     "core/models.py",
-    "laboratory/templates/laboratory/_history.html"
+    "templates/includes/history_panel.html"
   ]
 }

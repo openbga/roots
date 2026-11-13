@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 Announcements the laboratory has posted, for the admin role. Context: page_obj of Announcement rows
 annotated with state, state_label, state_tone and audience_labels; filter_form, inline, sort,
@@ -6,28 +7,28 @@ active_filters, filtered. An announcement has no record page: its title opens th
 Withdraw is the one row action; it asks for confirmation and posts to announcement-withdraw.
 {% endcomment %}
 {% block page_intro %}<p class="vr-page-intro">Notices for the sign-in page, the staff dashboard and the client portal home page.</p>{% endblock %}
-{% block page_actions %}<a class="btn btn-primary" href="{% url 'announcement-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New announcement</a>{% endblock %}
+{% block page_actions %}<a class="btn btn-primary" href="{% url 'announcement-create' %}">{% icon name="plus-lg" %}New announcement</a>{% endblock %}
 {% block content %}
-<section class="card vr-table-card" aria-labelledby="announcements-heading">
-  <h2 class="visually-hidden" id="announcements-heading">Announcements</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter announcements" q=filter_form.q.value placeholder=filter_form.q.field.widget.attrs.placeholder inline=inline grid="core.announcements" %}
-  {% if page_obj.paginator.count %}
+{% url 'announcement-create' as create_url %}
+{% panel title="Announcements" heading_id="announcements-heading" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter announcements" q=filter_form.q.value placeholder=filter_form.q.field.widget.attrs.placeholder inline=inline grid="core.announcements" invalid=filter_form.errors chips=active_filters sort=sort %}
+  {% list_results items=page_obj noun="announcements" filtered=filtered invalid=filter_form.errors clear_url=request.path error_body="Correct the highlighted filter above." no_results_title="No announcements match these filters" no_results_body="Change or clear the filters." empty_title="No announcements yet" empty_body="Post a notice for the sign-in page, for staff or for client users, for example a holiday closure or planned maintenance." action_url=create_url action_label="New announcement" %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table" data-vr-grid="core.announcements" data-vr-grid-version="1" aria-labelledby="announcements-heading">
       <thead><tr>
-        {% include "includes/sort_header.html" with label="Title" asc="title" desc="-title" col="title" locked=True %}
-        {% include "includes/sort_header.html" with label="Status" asc="status" desc="-status" col="status" %}
+        {% sort_header label="Title" asc="title" desc="-title" col="title" locked=True %}
+        {% sort_header label="Status" asc="status" desc="-status" col="status" %}
         <th scope="col" data-vr-col="audiences" data-vr-col-label="Shown on">Shown on</th>
-        {% include "includes/sort_header.html" with label="Importance" asc="tone" desc="-tone" col="tone" %}
-        {% include "includes/sort_header.html" with label="Show from" asc="starts_at" desc="-starts_at" first="desc" col="starts_at" %}
-        {% include "includes/sort_header.html" with label="Show until" asc="ends_at" desc="-ends_at" col="ends_at" %}
+        {% sort_header label="Importance" asc="tone" desc="-tone" col="tone" %}
+        {% sort_header label="Show from" asc="starts_at" desc="-starts_at" first="desc" col="starts_at" %}
+        {% sort_header label="Show until" asc="ends_at" desc="-ends_at" col="ends_at" %}
         <th scope="col" class="text-end" data-vr-col="actions" data-vr-col-label="Actions" data-vr-col-locked><span class="visually-hidden">Actions</span></th>
       </tr></thead>
       <tbody>
         {% for a in page_obj %}
         <tr>
           <th scope="row" class="vr-wrap"><a class="vr-row-link" href="{% url 'announcement-edit' a.pk %}">{{ a.title }}</a></th>
-          <td>{% include "includes/status.html" with label=a.state_label tone=a.state_tone plain=True %}</td>
+          <td>{% status label=a.state_label tone=a.state_tone plain=True %}</td>
           <td>{{ a.audience_labels|join:", " }}</td>
           <td>{{ a.get_tone_display }}</td>
           <td class="vr-nowrap"><time datetime="{{ a.starts_at|date:'c' }}">{{ a.starts_at|date:"Y-m-d H:i" }}</time></td>
@@ -38,18 +39,10 @@ Withdraw is the one row action; it asks for confirmation and posts to announceme
       </tbody>
     </table>
   </div>
-  {% include "includes/pagination.html" with noun="announcements" filtered=filtered %}
-  {% elif filter_form.errors %}
-  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above." clear_url=request.path %}
-  {% elif filtered %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No announcements match these filters" body="Change or clear the filters." clear_url=request.path %}
-  {% else %}
-  {% url 'announcement-create' as create_url %}
-  {% include "includes/empty_state.html" with title="No announcements yet" body="Post a notice for the sign-in page, for staff or for client users, for example a holiday closure or planned maintenance." action_url=create_url action_label="New announcement" %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% for a in page_obj %}{% if a.state != "withdrawn" %}
 {% url 'announcement-withdraw' a.pk as withdraw_url %}
-{% with pk_text=a.pk|stringformat:"s" %}{% with dialog_id="withdraw-"|add:pk_text %}{% include "includes/confirm_dialog.html" with id=dialog_id label="Withdraw announcement" object=a.title action=withdraw_url body="It stops showing everywhere straight away and cannot be shown again or changed. It stays in this list with its history." %}{% endwith %}{% endwith %}
+{% with pk_text=a.pk|stringformat:"s" %}{% with dialog_id="withdraw-"|add:pk_text %}{% confirm_dialog id=dialog_id label="Withdraw announcement" object=a.title action=withdraw_url body="It stops showing everywhere straight away and cannot be shown again or changed. It stays in this list with its history." %}{% endwith %}{% endwith %}
 {% endif %}{% endfor %}
 {% endblock %}

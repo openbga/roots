@@ -7,6 +7,7 @@ from django import forms
 from django.utils import timezone
 
 from catalog.models import TestDefinition
+from core.lookups import RemoteSelect
 from core.widgets import ListOrOtherField
 from receipt.forms import StyledForm
 from receipt.models import Client, Project, Sample
@@ -135,7 +136,12 @@ class QuoteFilter(FilterForm):
         required=False,
         choices=[("", "All statuses"), ("expired", "Expired"), *Quote.Status.choices],
     )
-    client = forms.ModelChoiceField(Client.objects.all(), required=False, empty_label="Any client")
+    client = forms.ModelChoiceField(
+        Client.objects.all(),
+        required=False,
+        empty_label="Any client",
+        widget=RemoteSelect("clients"),
+    )
 
 
 class PortalQuoteFilter(FilterForm):
@@ -153,7 +159,9 @@ class PortalQuoteFilter(FilterForm):
 
 class QuoteCreateForm(StyledForm, forms.Form):
     token = forms.UUIDField(widget=forms.HiddenInput, initial=uuid.uuid4)
-    client = forms.ModelChoiceField(Client.objects.filter(is_active=True))
+    client = forms.ModelChoiceField(
+        Client.objects.filter(is_active=True), widget=RemoteSelect("active-clients")
+    )
     project = forms.ModelChoiceField(
         Project.objects.filter(is_active=True).select_related("client"),
         required=False,
@@ -249,8 +257,8 @@ class QuoteLineForm(StyledForm, forms.Form):
         required=False,
         max_digits=12,
         decimal_places=2,
-        label="Unit price (USD)",
-        widget=forms.NumberInput(attrs={"inputmode": "decimal", "step": "0.01"}),
+        label="Unit price",
+        widget=forms.NumberInput(attrs={"inputmode": "decimal", "step": "0.01", "unit": "USD"}),
         help_text="Blank uses the price list. Enter discounts as negative amounts.",
     )
 
@@ -353,7 +361,12 @@ class SubmissionFilter(FilterForm):
     status = forms.ChoiceField(
         required=False, choices=[("", "All statuses"), *Submission.Status.choices]
     )
-    client = forms.ModelChoiceField(Client.objects.all(), required=False, empty_label="Any client")
+    client = forms.ModelChoiceField(
+        Client.objects.all(),
+        required=False,
+        empty_label="Any client",
+        widget=RemoteSelect("clients"),
+    )
 
 
 class PortalSubmissionFilter(FilterForm):

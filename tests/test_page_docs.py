@@ -18,6 +18,8 @@ from core.page_docs import (
 NON_PAGE_ROUTES = {
     "health": "JSON process health probe",
     "ready": "JSON database readiness probe",
+    "lookup": "JSON option lookup for remote selects (core/lookups.py)",
+    "preference": "POST-only per-user presentation setting (core/preferences.py)",
     "mfa_download_recovery_codes": "Private text download from recovery-code help",
     "admin:login": "Redirect to the application sign-in page",
     "admin:autocomplete": "JSON related-object lookup",

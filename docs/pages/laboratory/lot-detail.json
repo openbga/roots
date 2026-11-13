@@ -17,7 +17,7 @@
       "items": [
         {
           "label": "Lot number, state, on hand and Expires",
-          "description": "Identity, exact amount with unit and expiry. Display state takes precedence in this order: Retired; Expired after the expiry date; Depleted at zero balance; Expiring through 30 days from today; otherwise In stock. The expiry date itself is still unexpired. The status highlight always uses 30 days even when a filter uses another window."
+          "description": "Identity, exact amount with unit and expiry. Display state takes precedence in this order: Retired; Expired after the expiry date; Depleted at zero balance; Expiring through 30 days from today; otherwise In stock. The expiry date itself is still unexpired. The status highlight always uses 30 days even when a filter uses another window. On a lot that is not retired, Expires also carries a Due today or Due in … d pill within 30 days and an Overdue … d pill once the date has passed."
         },
         {
           "label": "Material",
@@ -165,6 +165,6 @@
     "templates/includes/record_foot.html",
     "laboratory/common.py",
     "core/models.py",
-    "laboratory/templates/laboratory/_history.html"
+    "templates/includes/history_panel.html"
   ]
 }

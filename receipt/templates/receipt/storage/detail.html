@@ -1,18 +1,19 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 Physical storage record of one sample. Context: sample, storage (SampleStorage or None),
 can_manage_storage, storage_events (AuditEvent oldest first, each with display_title), today.
 The record is identified by the sample's lab ID; the receipt record is one link away in the facts.
 {% endcomment %}
 {% block title %}{{ sample.lab_id }} · Sample storage · Smart Roots LIMS{% endblock %}
-{% block breadcrumbs %}{% url 'receipt:storage-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Sample storage" section_url=list_url current=sample.lab_id %}{% endblock %}
+{% block breadcrumbs %}{% url 'receipt:storage-list' as list_url %}{% breadcrumbs section="Sample storage" section_url=list_url current=sample.lab_id %}{% endblock %}
 {% block page_heading %}<span class="vr-id">{{ sample.lab_id }}</span>{% endblock %}
 {% block page_meta %}
-<ul class="vr-page-meta">
+{% page_meta %}
   <li>{% include "receipt/storage/status.html" with plain=True %}</li>
   <li>{{ sample.order.project.client }} / {{ sample.order.project.name }}</li>
   <li>Client sample <span class="vr-id">{{ sample.client_sample_id }}</span></li>
-</ul>
+{% endpage_meta %}
 {% endblock %}
 {% block page_actions %}
 {% if can_manage_storage and not storage.disposed_at %}
@@ -22,36 +23,24 @@ The record is identified by the sample's lab ID; the receipt record is one link 
 {% endif %}
 {% endblock %}
 {% block content %}
-<section class="card mb-3" aria-labelledby="physical-storage-heading">
-  <div class="card-header"><h2 class="card-title" id="physical-storage-heading">Physical sample</h2></div>
-  <div class="card-body">
+{% panel title="Physical sample" heading_id="physical-storage-heading" class="mb-3" %}
     <dl class="vr-facts">
-      <div><dt>Current location</dt><dd>{{ sample.current_location }}{% if can_manage_storage and not storage.disposed_at %}<div><a class="small" href="{% url 'receipt:sample-detail' sample.pk %}#transfer">Record transfer</a></div>{% endif %}</dd></div>
-      <div><dt>Retain through</dt><dd>{% if storage.retention_until %}<time datetime="{{ storage.retention_until|date:'Y-m-d' }}">{{ storage.retention_until|date:"Y-m-d" }}</time>{% else %}<span class="vr-muted">Not set by the laboratory</span>{% endif %}</dd></div>
-      <div><dt>Disposal hold</dt><dd>{{ storage.disposal_hold|yesno:"Active,Not active,Not active" }}</dd></div>
-      <div><dt>Receipt disposition</dt><dd>{{ sample.get_disposition_display }}{% if sample.disposition == "hold" %} (also blocks disposal){% endif %}</dd></div>
-      <div><dt>Receipt record</dt><dd><a href="{% url 'receipt:sample-detail' sample.pk %}">Receipt and custody</a></dd></div>
+      {% fact label="Current location" %}{{ sample.current_location }}{% if can_manage_storage and not storage.disposed_at %}<div><a class="small" href="{% url 'receipt:sample-detail' sample.pk %}#transfer">Record transfer</a></div>{% endif %}{% endfact %}
+      {% fact label="Retain through" %}{% if storage.retention_until %}<time datetime="{{ storage.retention_until|date:'Y-m-d' }}">{{ storage.retention_until|date:"Y-m-d" }}</time>{% else %}<span class="vr-muted">Not set by the laboratory</span>{% endif %}{% endfact %}
+      {% fact label="Disposal hold" %}{{ storage.disposal_hold|yesno:"Active,Not active,Not active" }}{% endfact %}
+      {% fact label="Receipt disposition" %}{{ sample.get_disposition_display }}{% if sample.disposition == "hold" %} (also blocks disposal){% endif %}{% endfact %}
+      {% fact label="Receipt record" %}<a href="{% url 'receipt:sample-detail' sample.pk %}">Receipt and custody</a>{% endfact %}
       {% if storage.disposed_at %}
-      <div><dt>Physically disposed at</dt><dd><time datetime="{{ storage.disposed_at|date:'c' }}">{{ storage.disposed_at|date:"Y-m-d H:i T" }}</time></dd></div>
-      <div><dt>Recorded by</dt><dd>{{ storage.disposed_by.get_full_name|default:storage.disposed_by.get_username }}</dd></div>
-      <div><dt>Method / destination</dt><dd>{{ storage.disposal_method }} / {{ storage.disposal_destination }}</dd></div>
-      <div><dt>Disposal reason</dt><dd>{{ storage.disposal_reason }}</dd></div>
+      {% fact label="Physically disposed at" %}<time datetime="{{ storage.disposed_at|date:'c' }}">{{ storage.disposed_at|date:"Y-m-d H:i T" }}</time>{% endfact %}
+      {% fact label="Recorded by" %}{{ storage.disposed_by.get_full_name|default:storage.disposed_by.get_username }}{% endfact %}
+      {% fact label="Method / destination" wide=True %}{{ storage.disposal_method }} / {{ storage.disposal_destination }}{% endfact %}
+      {% fact label="Disposal reason" wide=True %}{{ storage.disposal_reason }}{% endfact %}
       {% endif %}
     </dl>
-    <p class="vr-muted small mt-3 mb-0">These dates govern the physical sample. Electronic sample, custody, analytical and released report records stay available. The selected retention date is inclusive.</p>
-  </div>
-</section>
-<section class="card" aria-labelledby="storage-history-heading">
-  <div class="card-header"><h2 class="card-title" id="storage-history-heading">History</h2></div>
-  <div class="card-body">
-    {% if storage_events %}
-    <ol class="vr-timeline">
-      {% for event in storage_events %}{% include "includes/history_item.html" with title=event.display_title at=event.occurred_at actor=event.actor by="Recorded by" reason=event.reason %}{% endfor %}
-    </ol>
-    {% else %}
-    {% include "includes/empty_state.html" with title="No retention or disposal decisions recorded" body="Set a retention date or place a hold when the laboratory has selected its policy." %}
-    {% endif %}
-  </div>
-</section>
+    <p class="vr-muted small">These dates govern the physical sample. Electronic sample, custody, analytical and released report records stay available. The selected retention date is inclusive.</p>
+{% endpanel %}
+{% history_panel events=storage_events heading_id="storage-history-heading" empty_title="No retention or disposal decisions recorded" empty_body="Set a retention date or place a hold when the laboratory has selected its policy." %}
+      {% for event in storage_events %}{% history_item title=event.display_title at=event.occurred_at actor=event.actor by="Recorded by" reason=event.reason %}{% endfor %}
+{% endhistory_panel %}
 {% endblock %}
-{% block record_foot %}{% include "includes/record_foot.html" with identifier=sample.lab_id %}{% endblock %}
+{% block record_foot %}{% record_foot identifier=sample.lab_id %}{% endblock %}

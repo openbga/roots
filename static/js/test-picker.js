@@ -14,11 +14,6 @@
     return; // Fragment extra_js may load this file again.
   }
 
-  function iconMarkup(name) {
-    var sprite = document.body.getAttribute("data-vr-icons") || "";
-    return '<svg class="vr-icon" aria-hidden="true" focusable="false"><use href="' + sprite + "#i-" + name + '"></use></svg>';
-  }
-
   function detail(test) {
     return test.method_code + " (" + test.method_version + ") · " + test.unit;
   }
@@ -85,7 +80,7 @@
             el.className = data.className;
             el.title = data.title;
             el.setAttribute("aria-hidden", "true");
-            el.innerHTML = iconMarkup("x");
+            el.innerHTML = window.vrUi.icon("x");
             return el;
           },
         },
@@ -110,7 +105,7 @@
           if (!mismatched(test)) {
             return "<div>" + escape(test.analyte + " · " + detail(test)) + "</div>";
           }
-          return '<div class="vr-ts-mismatch">' + iconMarkup("exclamation-triangle") + escape(fullLabel(test)) +
+          return '<div class="vr-ts-mismatch">' + window.vrUi.icon("exclamation-triangle") + escape(fullLabel(test)) +
             '<span class="visually-hidden">, not for ' + escape(matrixLabel()) + " samples</span></div>";
         },
         no_results: function (data, escape) {
@@ -151,7 +146,7 @@
         return;
       }
       var text = document.createElement("p");
-      text.innerHTML = iconMarkup("exclamation-triangle");
+      text.innerHTML = window.vrUi.icon("exclamation-triangle");
       text.append(plural(wrong.length, "selected test") + (wrong.length === 1 ? " is" : " are") +
         " not for " + matrixLabel() + " samples. Remove " + (wrong.length === 1 ? "it" : "them") +
         ", or correct the sample matrix.");
@@ -161,10 +156,7 @@
         item.textContent = fullLabel(test);
         list.append(item);
       });
-      var button = document.createElement("button");
-      button.type = "button";
-      button.className = "btn btn-outline-secondary btn-sm";
-      button.textContent = wrong.length === 1 ? "Remove this test" : "Remove these " + wrong.length + " tests";
+      var button = window.vrUi.button(wrong.length === 1 ? "Remove this test" : "Remove these " + wrong.length + " tests", "secondary", true);
       button.addEventListener("click", function () {
         var label = matrixLabel();
         bulk = true;

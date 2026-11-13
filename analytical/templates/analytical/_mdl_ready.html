@@ -1,9 +1,7 @@
-{% comment %}Readiness of a study right now (nothing saved, no MDL shown). Context: ready_status, ready_reasons.{% endcomment %}
+{% load ui %}{% comment %}Readiness of a study right now (nothing saved, no MDL shown). Context: ready_status, ready_reasons.{% endcomment %}
 {% if ready_status == "calculated" %}
-<div class="alert alert-success" role="status">{% include "includes/status.html" with label="Ready" tone="success" plain=True %}
-  <div>The current data meet the procedure's requirements. A calculation would produce a result for review.</div></div>
+{% notice tone="success" label="Ready" %}The current data meet the procedure's requirements. A calculation would produce a result for review.{% endnotice %}
 {% elif ready_status == "not_evaluated" %}
-<div class="alert alert-warning" role="status">{% include "includes/status.html" with label="Not ready" tone="warning" plain=True %}
-  <div><p class="mb-1">A calculation now would be "not evaluated" because:</p>
-    <ul class="mb-0 ps-3">{% for reason in ready_reasons %}<li>{{ reason }}</li>{% endfor %}</ul></div></div>
+{% notice tone="warning" label="Not ready" %}<p class="mb-1">A calculation now would be "not evaluated" because:</p>
+    <ul class="mb-0 ps-3">{% for reason in ready_reasons %}<li>{{ reason }}</li>{% endfor %}</ul>{% endnotice %}
 {% endif %}

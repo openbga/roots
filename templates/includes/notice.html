@@ -1,0 +1,27 @@
+{% comment %}
+A notice inside a page (docs/ui-standards.md section 8): a Bootstrap .alert in the tone's variant,
+opening with includes/status.html in its plain form, so the tone is never colour alone. Rendered
+by the {% notice %} block tag ({% load ui %}); the tag's body is the message (text, links, <p>s).
+The tone-to-variant mapping and default labels live in core/templatetags/ui.py (NOTICE_TONES).
+Parameters:
+  tone         neutral | info | progress | success | warning | danger | hold (default info)
+  label        the status label; default per tone: Note, Note, In progress, Done, Warning, Error, On hold
+  heading      optional title: the label and an h2 share the first line and the message takes the
+               full width below (laboratory announcements)
+  blocking     truthy when the notice blocks the task: role="alert"; otherwise role="status"
+  dismissible  truthy for a close button (Django messages, request errors)
+  focus        truthy for tabindex="-1", so a script can move focus to it (an error summary)
+  hidden       truthy to render it hidden until a script shows it (a script writes the message into
+               an element of the body marked data-vr-notice-text)
+  id, class    optional id and extra classes on the .alert
+  hook         optional data attribute name, rendered as data-<hook> (a script's hook, e.g. "vr-request-error")
+Usage:
+  {% notice tone="warning" label="Declined" %}Version 2 declined by ...{% endnotice %}
+{% endcomment %}
+{% load ui %}<div class="alert alert-{{ variant }}{% if dismissible %} alert-dismissible{% endif %}{% if class %} {{ class }}{% endif %}"{% if id %} id="{{ id }}"{% endif %}{% if hook %} data-{{ hook }}{% endif %}{% if focus %} tabindex="-1"{% endif %} role="{% if blocking %}alert{% else %}status{% endif %}"{% if hidden %} hidden{% endif %}>
+  {% if heading %}<div class="vr-announcement-head">{% status label=label tone=tone plain=True title=None %}<h2 class="vr-announcement-title">{{ heading }}</h2></div>
+  <p class="vr-announcement-body">{{ body }}</p>{% else %}
+  {% status label=label tone=tone plain=True title=None %}
+  <div>{{ body }}</div>{% endif %}
+  {% if dismissible %}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Dismiss"></button>{% endif %}
+</div>

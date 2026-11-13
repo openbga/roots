@@ -14,6 +14,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 
 from catalog.models import Method, TestDefinition
+from core.lookups import RemoteSelect
 from laboratory.models import Equipment
 from receipt.models import Client, Sample
 
@@ -62,8 +63,11 @@ def local_datetime(label, required=True, help_text="Lab local time.", small=Fals
     )
 
 
-def raw_text(label, required=False, max_length=60, small=False, help_text="", **widget_attrs):
-    """Text field that keeps exactly what was typed (no stripping)."""
+def raw_text(
+    label, required=False, max_length=60, small=False, help_text="", unit=None, **widget_attrs
+):
+    """Text field that keeps exactly what was typed (no stripping). A unit renders as the number
+    widget's addon (templates/django/forms/widgets/number.html); the value stays the typed text."""
     attrs = (
         {"class": SMALL, "autocomplete": "off", "spellcheck": "false", **widget_attrs}
         if small
@@ -75,7 +79,7 @@ def raw_text(label, required=False, max_length=60, small=False, help_text="", **
         strip=False,
         max_length=max_length,
         help_text=help_text,
-        widget=forms.TextInput(attrs=attrs),
+        widget=forms.NumberInput(attrs={**attrs, "unit": unit}) if unit else forms.TextInput(attrs),
     )
 
 
@@ -158,7 +162,10 @@ class WorklistFilterForm(GridFilterForm):
         choices=[("", "Any"), ("expired", "Expired"), ("at_risk", "At risk or expired")],
     )
     client = forms.ModelChoiceField(
-        queryset=Client.objects.order_by("name"), required=False, empty_label="Any client"
+        queryset=Client.objects.order_by("name"),
+        required=False,
+        empty_label="Any client",
+        widget=RemoteSelect("clients"),
     )
     batch = forms.CharField(
         label="In batch",
@@ -245,7 +252,10 @@ class AddTestsFilterForm(GridFilterForm):
         choices=[("", "All"), ("new", "Not yet analysed"), ("reanalysis", "Reanalysis")],
     )
     client = forms.ModelChoiceField(
-        queryset=Client.objects.order_by("name"), required=False, empty_label="Any client"
+        queryset=Client.objects.order_by("name"),
+        required=False,
+        empty_label="Any client",
+        widget=RemoteSelect("clients"),
     )
 
 
@@ -290,6 +300,7 @@ class BatchForm(forms.Form):
     )
     equipment = forms.ModelChoiceField(
         queryset=Equipment.objects.exclude(status="retired").order_by("asset_id"),
+        widget=RemoteSelect("active-equipment"),
         required=False,
         label="Instrument or equipment",
         empty_label="Not recorded",
@@ -374,7 +385,9 @@ class BasisForm(forms.Form):
         help_text="Required for soil. Values and reporting limits are not converted.",
     )
     percent_solids = raw_text(
-        "Percent solids (%)", help_text="Optional supplied measurement; blank means not recorded."
+        "Percent solids",
+        unit="%",
+        help_text="Optional supplied measurement; blank means not recorded.",
     )
     solids_reference = forms.CharField(
         label="Solids source reference",
@@ -646,7 +659,8 @@ class ImportProfileForm(forms.Form):
         "Percent solids column", "Optional exact percentage; blank is not 100%."
     )
     percent_solids_fixed = raw_text(
-        "Fixed percent solids (%)",
+        "Fixed percent solids",
+        unit="%",
         help_text="Only when the same measured value actually applies to "
         "every imported observation.",
     )
@@ -894,6 +908,7 @@ def posted_ids(request, name):
 def hours_field(label, required, help_text):
     return forms.DecimalField(
         label=label,
+        widget=forms.NumberInput(attrs={"unit": "hours"}),
         required=required,
         min_value=Decimal("0.01"),
         decimal_places=2,
@@ -912,12 +927,12 @@ class ReasonMixin(forms.Form):
 
 class HoldingRuleForm(forms.ModelForm):
     duration_hours = hours_field(
-        "Maximum time (hours)",
+        "Maximum time",
         True,
         "From the start event to the end event. 0.25 = 15 minutes; 48 = 2 days; 672 = 28 days.",
     )
     warning_hours = hours_field(
-        "Warn when remaining (hours)", False, "Flag as at risk when this much time or less remains."
+        "Warn when remaining", False, "Flag as at risk when this much time or less remains."
     )
     reason = ReasonMixin.base_fields["reason"]
 
@@ -1283,3 +1298,16 @@ class ChartBaselineForm(forms.Form):
         help_text="Descriptive limits are the mean of these points plus or minus 2 and 3 standard "
         "deviations.",
     )
+
+
+class AddToBatchForm(forms.Form):
+    """The worklist bulk action: the open batch the selected tests join (the view checks it)."""
+
+    batch = forms.ChoiceField(label="Add selected tests to batch", required=False)
+
+    def __init__(self, batches, **kwargs):
+        super().__init__(auto_id="add-%s", **kwargs)
+        self.fields["batch"].choices = [
+            ("", "Choose an open batch"),
+            *((b.pk, f"{b.number} · {b.method} · {b.get_matrix_display()}") for b in batches),
+        ]

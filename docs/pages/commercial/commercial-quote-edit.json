@@ -88,8 +88,8 @@
           "description": "Required integer at least 1; defaults to 1."
         },
         {
-          "label": "Unit price (USD)",
-          "description": "Exact whole-cent amount with at most 12 digits including two decimal places. Blank on a Test row takes the selected list’s current price at save; if absent, enter a price or choose another list. Fees/adjustments require an amount. Only adjustments can be negative, and adjustments cannot be positive."
+          "label": "Unit price",
+          "description": "Exact whole-cent amount with at most 12 digits including two decimal places. Blank on a Test row takes the selected list’s current price at save; if absent, enter a price or choose another list. Fees/adjustments require an amount. Only adjustments can be negative, and adjustments cannot be positive. Entered in US dollars (the field's USD unit)."
         },
         {
           "label": "Remove",

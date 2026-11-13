@@ -77,8 +77,8 @@
           "description": "Required person handing over the shipment, up to 160 characters. Receiving staff identity is recorded from the signed-in user."
         },
         {
-          "label": "Cooler temperature (°C)",
-          "description": "Required original reading in degrees Celsius, stored exactly with at most three decimal places and seven total digits. The entered text is preserved; do not round a reading to make it pass a limit. This is an observation, not a configured acceptance threshold."
+          "label": "Cooler temperature",
+          "description": "Required original reading in degrees Celsius, stored exactly with at most three decimal places and seven total digits. The entered text is preserved; do not round a reading to make it pass a limit. This is an observation, not a configured acceptance threshold. Entered in °C (the field's unit)."
         },
         {
           "label": "Thermometer",

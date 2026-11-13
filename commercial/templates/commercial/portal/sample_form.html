@@ -1,17 +1,16 @@
 {% extends "layouts/portal.html" %}
-{% load static %}
+{% load static ui %}
 {% comment %}
 Add or edit one declared sample. Context: submission, sample, form (SubmissionSampleForm), container_formset
 (prefix "containers"). Tests use the shared requested-test picker; "Save and add another" repeats the
 collection details for the next sample.
 {% endcomment %}
-{% block breadcrumbs %}{% url 'client_commercial:submission-list' as list_url %}{% url 'client_commercial:submission-detail' submission.pk as record_url %}{% include "includes/breadcrumbs.html" with section="Submissions" section_url=list_url record=submission.number record_url=record_url current=page_title %}{% endblock %}
+{% block breadcrumbs %}{% url 'client_commercial:submission-list' as list_url %}{% url 'client_commercial:submission-detail' submission.pk as record_url %}{% breadcrumbs section="Submissions" section_url=list_url record=submission.number record_url=record_url current=page_title %}{% endblock %}
 {% block content %}
 {% with formset=container_formset prefix=container_formset.prefix %}
-<form class="vr-form" method="post" novalidate>
-  {% csrf_token %}
-  {% include "includes/form_errors.html" with form=form formset=formset formset_label="container details" %}
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required. Times are laboratory local time.</p>
+{% url 'client_commercial:submission-detail' submission.pk as cancel_url %}
+{% form_page form=form formset=formset formset_label="container details" times=True cancel_url=cancel_url submit_label=sample|yesno:"Save changes,Add sample" %}
+  {% fill actions %}<button class="btn btn-outline-secondary" type="submit" name="add_another" value="1">Save and add another</button>{% endfill %}
   <fieldset class="vr-form-section">
     <legend>Sample and collection</legend>
     <div class="row g-3">
@@ -41,20 +40,14 @@ collection details for the next sample.
     </div>
     <template id="{{ prefix }}-empty">{% include "commercial/portal/_container_row.html" with cform=formset.empty_form number="__num__" %}</template>
     <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
-      <button class="btn btn-outline-secondary btn-sm" type="button" data-formset-add="{{ prefix }}" hidden>{% include "includes/icon.html" with name="plus-lg" %}Add container type</button>
+      <button class="btn btn-outline-secondary btn-sm" type="button" data-formset-add="{{ prefix }}" hidden>{% icon name="plus-lg" %}Add container type</button>
       <span class="form-text">Group identical bottles with a quantity. At most 20 containers per sample.</span>
     </div>
   </fieldset>
   {% for field in form.hidden_fields %}{{ field }}{% endfor %}
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{% url 'client_commercial:submission-detail' submission.pk %}">Cancel</a>
-    <button class="btn btn-outline-secondary" type="submit" name="add_another" value="1">Save and add another</button>
-    <button class="btn btn-primary" type="submit">{% if sample %}Save changes{% else %}Add sample{% endif %}</button>
-  </div>
-</form>
+{% endform_page %}
 {% endwith %}
 {% endblock %}
 {% block extra_js %}
-<script src="{% static 'vendor/tom-select/tom-select.complete.js' %}" defer></script>
 <script src="{% static 'js/test-picker.js' %}" defer></script>
 {% endblock %}

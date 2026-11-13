@@ -149,7 +149,7 @@
     "commercial/selectors.py",
     "commercial/templates/commercial/quote_detail.html",
     "commercial/templates/commercial/_quote_document.html",
-    "commercial/templates/commercial/_history.html",
+    "templates/includes/history_panel.html",
     "commercial/tests/test_quotes.py",
     "commercial/tests/test_concurrency.py",
     "templates/includes/form_dialog.html",

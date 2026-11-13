@@ -83,8 +83,8 @@
           "description": "Required name of the delivering custodian, up to 160 characters, as signed on the chain of custody."
         },
         {
-          "label": "Cooler temperature (°C)",
-          "description": "Required exact finite decimal reading, up to three decimal places in a seven-digit field; it is never rounded. Original entered reading text is also retained. Receipt applies no universal pass/fail temperature threshold; test-specific screening appears later."
+          "label": "Cooler temperature",
+          "description": "Required exact finite decimal reading, up to three decimal places in a seven-digit field; it is never rounded. Original entered reading text is also retained. Receipt applies no universal pass/fail temperature threshold; test-specific screening appears later. Entered in °C (the field's unit)."
         },
         {
           "label": "Thermometer",

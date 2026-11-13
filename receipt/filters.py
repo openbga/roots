@@ -2,6 +2,8 @@
 
 from django import forms
 
+from core.lookups import RemoteSelect
+
 from .forms import StaffChoiceField, StyledForm
 from .models import Client, Order, Project, Sample
 from .vocabulary import US_STATES
@@ -34,7 +36,10 @@ class ClientFilter(SearchFilter):
 class ProjectFilter(ClientFilter):
     state = None
     client = forms.ModelChoiceField(
-        queryset=Client.objects.all(), required=False, empty_label="Any client"
+        queryset=Client.objects.all(),
+        required=False,
+        empty_label="Any client",
+        widget=RemoteSelect("clients"),
     )
     regulatory_program = forms.ChoiceField(
         required=False,
@@ -48,10 +53,16 @@ class ProjectFilter(ClientFilter):
 
 class OrderFilter(SearchFilter):
     client = forms.ModelChoiceField(
-        queryset=Client.objects.all(), required=False, empty_label="Any client"
+        queryset=Client.objects.all(),
+        required=False,
+        empty_label="Any client",
+        widget=RemoteSelect("clients"),
     )
     project = forms.ModelChoiceField(
-        queryset=Project.objects.select_related("client"), required=False, empty_label="Any project"
+        queryset=Project.objects.select_related("client"),
+        required=False,
+        empty_label="Any project",
+        widget=RemoteSelect("projects"),
     )
     priority = forms.ChoiceField(
         required=False,
@@ -64,10 +75,16 @@ class OrderFilter(SearchFilter):
 
 class SampleFilter(SearchFilter):
     client = forms.ModelChoiceField(
-        queryset=Client.objects.all(), required=False, empty_label="Any client"
+        queryset=Client.objects.all(),
+        required=False,
+        empty_label="Any client",
+        widget=RemoteSelect("clients"),
     )
     project = forms.ModelChoiceField(
-        queryset=Project.objects.select_related("client"), required=False, empty_label="Any project"
+        queryset=Project.objects.select_related("client"),
+        required=False,
+        empty_label="Any project",
+        widget=RemoteSelect("projects"),
     )
     matrix = forms.ChoiceField(
         required=False, choices=[("", "All matrices"), *Sample.Matrix.choices]

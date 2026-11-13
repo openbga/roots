@@ -112,7 +112,7 @@
         },
         {
           "label": "Columns",
-          "description": "Show, hide or reorder optional columns; the identifying column stays visible. Preferences belong to this browser. Reset restores the default presentation without changing records or filters."
+          "description": "Show, hide or reorder optional columns; the identifying column stays visible. Preferences are saved for your account, on any workstation. Reset restores the default presentation without changing records or filters."
         },
         {
           "label": "Rows per page and pagination",
@@ -133,7 +133,7 @@
         },
         {
           "label": "Reset columns",
-          "description": "Restores this table’s default order and visibility in this browser."
+          "description": "Restores this table’s default order and visibility for your account."
         },
         {
           "label": "Done / Close",

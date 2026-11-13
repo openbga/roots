@@ -19,7 +19,7 @@
         },
         {
           "label": "Your work queues",
-          "description": "Queue labels open the corresponding filtered list when the count is nonzero. Zero counts remain visible without a link. “Nothing is waiting for you right now” means all your displayed queues are zero."
+          "description": "Your queues, grouped into lines by laboratory area: Intake, Sales, Bench, Release and Laboratory, in work order. Each line shows its area’s total. An area appears only when one of your roles has a queue there. The header shows how many items wait in all your queues together. A queue’s label opens the corresponding filtered list when its count is nonzero. Empty queues stay on their line with a muted label and 0, without a link. “Nothing is waiting for you right now” means all your displayed queues are zero."
         },
         {
           "label": "Recently received / All samples",
@@ -28,19 +28,23 @@
       ]
     },
     {
-      "title": "Queue columns",
+      "title": "Each queue on a line",
       "items": [
         {
           "label": "Queue",
-          "description": "Type of work, with notes about conditions or items requiring another person."
+          "description": "Type of work, with notes about conditions or items requiring another person. Opens the filtered list while the count is above zero."
         },
         {
-          "label": "Waiting",
+          "label": "Status",
+          "description": "Shown while work waits: Needs a decision (samples on hold), Waiting, In review, Returned, At risk, Changed, Open, Due, Needs attention or Overdue, with the matching tone and icon. The line colours only mark the area; they never mean a status."
+        },
+        {
+          "label": "Oldest",
+          "description": "Age of the earliest relevant timestamp when that queue supplies one. Hover over it for the exact time."
+        },
+        {
+          "label": "Count",
           "description": "Computed number of records matching that queue’s filters. Different queues count samples, tests, batches, reports or laboratory records; these counts are not interchangeable."
-        },
-        {
-          "label": "Oldest item",
-          "description": "Age of the earliest relevant timestamp when that queue supplies one; a dash means no age is supplied. Hover over a timestamp for the exact time."
         }
       ]
     },

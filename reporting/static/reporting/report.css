@@ -1,83 +1,154 @@
-/* Print stylesheet for issued report PDFs (WeasyPrint). No external fonts; the only image is
-   the laboratory logo a snapshot names, served by reporting/pdf.py. */
+/* Print stylesheet for issued report PDFs (WeasyPrint). Print-safe: dark text on white, emphasis by
+   weight, outlined boxes and strike lines only; the forest accent (section and header rules) prints
+   as dark grey and the table-head wash is decorative. Fonts are the vendored Overpass files
+   (static/vendor/overpass-5.3.0, OFL), served by reporting/pdf.py as reportfont:<file>; the
+   middle dot (U+00B7) is left to the fallback face because Overpass classes it as a mark with no
+   advance. The only image is the laboratory logo a snapshot names. */
+@font-face {
+  font-family: "Overpass";
+  src: url("reportfont:overpass-latin-wght-normal.woff2");
+  unicode-range: U+0000-00B6, U+00B8-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+    U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Overpass";
+  src: url("reportfont:overpass-latin-ext-wght-normal.woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+:root {
+  --ink: #1a1f19;         /* text, 16:1 on white */
+  --muted: #4a5048;       /* secondary text, 8:1 on white */
+  --forest: #2f5f3a;      /* section and header rules only; prints as dark grey */
+  --rule: #c9cdc4;        /* row hairlines */
+  --rule-strong: #6d7268; /* table head underline, group rules */
+  --wash: #f1f3ee;        /* table head fill: decorative */
+}
+
 @page {
   size: letter;
-  margin: 24mm 13mm 18mm;
+  margin: 22mm 14mm 17mm;
   @top-left { content: element(header); width: 100%; }
   @bottom-left { content: element(footer); }
-  @bottom-right { content: "Page " counter(page) " of " counter(pages); font: 7.5pt "DejaVu Sans", sans-serif; color: #555; }
+  @bottom-right { content: "Page " counter(page) " of " counter(pages); font: 7pt "Overpass", "DejaVu Sans", sans-serif; color: #4a5048; }
 }
-html { font-family: "DejaVu Sans", "Helvetica", "Arial", sans-serif; font-size: 8.5pt; color: #111; line-height: 1.35; }
+
+html { font-family: "Overpass", "DejaVu Sans", sans-serif; font-size: 8.4pt; line-height: 1.38; color: var(--ink); font-feature-settings: "tnum" 1; }
 body { margin: 0; }
-.running-header { position: running(header); width: 100%; font-size: 7.5pt; color: #333; }
-.running-header .header-row { display: flex; justify-content: space-between; border-bottom: 0.6pt solid #888; padding-bottom: 1.5mm; }
-.running-header .lab { font-weight: bold; }
-.running-footer { position: running(footer); font-size: 7pt; color: #555; }
-.hash { font-family: "DejaVu Sans Mono", monospace; }
-.synthetic-banner { margin-top: 1.5mm; text-align: center; font-size: 7.5pt; font-weight: bold; color: #7a2e00; background: #fff1e6; border: 0.6pt solid #d07a3a; padding: 0.8mm; }
-.watermark { position: fixed; top: 105mm; left: -10mm; right: -10mm; text-align: center; font-size: 46pt; font-weight: bold; color: rgba(180, 0, 0, 0.12); transform: rotate(-30deg); }
-
-h1 { font-size: 15pt; margin: 0 0 3mm; }
-h2 { font-size: 10.5pt; margin: 6mm 0 2mm; padding-bottom: 1mm; border-bottom: 0.6pt solid #bbb; break-after: avoid; }
-h3 { font-size: 9pt; margin: 4mm 0 1.5mm; break-after: avoid; }
-p { margin: 0 0 2mm; }
-ul { margin: 0 0 2mm; padding-left: 5mm; }
-.eyebrow { text-transform: uppercase; letter-spacing: 0.08em; font-size: 7.5pt; color: #555; margin: 0 0 1mm; }
-.muted { color: #555; font-size: 7.5pt; }
-.id { font-family: "DejaVu Sans Mono", monospace; font-size: 8pt; white-space: nowrap; }
+h1 { font-size: 17pt; line-height: 1.15; margin: 0 0 1mm; font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: 10.5pt; font-weight: 700; margin: 7mm 0 2.2mm; padding-bottom: 1.2mm; border-bottom: 0.9pt solid var(--forest); break-after: avoid; }
+h3 { font-size: 8.8pt; font-weight: 700; margin: 4mm 0 1.5mm; break-after: avoid; }
+p { margin: 0 0 1.8mm; }
+ul { margin: 0 0 1.8mm; padding-left: 4.5mm; }
+sup { font-size: 0.7em; line-height: 0; }
+.sep { padding: 0 0.9mm; }
+.muted { color: var(--muted); }
+.small { font-size: 7.2pt; }
+.id { font-weight: 600; white-space: nowrap; font-feature-settings: "tnum" 1, "zero" 1; }
 .nowrap { white-space: nowrap; }
-.strong { font-weight: bold; }
+.num { text-align: right; white-space: nowrap; }
+.hash { font-family: "DejaVu Sans Mono", monospace; font-size: 6.6pt; }
+/* A code or state that needs the reader's eye: outlined text, the same marker everywhere. */
+.flag { display: inline-block; border: 0.7pt solid var(--ink); border-radius: 0.8mm; padding: 0 0.9mm; font-weight: 700; line-height: 1.25; }
 
-table { border-collapse: collapse; width: 100%; margin-bottom: 3mm; }
-th, td { text-align: left; vertical-align: top; padding: 1mm 1.4mm; }
-table.facts th { width: 17%; color: #444; font-weight: normal; }
-table.facts td { width: 33%; }
-table.facts tr { border-bottom: 0.4pt solid #e2e2e2; }
-table.compact th, table.compact td { padding: 0.7mm 1.2mm; }
-table.grid { font-size: 7.6pt; }
-table.grid thead th { background: #eef1f4; border-bottom: 0.8pt solid #777; font-weight: bold; }
-table.grid td { border-bottom: 0.4pt solid #ddd; }
-table.grid tr { break-inside: avoid; }
-table.grid thead { display: table-header-group; }
-.num { text-align: right; font-variant-numeric: tabular-nums; }
-tr.note td { color: #333; font-size: 7.2pt; background: #fafafa; }
-.note-part + .note-part::before { content: " · "; }
-/* A result row keeps its revision/comment note: WeasyPrint ignores break-inside on a lone first
-   tbody, so pair the rows explicitly (a split would repeat the header over the note alone). */
-table.results tbody.result { break-inside: avoid; }
-table.results tbody.result tr:first-child { break-after: avoid; }
-table.results tr.note { break-before: avoid; }
-/* A short results table moves whole to the next page, header included, rather than splitting
-   after its only row and repeating the header over a note. */
-table.results.short { break-inside: avoid; }
-
-.title-block { margin-bottom: 4mm; }
-.amendment { border: 0.8pt solid #9a6700; background: #fff8e1; padding: 2mm 3mm; margin: 4mm 0; }
-.amendment h2 { border: 0; margin-top: 0; }
-.sample table.facts { break-inside: avoid; break-after: avoid; }
-.sample h2 .id { font-size: 10pt; }
-.qc-table thead tr:first-child th { background: #f6f7f8; font-weight: normal; }
-.legend, .authorization { break-inside: avoid; }
-/* A section heading and its introduction stay with the table that follows. */
-.subcontracted p { break-after: avoid; }
-.authorization { margin-top: 6mm; padding-top: 2mm; border-top: 0.8pt solid #333; }
-td.strong .muted { font-weight: normal; }
+/* Running header and footer: report number and version on every page. */
+.running-header { position: running(header); width: 100%; font-size: 7.4pt; }
+.running-header .header-row { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 1.4mm; border-bottom: 0.5pt solid var(--forest); }
+.running-header .lab { font-weight: 700; }
+.running-header .doc { color: var(--muted); }
+.running-header .doc strong { color: var(--ink); font-feature-settings: "tnum" 1, "zero" 1; }
+.running-footer { position: running(footer); font-size: 6.8pt; color: var(--muted); }
+.synthetic-banner { margin-top: 1.4mm; padding: 0.8mm 2mm; border: 0.6pt solid var(--rule-strong); border-radius: 1.2mm; text-align: center; font-size: 7.2pt; font-weight: 600; }
+.watermark { position: fixed; top: 110mm; left: -10mm; right: -10mm; text-align: center; font-size: 44pt; font-weight: 700; color: rgba(0, 0, 0, 0.08); transform: rotate(-30deg); }
 
 /* Letterhead: printed above the title on the first page only when the snapshot holds a logo,
    an address or contact details. The logo keeps its aspect ratio inside a fixed box. */
-.letterhead { display: flex; align-items: center; gap: 4mm; margin: 0 0 5mm; padding-bottom: 3mm; border-bottom: 0.6pt solid #bbb; break-inside: avoid; }
+.letterhead { display: flex; align-items: center; gap: 4mm; margin: 0 0 6mm; break-inside: avoid; }
 .letterhead-logo { flex: none; }
 .letterhead-logo img { display: block; width: auto; height: auto; max-width: 45mm; max-height: 16mm; }
-.letterhead-text { flex: 1 1 auto; min-width: 0; font-size: 8pt; color: #333; line-height: 1.3; overflow-wrap: anywhere; }
+.letterhead-text { flex: 1 1 auto; min-width: 0; font-size: 7.8pt; color: var(--muted); line-height: 1.3; overflow-wrap: anywhere; }
 .letterhead-text p { margin: 0; }
-.letterhead-text .letterhead-name { font-size: 10.5pt; font-weight: bold; color: #111; margin-bottom: 0.6mm; }
-.letterhead-contact span + span::before { content: " · "; }
-.certificates { break-inside: avoid; }
+.letterhead-text .letterhead-name { font-size: 11pt; font-weight: 700; color: var(--ink); margin-bottom: 0.4mm; }
+.letterhead-contact span + span::before { content: "·"; padding: 0 0.9mm; }
+
+/* Identity and title: number, version and state first, in weight and an outlined mark. */
+.title-block { margin-bottom: 4mm; }
+.identity { margin: 0 0 1.2mm; }
+.identity .number { font-size: 12pt; font-weight: 700; font-feature-settings: "tnum" 1, "zero" 1; }
+.identity .version { font-size: 10pt; font-weight: 600; margin-left: 2.4mm; }
+.status-mark { display: inline-block; margin-left: 2.4mm; border: 0.8pt solid var(--ink); border-radius: 0.9mm; padding: 0.2mm 1.4mm; font-size: 7pt; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; vertical-align: 1.5pt; }
+.subtitle { font-size: 9pt; color: var(--muted); margin: 0; }
+.subtitle strong { color: var(--ink); }
+
+/* At a glance and the amendment: outlined boxes, readable without colour. */
+.glance, .amendment { border: 0.9pt solid var(--ink); border-radius: 1.6mm; padding: 2.4mm 3.4mm 1.6mm; margin: 0 0 4mm; break-inside: avoid; }
+.glance h2, .amendment h2 { border: 0; margin: 0 0 1.4mm; padding: 0; }
+.glance h2 { font-size: 9.5pt; }
+.glance p { margin: 0 0 1.2mm; }
+.glance ul { margin: 0 0 0.8mm; }
+.glance li { margin-bottom: 0.6mm; }
+.amendment ul { margin: 0.6mm 0 1.4mm; }
+.amendment s { color: var(--muted); }
+
+/* Key facts: label over value, four to a row. */
+table.facts { width: 100%; border-collapse: collapse; margin: 0 0 2mm; break-inside: avoid; }
+table.facts td { width: 25%; vertical-align: top; padding: 0 3mm 2.4mm 0; }
+table.facts .label { display: block; font-size: 6.9pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.3mm; }
+
+/* Grids */
+table.grid { width: 100%; border-collapse: collapse; font-size: 7.8pt; margin: 0 0 3mm; }
+table.grid thead { display: table-header-group; }
+table.grid th { text-align: left; vertical-align: bottom; font-size: 6.9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); background: var(--wash); padding: 1.1mm 1.6mm; border-bottom: 0.7pt solid var(--rule-strong); }
+table.grid th.num { text-align: right; }
+table.grid td { padding: 1.1mm 1.6mm; vertical-align: top; text-align: left; border-bottom: 0.35pt solid var(--rule); }
+table.grid td.num { text-align: right; }
+table.grid tr { break-inside: avoid; }
+/* Sample summary: a flagged sample keeps its "Needs attention" line under it. */
+table.summary tbody.summary-row { break-inside: avoid; }
+table.summary tr.flagged td { border-bottom: 0; }
+table.summary tr.attention-row td { padding-top: 0; font-size: 7.3pt; font-weight: 600; }
+
+/* Results: the value row, its exception lines, its provenance line and (when the sample's results
+   differ) its receipt note. WeasyPrint ignores break-inside on a lone first tbody, so the rows are
+   also chained with break-before. */
+table.results tbody.result { break-inside: avoid; }
+table.results tbody.result tr + tr { break-before: avoid; }
+table.results tr.value td { border-bottom: 0; padding-bottom: 0.2mm; }
+table.results td.result { font-size: 9pt; font-weight: 700; font-feature-settings: "tnum" 1, "zero" 1; }
+table.results td.result .muted { font-size: 7pt; font-weight: 400; }
+table.results tr.value.attention td { font-weight: 600; }
+table.results tr.value.attention td.result { font-weight: 700; }
+table.results tr.exception td { padding-top: 0.2mm; padding-bottom: 0.2mm; border-bottom: 0; font-size: 7.3pt; }
+table.results tr.prov td { padding-top: 0.2mm; color: var(--muted); font-size: 7pt; }
+table.results tr:has(+ tr.note) td { border-bottom: 0; }
+table.results tr.note td { padding-top: 0; color: var(--muted); font-size: 7pt; }
+table.results .note-ink { color: var(--ink); font-weight: 600; }
+/* A short results table moves whole to the next page, header included, rather than splitting
+   after its only row and repeating the header over a note. */
+table.results.short { break-inside: avoid; }
+.sample h2 .client-id { color: var(--muted); font-weight: 600; }
+.sample-note { font-size: 7.1pt; color: var(--muted); margin: -1mm 0 3mm; padding-left: 1.6mm; break-inside: avoid; break-before: avoid; }
+.sample-note strong { color: var(--ink); }
+
+/* QC: one table per batch, grouped by analyte; a group stays together. */
+table.qc-table tbody.qc-group { break-inside: avoid; }
+table.qc-table tr.group-start td { border-top: 0.7pt solid var(--rule-strong); }
+table.qc-table td.analyte { font-weight: 700; width: 18%; }
+table.qc-table td.analyte .muted { font-weight: 400; }
+table.qc-table tr.fail td { font-weight: 600; }
+table.qc-table tr.issue td { font-size: 7.3pt; }
+
+.legend, .authorization, .certificates { break-inside: avoid; }
+/* A section heading and its introduction stay with the table that follows. */
+.subcontracted p { break-after: avoid; }
+.legend p { margin-top: 1mm; }
 /* Fixed columns so a long laboratory-entered value wraps inside its cell. */
 .certificates table { table-layout: fixed; }
 .certificates th, .certificates td { overflow-wrap: anywhere; }
 .certificates .c-authority { width: 28%; }
 .certificates .c-program { width: 25%; }
 .certificates .c-number { width: 19%; }
-.certificates td.cert-id { font-family: "DejaVu Sans Mono", monospace; font-size: 8pt; }
-.certificates p { margin-top: 1mm; }
+.certificates td.cert-id { font-weight: 600; font-feature-settings: "tnum" 1, "zero" 1; }
+.authorization { margin-top: 7mm; padding: 2.6mm 3.4mm; border: 0.9pt solid var(--ink); border-radius: 1.6mm; }
+.authorization p { margin: 0 0 1mm; }

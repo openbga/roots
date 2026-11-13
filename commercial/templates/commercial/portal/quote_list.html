@@ -1,21 +1,20 @@
 {% extends "layouts/portal.html" %}
-{% load commercial_extras %}
+{% load commercial_extras ui %}
 {% comment %}Client quotes. Context: page_obj (latest issued version annotated), filter_form, q, sort, per_page, active_filters, filtered.{% endcomment %}
 {% block content %}
-<section class="card vr-table-card" aria-labelledby="quotes-heading">
-  <h2 class="visually-hidden" id="quotes-heading">Quotes</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter quotes" placeholder="Quote number, title or project" search_id="filter-q" grid="portal.quotes" %}
-  {% if page_obj.paginator.count %}
+{% panel title="Quotes" heading_id="quotes-heading" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter quotes" placeholder="Quote number, title or project" search_id="filter-q" grid="portal.quotes" invalid=filter_form.errors chips=active_filters sort=sort %}
+  {% list_results items=page_obj noun="quotes" filtered=filtered invalid=filter_form.errors clear_url=request.path error_body="Correct the highlighted filter above." no_results_title="No quotes match these filters" no_results_body="Clear the filters to see all of your quotes." empty_title="No quotes yet" empty_body="Quotes the laboratory issues to you appear here for your review and acceptance." %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table" data-vr-grid="portal.quotes" data-vr-grid-version="1" aria-labelledby="quotes-heading">
       <thead><tr>
-        {% include "includes/sort_header.html" with label="Quote" asc="number" desc="-number" first="desc" col="number" locked=True %}
-        {% include "includes/sort_header.html" with label="Title" asc="title" desc="-title" col="title" %}
-        {% include "includes/sort_header.html" with label="Project" asc="project" desc="-project" col="project" hidden=True %}
-        {% include "includes/sort_header.html" with label="Status" asc="status" desc="-status" col="status" %}
-        {% include "includes/sort_header.html" with label="Total (USD)" asc="total" desc="-total" first="desc" col="total" class="text-end" %}
-        {% include "includes/sort_header.html" with label="Valid until" asc="valid_until" desc="-valid_until" col="valid_until" %}
-        {% include "includes/sort_header.html" with label="Issued" asc="issued_at" desc="-issued_at" first="desc" col="issued_at" hidden=True %}
+        {% sort_header label="Quote" asc="number" desc="-number" first="desc" col="number" locked=True %}
+        {% sort_header label="Title" asc="title" desc="-title" col="title" %}
+        {% sort_header label="Project" asc="project" desc="-project" col="project" hidden=True %}
+        {% sort_header label="Status" asc="status" desc="-status" col="status" %}
+        {% sort_header label="Total (USD)" asc="total" desc="-total" first="desc" col="total" class="text-end" %}
+        {% sort_header label="Valid until" asc="valid_until" desc="-valid_until" col="valid_until" %}
+        {% sort_header label="Issued" asc="issued_at" desc="-issued_at" first="desc" col="issued_at" hidden=True %}
       </tr></thead>
       <tbody>
         {% for quote in page_obj %}
@@ -32,13 +31,6 @@
       </tbody>
     </table>
   </div>
-  {% include "includes/pagination.html" with noun="quotes" filtered=filtered %}
-  {% elif filter_form.errors %}
-  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above." clear_url=request.path %}
-  {% elif filtered %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No quotes match these filters" body="Clear the filters to see all of your quotes." clear_url=request.path %}
-  {% else %}
-  {% include "includes/empty_state.html" with title="No quotes yet" body="Quotes the laboratory issues to you appear here for your review and acceptance." %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}

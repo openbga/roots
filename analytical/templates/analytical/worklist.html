@@ -1,25 +1,20 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}Worklist. Context: page_obj, filter_form (+ _filter_context for includes/grid_toolbar.html), q, sort, active_filters.
 Server owns search, filters, sort and paging; grid.js only presents columns (saved per browser).
 Optional columns (hidden by default): Client / project, Received, Collected.{% endcomment %}
 {% block page_intro %}<p class="vr-page-intro">Requested tests that are not yet approved, most urgent holding deadline first.</p>{% endblock %}
-{% block page_actions %}{% if can_enter %}<a class="btn btn-primary" href="{% url 'analytical:batch-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New batch</a>{% endif %}{% endblock %}
+{% block page_actions %}{% if can_enter %}<a class="btn btn-primary" href="{% url 'analytical:batch-create' %}">{% icon name="plus-lg" %}New batch</a>{% endif %}{% endblock %}
 {% block content %}
-<section class="card vr-table-card" aria-labelledby="worklist-heading">
-  <h2 class="visually-hidden" id="worklist-heading">Requested tests</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter worklist" grid=grid_key %}
-  {% if page_obj.paginator.count %}
+{% panel title="Requested tests" heading_id="worklist-heading" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter worklist" grid=grid_key %}
+  {% list_results items=page_obj noun="tests" filtered=filtered invalid=filter_form.errors clear_url=request.path no_results_title="No tests match these filters" no_results_body="Clear the filters, or choose All statuses to include approved work." empty_title="No open work" empty_body="Requested tests appear here after samples are received." %}
+  {# form: bulk-selection #}
   <form method="post" action="{{ request.get_full_path }}">
     {% csrf_token %}
     {% if can_enter %}
     <div class="vr-bulkbar" role="group" aria-label="Add selected tests to a batch">
-      <div class="vr-field mb-0">
-        <label class="form-label" for="add-batch">Add selected tests to batch</label>
-        <select class="form-select" id="add-batch" name="batch">
-          <option value="">Choose an open batch</option>
-          {% for b in open_batches %}<option value="{{ b.pk }}">{{ b.number }} · {{ b.method }} · {{ b.get_matrix_display }}</option>{% endfor %}
-        </select>
-      </div>
+      {{ batch_form.batch.as_field_group }}
       <button class="btn btn-outline-secondary" type="submit">Add selected to batch</button>
       <p class="vr-form-note mb-0"><span data-vr-select-count="requested_tests" aria-live="polite">0 selected</span>. The header checkbox selects the eligible rows on this page only. A row on hold, rejected or already submitted, approved or sent out shows why it cannot be selected.</p>
     </div>
@@ -29,29 +24,29 @@ Optional columns (hidden by default): Client / project, Received, Collected.{% e
         <caption class="visually-hidden">Requested tests, most urgent holding deadline first by default</caption>
         <thead>
           <tr>
-            {% if can_enter %}<th scope="col" data-vr-col="select" data-vr-col-locked data-vr-col-label="Select">{% include "includes/select_all.html" with name="requested_tests" label="Select all eligible tests on this page" %}</th>{% endif %}
-            {% include "includes/sort_header.html" with label="Sample" asc="lab_id" desc="-lab_id" col="sample" locked=True %}
-            {% include "includes/sort_header.html" with label="Analyte" asc="analyte" desc="-analyte" col="analyte" %}
+            {% if can_enter %}<th scope="col" data-vr-col="select" data-vr-col-locked data-vr-col-label="Select">{% select_all name="requested_tests" label="Select all eligible tests on this page" %}</th>{% endif %}
+            {% sort_header label="Sample" asc="lab_id" desc="-lab_id" col="sample" locked=True %}
+            {% sort_header label="Analyte" asc="analyte" desc="-analyte" col="analyte" %}
             <th scope="col" data-vr-col="status">Status</th>
             <th scope="col" data-vr-col="method">Method</th>
-            {% include "includes/sort_header.html" with label="Hold deadline" asc="deadline" desc="-deadline" col="hold_deadline" %}
+            {% sort_header label="Hold deadline" asc="deadline" desc="-deadline" col="hold_deadline" %}
             <th scope="col" data-vr-col="batch">Batch</th>
             <th scope="col" data-vr-col="client_project" data-vr-col-hidden>Client / project</th>
-            {% include "includes/sort_header.html" with label="Received" asc="received" desc="-received" first="desc" col="received" hidden=True %}
+            {% sort_header label="Received" asc="received" desc="-received" first="desc" col="received" hidden=True %}
             <th scope="col" data-vr-col="collected" data-vr-col-hidden>Collected</th>
           </tr>
         </thead>
         <tbody>
           {% for rt in page_obj %}
           <tr>
-            {% if can_enter %}<td>{% if rt.on_hold %}<input class="form-check-input" type="checkbox" disabled aria-label="{{ rt.sample.lab_id }} {{ rt.definition.analyte }} cannot be selected: sample is {% if rt.sample.disposition == "reject" %}rejected{% else %}on hold{% endif %} at receipt">{% elif rt.work_status != "draft" and rt.work_status != "submitted" and rt.work_status != "approved" and rt.work_status != "external" %}<input class="form-check-input" type="checkbox" name="requested_tests" value="{{ rt.pk }}" aria-label="Select {{ rt.sample.lab_id }} {{ rt.definition.analyte }}">{% else %}<input class="form-check-input" type="checkbox" disabled aria-label="{{ rt.sample.lab_id }} {{ rt.definition.analyte }} cannot be selected: {{ rt.status_label|lower }}">{% endif %}</td>{% endif %}
+            {% if can_enter %}<td>{% with analyte=rt.definition.analyte|stringformat:"s" status=rt.status_label|lower %}{% with row=rt.sample.lab_id|add:" "|add:analyte %}{% if rt.on_hold %}{% if rt.sample.disposition == "reject" %}{% row_select name="requested_tests" disabled=True label=row|add:" cannot be selected: sample is rejected at receipt" %}{% else %}{% row_select name="requested_tests" disabled=True label=row|add:" cannot be selected: sample is on hold at receipt" %}{% endif %}{% elif rt.work_status != "draft" and rt.work_status != "submitted" and rt.work_status != "approved" and rt.work_status != "external" %}{% row_select name="requested_tests" value=rt.pk label="Select "|add:row %}{% else %}{% row_select name="requested_tests" disabled=True label=row|add:" cannot be selected: "|add:status %}{% endif %}{% endwith %}{% endwith %}</td>{% endif %}
             <th scope="row"><a class="vr-row-link vr-id" href="{% url 'receipt:sample-detail' rt.sample.pk %}">{{ rt.sample.lab_id }}</a></th>
             <td>{{ rt.definition.analyte }} <span class="vr-muted small">{{ rt.definition.unit }}</span></td>
-            <td>{% if rt.on_hold %}{% if rt.sample.disposition == "reject" %}{% include "includes/status.html" with label="Rejected at receipt" tone="danger" plain=True title="This sample cannot be analysed or added to a batch." %}{% else %}{% include "includes/status.html" with label="On hold at receipt" tone="hold" plain=True title="This sample cannot be added to a batch until its receipt disposition is resolved." %}{% endif %}{% else %}{% include "includes/status.html" with label=rt.status_label tone=rt.status_tone plain=True %}{% endif %}</td>
-            <td>{{ rt.definition.method }}<div class="vr-muted small">{{ rt.definition.get_matrix_display }}</div></td>
+            <td>{% if rt.on_hold %}{% if rt.sample.disposition == "reject" %}{% status label="Rejected at receipt" tone="danger" plain=True title="This sample cannot be analysed or added to a batch." %}{% else %}{% status label="On hold at receipt" tone="hold" plain=True title="This sample cannot be added to a batch until its receipt disposition is resolved." %}{% endif %}{% else %}{% status label=rt.status_label tone=rt.status_tone plain=True %}{% endif %}</td>
+            <td>{{ rt.definition.method }}<div>{% matrix_tag matrix=rt.definition.matrix size="sm" %}</div></td>
             <td class="vr-nowrap">{% include "analytical/_hold_clock.html" %}</td>
             <td>{% if rt.result.batch %}<a href="{% url 'analytical:batch-detail' rt.result.batch.pk %}">{{ rt.result.batch.number }}</a>{% else %}<span class="vr-muted">—</span>{% endif %}</td>
-            <td>{{ rt.sample.order.project.client }}<div class="vr-muted small">{{ rt.sample.order.project.name }}</div></td>
+            <td class="vr-clip" title="{{ rt.sample.order.project.client }} / {{ rt.sample.order.project.name }}"><span class="vr-clip-main">{{ rt.sample.order.project.client }}</span><span class="vr-sub">{{ rt.sample.order.project.name }}</span></td>
             <td class="vr-nowrap"><time datetime="{{ rt.sample.received_at|date:'c' }}" title="{{ rt.sample.received_at|date:'Y-m-d H:i T' }}">{{ rt.sample.received_at|date:"Y-m-d H:i" }}</time></td>
             <td class="vr-nowrap"><time datetime="{{ rt.sample.collected_at|date:'c' }}" title="{{ rt.sample.collected_at|date:'Y-m-d H:i T' }}">{{ rt.sample.collected_at|date:"Y-m-d H:i" }}</time></td>
           </tr>
@@ -60,11 +55,6 @@ Optional columns (hidden by default): Client / project, Received, Collected.{% e
       </table>
     </div>
   </form>
-  {% include "includes/pagination.html" with noun="tests" filtered=filtered %}
-  {% elif filtered %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No tests match these filters" body="Clear the filters, or choose All statuses to include approved work." clear_url=request.path %}
-  {% else %}
-  {% include "includes/empty_state.html" with title="No open work" body="Requested tests appear here after samples are received." %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}

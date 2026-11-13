@@ -1,4 +1,5 @@
 {% extends "admin/base.html" %}
+{% load ui %}
 {% load static %}
 {% comment %}Django admin (restricted maintenance tooling) in Smart Roots LIMS colours; its theme follows the application theme.{% endcomment %}
 {% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | Smart Roots LIMS administration{% endblock %}
@@ -16,5 +17,5 @@
 {% endif %}
 {% endblock %}
 {% block nav-global %}{% include "documentation/button.html" %}{% endblock %}
-{% block footer %}<div id="footer">{% include "includes/source_footer.html" %}</div>{% endblock %}
+{% block footer %}<div id="footer">{% source_footer %}</div>{% endblock %}
 {% block extrabody %}{{ block.super }}{% include "documentation/panel.html" %}{% endblock %}

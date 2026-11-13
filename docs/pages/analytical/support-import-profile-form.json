@@ -91,7 +91,7 @@
           "description": "Optional mapping, but soil observations require explicit wet or dry. Fixed choices are No fixed basis, Wet weight, Dry weight and Not applicable. Non-soil rows allow only na, with blank interpreted as Not applicable."
         },
         {
-          "label": "Percent solids column / Fixed percent solids (%)",
+          "label": "Percent solids column / Fixed percent solids",
           "description": "Optional exact percentage from 0 through 100 inclusive, for soil only. Blank is unknown, not 100%. Use a fixed value only when the same measured value applies to every imported observation."
         },
         {

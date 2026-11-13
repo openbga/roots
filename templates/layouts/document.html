@@ -1,4 +1,4 @@
-{% load static %}<!doctype html>
+{% load static ui preferences %}<!doctype html>
 {% comment %}
 Application document and staff shell. Block contract (docs/ui-standards.md section 4):
   title          <title>; defaults to "{{ page_title }} · Smart Roots LIMS"
@@ -8,14 +8,14 @@ Application document and staff shell. Block contract (docs/ui-standards.md secti
   topbar         top bar; the client portal replaces it
   sidenav        staff navigation rail; the client portal empties it
   page_header    whole page header; override only for unusual pages
-  page_dateline  overview pages: {% include "includes/dateline.html" %} above the title
-  breadcrumbs    record, form, action, entry and document pages: {% include "includes/breadcrumbs.html" %}
+  page_dateline  overview pages: {% include "includes/dateline.html" %} under the title
+  breadcrumbs    record, form, action, entry and document pages: {% breadcrumbs %}
   page_heading   <h1> text; defaults to {{ page_title }}
   page_meta      optional <ul class="vr-page-meta"> of key facts under the title (record pages)
   page_intro     optional <p class="vr-page-intro">: at most one sentence under the title
   page_actions   page buttons, right of the title (at most one .btn-primary, placed last)
   content        page body; section tabs ({% section_tabs %}) come first when the page has them
-  record_foot    record pages: {% include "includes/record_foot.html" with identifier=... %}; it
+  record_foot    record pages: {% record_foot identifier=... %}; it
                  also marks the page as a record, which numbers its panel headings
   extra_js       extra <script> tags at the end of <body>
 Every page in this shell (staff and client portal) ends <main> with includes/source_footer.html.
@@ -29,14 +29,15 @@ core/templatetags/navigation.py. Error pages (400/403/404) keep this shell for s
   <meta name="color-scheme" content="light dark">
   {# Synchronous on purpose: sets data-bs-theme from the saved choice before the first paint. #}
   <script src="{% static 'js/theme-init.js' %}"></script>
-  <meta name="htmx-config" content='{"allowEval": false, "includeIndicatorStyles": false, "responseHandling": [{"code": "204", "swap": false}, {"code": "[23]..", "swap": true}, {"code": "422", "swap": true}, {"code": "[45]..", "swap": false, "error": true}]}'>
+  <meta name="htmx-config" content='{"allowEval": false, "includeIndicatorStyles": false, "attributesToSettle": ["class", "width", "height"], "responseHandling": [{"code": "204", "swap": false}, {"code": "[23]..", "swap": true}, {"code": "422", "swap": true}, {"code": "[45]..", "swap": false, "error": true}]}'>
   <title>{% block title %}{% if page_title %}{{ page_title }} · {% endif %}Smart Roots LIMS{% endblock %}</title>
   <link rel="icon" href="{% static 'img/mark.svg' %}" type="image/svg+xml">
   <link rel="stylesheet" href="{% static 'vendor/bootstrap-5.3.8/css/bootstrap.min.css' %}">
   <link rel="stylesheet" href="{% static 'vendor/datatables/dataTables.bootstrap5.min.css' %}">
   <link rel="stylesheet" href="{% static 'vendor/datatables/colReorder.bootstrap5.min.css' %}">
-  {# Tom Select CSS is small and themed in app.css; its script loads only on pages with an enhanced select. #}
+  {# Shared form controls (static/js/controls.js): Tom Select for selects and Vanilla Calendar Pro for dates and times, on every page. Themed in app.css. #}
   <link rel="stylesheet" href="{% static 'vendor/tom-select/tom-select.bootstrap5.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/vanilla-calendar-pro-3.4.0/layout.css' %}">
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
   <link rel="stylesheet" href="{% static 'css/documentation.css' %}">
   {% block extra_css %}{% endblock %}
@@ -46,6 +47,11 @@ core/templatetags/navigation.py. Error pages (400/403/404) keep this shell for s
   <script src="{% static 'vendor/datatables/dataTables.bootstrap5.min.js' %}" defer></script>
   <script src="{% static 'vendor/datatables/dataTables.colReorder.min.js' %}" defer></script>
   <script src="{% static 'js/app.js' %}" defer></script>
+  <script src="{% static 'js/sidebar.js' %}" defer></script>
+  <script src="{% static 'vendor/tom-select/tom-select.complete.min.js' %}" defer></script>
+  <script src="{% static 'vendor/vanilla-calendar-pro-3.4.0/index.js' %}" defer></script>
+  <script src="{% static 'js/controls.js' %}" defer></script>
+  <script src="{% static 'js/preferences.js' %}" defer></script>
   <script src="{% static 'js/grid.js' %}" defer></script>
   <script src="{% static 'js/documentation.js' %}" defer></script>
   <script src="{% static 'js/form-dialog.js' %}" defer></script>
@@ -56,25 +62,19 @@ core/templatetags/navigation.py. Error pages (400/403/404) keep this shell for s
   {% url 'dashboard' as dashboard_url %}
   {% block topbar %}
   <header class="vr-topbar">
-    <button class="btn btn-sm vr-topbar-btn d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#vr-nav" aria-controls="vr-nav">{% include "includes/icon.html" with name="list" %}<span>Menu</span></button>
-    {% include "includes/brand.html" with href=dashboard_url|default:"/" %}
+    <button class="btn btn-sm vr-topbar-btn d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#vr-nav" aria-controls="vr-nav">{% icon name="list" %}<span>Menu</span></button>
+    {% brand href=dashboard_url|default:"/" %}
     {% if lab.name %}<span class="vr-lab-name d-none d-lg-inline">{{ lab.name }}</span>{% endif %}
     <div class="vr-topbar-end">
-      {% url 'receipt:sample-list' as sample_list_url %}
-      {% if sample_list_url %}
-      <form class="vr-lookup d-none d-sm-block" action="{{ sample_list_url }}" method="get" role="search">
-        <label class="visually-hidden" for="vr-lookup-q">Find a sample by lab or client ID</label>
-        {% include "includes/icon.html" with name="search" %}
-        <input class="form-control form-control-sm" type="search" id="vr-lookup-q" name="q" placeholder="Find sample ID" autocomplete="off" spellcheck="false">
-      </form>
-      {% endif %}
+      {% include "includes/sample_lookup.html" %}
       {% include "documentation/button.html" %}
       {% include "includes/theme_menu.html" %}
       {% if user.is_authenticated %}{% include "includes/user_menu.html" %}{% endif %}
     </div>
   </header>
   {% endblock topbar %}
-  <div class="vr-shell">
+  {% preference "nav.collapsed" as nav_collapsed %}
+  <div class="vr-shell{% if nav_collapsed %} vr-nav-collapsed{% endif %}">
     {% block sidenav %}
     <nav class="vr-sidenav offcanvas-lg offcanvas-start" id="vr-nav" tabindex="-1" aria-label="Primary">
       <div class="offcanvas-header d-lg-none">
@@ -82,6 +82,7 @@ core/templatetags/navigation.py. Error pages (400/403/404) keep this shell for s
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#vr-nav" aria-label="Close navigation"></button>
       </div>
       <div class="offcanvas-body">
+        <button type="button" class="vr-nav-toggle" data-vr-nav-toggle aria-controls="vr-nav" aria-expanded="{% if nav_collapsed %}false{% else %}true{% endif %}" aria-label="{% if nav_collapsed %}Expand menu{% else %}Collapse menu{% endif %}">{% icon name="chevron-double-left" %}<span class="vr-nav-toggle-label">Collapse menu</span></button>
         {% include "includes/nav_staff.html" %}
       </div>
     </nav>
@@ -89,11 +90,11 @@ core/templatetags/navigation.py. Error pages (400/403/404) keep this shell for s
     <main class="vr-main" id="main" tabindex="-1"{% block form_surface_attributes %}{% if form_surface %} data-vr-form-page data-vr-form-url="{{ request.get_full_path }}" data-vr-form-size="{{ form_surface.size }}"{% endif %}{% endblock %}>
       {% block page_header %}
       <div class="vr-page-header">
-        {% block page_dateline %}{% endblock %}
         {% block breadcrumbs %}{% endblock %}
         <div class="vr-page-header-row">
           <div>
             <h1 class="vr-page-title">{% block page_heading %}{{ page_title }}{% endblock %}</h1>
+            {% block page_dateline %}{% endblock %}
             {% block page_meta %}{% endblock %}
             {% block page_intro %}{% endblock %}
           </div>
@@ -104,15 +105,16 @@ core/templatetags/navigation.py. Error pages (400/403/404) keep this shell for s
       {% include "includes/messages.html" %}
       {% block content %}{% endblock %}
       {% block record_foot %}{% endblock %}
-      {% include "includes/source_footer.html" %}
+      {% source_footer %}
     </main>
   </div>
   {% endblock body %}
   {% block documentation_panel %}{% include "documentation/panel.html" %}{% endblock %}
-  <div class="vr-live" id="vr-live"></div>
+  <template id="vr-request-error">{% notice tone="danger" blocking=True dismissible=True hook="vr-request-error" %}<span data-vr-notice-text></span>{% endnotice %}</template>
   {% include "includes/grid_columns_dialog.html" %}
   {{ form_route_patterns|json_script:"vr-form-routes" }}
   {% include "includes/form_dialog.html" %}
+  {% client_preferences %}
   {% block extra_js %}{% endblock %}
 </body>
 </html>

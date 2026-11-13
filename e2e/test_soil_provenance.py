@@ -16,7 +16,16 @@ from pathlib import Path
 
 import pytest
 from conftest import Lab
-from helpers import field, local_input, pdf_text, sign_in, sign_out, version_action
+from helpers import (
+    field,
+    local_input,
+    native_select,
+    pdf_text,
+    pick,
+    sign_in,
+    sign_out,
+    version_action,
+)
 from playwright.sync_api import Page, expect
 
 pytestmark = pytest.mark.django_db(transaction=True)
@@ -199,21 +208,22 @@ def test_soil_basis_is_explicit_reviewed_checked_and_frozen_in_the_delivered_rep
     fill_result(row_a, "12.5")  # no basis chosen
     fill_result(row_b, "11.0")
     for row, sample in ((row_a, sample_a), (row_b, sample_b)):  # preparation is chosen explicitly
-        row.get_by_label("Prepared aliquot").select_option(value=str(aliquots[sample.pk].pk))
-    row_b.get_by_label("Result basis").select_option(label="Wet weight")
+        pick(row.get_by_label("Prepared aliquot"), value=str(aliquots[sample.pk].pk))
+    pick(row_b.get_by_label("Result basis"), label="Wet weight")
     page.get_by_role("button", name=re.compile(r"^Save \d+ rows? on this page as entered")).click()
     errors = page.locator("#grid-errors")
     expect(errors).to_contain_text("Nothing was saved; your entries were kept")
     expect(row_errors(page, row_a)).to_contain_text("Result basis")
     shot(page, "soil-entry-basis-omitted")
-    expect(row_a.get_by_label("Result basis")).to_be_focused()  # focus goes to the field to fix
+    # Focus goes to the field to fix.
+    expect(row_a.get_by_role("combobox", name=re.compile("^Result basis"))).to_be_focused()
     assert not ResultRevision.objects.filter(result__batch=batch).exists()
     row_a, row_b = grid_row(page, lab_a), grid_row(page, lab_b)  # re-rendered page: input kept
     expect(row_a.get_by_role("textbox", name=re.compile("^Result"))).to_have_value("12.5")
     expect(row_b.get_by_role("textbox", name=re.compile("^Result"))).to_have_value("11.0")
-    expect(row_b.get_by_label("Result basis")).to_have_value("wet")
+    expect(native_select(row_b.get_by_label("Result basis"))).to_have_value("wet")
 
-    row_a.get_by_label("Result basis").select_option(label="Dry weight")
+    pick(row_a.get_by_label("Result basis"), label="Dry weight")
     row_a.get_by_text("Supplied percent solids (optional)").click()
     row_a.get_by_label(re.compile("^Percent solids")).fill("82.125")
     page.get_by_role("button", name=re.compile(r"^Save \d+ rows? on this page as entered")).click()
@@ -223,7 +233,7 @@ def test_soil_basis_is_explicit_reviewed_checked_and_frozen_in_the_delivered_rep
     expect(row_a.get_by_label(re.compile("^Percent solids"))).to_have_value(
         "82.125"
     )  # details stay open
-    expect(row_a.get_by_label("Result basis")).to_have_value("dry")
+    expect(native_select(row_a.get_by_label("Result basis"))).to_have_value("dry")
     row_a.get_by_label(re.compile("^Solids source reference")).fill(REFERENCE)
     shot(page, "soil-entry-complete", "dark")
     page.get_by_role("button", name=re.compile(r"^Save \d+ rows? on this page as entered")).click()
@@ -260,7 +270,7 @@ def test_soil_basis_is_explicit_reviewed_checked_and_frozen_in_the_delivered_rep
     shot(page, "soil-review")
     for lab in (lab_a, lab_b):
         page.get_by_role("checkbox", name=re.compile(rf"^Select {lab}")).check()
-    page.get_by_label(re.compile("^Action")).select_option(label="Approve")
+    pick(page.get_by_label(re.compile("^Action")), label="Approve")
     page.get_by_role("textbox", name=re.compile("^Note or reason")).fill("Basis and QC checked.")
     page.get_by_role("button", name=re.compile("^Apply decision")).click()
     expect(page.get_by_text("Approved 2 results.")).to_be_visible()
@@ -272,8 +282,9 @@ def test_soil_basis_is_explicit_reviewed_checked_and_frozen_in_the_delivered_rep
     # ---- project manager: report scope, then the optional NYSDEC data check (read-only)
     sign_in(page, "demo_project_manager", demo.password)
     page.goto("/reports/new/")
-    page.get_by_label(re.compile(r"^Project")).select_option(
-        label="Example Utilities / Test Creek Outfall 001"
+    pick(
+        page.get_by_label(re.compile(r"^Project")),
+        label="Example Utilities / Test Creek Outfall 001",
     )
     page.get_by_role("button", name="Choose samples").click()
     page.get_by_label("Search").fill("SOIL-")
@@ -318,7 +329,7 @@ def test_soil_basis_is_explicit_reviewed_checked_and_frozen_in_the_delivered_rep
     field(page, "NYSDEC analytical method").fill("SYNTH-SOIL-6010")
     field(page, "Fraction").fill("T")
     field(page, "Preservative").fill("NONE")
-    field(page, "Basis").select_option(label="Wet weight")
+    pick(field(page, "Basis"), label="Wet weight")
     field(page, "NYSDEC chemical name").fill("Lead")
     field(page, "NYSDEC unit").fill("mg/kg")
     page.get_by_role("button", name="Save changes").click()

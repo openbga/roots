@@ -1,6 +1,7 @@
 {% extends "account/base_entrance.html" %}
+{% load ui %}
 {% load i18n allauth account announcements %}
-{% comment %}allauth sign-in without the self-signup prompt: accounts are invitation-only.{% endcomment %}
+{% comment %}allauth sign-in without the self-signup prompt: accounts are invitation-only. Login and password, then Remember me and the password-reset link on one row (the link is the password field's help text, under the same id).{% endcomment %}
 {% block head_title %}{% trans "Sign In" %}{% endblock head_title %}
 {% block content %}
   {% element h1 %}{% trans "Sign in" %}{% endelement %}
@@ -9,7 +10,13 @@
   {% element form form=form method="post" action=login_url tags="entrance,login" %}
     {% slot body %}
       {% csrf_token %}
-      {% element fields form=form %}{% endelement %}
+      {% field field=form.login %}
+      {% field field=form.password no_help=True %}
+      <div class="vr-entrance-row">
+        {% if form.remember %}{% trans "Remember me" as remember_label %}{% field field=form.remember label=remember_label %}{% endif %}
+        {% url 'account_reset_password' as reset_url %}{% if reset_url %}<a href="{{ reset_url }}" id="{{ form.password.auto_id }}_helptext">{% trans "Forgot your password?" %}</a>{% endif %}
+      </div>
+      {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
       {{ redirect_field }}
     {% endslot %}
     {% slot actions %}
@@ -23,7 +30,7 @@
         {% element button type="submit" form="mfa_login" id="passkey_login" tags="prominent,login,outline,primary" %}{% trans "Sign in with a passkey" %}{% endelement %}
       {% endif %}
       {% if LOGIN_BY_CODE_ENABLED %}
-        {% element button href=request_login_code_url tags="prominent,login,outline,primary" %}{% include "includes/icon.html" with name="envelope" %} {% trans "Email me a sign-in code" %}{% endelement %}
+        {% element button href=request_login_code_url tags="prominent,login,outline,primary" %}{% icon name="envelope" %} {% trans "Email me a sign-in code" %}{% endelement %}
       {% endif %}
     {% endelement %}
   {% endif %}

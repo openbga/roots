@@ -74,7 +74,7 @@
     {
       "title": "Data points table",
       "paragraphs": [
-        "The table lists all computable points newest first with exact decimal text, rather than only the newest 100 drawn. Rows per page is 25, 50 or 100, initially 25. First, Previous, Next and Last preserve the chart settings. Columns changes local visibility/order with reset and keyboard controls. There is no point search or user-selected sort."
+        "The table lists all computable points newest first with exact decimal text, rather than only the newest 100 drawn. Rows per page is 25, 50 or 100, initially 25. First, Previous, Next and Last preserve the chart settings. Columns changes your saved visibility/order with reset and keyboard controls. There is no point search or user-selected sort."
       ],
       "items": [
         {

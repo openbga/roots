@@ -1,52 +1,52 @@
 {% extends "base.html" %}
-{% load laboratory_extras %}
-{% comment %}Attention counts. Context: cards (dict), days, day_choices, role flags. Windows are display settings, not lab policy.{% endcomment %}
+{% load laboratory_extras ui %}
+{% comment %}Attention counts. Context: cards (dict), days, days_form (LookAheadForm), role flags. Windows are display settings, not lab policy.{% endcomment %}
 {% block page_intro %}<p class="vr-page-intro">What needs attention in standards, equipment, training and nonconformances; the look-ahead window only sets what is highlighted, and expiry and due dates are set on each record.</p>{% endblock %}
 {% block content %}
+{# form: filter #}
 <form class="d-flex flex-wrap align-items-end gap-2 mb-3" method="get" action="{% url 'laboratory:overview' %}" aria-label="Look-ahead window">
-  <div class="vr-field"><label class="form-label" for="ov-days">Look ahead</label>
-    <select class="form-select" id="ov-days" name="days">{% for value, label in day_choices %}<option value="{{ value }}"{% if value == days %} selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+  {{ days_form.days.as_field_group }}
   <button class="btn btn-outline-secondary" type="submit">Apply</button>
 </form>
 <div class="row g-3">
   <div class="col-lg-6">
-    <section class="card vr-table-card h-100" aria-labelledby="ov-stock"><div class="card-header"><h2 class="card-title" id="ov-stock">Standards and reagents</h2></div>
+    {% panel title="Standards and reagents" heading_id="ov-stock" table=True flush=True class="h-100" %}
       <div class="vr-table-wrap"><table class="table vr-table">
         <thead class="visually-hidden"><tr><th scope="col">Measure</th><th scope="col" class="text-end">Count</th></tr></thead>
         <tbody>
-          <tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:lot-list' %}?state=expired">Expired, still on hand</a></th><td class="text-end">{% if cards.lots_expired %}{% include "includes/status.html" with label=cards.lots_expired tone="danger" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td></tr>
-          <tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:lot-list' %}?state=expiring&amp;days={{ days }}">Expiring within {{ days }} days</a></th><td class="text-end">{% if cards.lots_expiring %}{% include "includes/status.html" with label=cards.lots_expiring tone="warning" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td></tr>
-        </tbody></table></div></section>
+          <tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:lot-list' %}?state=expired">Expired, still on hand</a></th><td class="text-end">{% if cards.lots_expired %}{% status label=cards.lots_expired tone="danger" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td></tr>
+          <tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:lot-list' %}?state=expiring&amp;days={{ days }}">Expiring within {{ days }} days</a></th><td class="text-end">{% if cards.lots_expiring %}{% status label=cards.lots_expiring tone="warning" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td></tr>
+        </tbody></table></div>{% endpanel %}
   </div>
   <div class="col-lg-6">
-    <section class="card vr-table-card h-100" aria-labelledby="ov-eq"><div class="card-header"><h2 class="card-title" id="ov-eq">Equipment</h2></div>
+    {% panel title="Equipment" heading_id="ov-eq" table=True flush=True class="h-100" %}
       <div class="vr-table-wrap"><table class="table vr-table">
         <thead class="visually-hidden"><tr><th scope="col">Measure</th><th scope="col" class="text-end">Count</th></tr></thead>
         <tbody>
-          <tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:equipment-list' %}?due=overdue">Calibration or maintenance overdue</a></th><td class="text-end">{% if cards.equipment_overdue %}{% include "includes/status.html" with label=cards.equipment_overdue tone="danger" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td></tr>
-          <tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:equipment-list' %}?due=soon&amp;days={{ days }}">Due within {{ days }} days</a></th><td class="text-end">{% if cards.equipment_soon %}{% include "includes/status.html" with label=cards.equipment_soon tone="warning" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td></tr>
-          <tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:equipment-list' %}?due=unscheduled">In service with no due date recorded</a></th><td class="text-end">{% if cards.equipment_unscheduled %}{% include "includes/status.html" with label=cards.equipment_unscheduled tone="neutral" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td></tr>
-        </tbody></table></div></section>
+          <tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:equipment-list' %}?due=overdue">Calibration or maintenance overdue</a></th><td class="text-end">{% if cards.equipment_overdue %}{% status label=cards.equipment_overdue tone="danger" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td></tr>
+          <tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:equipment-list' %}?due=soon&amp;days={{ days }}">Due within {{ days }} days</a></th><td class="text-end">{% if cards.equipment_soon %}{% status label=cards.equipment_soon tone="warning" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td></tr>
+          <tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:equipment-list' %}?due=unscheduled">In service with no due date recorded</a></th><td class="text-end">{% if cards.equipment_unscheduled %}{% status label=cards.equipment_unscheduled tone="neutral" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td></tr>
+        </tbody></table></div>{% endpanel %}
   </div>
   <div class="col-lg-6">
-    <section class="card vr-table-card h-100" aria-labelledby="ov-nc"><div class="card-header"><h2 class="card-title" id="ov-nc">Nonconformances</h2></div>
+    {% panel title="Nonconformances" heading_id="ov-nc" table=True flush=True class="h-100" %}
       <div class="vr-table-wrap"><table class="table vr-table">
         <thead class="visually-hidden"><tr><th scope="col">Measure</th><th scope="col" class="text-end">Count</th></tr></thead>
         <tbody>
           <tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:nc-list' %}?status=not_closed">Not closed</a></th><td class="text-end">{{ cards.nc_open }}</td></tr>
-          <tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:nc-list' %}?status=not_closed&amp;overdue=yes">Past due</a></th><td class="text-end">{% if cards.nc_overdue %}{% include "includes/status.html" with label=cards.nc_overdue tone="danger" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td></tr>
+          <tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:nc-list' %}?status=not_closed&amp;overdue=yes">Past due</a></th><td class="text-end">{% if cards.nc_overdue %}{% status label=cards.nc_overdue tone="danger" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td></tr>
           <tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:nc-list' %}?status=not_closed&amp;owner=me">Assigned to me</a></th><td class="text-end">{{ cards.nc_mine }}</td></tr>
-        </tbody></table></div></section>
+        </tbody></table></div>{% endpanel %}
   </div>
   <div class="col-lg-6">
-    <section class="card vr-table-card h-100" aria-labelledby="ov-tr"><div class="card-header"><h2 class="card-title" id="ov-tr">Training records</h2></div>
+    {% panel title="Training records" heading_id="ov-tr" table=True flush=True class="h-100" %}
       <div class="vr-table-wrap"><table class="table vr-table">
         <thead class="visually-hidden"><tr><th scope="col">Measure</th><th scope="col" class="text-end">Count</th></tr></thead>
         <tbody>
-          <tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:training-list' %}?state=attention&amp;days={{ days }}">My records expiring within {{ days }} days</a></th><td class="text-end">{% if cards.my_training_expiring %}{% include "includes/status.html" with label=cards.my_training_expiring tone="warning" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td></tr>
-          <tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:training-list' %}?state=attention">My expired records not yet renewed</a></th><td class="text-end">{% if cards.my_training_expired %}{% include "includes/status.html" with label=cards.my_training_expired tone="danger" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td></tr>
-          {% if is_lead %}<tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:training-list' %}?state=attention&amp;days={{ days }}">All staff: expiring or expired, not renewed</a></th><td class="text-end">{% if cards.training_attention %}{% include "includes/status.html" with label=cards.training_attention tone="warning" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td></tr>{% endif %}
-        </tbody></table></div></section>
+          <tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:training-list' %}?state=attention&amp;days={{ days }}">My records expiring within {{ days }} days</a></th><td class="text-end">{% if cards.my_training_expiring %}{% status label=cards.my_training_expiring tone="warning" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td></tr>
+          <tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:training-list' %}?state=attention">My expired records not yet renewed</a></th><td class="text-end">{% if cards.my_training_expired %}{% status label=cards.my_training_expired tone="danger" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td></tr>
+          {% if is_lead %}<tr><th scope="row"><a class="vr-row-link" href="{% url 'laboratory:training-list' %}?state=attention&amp;days={{ days }}">All staff: expiring or expired, not renewed</a></th><td class="text-end">{% if cards.training_attention %}{% status label=cards.training_attention tone="warning" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td></tr>{% endif %}
+        </tbody></table></div>{% endpanel %}
   </div>
 </div>
 {% endblock %}

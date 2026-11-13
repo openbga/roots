@@ -1,21 +1,22 @@
 {% extends "layouts/portal.html" %}
+{% load ui %}
 {% comment %}Client submissions. Context: page_obj (sample_count), filter_form, q, sort, per_page, active_filters, filtered.{% endcomment %}
-{% block page_actions %}<a class="btn btn-primary" href="{% url 'client_commercial:submission-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New submission</a>{% endblock %}
+{% block page_actions %}<a class="btn btn-primary" href="{% url 'client_commercial:submission-create' %}">{% icon name="plus-lg" %}New submission</a>{% endblock %}
 {% block content %}
-<section class="card vr-table-card" aria-labelledby="subs-heading">
-  <h2 class="visually-hidden" id="subs-heading">Submissions</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter submissions" placeholder="Number, COC reference or project" search_id="filter-q" grid="portal.submissions" %}
-  {% if page_obj.paginator.count %}
+{% url 'client_commercial:submission-create' as create_url %}
+{% panel title="Submissions" heading_id="subs-heading" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter submissions" placeholder="Number, COC reference or project" search_id="filter-q" grid="portal.submissions" invalid=filter_form.errors chips=active_filters sort=sort %}
+  {% list_results items=page_obj noun="submissions" filtered=filtered invalid=filter_form.errors clear_url=request.path error_body="Correct the highlighted filter above." no_results_title="No submissions match these filters" no_results_body="Clear the filters to see all of your submissions." empty_title="No submissions yet" empty_body="Tell the laboratory what is coming before you ship: list your samples, tests and containers once, and they are checked against the shipment at receipt." action_url=create_url action_label="New submission" %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table" data-vr-grid="portal.submissions" data-vr-grid-version="1" aria-labelledby="subs-heading">
       <thead><tr>
-        {% include "includes/sort_header.html" with label="Submission" asc="number" desc="-number" first="desc" col="number" locked=True %}
-        {% include "includes/sort_header.html" with label="Project" asc="project" desc="-project" col="project" %}
-        {% include "includes/sort_header.html" with label="COC reference" asc="coc_reference" desc="-coc_reference" col="coc_reference" %}
-        {% include "includes/sort_header.html" with label="Status" asc="status" desc="-status" col="status" %}
-        {% include "includes/sort_header.html" with label="Samples" asc="samples" desc="-samples" first="desc" col="samples" class="text-end" %}
-        {% include "includes/sort_header.html" with label="Expected arrival" asc="expected_arrival" desc="-expected_arrival" col="expected_arrival" %}
-        {% include "includes/sort_header.html" with label="Submitted" asc="updated" desc="-updated" first="desc" col="updated" %}
+        {% sort_header label="Submission" asc="number" desc="-number" first="desc" col="number" locked=True %}
+        {% sort_header label="Project" asc="project" desc="-project" col="project" %}
+        {% sort_header label="COC reference" asc="coc_reference" desc="-coc_reference" col="coc_reference" %}
+        {% sort_header label="Status" asc="status" desc="-status" col="status" %}
+        {% sort_header label="Samples" asc="samples" desc="-samples" first="desc" col="samples" class="text-end" %}
+        {% sort_header label="Expected arrival" asc="expected_arrival" desc="-expected_arrival" col="expected_arrival" %}
+        {% sort_header label="Submitted" asc="updated" desc="-updated" first="desc" col="updated" %}
       </tr></thead>
       <tbody>
         {% for sub in page_obj %}
@@ -32,14 +33,6 @@
       </tbody>
     </table>
   </div>
-  {% include "includes/pagination.html" with noun="submissions" filtered=filtered %}
-  {% elif filter_form.errors %}
-  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above." clear_url=request.path %}
-  {% elif filtered %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No submissions match these filters" body="Clear the filters to see all of your submissions." clear_url=request.path %}
-  {% else %}
-  {% url 'client_commercial:submission-create' as create_url %}
-  {% include "includes/empty_state.html" with title="No submissions yet" body="Tell the laboratory what is coming before you ship: list your samples, tests and containers once, and they are checked against the shipment at receipt." action_url=create_url action_label="New submission" %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}

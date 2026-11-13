@@ -94,7 +94,7 @@
       "items": [
         {
           "label": "Status / Samples",
-          "description": "Count all of this client’s samples in each computed live status. A nonzero label links to Samples with that status filter; zero labels do not link."
+          "description": "Count all of this client’s samples in each computed live status. A nonzero status shows as its coloured status label and links to Samples with that status filter; a zero status is plain muted text and does not link."
         },
         {
           "label": "All samples",

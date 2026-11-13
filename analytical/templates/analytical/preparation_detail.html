@@ -1,13 +1,11 @@
 {% extends "base.html" %}
-{% load catalog_extras %}
-{% block breadcrumbs %}{% url 'analytical:prep-list' as list_url %}{% include "includes/breadcrumbs.html" with section="Preparation batches" section_url=list_url current=batch.number %}{% endblock %}
+{% load catalog_extras ui %}
+{% block breadcrumbs %}{% url 'analytical:prep-list' as list_url %}{% breadcrumbs section="Preparation batches" section_url=list_url current=batch.number %}{% endblock %}
 {% block page_heading %}<span class="vr-id">{{ batch.number }}</span>{% endblock %}
-{% block page_meta %}
-<ul class="vr-page-meta">
-  <li>{% if open %}{% include "includes/status.html" with label="Open membership" tone="info" %}{% else %}{% include "includes/status.html" with label="Closed membership" tone="neutral" %}{% endif %}</li>
-  <li>Preparation method: {{ batch.method }}</li><li>{{ batch.get_matrix_display }}</li>
-</ul>
-{% endblock %}
+{% block page_meta %}{% page_meta %}
+  <li>{% if open %}{% status label="Open membership" tone="info" %}{% else %}{% status label="Closed membership" tone="neutral" %}{% endif %}</li>
+  <li>Preparation method: {{ batch.method }}</li><li>{% matrix_tag matrix=batch.matrix size="lg" %}</li>
+{% endpage_meta %}{% endblock %}
 {% block page_actions %}
 {% if can_enter %}
 {% if open and aliquot_count %}<button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#close-membership-dialog">Close membership</button>{% endif %}
@@ -25,69 +23,51 @@
 {% endblock %}
 {% block content %}
 {% if issues %}
-<div class="alert alert-warning" role="status" id="qc-holds">
-  {% include "includes/status.html" with label="Preparation QC holds approval" tone="warning" plain=True %}
-  <div><p class="mb-1">These findings hold analytical results that use this preparation until an independent reviewer records an accepted disposition.</p>
+{% notice tone="warning" label="Preparation QC holds approval" id="qc-holds" %}<p class="mb-1">These findings hold analytical results that use this preparation until an independent reviewer records an accepted disposition.</p>
   <ul class="mb-0 ps-3">{% for issue in issues %}<li>{{ issue.message }}
     {% if issue.conflict %}<span class="vr-muted">An independent reviewer must decide.</span>{% elif issue.action %}<span class="vr-muted">Latest disposition: {{ issue.action.get_disposition_display }}.</span>{% endif %}
     {% if can_enter or can_review %}<a href="{% url 'analytical:qc-action' batch.pk %}?target={{ issue.key|urlencode }}">Record disposition<span class="visually-hidden"> for {{ issue.link_label }}</span></a>{% endif %}
-  </li>{% endfor %}</ul></div>
-</div>
+  </li>{% endfor %}</ul>{% endnotice %}
 {% endif %}
-<section class="card mb-3" aria-labelledby="membership-heading">
-  <div class="card-header"><h2 class="card-title" id="membership-heading">Batch record</h2></div>
-  <div class="card-body">
+{% panel title="Batch record" heading_id="membership-heading" class="mb-3" %}
     <dl class="vr-facts">
-      <div><dt>Created</dt><dd>{{ batch.created_by.get_full_name|default:batch.created_by.get_username }}, <time datetime="{{ batch.created_at|date:'c' }}" title="{{ batch.created_at|date:'Y-m-d H:i T' }}">{{ batch.created_at|date:"Y-m-d H:i" }}</time></dd></div>
-      <div><dt>Started</dt><dd>{% if batch.prepared_at %}<time datetime="{{ batch.prepared_at|date:'c' }}" title="{{ batch.prepared_at|date:'Y-m-d H:i T' }}">{{ batch.prepared_at|date:"Y-m-d H:i" }}</time>{% else %}Not recorded{% endif %}</dd></div>
-      <div><dt>Completed</dt><dd>{% if batch.completed_at %}<time datetime="{{ batch.completed_at|date:'c' }}" title="{{ batch.completed_at|date:'Y-m-d H:i T' }}">{{ batch.completed_at|date:"Y-m-d H:i" }}</time>{% else %}Not recorded{% endif %}</dd></div>
-      <div><dt>Equipment</dt><dd>{% if batch.equipment %}<a href="{% url 'laboratory:equipment-detail' batch.equipment_id %}">{{ batch.equipment }}</a>{% else %}Not recorded{% endif %}</dd></div>
-      {% if batch.closed_at %}<div><dt>Membership closed</dt><dd><time datetime="{{ batch.closed_at|date:'c' }}" title="{{ batch.closed_at|date:'Y-m-d H:i T' }}">{{ batch.closed_at|date:"Y-m-d H:i" }}</time> by {{ batch.closed_by.get_username }}</dd></div>{% endif %}
-      {% if batch.notes %}<div><dt>Notes</dt><dd>{{ batch.notes }}</dd></div>{% endif %}
+      {% fact label="Created" %}{{ batch.created_by.get_full_name|default:batch.created_by.get_username }}, <time datetime="{{ batch.created_at|date:'c' }}" title="{{ batch.created_at|date:'Y-m-d H:i T' }}">{{ batch.created_at|date:"Y-m-d H:i" }}</time>{% endfact %}
+      {% fact label="Started" %}{% if batch.prepared_at %}<time datetime="{{ batch.prepared_at|date:'c' }}" title="{{ batch.prepared_at|date:'Y-m-d H:i T' }}">{{ batch.prepared_at|date:"Y-m-d H:i" }}</time>{% else %}Not recorded{% endif %}{% endfact %}
+      {% fact label="Completed" %}{% if batch.completed_at %}<time datetime="{{ batch.completed_at|date:'c' }}" title="{{ batch.completed_at|date:'Y-m-d H:i T' }}">{{ batch.completed_at|date:"Y-m-d H:i" }}</time>{% else %}Not recorded{% endif %}{% endfact %}
+      {% fact label="Equipment" wide=True %}{% if batch.equipment %}<a href="{% url 'laboratory:equipment-detail' batch.equipment_id %}">{{ batch.equipment }}</a>{% else %}Not recorded{% endif %}{% endfact %}
+      {% if batch.closed_at %}{% fact label="Membership closed" %}<time datetime="{{ batch.closed_at|date:'c' }}" title="{{ batch.closed_at|date:'Y-m-d H:i T' }}">{{ batch.closed_at|date:"Y-m-d H:i" }}</time> by {{ batch.closed_by.get_username }}{% endfact %}{% endif %}
+      {% if batch.notes %}{% fact label="Notes" wide=True value=batch.notes %}{% endif %}
     </dl>
-    <p class="vr-form-note mt-3 mb-0">Closing membership freezes the aliquots and QC samples in this batch. Actual preparation start and completion are recorded separately.</p>
-  </div>
-</section>
-<section class="card vr-table-card mb-3" aria-labelledby="aliquots-heading">
-  <div class="card-header"><h2 class="card-title" id="aliquots-heading">Aliquots</h2><span class="vr-count">{{ aliquot_count }}</span>
-    <div class="ms-auto d-flex flex-wrap gap-2">{% if can_enter and open %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:prep-aliquot-add' batch.pk %}">{% include "includes/icon.html" with name="plus-lg" %}Add aliquot</a>{% endif %}{% include "includes/grid_columns_button.html" with grid="analytical.preparation_aliquots" %}</div>
-  </div>
-  {% if aliquot_count %}
+    <p class="vr-form-note">Closing membership freezes the aliquots and QC samples in this batch. Actual preparation start and completion are recorded separately.</p>
+{% endpanel %}
+{% if can_enter and open %}{% url 'analytical:prep-aliquot-add' batch.pk as add_url %}{% endif %}
+{% panel title="Aliquots" heading_id="aliquots-heading" count=aliquot_count table=True flush=True class="mb-3" %}
+  {% fill actions %}{% if add_url %}<a class="btn btn-outline-secondary btn-sm" href="{{ add_url }}">{% icon name="plus-lg" %}Add aliquot</a>{% endif %}{% grid_columns_button grid="analytical.preparation_aliquots" %}{% endfill %}
+  {% list_results items=page_obj noun="aliquots" empty_title="No aliquots yet" empty_body="Add a received sample and choose the requested tests covered by its labelled aliquot." action_url=add_url action_label="Add aliquot" %}
   <div class="vr-table-wrap"><table class="table table-hover vr-table" data-vr-grid="analytical.preparation_aliquots" data-vr-grid-version="1" aria-labelledby="aliquots-heading">
     <thead><tr><th scope="col" data-vr-col="aliquot" data-vr-col-locked>Aliquot label</th><th scope="col" data-vr-col="status">Status</th><th scope="col" data-vr-col="sample">Sample</th><th scope="col" data-vr-col="tests">Tests covered</th><th scope="col" data-vr-col="used">Used in</th><th scope="col" data-vr-col="created">Created by / at</th>{% if can_enter %}<th scope="col" data-vr-col="actions" data-vr-col-locked data-vr-col-label="Actions"><span class="visually-hidden">Actions</span></th>{% endif %}</tr></thead>
     <tbody>{% for aliquot in page_obj %}<tr>
       <th scope="row" class="vr-id">{{ aliquot.label }}</th>
-      <td>{% if aliquot.cancelled_at %}{% include "includes/status.html" with label="Cancelled" tone="neutral" plain=True title=aliquot.cancellation_reason %}{% elif aliquot.used_batches %}{% include "includes/status.html" with label="Used" tone="info" plain=True %}{% else %}{% include "includes/status.html" with label="Available" tone="neutral" plain=True %}{% endif %}</td>
+      <td>{% if aliquot.cancelled_at %}{% status label="Cancelled" tone="neutral" plain=True title=aliquot.cancellation_reason %}{% elif aliquot.used_batches %}{% status label="Used" tone="info" plain=True %}{% else %}{% status label="Available" tone="neutral" plain=True %}{% endif %}</td>
       <td><a class="vr-id" href="{% url 'receipt:sample-detail' aliquot.sample_id %}">{{ aliquot.sample.lab_id }}</a><div class="vr-muted small">{{ aliquot.sample.client_sample_id }}</div></td>
       <td>{% for member in aliquot.tests.all %}{{ member.requested_test.definition.analyte }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</td>
       <td class="vr-wrap">{% for used in aliquot.used_batches %}<a class="vr-id" href="{% url 'analytical:batch-detail' used.pk %}">{{ used.number }}</a>{% if not forloop.last %}, {% endif %}{% empty %}<span class="vr-muted">Not used</span>{% endfor %}
-        {% if aliquot.used_batches %}<p class="vr-form-note mb-0">Prepare again to create a new aliquot; the old one stays on record. Reuse this aliquot by selecting it during analytical result entry.</p>{% endif %}
       </td>
       <td>{{ aliquot.created_by.get_full_name|default:aliquot.created_by.get_username }}<div><time datetime="{{ aliquot.created_at|date:'c' }}" title="{{ aliquot.created_at|date:'Y-m-d H:i T' }}">{{ aliquot.created_at|date:"Y-m-d H:i" }}</time></div></td>
       {% if can_enter %}<td>{% if aliquot.can_cancel %}<a class="btn btn-outline-danger btn-sm" href="{% url 'analytical:prep-aliquot-cancel' batch.pk aliquot.pk %}">Cancel<span class="visually-hidden"> aliquot {{ aliquot.label }}</span></a>{% endif %}</td>{% endif %}
     </tr>{% endfor %}</tbody>
   </table></div>
-  {% include "includes/pagination.html" with noun="aliquots" %}
-  {% else %}
-    {% if can_enter and open %}{% url 'analytical:prep-aliquot-add' batch.pk as add_url %}{% endif %}
-    {% include "includes/empty_state.html" with title="No aliquots yet" body="Add a received sample and choose the requested tests covered by its labelled aliquot." action_url=add_url action_label="Add aliquot" %}
-  {% endif %}
-</section>
+  {% panel_section rule=True %}<p class="vr-form-note">An aliquot that is used stays on record. To use it again, select it during analytical result entry; to prepare again, add a new aliquot.</p>{% endpanel_section %}
+  {% endlist_results %}
+{% endpanel %}
 {% include "analytical/preparation_qc.html" %}
-<section class="card mt-3" aria-labelledby="history-heading">
-  <div class="card-header"><h2 class="card-title" id="history-heading">History</h2></div>
-  <div class="card-body">
-    {% if history %}
-    <ol class="vr-timeline">
-      {% for event in history %}{% include "includes/history_item.html" with title=event.display_action at=event.occurred_at actor=event.actor reason=event.reason changes=event.changes detail=event.detail %}{% endfor %}
-    </ol>
-    <p class="vr-form-note mt-2 mb-0">Latest 100 events shown, oldest first.</p>
-    {% else %}{% include "includes/empty_state.html" with title="No preparation changes recorded" %}{% endif %}
-  </div>
-</section>
+{% history_panel events=history class="mt-3" empty_title="No preparation changes recorded" %}
+  {% for event in history %}{% history_item title=event.display_action at=event.occurred_at actor=event.actor reason=event.reason changes=event.changes detail=event.detail %}{% endfor %}
+  {% fill count %}{% if history %}latest 100 shown, oldest first{% endif %}{% endfill %}
+{% endhistory_panel %}
 {% if can_enter and open and aliquot_count %}
 {% url 'analytical:prep-close' batch.pk as close_url %}
-{% include "includes/confirm_dialog.html" with id="close-membership-dialog" label="Close membership of" object=batch.number action=close_url body="Closing membership freezes the aliquots and QC samples in this batch, and cannot be undone." %}
+{% confirm_dialog id="close-membership-dialog" label="Close membership of" object=batch.number action=close_url body="Closing membership freezes the aliquots and QC samples in this batch, and cannot be undone." %}
 {% endif %}
 {% endblock %}
-{% block record_foot %}{% include "includes/record_foot.html" with identifier=batch.number %}{% endblock %}
+{% block record_foot %}{% record_foot identifier=batch.number %}{% endblock %}

@@ -1,54 +1,52 @@
 {% extends "base.html" %}
-{% load announcements %}
+{% load announcements ui %}
 {% comment %}
 Staff start page: the laboratory's current announcements for staff (the announcements tag), what
 needs doing now, then the newest receipts. No vanity counts.
-Context: held_count, recent_samples; queues = [{label, count, url, oldest_at, note, tone}] built in
-core.views for the signed-in user's roles (each count is the count of the linked list), queues_clear
-when every count is zero. Queues with count 0 still show, so an empty queue reads as "nothing
+Context: held_count, recent_samples; queues = [{label, count, url, oldest_at, note, tone, area,
+status}] built in core.views for the signed-in user's roles (each count is the count of the linked
+list), grouped as queue_lines = [{family, name, total, queues}] (the line diagram: one line per
+laboratory area, accents only) with queue_total, and queues_clear when every count is zero. Queues with count 0 still show, so an empty queue reads as "nothing
 waiting" rather than missing. A queue's label links to the list it counts (only while the count is
 above zero).
 {% endcomment %}
 {% block page_dateline %}{% include "includes/dateline.html" %}{% endblock %}
-{% block page_actions %}{% if can_receive %}<a class="btn btn-primary" href="{% url 'receipt:order-create' %}">{% include "includes/icon.html" with name="plus-lg" %}Receive samples</a>{% endif %}{% endblock %}
+{% block page_actions %}{% if can_receive %}<a class="btn btn-primary" href="{% url 'receipt:order-create' %}">{% icon name="plus-lg" %}Receive samples</a>{% endif %}{% endblock %}
 {% block content %}
 {% announcements %}
 {% url 'receipt:sample-list' as samples_url %}
 {% if queues %}
-<section class="card vr-table-card mb-3" aria-labelledby="queues-heading">
-  <div class="card-header"><h2 class="card-title" id="queues-heading">Your work queues</h2></div>
-  <div class="card-body">
-    <div class="vr-table-wrap">
-      <table class="table table-hover vr-table vr-queue-table">
-        <thead><tr><th scope="col">Queue</th><th scope="col" class="text-end">Waiting</th><th scope="col">Oldest item</th></tr></thead>
-        <tbody>
-          {% for queue in queues %}
-          <tr>
-            <th scope="row" class="vr-wrap">{% if queue.count %}<a class="vr-row-link" href="{{ queue.url }}">{{ queue.label }}</a>{% else %}{{ queue.label }}{% endif %}{% if queue.note %}<div class="vr-muted small fw-normal">{{ queue.note }}</div>{% endif %}</th>
-            <td class="text-end">{% if queue.count %}{% include "includes/status.html" with label=queue.count|floatformat:"0g" tone=queue.tone|default:"info" plain=True %}{% else %}<span class="vr-muted">0</span>{% endif %}</td>
-            <td class="vr-nowrap">{% if queue.oldest_at %}<time datetime="{{ queue.oldest_at|date:'c' }}" title="{{ queue.oldest_at|date:'Y-m-d H:i T' }}">{{ queue.oldest_at|timesince }} ago</time>{% else %}<span class="vr-muted">—</span>{% endif %}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% if queues_clear %}<p class="vr-muted small mb-0 mt-2" role="status">Nothing is waiting for you right now.</p>{% endif %}
+{% panel title="Your work queues" heading_id="queues-heading" count=queue_total|floatformat:"0g"|add:" waiting" flush=True class="mb-3" %}
+  <div class="vr-lines">
+    {% for line in queue_lines %}
+    <section class="vr-line" data-family="{{ line.family }}" aria-labelledby="line-{{ line.family }}">
+      <h3 class="vr-line-name" id="line-{{ line.family }}"><span class="vr-line-roundel" aria-hidden="true"></span>{{ line.name }}<span class="vr-line-total">{{ line.total|floatformat:"0g" }}</span></h3>
+      <ol class="vr-stations">
+        {% for queue in line.queues %}
+        <li class="vr-station" data-state="{% if queue.count %}active{% else %}zero{% endif %}"{% if queue.count %} data-tone="{{ queue.tone }}"{% endif %}>
+          <span class="vr-station-dot" aria-hidden="true"></span>
+          <div class="vr-station-body">
+            {% if queue.count %}<a class="vr-queue-link" href="{{ queue.url }}">{{ queue.label }}</a>{% status label=queue.status tone=queue.tone plain=True %}{% else %}<span class="vr-queue-label">{{ queue.label }}</span>{% endif %}
+            {% if queue.oldest_at %}<span class="vr-station-old">Oldest <time datetime="{{ queue.oldest_at|date:'c' }}" title="{{ queue.oldest_at|date:'Y-m-d H:i T' }}">{{ queue.oldest_at|timesince }}</time></span>{% endif %}
+            {% if queue.note %}<span class="vr-station-old">{{ queue.note }}</span>{% endif %}
+          </div>
+          <span class="vr-station-count">{{ queue.count|floatformat:"0g" }}</span>
+        </li>
+        {% endfor %}
+      </ol>
+    </section>
+    {% endfor %}
   </div>
-</section>
+  {% if queues_clear %}<p class="vr-muted small" role="status">Nothing is waiting for you right now.</p>{% endif %}
+{% endpanel %}
 {% elif held_count %}
-<div class="alert alert-warning" role="status">
-  {% include "includes/status.html" with label="On hold" tone="hold" plain=True %}
-  <div>{{ held_count|floatformat:"0g" }} sample{{ held_count|pluralize }} on hold at receipt need{{ held_count|pluralize:"s," }} a disposition decision. <a href="{{ samples_url }}?disposition=hold">Review held samples</a></div>
-</div>
+{% notice tone="hold" label="On hold" %}{{ held_count|floatformat:"0g" }} sample{{ held_count|pluralize }} on hold at receipt need{{ held_count|pluralize:"s," }} a disposition decision. <a href="{{ samples_url }}?disposition=hold">Review held samples</a>{% endnotice %}
 {% endif %}
 
-<section class="card vr-table-card" aria-labelledby="recent-heading">
-  <div class="card-header">
-    <h2 class="card-title" id="recent-heading">Recently received</h2>
-    {% if recent_samples %}<a class="ms-auto small" href="{{ samples_url }}">All samples</a>{% endif %}
-  </div>
-  <div class="card-body">
-    {% if recent_samples %}
+{% if can_receive %}{% url 'receipt:order-create' as create_url %}{% endif %}
+{% panel title="Recently received" heading_id="recent-heading" table=True %}
+  {% fill actions %}{% if recent_samples %}<a class="small" href="{{ samples_url }}">All samples</a>{% endif %}{% endfill %}
+    {% list_results items=recent_samples empty_title="No samples received yet" empty_body="Samples appear here once they are received against a chain of custody." action_url=create_url action_label="Receive samples" %}
     <div class="vr-table-wrap">
       <table class="table table-hover vr-table">
         <thead>
@@ -59,8 +57,8 @@ above zero).
           <tr>
             <th scope="row"><a class="vr-row-link vr-id" href="{% url 'receipt:sample-detail' sample.pk %}">{{ sample.lab_id }}</a></th>
             <td class="vr-id">{{ sample.client_sample_id }}</td>
-            <td>{{ sample.order.project.client }}<div class="vr-muted small">{{ sample.order.project.name }}</div></td>
-            <td>{{ sample.get_matrix_display }}</td>
+            <td class="vr-clip" title="{{ sample.order.project.client }} / {{ sample.order.project.name }}"><span class="vr-clip-main">{{ sample.order.project.client }}</span><span class="vr-sub">{{ sample.order.project.name }}</span></td>
+            <td>{% matrix_tag matrix=sample.matrix %}</td>
             <td class="vr-nowrap"><time datetime="{{ sample.received_at|date:'c' }}" title="{{ sample.received_at|date:'Y-m-d H:i T' }}">{{ sample.received_at|date:"Y-m-d H:i" }}</time></td>
             <td>{% include "receipt/disposition.html" with plain=True %}</td>
             <td>{{ sample.current_location }}</td>
@@ -69,10 +67,6 @@ above zero).
         </tbody>
       </table>
     </div>
-    {% else %}
-    {% if can_receive %}{% url 'receipt:order-create' as create_url %}{% endif %}
-    {% include "includes/empty_state.html" with title="No samples received yet" body="Samples appear here once they are received against a chain of custody." action_url=create_url action_label="Receive samples" %}
-    {% endif %}
-  </div>
-</section>
+    {% endlist_results %}
+{% endpanel %}
 {% endblock %}

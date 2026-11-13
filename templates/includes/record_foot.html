@@ -1,9 +1,9 @@
-{% comment %}
+{% load ui %}{% comment %}
 Record foot line: the record's identifier, when this view was produced (laboratory time zone,
 settings.TIME_ZONE) and by whom, under the page's last panel and on its printout. Its presence also
 marks the page as a record page, which numbers the panel headings 1.0, 2.0 ... (app.css). Record
 pages only (docs/ui-standards.md section 2); use inside {% block record_foot %}.
 Parameters: identifier (the record's identifier, as in its title and breadcrumb).
-Usage: {% block record_foot %}{% include "includes/record_foot.html" with identifier=sample.lab_id %}{% endblock %}
+Usage: {% block record_foot %}{% record_foot identifier=sample.lab_id %}{% endblock %}
 {% endcomment %}
 <footer class="vr-record-foot"><span class="vr-id">{{ identifier }}</span><span>Viewed <time datetime="{% now 'c' %}">{% now "Y-m-d H:i T" %}</time>{% if user.is_authenticated %} by {{ user.get_full_name|default:user.get_username }}{% endif %}</span></footer>

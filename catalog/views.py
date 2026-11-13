@@ -306,10 +306,9 @@ def _edit(request, pk, model, form_class, save, noun, list_name, section):
         "section": section,
         "form": form,
         "instance": instance,
-        "cancel_url": list_name,
+        "cancel_url": reverse(list_name),
         "history": _history(model, instance.pk) if instance else [],
         "facts": services.usage_facts(instance) if instance else [],
-        "units": form_class is DefinitionForm,
     }
     if instance and model is Method:
         context["related_url"] = reverse("catalog:test-list") + f"?method={instance.pk}"
@@ -386,7 +385,7 @@ def method_new_version(request, pk):
             "section": "Methods",
             "form": form,
             "instance": previous,
-            "cancel_url": "catalog:method-list",
+            "cancel_url": reverse("catalog:method-list"),
             "history": [],
             "facts": services.usage_facts(previous),
             "facts_title": f"Based on {previous.title}",

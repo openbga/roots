@@ -1,22 +1,23 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}Materials. Context: page_obj, filter_form, q, sort, per_page, active_filters, filtered, can_manage_stock.{% endcomment %}
 {% block page_heading %}Inventory{% endblock %}
-{% block page_actions %}{% if can_manage_stock %}<a class="btn btn-primary" href="{% url 'laboratory:material-create' %}">{% include "includes/icon.html" with name="plus-lg" %}New material</a>{% endif %}{% endblock %}
+{% block page_actions %}{% if can_manage_stock %}<a class="btn btn-primary" href="{% url 'laboratory:material-create' %}">{% icon name="plus-lg" %}New material</a>{% endif %}{% endblock %}
 {% block content %}
 {% include "laboratory/_tabs.html" %}
-<section class="card vr-table-card" aria-labelledby="materials-heading">
-  <h2 class="visually-hidden" id="materials-heading">Materials</h2>
-  {% include "includes/grid_toolbar.html" with label="Filter materials" q=q placeholder="Name, CAS number or specification" inline=inline grid="laboratory.materials" %}
-  {% if page_obj.paginator.count %}
+{% if can_manage_stock %}{% url 'laboratory:material-create' as create_url %}{% endif %}
+{% panel title="Materials" heading_id="materials-heading" table=True hidden_title=True %}
+  {% grid_toolbar label="Filter materials" q=q placeholder="Name, CAS number or specification" inline=inline grid="laboratory.materials" %}
+  {% list_results items=page_obj noun="materials" filtered=filtered invalid=filter_form.errors clear_url=request.path error_body="Correct the highlighted filter above." no_results_title="No materials match these filters" no_results_body="Check the name or clear the filters." empty_title="No materials yet" empty_body="A material describes a standard, reagent or consumable. Lots of it are then received against it." action_url=create_url action_label="New material" %}
   <div class="vr-table-wrap">
     <table class="table table-hover vr-table" data-vr-grid="laboratory.materials" data-vr-grid-version="1" aria-labelledby="materials-heading">
       <thead><tr>
-        {% include "includes/sort_header.html" with label="Material" asc="name" desc="-name" col="name" locked=True %}
-        {% include "includes/sort_header.html" with label="Kind" asc="kind" desc="-kind" col="kind" %}
+        {% sort_header label="Material" asc="name" desc="-name" col="name" locked=True %}
+        {% sort_header label="Kind" asc="kind" desc="-kind" col="kind" %}
         <th scope="col" data-vr-col="cas" data-vr-col-label="CAS number">CAS number</th>
-        {% include "includes/sort_header.html" with label="Unit" asc="unit" desc="-unit" col="unit" %}
+        {% sort_header label="Unit" asc="unit" desc="-unit" col="unit" %}
         <th scope="col" data-vr-col="storage" data-vr-col-label="Storage">Storage</th>
-        {% include "includes/sort_header.html" with label="Status" asc="status" desc="-status" col="status" %}
+        {% sort_header label="Status" asc="status" desc="-status" col="status" %}
       </tr></thead>
       <tbody>
         {% for material in page_obj %}
@@ -32,14 +33,6 @@
       </tbody>
     </table>
   </div>
-  {% include "includes/pagination.html" with noun="materials" filtered=filtered %}
-  {% elif filter_form.errors %}
-  {% include "includes/empty_state.html" with kind="error" title="These filters cannot be applied" body="Correct the highlighted filter above." clear_url=request.path %}
-  {% elif filtered %}
-  {% include "includes/empty_state.html" with kind="no-results" title="No materials match these filters" body="Check the name or clear the filters." clear_url=request.path %}
-  {% else %}
-  {% if can_manage_stock %}{% url 'laboratory:material-create' as create_url %}{% endif %}
-  {% include "includes/empty_state.html" with title="No materials yet" body="A material describes a standard, reagent or consumable. Lots of it are then received against it." action_url=create_url action_label="New material" %}
-  {% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 {% endblock %}

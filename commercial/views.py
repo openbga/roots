@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
@@ -506,6 +507,7 @@ def submission_receive(request, pk, sample_pk):
             "submission": submission,
             "expected": expected,
             "now": timezone.now(),
+            "cancel_url": reverse("commercial:submission-detail", args=[submission.pk]),
         },
     )
 

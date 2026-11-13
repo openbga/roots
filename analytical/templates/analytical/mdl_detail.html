@@ -1,74 +1,68 @@
 {% extends "base.html" %}
-{% load catalog_extras %}
-{% block breadcrumbs %}{% url 'analytical:mdl-list' as list_url %}{% include "includes/breadcrumbs.html" with section="MDL studies" section_url=list_url current=study.number %}{% endblock %}
+{% load catalog_extras ui %}
+{% block breadcrumbs %}{% url 'analytical:mdl-list' as list_url %}{% breadcrumbs section="MDL studies" section_url=list_url current=study.number %}{% endblock %}
 {% block page_heading %}<span class="vr-id">{{ study.number }}</span>{% endblock %}
-{% block page_meta %}
-<ul class="vr-page-meta">
+{% block page_meta %}{% page_meta %}
   <li>{% include "analytical/_mdl_state.html" with s=study %}</li>
-  {% if not open %}<li>{% include "includes/status.html" with label="Closed" tone="neutral" %}</li>{% endif %}
-  <li>{{ study.definition.analyte }} · {{ study.definition.method }} · {{ study.definition.get_matrix_display }}</li>
+  {% if not open %}<li>{% status label="Closed" tone="neutral" %}</li>{% endif %}
+  <li>{{ study.definition.analyte }} · {{ study.definition.method }} · {% matrix_tag matrix=study.definition.matrix size="sm" %}</li>
   <li>{{ study.get_kind_display }}</li>
   <li>Spiking level {{ study.spiking_level|plain_decimal }} {{ study.definition.unit }}</li>
-</ul>
-{% endblock %}
+{% endpage_meta %}{% endblock %}
 {% block page_actions %}
 {% if can_enter and open %}
 <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#close-study-dialog">Close study</button>
 <a class="btn btn-outline-secondary" href="{% url 'analytical:mdl-import-blanks' study.pk %}">Import routine blanks</a>
-<a class="btn btn-outline-secondary" href="{% url 'analytical:mdl-observation-add' study.pk %}">{% include "includes/icon.html" with name="plus-lg" %}Add observation</a>
+<a class="btn btn-outline-secondary" href="{% url 'analytical:mdl-observation-add' study.pk %}">{% icon name="plus-lg" %}Add observation</a>
 <a class="btn btn-primary" href="{% url 'analytical:mdl-calculate' study.pk %}">Calculate MDL</a>
 {% endif %}
 {% endblock %}
 {% block content %}
 <div class="row g-3 mb-3">
-  <section class="col-lg-6" aria-labelledby="current-heading">
-    <div class="card h-100"><div class="card-header"><h2 class="card-title" id="current-heading">Current MDL for this test</h2></div>
-      <div class="card-body">
+  <div class="col-lg-6">
+    {% panel title="Current MDL for this test" heading_id="current-heading" class="h-100" %}
         {% if current %}
-        <p class="mb-1"><strong class="vr-id">{{ current.adopted_mdl|plain_decimal }} {{ current.unit }}</strong>
+        <p><strong class="vr-id">{{ current.adopted_mdl|plain_decimal }} {{ current.unit }}</strong>
           <span class="vr-muted">from {{ current.number_label }}, {{ current.get_decision_display|lower }} on {{ current.reviewed_at|date:"Y-m-d" }}</span></p>
-        <p class="mb-0">Recalculate by <time datetime="{{ due_at|date:'c' }}">{{ due_at|date:"Y-m-d" }}</time>{% if overdue %} {% include "includes/status.html" with label="Past due" tone="warning" plain=True %}{% endif %}
+        <p>Recalculate by <time datetime="{{ due_at|date:'c' }}">{{ due_at|date:"Y-m-d" }}</time>{% if overdue %} {% status label="Past due" tone="warning" plain=True %}{% endif %}
           <span class="vr-muted small">(13 months after calculation {{ basis.number_label }}, performed {{ basis.calculated_at|date:"Y-m-d" }}; review and adoption do not restart it. Appendix B II.4(a))</span></p>
-        {% if pending_recalculation %}<p class="mb-0 mt-1">{% include "includes/status.html" with label="Awaiting review" tone="progress" plain=True %} Calculation {{ pending_recalculation.number_label }} was performed {{ pending_recalculation.calculated_at|date:"Y-m-d" }} and has not been reviewed. The adopted MDL above stays in place until a reviewer decides.</p>{% endif %}
-        {% else %}<p class="vr-muted mb-0">No MDL has been adopted for this test yet.</p>{% endif %}
-        <p class="vr-muted small mt-2 mb-0">Observations document quarterly spiked runs, but the application does not check that every quarter of use is covered.</p>
-      </div></div>
-  </section>
-  <section class="col-lg-6" aria-labelledby="ready-heading">
-    <div class="card h-100"><div class="card-header"><h2 class="card-title" id="ready-heading">Readiness</h2></div>
-      <div class="card-body">
-        {% if open %}{% include "analytical/_mdl_ready.html" %}{% else %}<p class="vr-muted mb-0">This study is closed.</p>{% endif %}
-        {% if assumed_prep %}<p class="vr-form-note mb-0">{{ assumed_prep }} imported blank{{ assumed_prep|pluralize }} had no recorded preparation time; the analysis time was used. Check the three-date rule.</p>{% endif %}
-      </div></div>
-  </section>
+        {% if pending_recalculation %}<p>{% status label="Awaiting review" tone="progress" plain=True %} Calculation {{ pending_recalculation.number_label }} was performed {{ pending_recalculation.calculated_at|date:"Y-m-d" }} and has not been reviewed. The adopted MDL above stays in place until a reviewer decides.</p>{% endif %}
+        {% else %}<p class="vr-muted">No MDL has been adopted for this test yet.</p>{% endif %}
+        <p class="vr-muted small">Observations document quarterly spiked runs, but the application does not check that every quarter of use is covered.</p>
+    {% endpanel %}
+  </div>
+  <div class="col-lg-6">
+    {% panel title="Readiness" heading_id="ready-heading" class="h-100" %}
+        {% if open %}{% include "analytical/_mdl_ready.html" %}{% else %}<p class="vr-muted">This study is closed.</p>{% endif %}
+        {% if assumed_prep %}<p class="vr-form-note">{{ assumed_prep }} imported blank{{ assumed_prep|pluralize }} had no recorded preparation time; the analysis time was used. Check the three-date rule.</p>{% endif %}
+    {% endpanel %}
+  </div>
 </div>
 
-<section class="card vr-table-card mb-3" aria-labelledby="spikes-heading">
-  <div class="card-header"><h2 class="card-title" id="spikes-heading">Spiked samples</h2><span class="vr-count">{{ spikes|length }}</span>
-    <div class="ms-auto">{% include "includes/grid_columns_button.html" with grid="analytical.mdl_spikes" %}</div></div>
-  {% if spikes %}
+{% panel title="Spiked samples" heading_id="spikes-heading" count=spikes|length table=True flush=True class="mb-3" %}
+  {% fill actions %}{% grid_columns_button grid="analytical.mdl_spikes" %}{% endfill %}
+  {% list_results items=spikes empty_title="No spiked samples yet" empty_body="Record at least seven, prepared in at least three batches on three dates." %}
   <div class="vr-table-wrap"><table class="table vr-table" data-vr-grid="analytical.mdl_spikes" data-vr-grid-version="1" aria-labelledby="spikes-heading">
     <thead><tr><th scope="col" data-vr-col="result" data-vr-col-locked>Result ({{ study.definition.unit }})</th><th scope="col" class="text-end" data-vr-col="spiking_level">Spiking level</th><th scope="col" data-vr-col="identification">Identification met</th><th scope="col" data-vr-col="prepared">Prepared</th><th scope="col" data-vr-col="analysed">Analysed</th><th scope="col" data-vr-col="batch">Batch / preparation</th><th scope="col" data-vr-col="instrument">Instrument</th><th scope="col" data-vr-col="entered_by">Entered by</th><th scope="col" data-vr-col="used">Used</th>{% if can_enter and open %}<th scope="col" data-vr-col="actions" data-vr-col-locked data-vr-col-label="Actions"><span class="visually-hidden">Actions</span></th>{% endif %}</tr></thead>
     <tbody>{% for o in spikes %}
       <tr{% if o.excluded %} class="table-secondary"{% endif %}>
         <th scope="row" class="vr-id">{{ o.supplied_text }}</th>
         <td class="text-end">{{ o.spike_level|plain_decimal }}</td>
-        <td>{% if o.qualitative_ok %}{% include "includes/status.html" with label="Yes" tone="success" plain=True %}{% else %}{% include "includes/status.html" with label="No" tone="danger" plain=True %}{% endif %}</td>
+        <td>{% if o.qualitative_ok %}{% status label="Yes" tone="success" plain=True %}{% else %}{% status label="No" tone="danger" plain=True %}{% endif %}</td>
         <td class="vr-nowrap"><time datetime="{{ o.prepared_at|date:'c' }}" title="{{ o.prepared_at|date:'Y-m-d H:i T' }}">{{ o.prepared_at|date:"Y-m-d H:i" }}</time></td>
         <td class="vr-nowrap"><time datetime="{{ o.analyzed_at|date:'c' }}" title="{{ o.analyzed_at|date:'Y-m-d H:i T' }}">{{ o.analyzed_at|date:"Y-m-d H:i" }}</time></td>
         <td>{{ o.batch_label }} / {{ o.preparation_label }}</td><td>{{ o.instrument|default:"—" }}</td>
         <td>{{ o.entered_by.get_full_name|default:o.entered_by.get_username }}</td>
-        <td>{% if o.excluded %}{% include "includes/status.html" with label="Excluded" tone="warning" plain=True %}<div class="vr-muted small">{{ o.exclusion_reason }}</div>{% else %}{% include "includes/status.html" with label="Yes" tone="neutral" plain=True %}{% endif %}</td>
+        <td>{% if o.excluded %}{% status label="Excluded" tone="warning" plain=True %}<div class="vr-muted small">{{ o.exclusion_reason }}</div>{% else %}{% status label="Yes" tone="neutral" plain=True %}{% endif %}</td>
         {% if can_enter and open %}<td>{% if not o.excluded %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:mdl-exclude' o.pk %}">Exclude<span class="visually-hidden"> spiked sample {{ o.supplied_text }}</span></a>{% endif %}</td>{% endif %}
       </tr>{% endfor %}</tbody>
   </table></div>
-  {% else %}{% include "includes/empty_state.html" with title="No spiked samples yet" body="Record at least seven, prepared in at least three batches on three dates." %}{% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 
-<section class="card vr-table-card mb-3" aria-labelledby="blanks-heading">
-  <div class="card-header"><h2 class="card-title" id="blanks-heading">Method blanks</h2><span class="vr-count">{{ page_obj.paginator.count }}</span>
-    <div class="ms-auto">{% include "includes/grid_columns_button.html" with grid="analytical.mdl_blanks" %}</div></div>
-  {% if page_obj.paginator.count %}
+{% panel title="Method blanks" heading_id="blanks-heading" count=page_obj.paginator.count table=True flush=True class="mb-3" %}
+  {% fill actions %}{% grid_columns_button grid="analytical.mdl_blanks" %}{% endfill %}
+  {% list_results items=page_obj noun="blanks" empty_title="No method blanks yet" empty_body="Import the routine method blanks recorded in QC, or add them by hand." %}
   <div class="vr-table-wrap"><table class="table vr-table" data-vr-grid="analytical.mdl_blanks" data-vr-grid-version="1" aria-labelledby="blanks-heading">
     <thead><tr><th scope="col" data-vr-col="result" data-vr-col-locked>Result ({{ study.definition.unit }})</th><th scope="col" data-vr-col="prepared">Prepared</th><th scope="col" data-vr-col="analysed">Analysed</th><th scope="col" data-vr-col="batch">Batch / preparation</th><th scope="col" data-vr-col="instrument">Instrument</th><th scope="col" data-vr-col="source">Source</th><th scope="col" data-vr-col="basis">Basis</th><th scope="col" data-vr-col="entered_by">Entered by</th><th scope="col" data-vr-col="used">Used</th>{% if can_enter and open %}<th scope="col" data-vr-col="actions" data-vr-col-locked data-vr-col-label="Actions"><span class="visually-hidden">Actions</span></th>{% endif %}</tr></thead>
     <tbody>{% for o in page_obj %}
@@ -80,38 +74,36 @@
         <td>{% if o.source_measurement_id %}Routine QC{% else %}Study{% endif %}</td>
         <td>{% with c=o.source_context %}{% if c %}{% if c.basis == "preparation" %}Preparation batch{% else %}Analytical batch{% endif %} {{ c.source_batch }}{% if c.analytical_batch %} <span class="vr-muted small">analysed in {{ c.analytical_batch }}</span>{% endif %}{% if c.reason %}<div class="vr-muted small">Confirmed all steps: {{ c.reason }}</div>{% endif %}{% else %}<span class="vr-muted">Basis not recorded</span>{% endif %}{% endwith %}</td>
         <td>{{ o.entered_by.get_full_name|default:o.entered_by.get_username }}</td>
-        <td>{% if o.excluded %}{% include "includes/status.html" with label="Excluded" tone="warning" plain=True %}<div class="vr-muted small">{{ o.exclusion_reason }}</div>{% else %}{% include "includes/status.html" with label="Yes" tone="neutral" plain=True %}{% endif %}</td>
+        <td>{% if o.excluded %}{% status label="Excluded" tone="warning" plain=True %}<div class="vr-muted small">{{ o.exclusion_reason }}</div>{% else %}{% status label="Yes" tone="neutral" plain=True %}{% endif %}</td>
         {% if can_enter and open %}<td>{% if not o.excluded %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:mdl-exclude' o.pk %}">Exclude<span class="visually-hidden"> blank {{ o.supplied_text }}</span></a>{% endif %}</td>{% endif %}
       </tr>{% endfor %}</tbody>
   </table></div>
-  {% include "includes/pagination.html" with noun="blanks" %}
-  {% else %}{% include "includes/empty_state.html" with title="No method blanks yet" body="Import the routine method blanks recorded in QC, or add them by hand." %}{% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 
-<section class="card vr-table-card mb-3" aria-labelledby="calcs-heading">
-  <div class="card-header"><h2 class="card-title" id="calcs-heading">Calculations</h2><span class="vr-count">{{ calculations|length }}</span>
-    <div class="ms-auto">{% include "includes/grid_columns_button.html" with grid="analytical.mdl_calculations" %}</div></div>
-  {% if calculations %}
+{% panel title="Calculations" heading_id="calcs-heading" count=calculations|length table=True flush=True class="mb-3" %}
+  {% fill actions %}{% grid_columns_button grid="analytical.mdl_calculations" %}{% endfill %}
+  {% list_results items=calculations empty_title="No calculations yet" empty_body="Calculate once the readiness panel shows the data are ready." %}
   <div class="vr-table-wrap"><table class="table table-hover vr-table" data-vr-grid="analytical.mdl_calculations" data-vr-grid-version="1" aria-labelledby="calcs-heading">
     <thead><tr><th scope="col" data-vr-col="calculation" data-vr-col-locked>Calculation</th><th scope="col" data-vr-col="result">Result</th><th scope="col" data-vr-col="run">Run</th><th scope="col" data-vr-col="by">By</th><th scope="col" class="text-end" data-vr-col="verified">Verified MDL ({{ study.definition.unit }})</th><th scope="col" data-vr-col="review">Review</th></tr></thead>
     <tbody>{% for c in calculations %}
       <tr>
         <th scope="row"><a class="vr-row-link vr-id" href="{% url 'analytical:mdl-calculation' c.pk %}">#{{ c.number }}</a></th>
-        <td>{% if c.status == "calculated" %}{% include "includes/status.html" with label="Calculated" tone="info" plain=True %}{% else %}{% include "includes/status.html" with label="Not evaluated" tone="warning" plain=True %}{% endif %}</td>
+        <td>{% if c.status == "calculated" %}{% status label="Calculated" tone="info" plain=True %}{% else %}{% status label="Not evaluated" tone="warning" plain=True %}{% endif %}</td>
         <td class="vr-nowrap"><time datetime="{{ c.calculated_at|date:'c' }}" title="{{ c.calculated_at|date:'Y-m-d H:i T' }}">{{ c.calculated_at|date:"Y-m-d H:i" }}</time></td>
         <td>{{ c.calculated_by.get_full_name|default:c.calculated_by.get_username }}</td>
         <td class="text-end">{% if c.verified_mdl is not None %}{{ c.verified_mdl|plain_decimal }}{% else %}<span class="vr-muted">—</span>{% endif %}</td>
         <td>{% if c.decision %}{{ c.get_decision_display }} by {{ c.reviewed_by.get_full_name|default:c.reviewed_by.get_username }}, {{ c.reviewed_at|date:"Y-m-d" }}{% elif c.status == "calculated" %}Awaiting review{% else %}<span class="vr-muted">—</span>{% endif %}</td>
       </tr>{% endfor %}</tbody>
   </table></div>
-  {% else %}{% include "includes/empty_state.html" with title="No calculations yet" body="Calculate once the readiness panel shows the data are ready." %}{% endif %}
-</section>
+  {% endlist_results %}
+{% endpanel %}
 
 {% include "analytical/_mdl_interpretations.html" %}
 
 {% if can_enter and open %}
 {% url 'analytical:mdl-close' study.pk as close_url %}
-{% include "includes/confirm_dialog.html" with id="close-study-dialog" label="Close study" object=study.number action=close_url body="Closing cannot be undone: no further observations or calculations. Reviewed calculations and the current MDL are kept." %}
+{% confirm_dialog id="close-study-dialog" label="Close study" object=study.number action=close_url body="Closing cannot be undone: no further observations or calculations. Reviewed calculations and the current MDL are kept." %}
 {% endif %}
 {% endblock %}
-{% block record_foot %}{% include "includes/record_foot.html" with identifier=study.number %}{% endblock %}
+{% block record_foot %}{% record_foot identifier=study.number %}{% endblock %}

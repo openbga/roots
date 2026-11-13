@@ -12,7 +12,7 @@ from decimal import Decimal
 
 import pytest
 from conftest import Lab
-from helpers import field, sign_in, sign_out
+from helpers import field, pick, sign_in, sign_out
 from playwright.sync_api import Page, expect
 
 pytestmark = pytest.mark.django_db(transaction=True)
@@ -119,7 +119,7 @@ def test_stock_use_expiry_confirmation_and_nonconformance_lifecycle(page: Page, 
     page.locator("#id_description").fill(
         "Lot LOT-E2E-B was used one day after expiry, with confirmation."
     )
-    page.locator("#id_severity").select_option(index=1)
+    pick(page.locator("#id_severity"), index=1)
     page.get_by_role("button", name="Create nonconformance").click()
     expect(page.get_by_text(re.compile(r"Opened NC-?\w+"))).to_be_visible()
     nc_url = page.url
@@ -136,14 +136,17 @@ def test_stock_use_expiry_confirmation_and_nonconformance_lifecycle(page: Page, 
     page.get_by_role("link", name="Start investigation").click()
     page.get_by_role("button", name="Start investigation").click()
     expect(page.locator("#id_owner")).to_have_attribute("aria-invalid", "true")
-    owner = page.locator("#id_owner").locator("option").filter(has_text="demo_reviewer")
-    page.locator("#id_owner").select_option(value=owner.first.get_attribute("value"))
+    # The owner list loads from the staff lookup as the user types (core/lookups.py).
+    from accounts.models import User
+    from core.lookups import staff_label
+
+    pick(page.locator("#id_owner"), label=staff_label(User.objects.get(username="demo_reviewer")))
     page.get_by_role("button", name="Start investigation").click()
     expect(page.get_by_text("start investigation recorded.")).to_be_visible()
 
     page.get_by_role("link", name="Record root cause and disposition").click()
     page.locator("#id_root_cause").fill("The expiry check was skipped when the lot was pulled.")
-    page.locator("#id_disposition").select_option(index=1)
+    pick(page.locator("#id_disposition"), index=1)
     page.locator("#id_disposition_note").fill("Affected digest repeated with an in-date lot.")
     page.get_by_role("button", name="Record root cause and disposition").click()
     expect(page.get_by_text("root cause and disposition recorded.")).to_be_visible()

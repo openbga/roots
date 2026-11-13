@@ -1,25 +1,20 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 Edit the purchase order, turnaround, shipment and instructions of a chain of custody. Context: order,
 reference (its coc_reference), form (OrderDetailsForm, a GroupedForm with reason and hidden
 expected_revision). The reference and delivery target have their own pages.
 {% endcomment %}
-{% block breadcrumbs %}{% url 'receipt:order-list' as list_url %}{% url 'receipt:order-detail' order.pk as order_url %}{% include "includes/breadcrumbs.html" with section="Chains of custody" section_url=list_url record=reference record_url=order_url %}{% endblock %}
+{% block breadcrumbs %}{% url 'receipt:order-list' as list_url %}{% url 'receipt:order-detail' order.pk as order_url %}{% breadcrumbs section="Chains of custody" section_url=list_url record=reference record_url=order_url %}{% endblock %}
 {% block page_meta %}
-<ul class="vr-page-meta">
+{% page_meta %}
   <li>Chain of custody <span class="vr-id">{{ reference }}</span></li>
   <li>{{ order.project.client }} / {{ order.project.name }}</li>
-</ul>
+{% endpage_meta %}
 {% endblock %}
 {% block content %}
-<form class="vr-form" method="post" novalidate>
-  {% csrf_token %}
-  {% include "includes/form_errors.html" with form=form %}
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required. To change the reference or the delivery target, use Correct reference or Change delivery target on the chain of custody.</p>
+{% url 'receipt:order-detail' order.pk as cancel_url %}
+{% form_page form=form cancel_url=cancel_url note="To change the reference or the delivery target, use Correct reference or Change delivery target on the chain of custody." %}
   {% include "receipt/_grouped_fields.html" %}
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{% url 'receipt:order-detail' order.pk %}">Cancel</a>
-    <button class="btn btn-primary" type="submit">Save changes</button>
-  </div>
-</form>
+{% endform_page %}
 {% endblock %}

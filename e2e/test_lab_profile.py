@@ -2,6 +2,7 @@
 next report, and an issued report that keeps what it printed."""
 
 import io
+import re
 import subprocess
 
 import pytest
@@ -112,7 +113,8 @@ def test_profile_changes_print_on_the_next_report_only(page: Page, demo, tmp_pat
     second = release_version(
         report, User.objects.get(username="demo_approver"), "Laboratory contact details updated."
     )
-    assert "Laboratory phone changed." in second.changes
+    phone = next(c for c in second.changes if c["text"] == "Laboratory phone changed.")
+    assert (phone["old"], phone["new"]) == ("555-0142", "555-0188")
 
     page.goto(f"/reports/{report.pk}/")
     issued = save_download(
@@ -128,6 +130,8 @@ def test_profile_changes_print_on_the_next_report_only(page: Page, demo, tmp_pat
     assert embedded_images(tmp_path / "v1.pdf") == [("240", "240")]
     # Version 2 prints the changed phone and logo, and lists only certificates valid today.
     assert "555-0188" in second_text and "200 Example Way" in second_text
+    # The amendment shows the replaced phone struck through, then the new one.
+    assert "Laboratory phone: 555-0142 → 555-0188" in re.sub(r"\s+", " ", second_text)
     assert "EX-00000" in second_text and "EX-OLD-0000" not in second_text
     assert "Laboratory certificates" in second_text
     assert embedded_images(tmp_path / "v2.pdf") == [("300", "100")]

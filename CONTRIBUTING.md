@@ -58,7 +58,7 @@ Follow [Local development](README.md#local-development) in the README. You need 
   concurrency. Do not add tests that only restate framework behaviour or templates.
 - **Update the page help.** Every page has operator help under `docs/pages/`. When a page, form,
   field, action, permission, filter or workflow rule changes, update its help in the same pull
-  request. The [`document-page` skill](skills/document-page/SKILL.md) describes the standard and
+  request. The [`document-page` skill](.agents/skills/document-page/SKILL.md) describes the standard and
   `tests/test_page_docs.py` checks coverage.
 - Follow the [UI standards](docs/ui-standards.md) for templates, navigation and tables.
 - Migrations must stay backward compatible with the previous release. Never edit a migration
@@ -96,7 +96,9 @@ Notes:
 ### Browser journeys
 
 Browser tests are opt-in. They use a separate pytest PostgreSQL database, an ephemeral server
-port and one headless Chromium worker, not your development server.
+port and one headless Chromium worker, not your development server. The database is
+`test_<database>_e2e`; when several people or agents run the suite at once, give each run its own
+with `TEST_DATABASE_NAME=test_<you>` (the browser suite then uses `test_<you>_e2e`).
 
 ```sh
 uv sync --frozen --group e2e
@@ -137,3 +139,19 @@ keep third-party notices intact (see [Third-party notices](THIRD_PARTY_NOTICES.m
 [`AGENTS.md`](AGENTS.md) holds the working rules for AI coding agents in this repository. They
 are the same rules as above, in more detail. If you use an agent, you remain responsible for
 the change you submit.
+
+### Agent tooling
+
+Shared agent instructions live in `.agents/`. `.claude/skills` and `.claude/rules` are symlinks
+to `.agents/skills` and `.agents/rules`, so Claude Code and Codex (which reads `.agents/skills`)
+load the same files.
+
+| Kind | File | Use |
+| --- | --- | --- |
+| Skill | [`build-page`](.agents/skills/build-page/SKILL.md) | Building or changing any page, form, dialog or template: page types, shared components, controls, tokens, icons, lists |
+| Skill | [`document-page`](.agents/skills/document-page/SKILL.md) | Writing the in-app page help under `docs/pages/` |
+| Skill | [`project-code-review`](.agents/skills/project-code-review/SKILL.md) | The pre-PR gate: diff review against `AGENTS.md` and the UI rules, fixes, checks, browser journeys, before/after screenshots |
+| Rule | [`frontend.md`](.agents/rules/frontend.md) | Short frontend rules: components, tokens, icons, controls, validation |
+
+Before/after screenshots for pull requests come from `scripts/ui_compare/capture.py`
+(see the `project-code-review` skill).

@@ -1,24 +1,23 @@
 {% extends "base.html" %}
-{% block breadcrumbs %}{% if batch.kind == 'preparation' %}{% url 'analytical:prep-list' as list_url %}{% url 'analytical:prep-detail' batch.pk as batch_url %}{% include "includes/breadcrumbs.html" with section="Preparation batches" section_url=list_url record=batch.number record_url=batch_url %}{% else %}{% url 'analytical:batch-list' as list_url %}{% url 'analytical:batch-detail' batch.pk as batch_url %}{% include "includes/breadcrumbs.html" with section="Batches & QC" section_url=list_url record=batch.number record_url=batch_url %}{% endif %}{% endblock %}
-{% block page_meta %}<ul class="vr-page-meta"><li>QC sample <span class="vr-id">{{ qc_sample.label }}</span></li><li>{{ qc_sample.get_qc_type_display }}</li>{% if qc_sample.parent_sample %}<li>Parent <span class="vr-id">{{ qc_sample.parent_sample.lab_id }}</span></li>{% endif %}</ul>{% endblock %}
+{% load ui %}
+{% block breadcrumbs %}{% if batch.kind == 'preparation' %}{% url 'analytical:prep-list' as list_url %}{% url 'analytical:prep-detail' batch.pk as batch_url %}{% breadcrumbs section="Preparation batches" section_url=list_url record=batch.number record_url=batch_url %}{% else %}{% url 'analytical:batch-list' as list_url %}{% url 'analytical:batch-detail' batch.pk as batch_url %}{% breadcrumbs section="Batches & QC" section_url=list_url record=batch.number record_url=batch_url %}{% endif %}{% endblock %}
+{% block page_meta %}{% page_meta %}<li>QC sample <span class="vr-id">{{ qc_sample.label }}</span></li><li>{{ qc_sample.get_qc_type_display }}</li>{% if qc_sample.parent_sample %}<li>Parent <span class="vr-id">{{ qc_sample.parent_sample.lab_id }}</span></li>{% endif %}{% endpage_meta %}{% endblock %}
 {% block content %}
+{# form: entry-grid #}
 <form class="vr-form" method="post" novalidate>
   {% csrf_token %}
-  {% include "includes/form_errors.html" with form=common %}
+  {% form_errors form=common %}
   {{ formset.management_form }}
-  {% if not can_enter %}<div class="alert alert-info" role="status">{% include "includes/status.html" with label="Read only" tone="neutral" plain=True %}<div>Only analysts can record QC measurements.</div></div>{% endif %}
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required for every row where you enter an observed value; leave an analyte's observed value blank to skip it.</p>
+  {% if not can_enter %}{% notice tone="neutral" label="Read only" %}Only analysts can record QC measurements.{% endnotice %}{% endif %}
+  {% required_note note="They apply to every row where you enter an observed value; leave an analyte's observed value blank to skip it." %}
   <p class="vr-form-note">Enter a number or ND. Limits are never assumed: an analyte without a configured limit is recorded as not evaluated and holds approval.
   Spike amount is the amount added or true value in the result unit. Where an unspiked sample result is asked for, enter 0 explicitly if the analyte was not detected.
   Replacing an existing measurement needs a reason; the earlier one is kept.</p>
   {% if error_rows %}
-  <div class="alert alert-danger" role="alert" id="grid-errors" tabindex="-1">
-    {% include "includes/status.html" with label="Error" tone="danger" plain=True %}
-    <div>
+  {% notice tone="danger" blocking=True id="grid-errors" focus=True %}
       <p class="mb-1">{{ error_rows|length }} row{{ error_rows|length|pluralize }} need{{ error_rows|length|pluralize:"s," }} attention. Nothing was saved; your entries were kept.</p>
       <ul class="mb-0 ps-3">{% for form, item in error_rows %}<li><a href="#row-{{ form.prefix }}">{{ item.analyte }}</a></li>{% endfor %}</ul>
-    </div>
-  </div>
+  {% endnotice %}
   {% endif %}
   <fieldset{% if not can_enter %} disabled{% endif %}>
   <legend class="visually-hidden">QC measurements{% if not can_enter %} (read only: only analysts can record them){% endif %}</legend>
@@ -27,8 +26,7 @@
     <div class="col-md-7">{{ common.reason.as_field_group }}</div>
     {% if batch.kind == 'preparation' %}<div class="col-md-7">{{ common.analysis_batch_id.as_field_group }}</div>{% endif %}
   </div>
-  <section class="card vr-table-card" aria-labelledby="qc-grid-heading">
-    <h2 class="visually-hidden" id="qc-grid-heading">QC measurements</h2>
+  {% panel title="QC measurements" heading_id="qc-grid-heading" table=True hidden_title=True %}
     <div class="vr-table-wrap">
       <table class="table vr-table">
         <thead><tr>
@@ -51,20 +49,18 @@
             {% if form.reference_value %}<td>{{ form.reference_value }}</td>{% endif %}
           </tr>
           {% if form.errors %}
-          <tr class="table-danger"><td colspan="{{ column_count }}"><ul class="vr-field-errors mb-0" id="{{ form.prefix }}-errors">
+          <tr class="table-danger"><td colspan="{{ column_count }}" class="vr-subrow"><div class="vr-subrow-content"><ul class="vr-field-errors mb-0" id="{{ form.prefix }}-errors">
             {% for field in form %}{% for error in field.errors %}<li>{{ field.label }}: {{ error }}</li>{% endfor %}{% endfor %}
             {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
-          </ul></td></tr>
+          </ul></div></td></tr>
           {% endif %}
           {% endfor %}
         </tbody>
       </table>
     </div>
-  </section>
+  {% endpanel %}
   </fieldset>
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{% if batch.kind == 'preparation' %}{% url 'analytical:prep-detail' batch.pk %}{% else %}{% url 'analytical:batch-detail' batch.pk %}{% endif %}">Cancel</a>
-    {% if can_enter %}<button class="btn btn-primary" type="submit">Record measurements</button>{% endif %}
-  </div>
+  {% if batch.kind == 'preparation' %}{% url 'analytical:prep-detail' batch.pk as batch_url %}{% else %}{% url 'analytical:batch-detail' batch.pk as batch_url %}{% endif %}
+  {% form_actions cancel_url=batch_url submit_label="Record measurements" no_submit=can_enter|yesno:",True" %}{% endform_actions %}
 </form>
 {% endblock %}

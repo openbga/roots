@@ -26,7 +26,7 @@ from pathlib import Path
 
 import pytest
 from conftest import DESKTOP, NARROW, Lab
-from helpers import field, pdf_text, save_download, sign_in, sign_out, submit_fresh_batch
+from helpers import field, pdf_text, pick, save_download, sign_in, sign_out, submit_fresh_batch
 from playwright.sync_api import Page, expect
 
 pytestmark = pytest.mark.django_db(transaction=True)
@@ -123,7 +123,7 @@ def test_preservation_rule_assessment_correction_release_and_frozen_evidence(
     page.get_by_role("link", name=batch.number).click()
     expect(page.get_by_text("Held", exact=True)).to_be_visible()
     page.get_by_role("checkbox", name=re.compile(rf"Select {sample.lab_id} Lead")).check()
-    page.get_by_label(re.compile("^Action")).select_option(label="Approve")
+    pick(page.get_by_label(re.compile("^Action")), label="Approve")
     shots("review-held", narrow=True)
     page.get_by_role("button", name=re.compile("^Apply decision")).click()
     expect(
@@ -148,7 +148,7 @@ def test_preservation_rule_assessment_correction_release_and_frozen_evidence(
     # What will be published is stated where the reason is typed
     expect(page.get_by_text("appear on issued PDFs and client copies").first).to_be_visible()
     expect(page.get_by_text("Hold or Reject blocks new approval and release")).to_be_visible()
-    field(page, "Lab disposition").select_option(label="Proceed")
+    pick(field(page, "Lab disposition"), label="Proceed")
     page.get_by_role("button", name="Record assessment").click()
     expect(field(page, "Assessment evidence and reason")).to_have_attribute("aria-invalid", "true")
     expect(field(page, "Lab disposition")).to_have_value("proceed")
@@ -169,7 +169,7 @@ def test_preservation_rule_assessment_correction_release_and_frozen_evidence(
     page.get_by_role("link", name=batch.number).click()
     expect(page.get_by_text("Ready", exact=True)).to_be_visible()
     page.get_by_role("checkbox", name=re.compile(rf"Select {sample.lab_id} Lead")).check()
-    page.get_by_label(re.compile("^Action")).select_option(label="Approve")
+    pick(page.get_by_label(re.compile("^Action")), label="Approve")
     page.get_by_role("button", name=re.compile("^Apply decision")).click()
     expect(page.get_by_text("Approved 1 result.")).to_be_visible()
     sign_out(page, "^Demo")
@@ -188,10 +188,10 @@ def test_preservation_rule_assessment_correction_release_and_frozen_evidence(
     page.goto(
         reverse("receipt:sample-correct", kwargs={"pk": sample.pk, "section": "observations"})
     )
-    field(page, "Cooler temperature (°C), as read").fill(READING)
+    field(page, "Cooler temperature, as read").fill(READING)
     page.get_by_role("button", name="Correct receipt observations").click()
     expect(page.locator("#id_reason")).to_have_attribute("aria-invalid", "true")  # reason needed
-    expect(field(page, "Cooler temperature (°C), as read")).to_have_value(READING)
+    expect(field(page, "Cooler temperature, as read")).to_have_value(READING)
     page.locator("#id_reason").fill("Re-read with the bench thermometer (synthetic).")
     page.get_by_role("button", name="Correct receipt observations").click()
     expect(page.get_by_text("Receipt correction recorded.", exact=False)).to_be_visible()
@@ -222,7 +222,7 @@ def test_preservation_rule_assessment_correction_release_and_frozen_evidence(
     # ---- a project manager records the fresh, reasoned disposition for the current evidence
     sign_in(page, "demo_project_manager", demo.password)
     page.goto(assess_url)
-    field(page, "Lab disposition").select_option(label="Qualify")
+    pick(field(page, "Lab disposition"), label="Qualify")
     field(page, "Assessment evidence and reason").fill(QUALIFY)
     page.get_by_role("button", name="Record assessment").click()
     disposition(page, "Qualify")
@@ -235,6 +235,7 @@ def test_preservation_rule_assessment_correction_release_and_frozen_evidence(
     sign_in(page, "demo_approver", demo.password)
     page.goto(reverse("reporting:report-preview", kwargs={"pk": report.pk}))
     expect(page.get_by_role("heading", name="Ready to release")).to_be_visible()
+    page.get_by_text("Receipt and preparation notes").first.click()  # collapsed once per sample
     expect(page.get_by_text(QUALIFY).first).to_be_visible()  # the preview carries the evidence
     shots("release-preview", themes=False)
     page.get_by_label(re.compile("I authorize release of exactly the content")).check()
@@ -247,6 +248,7 @@ def test_preservation_rule_assessment_correction_release_and_frozen_evidence(
     # ---- client: portal evidence and the stored PDF carry the rule, reading and disposition
     sign_in(page, "demo_client", demo.password)
     page.goto(f"/portal/reports/{report.pk}/")
+    page.get_by_text("Receipt and preparation notes").first.click()  # collapsed once per sample
     evidence = page.get_by_text("Receipt preservation screening").first
     expect(evidence).to_be_visible()
     for text in (
@@ -290,6 +292,7 @@ def test_preservation_rule_assessment_correction_release_and_frozen_evidence(
         upper=Decimal("7.0"), basis="Changed after issue (synthetic)"
     )
     page.reload()
+    page.get_by_text("Receipt and preparation notes").first.click()
     expect(page.get_by_text(basis, exact=False).first).to_be_visible()
     expect(page.get_by_text("Changed after issue", exact=False)).to_have_count(0)
     second = save_download(

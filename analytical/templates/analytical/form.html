@@ -1,29 +1,9 @@
 {% extends "base.html" %}
-{% comment %}Generic short form. Context: page_title, form, crumbs (list of (label, url); the last has url None), cancel_url (+ cancel_arg),
+{% load ui %}
+{% comment %}Generic short form. Context: page_title, form, crumbs (list of (label, url); the last has url None), cancel_url (a resolved URL),
 submit_label, has_times (the form has a time field), optional config_note and history (oldest first).{% endcomment %}
-{% block breadcrumbs %}{% if crumbs %}{% include "includes/breadcrumbs.html" with crumbs=crumbs %}{% endif %}{% endblock %}
+{% block breadcrumbs %}{% if crumbs %}{% breadcrumbs crumbs=crumbs %}{% endif %}{% endblock %}
 {% block content %}
-<form class="vr-form" method="post" novalidate>
-  {% csrf_token %}
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.{% if has_times %} Times are laboratory local time.{% endif %}</p>
-  <fieldset class="vr-form-section">
-    <legend class="visually-hidden">{{ page_title }}</legend>
-    {{ form }}
-    {% if config_note %}<p class="vr-form-note">{{ config_note }}</p>{% endif %}
-  </fieldset>
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{% if cancel_arg %}{% url cancel_url cancel_arg %}{% else %}{% url cancel_url %}{% endif %}">Cancel</a>
-    <button class="btn btn-primary" type="submit">{{ submit_label|default:"Save changes" }}</button>
-  </div>
-</form>
-{% if history %}
-<section class="card mt-3" aria-labelledby="history-heading">
-  <div class="card-header"><h2 class="card-title" id="history-heading">History</h2></div>
-  <div class="card-body">
-    <ol class="vr-timeline">
-      {% for event in history %}{% include "includes/history_item.html" with title=event.action at=event.occurred_at actor=event.actor reason=event.reason %}{% endfor %}
-    </ol>
-  </div>
-</section>
-{% endif %}
+{% form_page form=form cancel_url=cancel_url submit_label=submit_label times=has_times note=config_note %}{% endform_page %}
+{% if history %}{% history_panel events=history class="mt-3" %}{% endhistory_panel %}{% endif %}
 {% endblock %}

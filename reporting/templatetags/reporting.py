@@ -24,6 +24,27 @@ def iso_time(value):
 
 
 @register.filter
+def iso_minute(value):
+    """The date and time of a snapshot ISO 8601 timestamp, 'YYYY-MM-DD HH:MM' (no offset)."""
+    if not value:
+        return "—"
+    try:
+        return datetime.fromisoformat(value).strftime("%Y-%m-%d %H:%M")
+    except TypeError, ValueError:
+        return value
+
+
+@register.filter
+def iso_offset(value):
+    """The UTC offset of a snapshot ISO 8601 timestamp, 'UTC-05:00', or '' when it has none."""
+    try:
+        offset = datetime.fromisoformat(value).strftime("%z")
+    except TypeError, ValueError:
+        return ""
+    return f"UTC{offset[:3]}:{offset[3:]}" if offset else ""
+
+
+@register.filter
 def iso_date(value):
     if not value:
         return "—"
@@ -80,3 +101,10 @@ def solids_text(row):
         return ""
     reference = row.get("solids_reference")
     return f"{value}% solids" + (f" ({reference})" if reference else "")
+
+
+@register.filter
+def amendment_change(change):
+    """One stored amendment change as {"text", and for a replaced value "subject", "old", "new"}.
+    Versions issued before structured changes stored plain sentences; they print as they are."""
+    return {"text": change} if isinstance(change, str) else change

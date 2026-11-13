@@ -1,43 +1,29 @@
 {% extends "base.html" %}
+{% load ui %}
 {% comment %}
 Change an order's delivery target with a reason. Context: order, form (due_at, reason, hidden
 expected_revision), schedule_events (AuditEvent "order.rescheduled", newest first, shown oldest
 first; before/after due_at, optionally parsed as before_due_at/after_due_at for local-time
 display), page_title.
 {% endcomment %}
-{% block breadcrumbs %}{% url 'receipt:order-list' as list_url %}{% url 'receipt:order-detail' order.pk as order_url %}{% include "includes/breadcrumbs.html" with section="Chains of custody" section_url=list_url record=order.coc_reference record_url=order_url %}{% endblock %}
+{% block breadcrumbs %}{% url 'receipt:order-list' as list_url %}{% url 'receipt:order-detail' order.pk as order_url %}{% breadcrumbs section="Chains of custody" section_url=list_url record=order.coc_reference record_url=order_url %}{% endblock %}
 {% block page_meta %}
-<ul class="vr-page-meta">
+{% page_meta %}
   <li>Chain of custody <span class="vr-id">{{ order.coc_reference }}</span></li>
   <li>{{ order.project.client }} / {{ order.project.name }}</li>
   <li>Current target: {% if order.due_at %}<time datetime="{{ order.due_at|date:'c' }}">{{ order.due_at|date:"Y-m-d H:i T" }}</time>{% else %}not set{% endif %}</li>
-</ul>
+{% endpage_meta %}
 {% endblock %}
 {% block content %}
-<form class="vr-form" method="post" novalidate>
-  {% csrf_token %}
-  {% include "includes/form_errors.html" with form=form %}
-  <p class="vr-form-note">Fields marked <span class="vr-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required. The delivery target is the lab's commitment to the client. Changing it never changes holding times; the earlier target stays in the history below.</p>
+{% url 'receipt:order-detail' order.pk as cancel_url %}
+{% form_page form=form cancel_url=cancel_url submit_label=page_title note="The delivery target is the lab's commitment to the client. Changing it never changes holding times; the earlier target stays in the history below." %}
   <fieldset class="vr-form-section">
     {% for field in form.visible_fields %}{{ field.as_field_group }}{% endfor %}
     {% for field in form.hidden_fields %}{{ field }}{% endfor %}
   </fieldset>
-  <div class="vr-form-actions">
-    <a class="btn btn-link" href="{% url 'receipt:order-detail' order.pk %}">Cancel</a>
-    <button class="btn btn-primary" type="submit">{{ page_title }}</button>
-  </div>
-</form>
+{% endform_page %}
 
-<section class="card mt-3 vr-narrow" aria-labelledby="schedule-history-heading">
-  <div class="card-header"><h2 class="card-title" id="schedule-history-heading">History</h2></div>
-  <div class="card-body">
-    {% if schedule_events %}
-    <ol class="vr-timeline">
-      {% for event in schedule_events|dictsort:"occurred_at" %}{% include "includes/history_item.html" with title="Delivery target changed" at=event.occurred_at actor=event.actor by="Recorded by" reason=event.reason changes=event.target_change %}{% endfor %}
-    </ol>
-    {% else %}
-    {% include "includes/empty_state.html" with title="No changes yet" body="The delivery target is set when the chain of custody is created; later changes are listed here." %}
-    {% endif %}
-  </div>
-</section>
+{% history_panel events=schedule_events|dictsort:"occurred_at" heading_id="schedule-history-heading" class="mt-3 vr-narrow" empty_title="No changes yet" empty_body="The delivery target is set when the chain of custody is created; later changes are listed here." %}
+      {% for event in schedule_events|dictsort:"occurred_at" %}{% history_item title="Delivery target changed" at=event.occurred_at actor=event.actor by="Recorded by" reason=event.reason changes=event.target_change %}{% endfor %}
+{% endhistory_panel %}
 {% endblock %}

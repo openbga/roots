@@ -50,7 +50,7 @@
         },
         {
           "label": "Delivery target",
-          "description": "Local date/time shared by all tests on the order, or Not set. Overdue is marked whenever target precedes now, including when All work shows a reported row. Default sort is earliest target first, with unset targets last."
+          "description": "Local date/time shared by all tests on the order, or Not set. A red “Overdue N d” pill marks a target that has passed (including on a reported row under All work); an amber “Due in N d” or “Due today” pill marks one within the next seven days. Default sort is earliest target first, with unset targets last."
         },
         {
           "label": "Analyte",
@@ -111,7 +111,7 @@
         },
         {
           "label": "Reset columns",
-          "description": "Restores this table’s default order and visibility in this browser."
+          "description": "Restores this table’s default order and visibility for your account."
         },
         {
           "label": "Done / Close",
