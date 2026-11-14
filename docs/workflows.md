@@ -58,15 +58,26 @@ lists, qualifiers, preparation requirements, users, samples and results are not 
 
 Starter files on the same page hold common method, test and rule entries read from 40 CFR
 136.3 Tables IB and II, EPA methods and SW-846 Chapter Three on 2026-11-12. Each rule's basis
-names its source. They are starting points, not laboratory policy: the laboratory checks them
+names its source. The Table II rows behind the per-analyte holding rules were compared again
+on 2026-11-14 with the eCFR text current to 2026-11-12. They are starting points, not laboratory policy: the laboratory checks them
 against its methods, permits and current rules and edits them before importing. They carry no
 reporting limits, and Table II's 6 months is entered as 180 days for the laboratory to confirm.
 
-Limit: a holding-time rule belongs to a method and matrix, while Table II sets its limits per
-parameter. Where one method covers parameters with different limits (EPA 300.0 and EPA 365.1 in
-the starter files), the starter rule carries the shortest limit and its basis names the analytes
-with a longer one, so those analytes are flagged early. A laboratory that needs the longer limit
-for them records its own disposition; a limit per analyte is on the roadmap.
+A holding-time rule belongs to a method and matrix and applies to every analyte of the method
+unless it names one. A rule that names an analyte applies to that analyte only and replaces,
+for it, that method's method-wide rule with the same start and end events; the method's other
+clocks still apply, and so do the rules of a preparation method. Result entry, the worklist,
+the sample page and the batch test picker resolve the rule the same way, and an evaluation
+recorded on a result is not recalculated when rules change. Table II sets its limits per
+parameter, so where one method covers parameters with different limits (EPA 300.0 and EPA
+365.1 in the starter files) the method-wide starter rule carries the shortest limit and each
+analyte with a longer one has its own rule.
+
+Limits: a rule names one analyte or none, never a group, and an analyte's rule needs a test of
+that method and matrix (or one the method prepares). An analyte added to a method later is
+held to the method-wide limit until it has a rule of its own. The starter files still leave
+out EPA 200.7 total phosphorus and EPA 353.2 nitrite, whose limits differ from the rest of
+their method.
 
 ## Receipt corrections
 
