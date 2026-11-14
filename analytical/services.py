@@ -982,6 +982,7 @@ def enter_result_locked(
     holding_status, evaluation = holding.evaluate_for_entry(
         method=definition.method,
         matrix=definition.matrix,
+        analyte=definition.analyte_id,
         collected_at=sample.collected_at,
         prepared_at=cleaned["prepared_at"],
         analysis_at=analysis_started_at,

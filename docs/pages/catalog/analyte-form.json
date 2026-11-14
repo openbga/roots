@@ -80,7 +80,7 @@
         },
         {
           "label": "What depends on this",
-          "description": "Counts referring records. Methods/analytes also show active tests out of all tests. These facts can include more dependencies than list work counts."
+          "description": "Counts referring records. Methods/analytes also show active tests out of all tests, and an analyte counts the holding-time rules that name it (Holding-time rules). These facts can include more dependencies than list work counts."
         },
         {
           "label": "Locked values",
@@ -101,6 +101,7 @@
     "catalog/services.py",
     "catalog/tests/test_catalog.py",
     "catalog/templates/catalog/form.html",
-    "core/concurrency.py"
+    "core/concurrency.py",
+    "analytical/models.py"
   ]
 }

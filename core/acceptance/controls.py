@@ -28,6 +28,7 @@ from reporting.services import create_report, release_report
 
 from .journey import (
     NUTRIENTS,
+    OWN_RULE_ANALYTE,
     VERSION,
     account,
     create_client_user,
@@ -288,14 +289,19 @@ def release_permission(run):
     "(outcome 4; 40 CFR 136.3 Table II footnote 4 as cited in docs/product.md).",
     expected="Changing the rule duration moves the deadline shown for an unanalysed sample; a "
     "result analysed after the deadline is evaluated as exceeded and cannot be submitted without "
-    "the H qualifier; with it, it is submitted.",
+    "the H qualifier; with it, it is submitted. A result of the same sample for an analyte with "
+    "its own, longer rule, analysed at the same time, is evaluated as met against that rule.",
     depends=("O03",),
 )
 def holding_rule(run):
     sample = Sample.objects.get(pk=run["sample_a4"].pk)
     admin = account(run, "admin")
     rule = HoldingTimeRule.objects.get(
-        method__code=NUTRIENTS, method__version=VERSION, matrix="water", start_event="collection"
+        method__code=NUTRIENTS,
+        method__version=VERSION,
+        matrix="water",
+        analyte=None,
+        start_event="collection",
     )
     original = rule.duration
     browser = signed_in(run, "custodian")
@@ -341,6 +347,18 @@ def holding_rule(run):
         refusal is not None and "holding-time qualifier" in refusal,
         f"Submission without a holding-time qualifier refused: '{refusal}'",
         "the holding-time refusal",
+    )
+    own = HoldingTimeRule.objects.get(
+        method=rule.method, matrix="water", analyte__name=OWN_RULE_ANALYTE, is_active=True
+    )
+    other = enter(run, sample, OWN_RULE_ANALYTE, "0.10", rl="0.02")
+    run.check(
+        other.holding_status == "met"
+        and [e["rule_id"] for e in other.holding_evaluation] == [own.pk],
+        f"{OWN_RULE_ANALYTE} result of the same sample evaluated as '{other.holding_status}' "
+        f"against '{own.name}' ({duration_label(own.duration)}), not the method's "
+        f"{duration_label(original)} rule",
+        "met against the analyte's own rule",
     )
     qualified = enter(
         run,

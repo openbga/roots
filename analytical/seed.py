@@ -51,6 +51,7 @@ def seed_analytical_config(method_codes=None):
             HoldingTimeRule.objects.get_or_create(
                 method=method,
                 matrix=matrix,
+                analyte=None,  # the method-wide rule; analytes may have rules of their own
                 start_event="collection",
                 end_event="analysis",
                 defaults={

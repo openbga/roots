@@ -188,7 +188,7 @@
         },
         {
           "label": "Holding time",
-          "description": "Before a result revision exists, shows the shortest active collection-start rule’s deadline for method/matrix. Not-batched, awaiting-entry and returned work can show time left, At risk within the configured warning window, or Expired after the deadline. No rule means no active collection-start rule. With a result revision, shows its frozen Met, Exceeded, Not evaluable or No rule evaluation; it is not recalculated from today’s clock."
+          "description": "Before a result revision exists, shows the deadline of the shortest active collection-start rule that applies to the test: its analyte’s own rule where one is configured, otherwise the rule for the method and matrix. Not-batched, awaiting-entry and returned work can show time left, At risk within the configured warning window, or Expired after the deadline. No rule means no active collection-start rule applies to the test. With a result revision, shows its frozen Met, Exceeded, Not evaluable or No rule evaluation; it is not recalculated from today’s clock."
         },
         {
           "label": "Preservation",

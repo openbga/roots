@@ -8,15 +8,22 @@
     "kind": "holding-rule"
   },
   "title": "Holding-time rule",
-  "purpose": "Add or edit a laboratory holding-time clock for one exact method version, matrix and start/end event pair.",
-  "summary": "Add or edit a holding-time clock for one method version and matrix. Only administrators can save; other staff read these values on QC configuration.",
+  "purpose": "Add or edit a laboratory holding-time clock for one exact method version, matrix and start/end event pair, for every analyte of the method or for one analyte.",
+  "summary": "Add or edit a holding-time clock for one method version and matrix, for all its analytes or for one. Only administrators can save; other staff read these values on QC configuration.",
   "tasks": [
     {
       "title": "Add a holding-time rule",
       "steps": [
-        "Choose the [[Method]], [[Matrix]], [[Start event]] and [[End event]], and give the rule a [[Name]].",
+        "Choose the [[Method]], [[Matrix]], [[Start event]] and [[End event]], and give the rule a [[Name]]. Leave [[Analyte]] on All analytes of the method.",
         "Enter the [[Maximum time]] in hours and, optionally, [[Warn when remaining]].",
         "Select [[Add holding-time rule]]."
+      ]
+    },
+    {
+      "title": "Give one analyte its own limit",
+      "steps": [
+        "Add a rule with the same [[Method]], [[Matrix]], [[Start event]] and [[End event]] as the method's rule, and choose the [[Analyte]].",
+        "Enter that analyte's [[Maximum time]] and select [[Add holding-time rule]]. The other analytes keep the method's rule."
       ]
     },
     {
@@ -35,9 +42,10 @@
   ],
   "good_to_know": [
     "Hours are decimal: 0.25 is 15 minutes, 48 is two days.",
+    "An analyte's rule replaces the method's rule with the same start and end events for that analyte only. It can be longer or shorter.",
     "An end exactly at the deadline meets the rule. Later exceeds it.",
     "Changing a rule does not change holding evaluations already recorded on results or reports.",
-    "Only one rule can exist for each method, matrix and start and end pair. Edit the existing one."
+    "Only one rule can exist for each method, matrix, analyte choice and start and end pair. Edit the existing one."
   ],
   "sections": [
     {
@@ -51,11 +59,15 @@
       "items": [
         {
           "label": "Method",
-          "description": "Required exact method/version. The form lists catalog methods, including inactive ones; the rule applies only where this method and matrix are used."
+          "description": "Required exact method/version. The form lists catalog methods, including inactive ones; the rule applies only where this method and matrix are used. A rule on a preparation method applies to results whose prepared portion came from a batch of that method."
         },
         {
           "label": "Matrix",
           "description": "Required Water, Wastewater or Soil."
+        },
+        {
+          "label": "Analyte",
+          "description": "Optional. All analytes of the method (the blank choice) makes a method-wide rule. Choosing an analyte limits the rule to that analyte's tests; it then replaces the method-wide rule with the same start and end events for that analyte, and the other analytes are unaffected. The list holds every catalog analyte by name, but saving is refused unless the method has a test for the analyte in this matrix, or is the required preparation method of such a test, because the rule would otherwise never apply."
         },
         {
           "label": "Name",
@@ -90,9 +102,10 @@
     {
       "title": "Rules and effects",
       "paragraphs": [
-        "Only one row may exist for each method/version, matrix and start/end pair, including inactive rows. Edit the existing row rather than creating a duplicate.",
+        "Only one row may exist for each method/version, matrix, analyte choice (all analytes, or one named analyte) and start/end pair, including inactive rows. Edit the existing row rather than creating a duplicate.",
+        "Which rule applies to a test: within each method, for each start/end pair, the active rule naming the test's analyte; otherwise the active method-wide rule. An analyte's rule replaces only the method-wide rule of the same method with the same start and end events, so a method-wide collection-to-preparation rule, or a preparation method's rule, still applies beside an analyte's collection-to-analysis rule. An inactive analyte rule replaces nothing. An analyte added to the method later falls under the method-wide rule until it has a rule of its own.",
         "Deadline equals recorded start plus maximum time. The end event exactly at the deadline meets the clock; later exceeds it. Missing required events or an end before start is Not evaluable. Composite collection uses the recorded collection end, never the start.",
-        "New result entry evaluates every applicable active analytical clock and any linked preparation-method clocks. Queue Hold deadline uses only the shortest active collection-start rule. Preparation-start clocks therefore need actual preparation information and are not fully represented in the queue deadline.",
+        "New result entry evaluates every active clock that applies to the result's analyte, for the analytical method and any linked preparation method. Queue Hold deadline uses only the shortest applicable active collection-start rule. Preparation-start clocks therefore need actual preparation information and are not fully represented in the queue deadline.",
         "Changing a rule does not rewrite the holding evaluation already captured in an older result revision or issued report. A new entry uses current configuration. Exceeded holding time requires a qualifier marked for holding-time exceedance before submission; missing-event/chronology problems cannot be resolved by a qualifier."
       ]
     },
@@ -144,6 +157,8 @@
     "analytical/templates/analytical/_holding.html",
     "analytical/tests/test_pure.py",
     "analytical/tests/test_observation_metadata.py",
-    "analytical/tests/test_workflow.py"
+    "analytical/tests/test_workflow.py",
+    "analytical/tests/test_holding_per_analyte.py",
+    "analytical/migrations/0009_holding_rule_analyte.py"
   ]
 }

@@ -23,6 +23,7 @@ from django.utils import timezone
 
 from receipt.models import RequestedTest, Subcontract
 
+from .holding import for_analyte
 from .models import (
     Batch,
     HoldingTimeRule,
@@ -76,13 +77,16 @@ def ordering(sorts, sort):
 
 def with_holding_deadline(qs):
     """Annotate requested tests with the collection-based hold limit, warning and deadline: the
-    shortest active collection-start rule for the test's method and matrix."""
-    rules = HoldingTimeRule.objects.filter(
-        method=OuterRef("definition__method"),
-        matrix=OuterRef("definition__matrix"),
-        is_active=True,
-        start_event="collection",
-    ).order_by("duration")
+    shortest active collection-start rule that applies to the test's method, matrix and analyte
+    (holding.for_analyte decides which rules apply)."""
+    rules = for_analyte(
+        HoldingTimeRule.objects.filter(
+            method=OuterRef("definition__method"),
+            matrix=OuterRef("definition__matrix"),
+            start_event="collection",
+        ),
+        OuterRef("definition__analyte"),
+    ).order_by("duration", "pk")
     return qs.annotate(
         hold_limit=Subquery(rules.values("duration")[:1], output_field=DurationField()),
         hold_warning=Subquery(rules.values("warning_window")[:1], output_field=DurationField()),
@@ -328,15 +332,31 @@ BATCH_SORTS = {
 
 
 def preparation_rules_missing(batch):
-    """Active holding rules that start or end at preparation while the batch has no
-    preparation time: results entered now cannot have their holding time evaluated."""
+    """Active holding rules that start or end at preparation and apply to a test in the batch
+    (the method-wide rules while the batch is empty), while the batch has no preparation
+    time: results entered now cannot have their holding time evaluated."""
     if batch.prepared_at is not None:
         return []
-    return list(
-        HoldingTimeRule.objects.filter(
-            method=batch.method, matrix=batch.matrix, is_active=True
-        ).filter(Q(start_event="preparation") | Q(end_event="preparation"))
+    analytes = set(
+        Result.objects.filter(batch=batch).values_list(
+            "requested_test__definition__analyte_id", flat=True
+        )
     )
+    rules = list(
+        HoldingTimeRule.objects.filter(method=batch.method, matrix=batch.matrix, is_active=True)
+        .filter(Q(start_event="preparation") | Q(end_event="preparation"))
+        .filter(Q(analyte__isnull=True) | Q(analyte__in=analytes))
+    )
+    # As for_analyte: an analyte's own rule replaces the method-wide rule of the same
+    # clock, so a method-wide rule counts only while some analyte in the batch still uses it.
+    own = {(r.analyte_id, r.start_event, r.end_event) for r in rules if r.analyte_id}
+    return [
+        r
+        for r in rules
+        if r.analyte_id
+        or not analytes
+        or any((a, r.start_event, r.end_event) not in own for a in analytes)
+    ]
 
 
 # ------------------------------------------------------------ MDL studies and control charts

@@ -107,7 +107,7 @@
         },
         {
           "label": "Holding time",
-          "description": "Overall entry-time evaluation plus each configured clock’s name, status, deadline and detail. An end exactly at deadline meets the rule. Missing required events or reversed chronology are Not evaluable; no active rules gives No holding rule."
+          "description": "Overall entry-time evaluation plus the name, status, deadline and detail of each clock that applied to this analyte (its own rule where one was configured, otherwise the method’s). An end exactly at deadline meets the rule. Missing required events or reversed chronology are Not evaluable; no applicable active rule gives No holding rule."
         },
         {
           "label": "Entered",

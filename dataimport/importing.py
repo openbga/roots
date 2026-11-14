@@ -71,6 +71,7 @@ class Column:
     kind: str = "text"  # text | choice | decimal | integer | boolean | hours | user
     key: bool = False
     choices: tuple = ()  # allowed values of a key column (data columns read the model field)
+    optional: bool = False  # a key column that may be blank or left out of the file
 
 
 @dataclass(frozen=True)
@@ -120,7 +121,7 @@ class RecordType:
     def describe(self, column):
         """(requirement, format) for the column documentation and the template notes."""
         if column.key:
-            requirement = "Key, required"
+            requirement = "Key, optional" if column.optional else "Key, required"
         elif self.required_on_create(column):
             requirement = "Required for a new record; cannot be blank"
         elif column.kind == "boolean":
@@ -395,11 +396,17 @@ def find_qc_requirement(keys):
 
 
 def find_holding_rule(keys):
-    errors, method, chosen = [], None, {}
+    """A blank analyte is part of the key: it names the method-wide rule, never an analyte's."""
+    errors, method, analyte, chosen = [], None, None, {}
     try:
         method = _method(keys)
     except RowError as exc:
         errors += exc.messages
+    if keys["analyte"]:
+        try:
+            analyte = _analyte(keys["analyte"])
+        except RowError as exc:
+            errors += exc.messages
     for column in (MATRIX, START_EVENT, END_EVENT):
         try:
             chosen[column.name] = _key_choice(column, keys[column.name])
@@ -407,12 +414,13 @@ def find_holding_rule(keys):
             errors += exc.messages
     if errors:
         raise RowError(*errors)
-    existing = HoldingTimeRule.objects.filter(method=method, **chosen).first()
+    existing = HoldingTimeRule.objects.filter(method=method, analyte=analyte, **chosen).first()
     label = (
         f"{keys['method_code']} {keys['method_version']} · {chosen['matrix']} · "
+        f"{analyte.name if analyte else 'all analytes'} · "
         f"{chosen['start_event']} → {chosen['end_event']}"
     )
-    return existing, {"method": method, **chosen}, label
+    return existing, {"method": method, "analyte": analyte, **chosen}, label
 
 
 def find_qc_limit(keys):
@@ -601,6 +609,15 @@ METHOD_CODE = Column(
 )
 METHOD_VERSION = Column("method_version", "Version of that method, as recorded.", key=True)
 ANALYTE = Column("analyte", "Name of an existing analyte.", key=True)
+RULE_ANALYTE = Column(
+    "analyte",
+    "Name of an existing analyte with a test of this method and matrix (or a test this method "
+    "prepares), to limit the rule to it. Blank or left out: the rule applies to every analyte "
+    "of the method. An analyte's rule replaces the method-wide rule with the same start and end "
+    "events for that analyte.",
+    key=True,
+    optional=True,
+)
 TEST_KEYS = (METHOD_CODE, METHOD_VERSION, ANALYTE, MATRIX)
 ACTIVE = Column(
     "active",
@@ -823,6 +840,7 @@ TYPES = (
             METHOD_CODE,
             METHOD_VERSION,
             MATRIX,
+            RULE_ANALYTE,
             START_EVENT,
             END_EVENT,
             Column("name", "Rule name shown on the holding-time clock.", "name"),
@@ -841,7 +859,7 @@ TYPES = (
             BASIS,
             ACTIVE,
         ),
-        "The method versions the rules name.",
+        "The method versions the rules name, and the tests of any analyte a rule names.",
         "analytical:qc-config",
         find_holding_rule,
         write_config,
@@ -951,7 +969,7 @@ def _read_header(record_type, header, preview):
     blank = [str(i) for i, name in enumerate(names, start=1) if not name]
     unknown = [name for name in names if name and name not in allowed]
     duplicate = sorted({name for name in names if name and names.count(name) > 1})
-    missing = [c.name for c in record_type.key_columns if c.name not in names]
+    missing = [c.name for c in record_type.key_columns if c.name not in names and not c.optional]
     if blank:
         preview.file_errors.append(f"Line 1: column {', '.join(blank)} has no name.")
     if unknown:
@@ -979,8 +997,8 @@ def _identity(row):
 def _read_row(record_type, row, present, seen):
     keys = {}
     for column in record_type.key_columns:
-        keys[column.name] = row.values[column.name]
-        if not keys[column.name]:
+        keys[column.name] = row.values.get(column.name, "")  # an optional key may be left out
+        if not keys[column.name] and not column.optional:
             row.errors.append(f"{column.name}: required; it identifies the record.")
     data = {}  # only columns present in the file: an absent column is left alone
     for column in record_type.data_columns:

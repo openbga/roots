@@ -110,7 +110,9 @@ def usage_facts(obj):
         )
     elif isinstance(obj, Analyte):
         scope = definitions.filter(analyte=obj)
-        counts = {}
+        counts = _reference_counts(  # holding-time rules that name the analyte
+            Analyte, Analyte.objects.filter(pk=obj.pk), {"catalog.testdefinition"}
+        )
     else:
         scope, counts = definitions.filter(pk=obj.pk), {}
     facts = []

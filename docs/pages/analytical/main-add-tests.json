@@ -93,7 +93,7 @@
         },
         {
           "label": "Hold deadline",
-          "description": "Shortest active collection-start deadline and any running warning/time remaining. Approved work has no running entry clock."
+          "description": "Shortest active collection-start deadline that applies to the test (its analyte's own rule where configured, otherwise the method's) and any running warning/time remaining. Approved work has no running entry clock."
         },
         {
           "label": "Received",

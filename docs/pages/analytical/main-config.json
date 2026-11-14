@@ -134,6 +134,10 @@
           "description": "Water, Wastewater or Soil."
         },
         {
+          "label": "Applies to",
+          "description": "All analytes for a method-wide rule, or the one analyte the rule is limited to."
+        },
+        {
           "label": "From → to",
           "description": "Collection/composite end or Preparation start through Preparation start or Analysis start."
         },
@@ -147,8 +151,11 @@
         },
         {
           "label": "Add holding-time rule",
-          "description": "Administrators define an explicit clock. No active rule gives a not-evaluated holding status, not a fabricated threshold."
+          "description": "Administrators define an explicit clock for the whole method or for one analyte. No applicable active rule gives a not-evaluated holding status, not a fabricated threshold."
         }
+      ],
+      "paragraphs": [
+        "A rule applies to every analyte of its method and matrix unless it names one. A rule that names an analyte replaces the method-wide rule with the same start and end events for that analyte only; other clocks and other analytes are unaffected. Method-wide rules are listed before the analyte rules of the same clock."
       ]
     },
     {
@@ -258,6 +265,7 @@
     "analytical/tests/test_views.py",
     "analytical/tests/test_lists.py",
     "analytical/tests/test_preservation_workflow.py",
-    "dataimport/importing.py"
+    "dataimport/importing.py",
+    "analytical/tests/test_holding_per_analyte.py"
   ]
 }

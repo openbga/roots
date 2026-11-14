@@ -36,7 +36,7 @@
   ],
   "good_to_know": [
     "Nothing is saved until you import the checked preview, and any error blocks the whole file.",
-    "A row finds its rule by method version, matrix, start event and end event.",
+    "A row finds its rule by method version, matrix, analyte, start event and end event. A blank analyte means the rule for the whole method.",
     "An import never creates records of another type. The method versions the rules name must exist first.",
     "Durations are in hours, as on the manual form (48 is 2 days). A calendar period such as 6 months needs the hours the laboratory has decided on.",
     "The uploaded file is not kept. History records its file name and SHA-256 digest, so keep your copy."
@@ -92,6 +92,10 @@
           "description": "Key, required. One of: water, wastewater, soil. Matrix of the test."
         },
         {
+          "label": "analyte",
+          "description": "Key, optional. Text. Name of an existing analyte with a test of this method and matrix (or a test this method prepares), to limit the rule to it. Blank or left out: the rule applies to every analyte of the method. An analyte's rule replaces the method-wide rule with the same start and end events for that analyte."
+        },
+        {
           "label": "start_event",
           "description": "Key, required. One of: collection, preparation. Event that starts the clock."
         },
@@ -124,7 +128,7 @@
     {
       "title": "How rows match records",
       "paragraphs": [
-        "A row matches the holding-time rule of the same method version, matrix, start event and end event. The method version must already exist.",
+        "A row matches the holding-time rule of the same method version, matrix, analyte, start event and end event. A blank analyte, or a file without the analyte column, matches the method-wide rule and never an analyte's rule; analyte names are compared without regard to case. The method version must already exist, and so must the analyte and its test of this method and matrix (or a test this method prepares) when the row names one.",
         "A row whose key matches an existing record changes it; a row whose key matches none creates a record. Records are found by these keys, never by database IDs. A column absent from the file leaves that value of existing records alone. A column present with a blank cell clears an optional value; it is an error for a required one. A new record needs every required column, and an omitted optional column takes the same default as a new record entered by hand (active unless active says no).",
         "A row may refer only to records that already exist in the referenced type; a missing reference is an error naming it, and nothing is created in another record type. Two rows for the same record are an error.",
         "Durations are entered in hours, as on the manual form: a decimal number with at most 2 decimal places and at least 0.01 (0.25 is 15 minutes, 48 is 2 days, 672 is 28 days). The value is converted to whole seconds. A calendar period such as 6 months has no fixed number of hours; enter the hours the laboratory has decided on. A clock that starts at preparation can only end at analysis."
@@ -200,6 +204,7 @@
     "dataimport/tests/test_import.py",
     "analytical/services.py",
     "analytical/models.py",
-    "analytical/forms.py"
+    "analytical/forms.py",
+    "analytical/holding.py"
   ]
 }

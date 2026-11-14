@@ -239,7 +239,7 @@
         },
         {
           "label": "Preparation time needed",
-          "description": "Names active holding rules requiring preparation when none is recorded. Entering now cannot yield a submittable evaluation; set preparation and re-enter."
+          "description": "Names the active holding rules that start or end at preparation and apply to a test in the batch (the method-wide ones while the batch is empty) when no preparation time is recorded. Entering now cannot yield a submittable evaluation; set preparation and re-enter."
         },
         {
           "label": "Required for this method",

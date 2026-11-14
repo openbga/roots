@@ -40,7 +40,7 @@
     {
       "title": "Record types",
       "paragraphs": [
-        "Import in the order shown. A row may refer only to records that already exist, and an import never creates anything in another record type: analytes and methods come before tests; tests before QC limits and preservation rules; methods before QC requirements and holding-time rules; clients before projects."
+        "Import in the order shown. A row may refer only to records that already exist, and an import never creates anything in another record type: analytes and methods come before tests; tests before QC limits and preservation rules; methods before QC requirements and holding-time rules, and tests before a holding-time rule that names an analyte; clients before projects."
       ],
       "items": [
         {

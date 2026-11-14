@@ -7,4 +7,4 @@ views._annotate_clocks (hold_deadline, clock, remaining_label).{% endcomment %}
 {% if rt.clock == "expired" %}<div data-vr-clock="expired">{% status label="Expired · "|add:rt.remaining_label|add:" ago" tone="danger" plain=True title="Past the collection-based holding deadline and not yet analysed." %}</div>
 {% elif rt.clock == "at_risk" %}<div data-vr-clock="at_risk">{% status label="At risk · "|add:rt.remaining_label|add:" left" tone="warning" plain=True %}</div>
 {% elif rt.clock %}<div class="vr-muted small">{{ rt.remaining_label }} left</div>{% endif %}
-{% else %}<span class="vr-muted" title="No collection-based holding rule is configured for this method and matrix.">No rule</span>{% endif %}
+{% else %}<span class="vr-muted" title="No active collection-based holding rule applies to this test: none for its method and matrix, nor for its analyte.">No rule</span>{% endif %}
