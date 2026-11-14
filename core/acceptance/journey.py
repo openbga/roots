@@ -38,6 +38,7 @@ LAB_NAME = "Acceptance Example Laboratory (synthetic)"
 VERSION = "demo-1"
 METALS = "DEMO-METALS-AQ"
 NUTRIENTS = "DEMO-NUTRIENTS-AQ"
+OWN_RULE_ANALYTE = "Total phosphorus"  # has a holding rule of its own in the nutrients method
 STAFF = {  # account suffix -> roles; "approver" carries release permission through its group
     "custodian": ["custodian"],
     "analyst": ["analyst"],
@@ -652,9 +653,10 @@ def shown_clock_flags(html):
     outcome=4,
     requirement="Each sample shows its holding-time clocks and flags samples at risk or "
     "expired. Expiry is computed from the rules, never typed.",
-    expected="Each sample page shows the deadline equal to collection time plus the configured "
-    "rule duration; a sample 44 hours into a 48-hour rule is flagged At risk, one 72 hours in is "
-    "flagged Expired, a sample well within its rule carries no flag.",
+    expected="Each sample page shows, for every requested test, the deadline equal to collection "
+    "time plus the duration of the rule that applies to it: the method's rule, or the analyte's "
+    "own rule where one is configured. A sample 44 hours into a 48-hour rule is flagged At risk, "
+    "one 72 hours in is flagged Expired, a sample well within its rule carries no flag.",
     depends=("O03",),
 )
 def holding_clocks(run):
@@ -662,29 +664,43 @@ def holding_clocks(run):
     now = timezone.now()
     for key, label in (("sample_a1", None), ("sample_a3", "At risk"), ("sample_a4", "Expired")):
         sample = Sample.objects.get(pk=run[key].pk)
-        definition = sample.requested_tests.select_related("definition__method").first().definition
-        rule = HoldingTimeRule.objects.get(
-            method=definition.method, matrix="water", start_event="collection", is_active=True
-        )
-        deadline = timezone.localtime(sample.collected_at + rule.duration)
-        clocks = running_clocks(
-            definition.method, "water", collected_at=sample.collected_at, now=now
-        )
         page = browser.get(f"/samples/{sample.pk}/")
         html = page.content.decode("utf-8", "replace")
-        shown = f'datetime="{deadline.isoformat()}"' in html
         flagged = shown_clock_flags(html)
-        run.check(
-            page.status_code == 200 and shown,
-            f"{sample.lab_id}: page shows deadline {deadline.isoformat()} = collection "
-            f"{timezone.localtime(sample.collected_at).isoformat()} + rule '{rule.name}' "
-            f"({duration_label(rule.duration)})",
-            "the computed deadline on the sample page",
-        )
+        statuses = set()
+        tests = sample.requested_tests.select_related("definition__method", "definition__analyte")
+        for definition in sorted((t.definition for t in tests), key=lambda d: d.analyte.name):
+            # Worst first; these methods have one collection-based clock per analyte.
+            clocks = running_clocks(
+                definition.method,
+                "water",
+                definition.analyte_id,
+                collected_at=sample.collected_at,
+                now=now,
+            )
+            if not clocks:
+                run.check(
+                    False,
+                    f"{sample.lab_id} {definition.analyte.name}: no holding-time rule applies",
+                    "a holding-time rule for every requested test",
+                )
+                continue
+            clock = clocks[0]
+            rule = HoldingTimeRule.objects.get(pk=clock.rule_id)
+            statuses.add(clock.status)
+            deadline = timezone.localtime(sample.collected_at + rule.duration)
+            run.check(
+                page.status_code == 200 and f'datetime="{deadline.isoformat()}"' in html,
+                f"{sample.lab_id} {definition.analyte.name}: page shows deadline "
+                f"{deadline.isoformat()} = collection "
+                f"{timezone.localtime(sample.collected_at).isoformat()} + rule '{rule.name}' "
+                f"({duration_label(rule.duration)}, applies to {rule.applies_to.lower()})",
+                "the computed deadline on the sample page",
+            )
         run.check(
             (label is None and not flagged) or (label in flagged),
-            f"{sample.lab_id}: flag shown {sorted(flagged) or 'none'}; clock status "
-            f"{clocks[0].status if clocks else 'none'}",
+            f"{sample.lab_id}: flag shown {sorted(flagged) or 'none'}; clock statuses "
+            f"{sorted(statuses) or 'none'}",
             f"flag {label or 'none'}",
         )
 

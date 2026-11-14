@@ -13,6 +13,8 @@ from django.db import models
 from django.db.models import F, Q
 from django.db.models.functions import Lower
 
+from catalog.models import TestDefinition
+
 
 class QCType(models.TextChoices):
     METHOD_BLANK = "method_blank", "Method blank"
@@ -69,7 +71,11 @@ class Qualifier(models.Model):
 
 
 class HoldingTimeRule(models.Model):
-    """Start event, end event and duration for a method and matrix."""
+    """Start event, end event and duration for a method and matrix.
+
+    A rule without an analyte applies to every analyte of the method. A rule that names an
+    analyte applies to that analyte only and, for it, replaces the method-wide rule with the
+    same start and end events (holding.for_analyte is the one definition of that)."""
 
     class Start(models.TextChoices):
         COLLECTION = "collection", "Collection (composite: end of collection)"
@@ -82,6 +88,15 @@ class HoldingTimeRule(models.Model):
     method = models.ForeignKey("catalog.Method", on_delete=models.PROTECT)
     matrix = models.CharField(
         max_length=20, choices=[("water", "Water"), ("wastewater", "Wastewater"), ("soil", "Soil")]
+    )
+    analyte = models.ForeignKey(
+        "catalog.Analyte",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        help_text="Leave unset for a rule that applies to every analyte of the method. With an "
+        "analyte, the rule applies to that analyte only and replaces, for it, the method-wide "
+        "rule with the same start and end events.",
     )
     name = models.CharField(max_length=120)
     start_event = models.CharField(max_length=20, choices=Start.choices)
@@ -96,11 +111,24 @@ class HoldingTimeRule(models.Model):
     is_active = models.BooleanField(default=True)
 
     class Meta:
-        ordering = ["method__code", "method__version", "matrix", "start_event", "end_event"]
+        verbose_name = "holding-time rule"
+        ordering = [
+            "method__code",
+            "method__version",
+            "matrix",
+            "start_event",
+            "end_event",
+            F("analyte__name").asc(nulls_first=True),  # the method-wide rule, then its analytes
+        ]
         constraints = [
+            # One method-wide rule per clock and one per analyte: two rows without an analyte
+            # are duplicates too, so NULL analytes are not distinct.
             models.UniqueConstraint(
-                fields=["method", "matrix", "start_event", "end_event"],
-                name="analytical_holding_rule_unique",
+                fields=["method", "matrix", "analyte", "start_event", "end_event"],
+                nulls_distinct=False,
+                name="analytical_holding_rule_scope_unique",
+                violation_error_message="A holding-time rule already exists for this method, "
+                "matrix, analyte, start event and end event.",
             ),
             models.CheckConstraint(
                 condition=Q(duration__gt=timedelta(0)), name="analytical_holding_duration_pos"
@@ -117,6 +145,24 @@ class HoldingTimeRule(models.Model):
             raise ValidationError("A preparation-start clock can only end at analysis start.")
         if self.duration is not None and self.duration <= timedelta(0):
             raise ValidationError({"duration": "Duration must be positive."})
+        if self.analyte_id and self.method_id and self.matrix and not self._analyte_is_tested():
+            raise ValidationError(
+                {
+                    "analyte": "This method has no test for this analyte in this matrix, so the "
+                    "rule would never apply. Create the test first, or leave the analyte blank."
+                }
+            )
+
+    def _analyte_is_tested(self):
+        """The analyte has a test of this method and matrix, or one prepared by this method."""
+        tests = TestDefinition.objects.filter(analyte_id=self.analyte_id, matrix=self.matrix)
+        return tests.filter(
+            Q(method_id=self.method_id) | Q(preparationrequirement__method_id=self.method_id)
+        ).exists()
+
+    @property
+    def applies_to(self):
+        return self.analyte.name if self.analyte_id else "All analytes"
 
     def __str__(self):
         return f"{self.name} ({self.method})"

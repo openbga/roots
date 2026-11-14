@@ -127,7 +127,7 @@
         "No reporting limits: those are the laboratory's own.",
         "These are Table IB \"Total\" parameters where Table IB says so (metals, fluoride, Kjeldahl nitrogen, total phosphorus). Where Table IB lists a method after a digestion or distillation \"followed by\" the method, Table IB footnote 58 makes that step required before analysis (\"Unless otherwise stated, if the language of this table specifies a sample digestion and/or distillation “followed by” analysis with a method, approved digestion and/or distillation are required prior to analysis.\"). The starter set carries no preparation methods or preparation requirements; add them for the laboratory's procedure.",
         "Tests are water and wastewater only. No source read gives a unit for a soil test, so the file has no soil tests (left out: SW-846 7471B Mercury (soil)); the SW-846 methods are in the methods file and their soil holding-time rules in the holding-time file.",
-        "Left out because the application keeps one collection-to-analysis limit per method and matrix and their Table II limit differs from the rest of the method's tests: EPA 200.7 50. Phosphorus—Total; EPA 353.2 40. Nitrite (as N). Table IB lists EPA 200.7 for total phosphorus and EPA 353.2 for nitrite; add them with their own method entry if the laboratory needs them.",
+        "Left out: EPA 200.7 50. Phosphorus—Total; EPA 353.2 40. Nitrite (as N). Their Table II limit differs from the rest of the method's tests, and these files were written when the application kept one limit per method and matrix. Table IB lists EPA 200.7 for total phosphorus and EPA 353.2 for nitrite; a laboratory that needs them adds the test, its preservation rule and a holding-time rule naming the analyte.",
         "Not included in this starter set: EPA 200.7 Boron (10. Boron—Total, mg/L); EPA 200.7 Silica (61. Silica—Dissolved, mg/L).",
         "Table IB lists EPA 200.8 for boron, calcium, gold, iron, magnesium, potassium, silica, sodium, tin and titanium, which the method's scope does not name; those tests are left out.",
         "One analyte per Table IB parameter, named as the first method in the dataset names it, with the basis Table IB gives (as N, as SO4) added where that name lacks it: Nitrate (EPA 300.0) is entered as Nitrate (as N); Nitrite (EPA 300.0) is entered as Nitrite (as N); Ortho-phosphate (as P) (EPA 365.1) is entered as Ortho-Phosphate-P; Phosphorus, Total (EPA 365.1) is entered as Phosphorus; Sulfate (EPA 300.0) is entered as Sulfate (as SO4)."
@@ -170,7 +170,7 @@
     {
       "file": "starter-holding-rules.csv",
       "record_type": "holding-rules",
-      "contains": "35 collection-to-analysis holding-time rules: one per method and matrix.",
+      "contains": "47 collection-to-analysis holding-time rules: one method-wide rule per method and matrix, and 12 rules for single analytes of EPA 300.0 and EPA 365.1 whose Table II limit is longer.",
       "sources": [
         {
           "title": "40 CFR 136.3, Tables IB and II with notes (eCFR, data as of 2026-11-10; section amended 2024-06-17)",
@@ -181,10 +181,15 @@
           "title": "SW-846 Chapter Three, Inorganic Analytes (Update VI)",
           "url": "https://www.epa.gov/sites/default/files/2019-06/documents/chapter_three_update_vi_12-11-2018.pdf",
           "read_on": "2026-11-12"
+        },
+        {
+          "title": "40 CFR 136.3 Table II (eCFR, data as of 2026-11-12; section amended 2024-06-17 and reissued 2026-11-12): compared with the copy read on 2026-11-12, the text is the same",
+          "url": "https://www.ecfr.gov/api/versioner/v1/full/2026-11-12/title-40.xml?part=136&section=136.3",
+          "read_on": "2026-11-14"
         }
       ],
       "caveats": [
-        "One holding-time rule per method and matrix. Where a method's starter tests have different Table II limits, the rule uses the shortest one and its basis names the tests with a longer limit (EPA 300.0: nitrate, nitrite and orthophosphate 48 hours, the other anions 28 days; EPA 365.1: orthophosphate 48 hours, total phosphorus 28 days). Split or edit the rule if the laboratory runs them separately.",
+        "A rule without an analyte applies to every analyte of its method and matrix. Where a method's starter tests have different Table II limits, the method-wide rule carries the shortest one and each analyte with a longer limit has its own rule, which replaces the method-wide rule for that analyte (EPA 300.0: nitrate, nitrite and orthophosphate 48 hours, the other anions and nitrate-nitrite 28 days; EPA 365.1: orthophosphate 48 hours, total phosphorus 28 days). An analyte the laboratory adds to such a method gets the shortest limit until it has a rule of its own.",
         "Table II and SW-846 give 6 months for metals. The application stores a fixed duration, so 6 months is entered as 180 days (4320 hours); the laboratory should confirm that convention.",
         "Table II footnote 4 starts the clock at collection for a grab sample, at the end of collection for an automated composite and at the last grab for grabs composited in the field or laboratory; each Table II rule's basis quotes it.",
         "Orthophosphate's \"Filter within 15 minutes\" is not a collection-to-analysis limit: it is in the preservation rule's other requirements, not in a holding rule.",

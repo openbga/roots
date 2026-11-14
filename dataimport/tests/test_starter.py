@@ -59,6 +59,59 @@ def test_every_starter_file_imports_on_an_empty_database_in_dependency_order(mak
     assert QCLimit.objects.count() == counts["qc-limits"]
 
 
+@pytest.mark.django_db
+def test_analytes_with_their_own_table_ii_limit_get_it_and_the_rest_the_method_rule(make_user):
+    from datetime import timedelta
+
+    from analytical import holding
+
+    admin = make_user("starter-limits", "admin")
+    for entry in FILES:
+        data = starter.read(entry["file"])
+        record_type = importing.BY_SLUG[entry["record_type"]]
+        shown = importing.preview_file(record_type, actor=admin, data=data, filename=entry["file"])
+        importing.commit_file(
+            record_type,
+            actor=admin,
+            data=data,
+            filename=entry["file"],
+            reason="",
+            state_token=shown.state_token,
+        )
+
+    def limit(code, analyte, matrix):
+        test = TestDefinition.objects.get(method__code=code, analyte__name=analyte, matrix=matrix)
+        (rule,) = holding.active_rules(test.method, matrix, test.analyte_id)
+        return rule.duration
+
+    expected = {  # 40 CFR 136.3 Table II, as each rule's basis quotes it
+        ("EPA 300.0", "Nitrate (as N)"): 48,
+        ("EPA 300.0", "Nitrite (as N)"): 48,
+        ("EPA 300.0", "Ortho-Phosphate-P"): 48,
+        ("EPA 300.0", "Bromide"): 672,
+        ("EPA 300.0", "Chloride"): 672,
+        ("EPA 300.0", "Fluoride"): 672,
+        ("EPA 300.0", "Sulfate (as SO4)"): 672,
+        ("EPA 300.0", "Nitrate-nitrite (as N)"): 672,
+        ("EPA 365.1", "Ortho-Phosphate-P"): 48,
+        ("EPA 365.1", "Phosphorus"): 672,
+        ("EPA 353.2", "Nitrate-nitrite (as N)"): 672,
+    }
+    for (code, analyte), hours in expected.items():
+        for matrix in ("water", "wastewater"):
+            assert limit(code, analyte, matrix) == timedelta(hours=hours), (code, analyte, matrix)
+    own = [
+        row
+        for row in rows(next(e for e in FILES if e["record_type"] == "holding-rules"))
+        if row["analyte"]
+    ]
+    assert len(own) == 12
+    for row in own:
+        assert row["analyte"] in row["name"] and row["duration_hours"] == "672"
+        assert '": "28 days."' in row["basis"]
+        assert "compared 2026-11-14 with eCFR data as of 2026-11-12" in row["basis"]
+
+
 def test_rules_name_their_source_and_the_date_read():
     for entry in FILES:
         if entry["record_type"] not in {

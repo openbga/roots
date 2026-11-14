@@ -13,7 +13,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 
-from catalog.models import Method, TestDefinition
+from catalog.models import Analyte, Method, TestDefinition
 from core.lookups import RemoteSelect
 from laboratory.models import Equipment
 from receipt.models import Client, Sample
@@ -938,18 +938,30 @@ class HoldingRuleForm(forms.ModelForm):
 
     class Meta:
         model = HoldingTimeRule
-        fields = ["method", "matrix", "name", "start_event", "end_event", "basis", "is_active"]
+        fields = [
+            "method",
+            "matrix",
+            "analyte",
+            "name",
+            "start_event",
+            "end_event",
+            "basis",
+            "is_active",
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.pk:
             self.fields["duration_hours"].initial = _hours(self.instance.duration)
             self.fields["warning_hours"].initial = _hours(self.instance.warning_window)
+        self.fields["analyte"].queryset = Analyte.objects.order_by("name")
+        self.fields["analyte"].empty_label = "All analytes of the method"
         name_empty_choices(self)
         self.order_fields(
             [
                 "method",
                 "matrix",
+                "analyte",
                 "name",
                 "start_event",
                 "end_event",

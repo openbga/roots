@@ -2,4 +2,4 @@
 {% if status == "met" %}{% status label="Met" tone="success" plain=True %}
 {% elif status == "exceeded" %}{% status label="Exceeded" tone="danger" plain=True title="Holding time exceeded; the result must carry a holding-time qualifier." %}
 {% elif status == "not_evaluable" %}{% status label="Not evaluable" tone="warning" plain=True title="A required time is missing or its recorded chronology is invalid." %}
-{% else %}{% status label="No rule" tone="neutral" plain=True title="No holding-time rule is configured for this method and matrix." %}{% endif %}
+{% else %}{% status label="No rule" tone="neutral" plain=True title="No active holding-time rule applied to this test: none for its method and matrix, nor for its analyte." %}{% endif %}

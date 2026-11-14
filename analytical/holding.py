@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
+from django.db.models import Exists, OuterRef, Q
 from django.utils import timezone
 
 from .models import HoldingTimeRule, ResultRevision
@@ -78,17 +79,43 @@ def evaluate_rule(rule, *, collected_at, prepared_at=None, analysis_at=None, now
     return make("met", deadline)
 
 
-def active_rules(method, matrix):
-    return list(HoldingTimeRule.objects.filter(method=method, matrix=matrix, is_active=True))
+def for_analyte(rules, analyte):
+    """Narrow holding rules to the active ones that apply to one analyte's test.
+
+    A rule that names the analyte applies. A method-wide rule (no analyte) applies unless an
+    active rule of the same method, matrix, start event and end event names the analyte: the
+    analyte's own limit replaces the method-wide one for that clock and leaves other clocks
+    alone. `analyte` is an Analyte, its id, or an OuterRef to one when the rules annotate
+    another queryset (selectors.with_holding_deadline)."""
+    own = HoldingTimeRule.objects.filter(
+        method=OuterRef("method"),
+        matrix=OuterRef("matrix"),
+        start_event=OuterRef("start_event"),
+        end_event=OuterRef("end_event"),
+        analyte=OuterRef(analyte) if isinstance(analyte, OuterRef) else analyte,
+        is_active=True,
+    )
+    return rules.filter(is_active=True).filter(
+        Q(analyte=analyte) | Q(analyte__isnull=True) & ~Exists(own)
+    )
+
+
+def active_rules(method, matrix, analyte):
+    """Active rules that apply to one test of the method and matrix."""
+    return list(for_analyte(HoldingTimeRule.objects.filter(method=method, matrix=matrix), analyte))
 
 
 def evaluate_for_entry(
-    *, method, matrix, collected_at, prepared_at, analysis_at, extra_method_ids=()
+    *, method, matrix, analyte, collected_at, prepared_at, analysis_at, extra_method_ids=()
 ):
-    """Evaluate every active rule for an entered result. Returns (status, list of JSON dicts)."""
+    """Evaluate every active rule that applies to an entered result of one analyte.
+    Returns (status, list of JSON dicts)."""
     rules = list(
-        HoldingTimeRule.objects.filter(
-            method_id__in={method.pk, *extra_method_ids}, matrix=matrix, is_active=True
+        for_analyte(
+            HoldingTimeRule.objects.filter(
+                method_id__in={method.pk, *extra_method_ids}, matrix=matrix
+            ),
+            analyte,
         )
     )
     if not rules:
@@ -109,13 +136,13 @@ def evaluate_for_entry(
     return overall, [c.as_json() for c in checks]
 
 
-def running_clocks(method, matrix, *, collected_at, prepared_at=None, now=None):
+def running_clocks(method, matrix, analyte, *, collected_at, prepared_at=None, now=None):
     """Clocks for a test not yet analysed (worklist). Worst status first."""
     now = now or timezone.now()
     order = {"expired": 0, "at_risk": 1, "not_evaluable": 2, "within": 3}
     checks = [
         evaluate_rule(r, collected_at=collected_at, prepared_at=prepared_at, now=now)
-        for r in active_rules(method, matrix)
+        for r in active_rules(method, matrix, analyte)
     ]
     return sorted(checks, key=lambda c: (order.get(c.status, 9), c.deadline or now))
 

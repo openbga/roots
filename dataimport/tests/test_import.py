@@ -272,6 +272,61 @@ def test_header_choice_and_duration_errors(admin_user, catalog):
     assert rule.duration == timedelta(days=180) and rule.warning_window == timedelta(minutes=15)
 
 
+def test_holding_rule_analyte_is_an_optional_part_of_the_key(admin_user, catalog):
+    method, lead, _ = catalog
+    Analyte.objects.create(name="Zinc")
+    header = "method_code,method_version,matrix,analyte,start_event,end_event,name,duration_hours"
+    both = csv(
+        header,
+        "EPA 200.8,5.4,water,,collection,analysis,Metals,4320",
+        "EPA 200.8,5.4,water,lead,collection,analysis,Lead,672",
+    )
+    rows = preview("holding-rules", admin_user, both).rows
+    assert [r.action for r in rows] == ["create", "create"] and not any(r.errors for r in rows)
+    assert rows[0].label == "EPA 200.8 5.4 · water · all analytes · collection → analysis"
+    assert rows[1].label == "EPA 200.8 5.4 · water · Lead · collection → analysis"
+    commit("holding-rules", admin_user, both)
+    wide = HoldingTimeRule.objects.get(analyte=None)
+    own = HoldingTimeRule.objects.get(analyte=lead)
+    assert (wide.duration, own.duration) == (timedelta(days=180), timedelta(days=28))
+    assert [r.action for r in preview("holding-rules", admin_user, both).rows] == ["unchanged"] * 2
+    # A file written before the column existed still names the method-wide rule, and only it.
+    old = csv(
+        "method_code,method_version,matrix,start_event,end_event,name,duration_hours",
+        "EPA 200.8,5.4,water,collection,analysis,Metals,2160",
+    )
+    row = preview("holding-rules", admin_user, old).rows[0]
+    assert (row.action, row.existing) == ("update", wide)
+    commit("holding-rules", admin_user, old, reason="Synthetic change")
+    own.refresh_from_db()
+    wide.refresh_from_db()
+    assert (wide.duration, own.duration) == (timedelta(days=90), timedelta(days=28))
+    bad = csv(
+        header,
+        "EPA 200.8,5.4,water,Unobtainium,collection,analysis,X,48",
+        "EPA 200.8,5.4,water,Zinc,collection,analysis,Zinc,48",
+        "EPA 200.8,5.4,water,Lead,collection,analysis,Lead,48",
+        "EPA 200.8,5.4,water,LEAD,collection,analysis,Lead again,48",
+    )
+    rows = preview("holding-rules", admin_user, bad).rows
+    assert rows[0].errors == ["analyte: no analyte named 'Unobtainium'. Import or create it first."]
+    assert rows[1].errors[0].startswith("analyte: This method has no test for this analyte")
+    assert rows[2].action == "update" and not rows[2].errors
+    assert rows[3].errors == ["Duplicate of line 4: one row per record."]
+    with pytest.raises(ValidationError):
+        commit("holding-rules", admin_user, bad, reason="x")
+    assert HoldingTimeRule.objects.count() == 2
+    # With only the analyte's rule left, an old-format row creates the method-wide rule.
+    wide.delete()
+    row = preview("holding-rules", admin_user, old).rows[0]
+    assert (row.action, row.existing) == ("create", None)
+    described = dict(
+        (c.name, T["holding-rules"].describe(c)[0]) for c in T["holding-rules"].columns
+    )
+    assert described["analyte"] == "Key, optional" and described["matrix"] == "Key, required"
+    assert b"analyte" in importing.template_bytes(T["holding-rules"])
+
+
 def test_absent_column_is_left_alone_and_blank_clears_optional(admin_user, catalog):
     method = catalog[0]
     method.source = "SOP-12 rev 3"

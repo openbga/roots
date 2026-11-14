@@ -39,6 +39,7 @@ QUALIFIERS = [
 
 # analytes: name, CAS (blank if unsure), {matrix: (unit, reporting limit)}
 # hold: (hours, warning hours) per matrix group. qc: type -> (active, min per batch, every N)
+# analyte_hold: analyte -> (hours, warning hours), a limit of its own that replaces the method's.
 # limits: lcs/ccv/ms recovery (lower, upper) percent; rpd upper percent.
 # Catalog descriptors for the invented methods and analytes (set when a row is first created).
 TECHNIQUES = {
@@ -102,6 +103,7 @@ METHODS = [
             ("Total phosphorus", "7723-14-0", {m: ("mg/L", "0.02") for m in AQUEOUS}),
         ],
         "hold": {m: (48, 6) for m in AQUEOUS},
+        "analyte_hold": {"Total phosphorus": (24 * 28, 24 * 3)},
         "qc": {
             "method_blank": (True, 1, 20),
             "lcs": (True, 1, 20),
@@ -262,6 +264,7 @@ def seed_synthetic_dataset():
                 {
                     "method": method,
                     "matrix": matrix,
+                    "analyte": None,
                     "start_event": "collection",
                     "end_event": "analysis",
                 },
@@ -273,6 +276,24 @@ def seed_synthetic_dataset():
                 },
                 "rules",
             )
+            for name, (own_hours, own_warn) in spec.get("analyte_hold", {}).items():
+                make(
+                    HoldingTimeRule,
+                    {
+                        "method": method,
+                        "matrix": matrix,
+                        "analyte": Analyte.objects.get(name=name),
+                        "start_event": "collection",
+                        "end_event": "analysis",
+                    },
+                    {
+                        "name": f"Demo: {name[0].lower()}{name[1:]}, collection to analysis",
+                        "duration": timedelta(hours=own_hours),
+                        "warning_window": timedelta(hours=own_warn),
+                        "basis": BASIS,
+                    },
+                    "rules",
+                )
         for qc_type, (active, minimum, every) in spec["qc"].items():
             make(
                 QCRequirement,

@@ -128,6 +128,13 @@ against a newer schema, but check the migrations added since it (a dropped or re
 breaks it). Do not restore the
 database: that would discard records entered since the backup.
 
+One case to check: holding-time rules that name an analyte (migration `analytical.0009`). A
+release from before that change reads every active rule as method-wide, so it holds each
+analyte of the method to the shortest of those limits (stricter, never a silent pass), and its
+rule form, import and seed can refuse or pick the wrong row. Create analyte rules only once no
+instance of an older release is running, and deactivate them before running an older release
+against the database. The migration's reverse refuses while any rule names an analyte.
+
 **Data loss or corruption.** Recover into a new database; never overwrite or discard the
 current one.
 

@@ -1420,7 +1420,7 @@ def qc_config(request):
     form = f.ConfigFilterForm(request.GET or None)
     method = _cleaned(form).get("method")
     limits = QCLimit.objects.select_related("definition__method", "definition__analyte")
-    rules_qs = HoldingTimeRule.objects.select_related("method")
+    rules_qs = HoldingTimeRule.objects.select_related("method", "analyte")
     reqs = QCRequirement.objects.select_related("method")
     preservation = PreservationRule.objects.select_related(
         "definition__method", "definition__analyte"

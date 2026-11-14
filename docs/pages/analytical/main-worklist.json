@@ -108,7 +108,7 @@
         },
         {
           "label": "Hold deadline",
-          "description": "Earliest deadline from active collection-start rules for the requested method and matrix. Composite collection uses its recorded end. Running work shows the time left as quiet text; inside the rule's warning window it becomes an At risk pill with the time left, and past the deadline an Expired pill with how long ago. Preparation-based clocks are not represented by this queue deadline; result entry evaluates applicable clocks."
+          "description": "Earliest deadline from the active collection-start rules that apply to the requested test: its analyte's own rule where one is configured, otherwise the rule for the method and matrix. Two analytes of one method can therefore show different deadlines. Composite collection uses its recorded end. Running work shows the time left as quiet text; inside the rule's warning window it becomes an At risk pill with the time left, and past the deadline an Expired pill with how long ago. Preparation-based clocks are not represented by this queue deadline; result entry evaluates applicable clocks."
         },
         {
           "label": "Batch",

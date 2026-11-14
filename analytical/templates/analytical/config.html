@@ -46,13 +46,15 @@ Context: filter_form (method), the six lists, limits (a Page), can_configure, fi
 {% if can_configure %}{% url 'analytical:config-new' 'holding-rule' as add_url %}{% endif %}
 {% panel title="Holding-time rules" heading_id="holding-heading" count=holding_rules|length table=True flush=True class="mb-3" %}
   {% fill actions %}{% if can_configure %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'analytical:config-new' 'holding-rule' %}">{% icon name="plus-lg" %}Add holding-time rule</a>{% endif %}{% grid_columns_button grid="analytical.config_holding" %}{% endfill %}
+  {% panel_section %}<p>A rule applies to every analyte of its method and matrix unless it names one. A rule that names an analyte replaces the method-wide rule with the same start and end events for that analyte only.</p>{% endpanel_section %}
   {% list_results items=holding_rules filtered=filtered invalid=filter_form.errors clear_url=request.path no_results_title="No holding-time rules for these filters" no_results_body="Clear the method filter to see all of them." empty_title="No holding-time rules" empty_body="Holding time is shown as not evaluated." action_url=add_url action_label="Add holding-time rule" %}
-  <div class="vr-table-wrap"><table class="table table-hover vr-table" data-vr-grid="analytical.config_holding" data-vr-grid-version="1" aria-labelledby="holding-heading">
-    <thead><tr><th scope="col" data-vr-col="rule" data-vr-col-locked>Rule</th><th scope="col" data-vr-col="method">Method</th><th scope="col" data-vr-col="matrix">Matrix</th><th scope="col" data-vr-col="from_to">From → to</th><th scope="col" class="text-end" data-vr-col="maximum">Maximum</th><th scope="col" data-vr-col="active">Active</th></tr></thead>
+  <div class="vr-table-wrap"><table class="table table-hover vr-table" data-vr-grid="analytical.config_holding" data-vr-grid-version="2" aria-labelledby="holding-heading">
+    <thead><tr><th scope="col" data-vr-col="rule" data-vr-col-locked>Rule</th><th scope="col" data-vr-col="method">Method</th><th scope="col" data-vr-col="matrix">Matrix</th><th scope="col" data-vr-col="applies_to">Applies to</th><th scope="col" data-vr-col="from_to">From → to</th><th scope="col" class="text-end" data-vr-col="maximum">Maximum</th><th scope="col" data-vr-col="active">Active</th></tr></thead>
     <tbody>
     {% for r in holding_rules %}<tr>
       <th scope="row">{% if can_configure %}<a class="vr-row-link" href="{% url 'analytical:config-edit' 'holding-rule' r.pk %}">{{ r.name }}</a>{% else %}{{ r.name }}{% endif %}</th>
       <td>{{ r.method }}</td><td>{% matrix_tag matrix=r.matrix %}</td>
+      <td>{% if r.analyte_id %}{{ r.applies_to }}{% else %}<span class="vr-muted">{{ r.applies_to }}</span>{% endif %}</td>
       <td>{{ r.get_start_event_display }} → {{ r.get_end_event_display }}</td>
       <td class="text-end vr-nowrap">{{ r.duration_text }}{% if r.warning_text %}<div class="vr-muted small">warns at {{ r.warning_text }} left</div>{% endif %}</td>
       <td>{% include "analytical/_active_status.html" with active=r.is_active %}</td>
